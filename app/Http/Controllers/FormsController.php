@@ -106,6 +106,9 @@ class FormsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $form = Form::find($id);
+        $form->delete();
+
+        return redirect('/forms')->with('success', 'Form deleted');
     }
 }
