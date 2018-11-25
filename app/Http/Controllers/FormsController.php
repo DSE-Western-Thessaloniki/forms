@@ -14,7 +14,8 @@ class FormsController extends Controller
      */
     public function index()
     {
-        $forms = Forms::all();
+        //$forms = Form::all();
+        $forms = Form::orderBy('created_at', 'desc')->paginate(15);
         return view('forms.index')->with('forms', $forms);
     }
 
@@ -25,7 +26,7 @@ class FormsController extends Controller
      */
     public function create()
     {
-        //
+        return view('forms.create');
     }
 
     /**
@@ -36,7 +37,18 @@ class FormsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+
+        // Create form
+        $form =  new Form;
+        $form->title = $request->input('title');
+        $form->body = $request->input('body');
+        $form->save();
+
+        return redirect('/forms')->with('success', 'Form created');
     }
 
     /**
@@ -47,7 +59,8 @@ class FormsController extends Controller
      */
     public function show($id)
     {
-        //
+        $form = Form::find($id);
+        return view('forms.show')->with('form', $form);
     }
 
     /**
