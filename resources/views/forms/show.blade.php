@@ -9,4 +9,6 @@
     </div>
     <hr/>
     <small>Written on {{$form->created_at}}</small>
+    <hr/>
+    <a href="/forms/{{$form->id}}/edit" class="btn btn-primary">Edit</a>
 @endsection

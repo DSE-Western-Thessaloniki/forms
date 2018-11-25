@@ -71,7 +71,8 @@ class FormsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $form = Form::find($id);
+        return view('forms.edit')->with('form', $form);
     }
 
     /**
@@ -83,7 +84,18 @@ class FormsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+
+        // Create form
+        $form = Form::find($id);
+        $form->title = $request->input('title');
+        $form->body = $request->input('body');
+        $form->save();
+
+        return redirect('/forms')->with('success', 'Form updated');
     }
 
     /**
