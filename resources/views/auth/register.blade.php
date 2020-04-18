@@ -12,6 +12,20 @@
                         @csrf
 
                         <div class="form-group row">
+                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="username" type="text" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus>
+
+                                @if ($errors->has('username'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('username') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
                             <div class="col-md-6">
@@ -40,6 +54,16 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="setonlogin" class="col-md-4 col-form-label text-md-right">{{ __('Set password on first login') }}</label>
+
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input id="setonlogin" class="form-check-input" type="checkbox" checked>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
@@ -58,6 +82,19 @@
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label text-md-right">{{ __('Role') }}</label>
+
+                            <div class="col-md-6">
+                                <select class="custom-select" id="inputGroupSelect01">
+                                    <option value="0" selected>Disabled</option>
+                                    <option value="1">User</option>
+                                    <option value="2">Editor</option>
+                                    <option value="99">Admin</option>
+                                </select>
                             </div>
                         </div>
 
