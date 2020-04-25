@@ -58,7 +58,9 @@
 
                             <div class="col-md-6">
                                 <select id="userlevel" class="form-control @error('userlevel') is-invalid @enderror" name="userlevel" required>
-                                    <option v-for="level in ['user', 'admin']" :value="level">@{{ level }}</option>
+                                @foreach($levels as $level)
+                                    <option value="{{ $level->level }}">{{ $level->name }}</option>
+                                @endforeach
                                 </select>
                                 @error('userlevel')
                                     <span class="invalid-feedback" role="alert">
