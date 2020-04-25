@@ -20,8 +20,8 @@ Route::resource('forms', 'FormsController');
 
 Auth::routes();
 
-Route::get('/dashboard', 'HomeController@index');
+Route::get('/dashboard', 'DashboardController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'DashboardController@index')->name('home');
