@@ -15,13 +15,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PagesController@index');
 Route::get('/about', 'PagesController@about');
+Route::get('/setup', 'SetupController@setupPage');
+Route::post('/setup', 'SetupController@saveSetup')->name('setup');
 
 Route::resource('forms', 'FormsController');
 
+/*Auth::routes([
+    'register' => false,
+    'reset' => false
+]);*/
 Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index');
-
-Auth::routes();
 
 Route::get('/home', 'DashboardController@index')->name('home');

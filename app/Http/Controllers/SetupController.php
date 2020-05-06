@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use App\Level;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Option;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
-class RegisterController extends Controller
+class SetupController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -22,8 +24,6 @@ class RegisterController extends Controller
     | provide this functionality without requiring any additional code.
     |
     */
-
-    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
@@ -65,25 +65,36 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    protected function saveSetup(Request $request)
     {
-        return User::create([
+        $this->validator($request->all())->validate();
+
+        $data = $request->all();
+
+        event(new Registered($user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'username' => $data['username'],
             'userlevel' => $data['userlevel'],
             'password' => Hash::make($data['password']),
-        ]);
+        ])));
+
+        $first_run = Option::where('name', 'first_run')->first();
+        $first_run->value = 0;
+        $first_run->save();
+
+        return $request->wantsJson()
+                    ? new Response('', 201)
+                    : redirect('/');
     }
 
     /**
-     * Show the application registration form.
+     * Setup page
      *
-     * @return \Illuminate\Http\Response
+     * @return view
      */
-    public function showRegistrationForm()
+    public function setupPage()
     {
-        $levels = Level::all();
-        return view('auth.register')->with('levels', $levels);
+        return view('pages.setup');
     }
 }

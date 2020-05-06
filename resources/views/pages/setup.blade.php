@@ -1,14 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+    <div class="jumbotron text-center">
+        <h1>Φόρμες ΔΔΕ Δυτ. Θεσσαλονίκης</h1>
+        <p>Καλωσορίσατε στην εφαρμογή καταχώρησης στοιχείων της ΔΔΕ Δυτ. Θεσσαλονίκης.</p>
+    </div>
+    <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+                <div class="card-header">{{ __('Configure system administrator') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('setup') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -54,27 +58,6 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="userlevel" class="col-md-4 col-form-label text-md-right">{{ __('User level') }}</label>
-
-                            <div class="col-md-6">
-                                <select id="userlevel" class="form-control @error('userlevel') is-invalid @enderror" name="userlevel" required>
-                                @foreach($levels as $level)
-                                    @if($level->name == 'user')
-                                        <option value="{{ $level->level }}" selected>{{ $level->name }}</option>
-                                    @else
-                                        <option value="{{ $level->level }}">{{ $level->name }}</option>
-                                    @endif
-                                @endforeach
-                                </select>
-                                @error('userlevel')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
@@ -96,10 +79,17 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+
+                            <div class="col-md-6">
+                                <input id="userlevel" class="form-control @error('userlevel') is-invalid @enderror" name="userlevel" value="0" hidden>
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
+                                    {{ __('Save') }}
                                 </button>
                             </div>
                         </div>

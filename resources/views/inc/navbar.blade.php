@@ -13,9 +13,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
+                @auth
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/forms">Forms</a>
                 </li>
+                @endauth
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>

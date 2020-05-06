@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Level;
 
 class LevelSeeder extends Seeder
 {
@@ -12,12 +13,16 @@ class LevelSeeder extends Seeder
      */
     public function run()
     {
-        // Populate levels table
-        DB::table('levels')->insert([
+        $levels = [
             ['level' => 0, 'name' => 'admin'], 
             ['level' => 10, 'name' => 'editor'], 
             ['level' => 50, 'name' => 'moderator'], 
             ['level' => 100, 'name' => 'user']
-        ]);
+        ];
+
+        // Populate levels table
+        foreach($levels as $level) {
+            Level::updateOrCreate($level);
+        }
     }
 }
