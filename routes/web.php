@@ -20,11 +20,10 @@ Route::post('/setup', 'SetupController@saveSetup')->name('setup');
 
 Route::resource('forms', 'FormsController');
 
-/*Auth::routes([
-    'register' => false,
-    'reset' => false
-]);*/
-Auth::routes();
+Auth::routes([
+    'reset' => false,
+    'verify' => false
+]);
 
 Route::get('/dashboard', 'DashboardController@index');
 
