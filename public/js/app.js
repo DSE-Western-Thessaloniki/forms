@@ -1932,7 +1932,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -1945,7 +1944,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
-  props: ['edittext'],
+  props: ['edittext', 'fid'],
   methods: {
     toggleEdit: function toggleEdit(text) {
       text.edit = !text.edit; // Focus input field
@@ -1962,10 +1961,12 @@ __webpack_require__.r(__webpack_exports__);
         text.val = 'New Form';
       }
 
+      this.$emit('update:edittext', text.val);
       this.toggleEdit(text);
     },
     checkKey: function checkKey(e, text) {
       if (e.which == 13 || e.keyCode == 13) {
+        e.preventDefault();
         e.target.blur();
         return false;
       }
@@ -2005,14 +2006,165 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var fieldObj = {
+  id: 0,
+  title: "New field",
+  type: "integer",
+  validators: []
+};
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
   },
   data: function data() {
     return {
-      title: "New form"
+      title: "New form",
+      fields: [JSON.parse(JSON.stringify(fieldObj))]
     };
+  },
+  methods: {
+    addField: function addField() {
+      fieldObj.id = fieldObj.id + 1;
+      this.fields.push(JSON.parse(JSON.stringify(fieldObj)));
+    },
+    delField: function delField(id) {
+      var removeIndex = this.fields.map(function (item) {
+        return item.id;
+      }).indexOf(id);
+      ~removeIndex && this.fields.splice(removeIndex, 1);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['value', 'id'],
+  watch: {
+    title: function title(value) {
+      this.$emit('update:value', value);
+    }
+  },
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  },
+  data: function data() {
+    return {
+      title: this.value ? this.value : "New field",
+      cbselected: 0,
+      options: [{
+        id: 0,
+        value: "Text field"
+      }, {
+        id: 1,
+        value: "Text area"
+      }, {
+        id: 2,
+        value: "Multiple choice"
+      }, {
+        id: 3,
+        value: "Checkboxes"
+      }, {
+        id: 4,
+        value: "Drop-down list"
+      }, {
+        id: 5,
+        value: "File upload"
+      }],
+      listvalues: []
+    };
+  },
+  methods: {
+    emitDelete: function emitDelete() {
+      this.$emit('delfield', this.id);
+    },
+    editlistvalues: function editlistvalues() {
+      console.log('Edit values!');
+    }
   }
 });
 
@@ -6557,7 +6709,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * jQuery JavaScript Library v3.5.0
+ * jQuery JavaScript Library v3.5.1
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -6567,7 +6719,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2020-04-10T15:07Z
+ * Date: 2020-05-04T22:49Z
  */
 ( function( global, factory ) {
 
@@ -6705,7 +6857,7 @@ function toType( obj ) {
 
 
 var
-	version = "3.5.0",
+	version = "3.5.1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -10802,7 +10954,7 @@ Data.prototype = {
 
 		// If not, create one
 		if ( !value ) {
-			value = Object.create( null );
+			value = {};
 
 			// We can accept data for non-element nodes in modern browsers,
 			// but we should not, see #8335.
@@ -37662,79 +37814,68 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      staticClass: "editable-text-group",
-      on: {
-        click: function($event) {
-          return _vm.toggleEdit(_vm.text)
-        }
-      }
-    },
-    [
-      _c(
-        "span",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: !_vm.text.edit,
-              expression: "!text.edit"
-            }
-          ],
-          staticClass: "editable-text-label",
-          on: {
-            click: function($event) {
-              return _vm.toggleEdit(_vm.text)
-            }
-          }
-        },
-        [
-          _c("a", [_vm._v(_vm._s(_vm.text.val))]),
-          _c("i", { staticClass: "fas fa-pencil-alt editable-text-icon" })
-        ]
-      ),
-      _vm._v(" "),
-      _c("input", {
+  return _c("div", { staticClass: "editable-text-group" }, [
+    _c(
+      "span",
+      {
         directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.text.val,
-            expression: "text.val"
-          },
           {
             name: "show",
             rawName: "v-show",
-            value: _vm.text.edit,
-            expression: "text.edit"
+            value: !_vm.text.edit,
+            expression: "!text.edit"
           }
         ],
-        ref: "input",
-        staticClass: "editable-text-input",
-        attrs: { type: "text", size: "50" },
-        domProps: { value: _vm.text.val },
+        staticClass: "editable-text-label",
         on: {
-          keypress: function($event) {
-            return _vm.checkKey($event, _vm.text)
-          },
-          blur: function($event) {
-            return _vm.saveEdit(_vm.text)
-          },
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.$set(_vm.text, "val", $event.target.value)
+          click: function($event) {
+            return _vm.toggleEdit(_vm.text)
           }
         }
-      }),
-      _vm._v(" "),
-      _c("br")
-    ]
-  )
+      },
+      [
+        _c("a", [_vm._v(_vm._s(_vm.text.val))]),
+        _c("i", { staticClass: "fas fa-pencil-alt editable-text-icon" })
+      ]
+    ),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.text.val,
+          expression: "text.val"
+        },
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.text.edit,
+          expression: "text.edit"
+        }
+      ],
+      ref: "input",
+      staticClass: "editable-text-input",
+      attrs: { type: "text", id: this.fid },
+      domProps: { value: _vm.text.val },
+      on: {
+        keypress: function($event) {
+          return _vm.checkKey($event, _vm.text)
+        },
+        blur: function($event) {
+          return _vm.saveEdit(_vm.text)
+        },
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.$set(_vm.text, "val", $event.target.value)
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c("br")
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37770,8 +37911,45 @@ var render = function() {
           ),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
-            _vm._v(
-              "\n                    I'm an example component.\n                "
+            _c(
+              "ul",
+              { staticClass: "list-group list-group-flush" },
+              [
+                _vm._l(_vm.fields, function(field) {
+                  return _c(
+                    "li",
+                    { key: field.id, staticClass: "list-group-item" },
+                    [
+                      _c("vform-field-component", {
+                        attrs: { value: field.title, id: field.id },
+                        on: {
+                          "update:value": function($event) {
+                            return _vm.$set(field, "title", $event)
+                          },
+                          delfield: _vm.delField
+                        }
+                      })
+                    ],
+                    1
+                  )
+                }),
+                _vm._v(" "),
+                _c("li", { staticClass: "list-group-item" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: { click: _vm.addField }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-plus-circle" }),
+                      _vm._v("__('Add field')\n                            ")
+                    ]
+                  )
+                ])
+              ],
+              2
             )
           ])
         ])
@@ -37780,6 +37958,156 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "d-flex justify-content-end" }, [
+      _c("i", {
+        staticClass: "fas fa-times",
+        attrs: {
+          "data-toggle": "tooltip",
+          "data-placement": "top",
+          title: "Delete field"
+        },
+        on: { click: _vm.emitDelete }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("div", { staticClass: "form-row" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-3 col-form-label",
+            attrs: { for: "fieldtitleid" }
+          },
+          [_vm._v("Field title:")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-9 align-self-center" },
+          [
+            _c("editable-text", {
+              attrs: { edittext: _vm.title, fid: "fieldtitleid" },
+              on: {
+                "update:edittext": function($event) {
+                  _vm.title = $event
+                }
+              }
+            })
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-row" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-3 col-form-label",
+            attrs: { for: "fieldtitleid" }
+          },
+          [_vm._v("Field title:")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-9 align-self-center" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.cbselected,
+                  expression: "cbselected"
+                }
+              ],
+              attrs: { id: "fieldtype", name: "fieldtype" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.cbselected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            _vm._l(_vm.options, function(option) {
+              return _c(
+                "option",
+                { key: option.id, domProps: { value: option.id } },
+                [
+                  _vm._v(
+                    "\n                        " +
+                      _vm._s(option.value) +
+                      "\n                    "
+                  )
+                ]
+              )
+            }),
+            0
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-row justify-content-center" }, [
+        _vm.cbselected > 1 && _vm.cbselected < 5
+          ? _c("div", { staticClass: "card col-8" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "card-header",
+                  on: { click: _vm.editlistvalues }
+                },
+                [_vm._m(0)]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body" }, [
+                _vm._v("\n                    Values:\n                ")
+              ])
+            ])
+          : _vm._e()
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "d-flex justify-content-end" }, [
+      _c("i", { staticClass: "fas fa-edit" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -49971,6 +50299,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 Vue.component('vform-component', __webpack_require__(/*! ./components/VFormComponent.vue */ "./resources/js/components/VFormComponent.vue")["default"]);
 Vue.component('editable-text', __webpack_require__(/*! ./components/VEditableTextComponent.vue */ "./resources/js/components/VEditableTextComponent.vue")["default"]);
+Vue.component('vform-field-component', __webpack_require__(/*! ./components/VFormFieldComponent.vue */ "./resources/js/components/VFormFieldComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -50161,6 +50490,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormComponent_vue_vue_type_template_id_630a3d6e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormComponent_vue_vue_type_template_id_630a3d6e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/VFormFieldComponent.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/VFormFieldComponent.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./VFormFieldComponent.vue?vue&type=template&id=0c6b1982& */ "./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982&");
+/* harmony import */ var _VFormFieldComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./VFormFieldComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _VFormFieldComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/VFormFieldComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormFieldComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./VFormFieldComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VFormFieldComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormFieldComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./VFormFieldComponent.vue?vue&type=template&id=0c6b1982& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VFormFieldComponent.vue?vue&type=template&id=0c6b1982&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VFormFieldComponent_vue_vue_type_template_id_0c6b1982___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

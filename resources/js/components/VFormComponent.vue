@@ -9,7 +9,24 @@
                     </div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" v-for="field in fields" :key="field.id">
+                                <vform-field-component
+                                :value.sync="field.title"
+                                :id="field.id"
+                                v-on:delfield="delField"
+                                ></vform-field-component>
+                            </li>
+                            <li class="list-group-item">
+                                <button
+                                type="button"
+                                class="btn btn-primary"
+                                @click="addField"
+                                >
+                                    <i class="fas fa-plus-circle"></i>__('Add field')
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -18,13 +35,34 @@
 </template>
 
 <script>
+    var fieldObj = {
+        id: 0,
+        title: "New field",
+        type: "integer",
+        validators: [],
+    }
+
     export default {
         mounted() {
             console.log('Component mounted.')
         },
         data: function() {
             return {
-                title: "New form"
+                title: "New form",
+                fields: [JSON.parse( JSON.stringify( fieldObj ) )]
+            }
+        },
+        methods: {
+            addField: function() {
+                fieldObj.id = fieldObj.id + 1;
+                this.fields.push(JSON.parse( JSON.stringify( fieldObj ) ));
+            },
+
+            delField: function(id) {
+                var removeIndex = this.fields.map(function(item) { return item.id; })
+                       .indexOf(id);
+
+                ~removeIndex && this.fields.splice(removeIndex, 1);
             }
         }
     }

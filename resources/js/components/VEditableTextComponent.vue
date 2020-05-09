@@ -1,6 +1,5 @@
 <template>
     <div
-    @click="toggleEdit(text)"
     class="editable-text-group"
     >
         <span
@@ -13,7 +12,7 @@
             type="text"
             ref="input"
             class="editable-text-input"
-            size=50
+            :id="this.fid"
             v-model="text.val"
             v-show="text.edit"
             @keypress="checkKey($event, text)"
@@ -36,7 +35,7 @@
                 }
             }
         },
-        props: ['edittext'],
+        props: ['edittext', 'fid'],
         methods: {
             toggleEdit: function(text) {
                 text.edit = !text.edit;
@@ -54,11 +53,13 @@
                 if (text.val == '') {
                     text.val = 'New Form'
                 }
+                this.$emit('update:edittext', text.val);
                 this.toggleEdit(text);
             },
 
             checkKey: function(e, text) {
                 if (e.which == 13 || e.keyCode == 13) {
+                    e.preventDefault();
                     e.target.blur();
                     return false;
                 }

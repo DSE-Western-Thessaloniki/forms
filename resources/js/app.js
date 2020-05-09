@@ -22,6 +22,7 @@ window.Vue = require('vue');
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('vform-component', require('./components/VFormComponent.vue').default);
 Vue.component('editable-text', require('./components/VEditableTextComponent.vue').default);
+Vue.component('vform-field-component', require('./components/VFormFieldComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
