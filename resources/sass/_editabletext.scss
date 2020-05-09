@@ -1,0 +1,11 @@
+.editable-text-label {
+    text-decoration: underline dotted blue;
+}
+
+.editable-text-label i {
+    display: none;
+}
+
+.editable-text-group:hover i {
+    display: inherit;
+}
