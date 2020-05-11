@@ -1899,6 +1899,154 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    console.log('Component mounted.');
+    this.$nextTick(function () {
+      if (this.listarray.length && this.listarray[this.listarray.length - 1].value != '') this.listarray.push({
+        id: this.listarray.length,
+        value: ''
+      });
+    });
+  },
+  data: function data() {
+    return {
+      list: {
+        val: this.edittext,
+        edit: false
+      },
+      listarray: this.edittext.length ? JSON.parse(this.edittext) : []
+    };
+  },
+  props: ['cbselected', 'edittext', 'fid'],
+  methods: {
+    toggleEdit: function toggleEdit(list) {
+      list.edit = !list.edit;
+
+      if (!this.listarray.length) {
+        this.listarray.push({
+          id: 0,
+          value: ""
+        });
+      } // Focus input field
+      // if(list.edit){
+      //     this.$nextTick(function() {
+      //         this.$refs.input.focus();
+      //     })
+      // }
+
+    },
+    saveEdit: function saveEdit(list) {
+      //save your changes
+      var newlist = JSON.parse(JSON.stringify(this.listarray));
+      newlist.pop();
+      list.val = JSON.stringify(newlist);
+      this.$emit('update:edittext', list.val);
+      this.toggleEdit(list);
+      console.log('Save!');
+    },
+    checkKey: function checkKey(e, index) {
+      if (e.which == 13 || e.keyCode == 13) {
+        e.preventDefault();
+        return false;
+      }
+
+      if (this.listarray.length == index + 1) {
+        this.listarray.push({
+          id: index + 1,
+          value: ""
+        });
+      }
+
+      return true;
+    },
+    checkList: function checkList(index) {
+      // If it isn't the last item and it is empty
+      if (this.listarray.length != index + 1 && this.listarray[index].value.length == 0) {
+        this.listarray.splice(index, 1);
+
+        for (var i = index; i < this.listarray.length; i++) {
+          this.listarray[i].id = i;
+        }
+      }
+    }
+  },
+  computed: {
+    validlistitems: function validlistitems() {
+      var newlist = [];
+      if (this.list.val.length) newlist = JSON.parse(this.list.val);
+      return newlist;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableTextComponent.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VEditableTextComponent.vue?vue&type=script&lang=js& ***!
@@ -2105,23 +2253,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['value', 'id'],
   watch: {
@@ -2155,15 +2286,12 @@ __webpack_require__.r(__webpack_exports__);
         id: 5,
         value: "File upload"
       }],
-      listvalues: []
+      listvalues: ""
     };
   },
   methods: {
     emitDelete: function emitDelete() {
       this.$emit('delfield', this.id);
-    },
-    editlistvalues: function editlistvalues() {
-      console.log('Edit values!');
     }
   }
 });
@@ -37799,6 +37927,179 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "editable-list-group form-row justify-content-center" },
+    [
+      this.cbselected > 1 && this.cbselected < 5
+        ? _c("div", { staticClass: "card col-8" }, [
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.list.edit,
+                    expression: "!list.edit"
+                  }
+                ],
+                staticClass: "card-header",
+                on: {
+                  click: function($event) {
+                    return _vm.toggleEdit(_vm.list)
+                  }
+                }
+              },
+              [_vm._m(0)]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.list.edit,
+                    expression: "!list.edit"
+                  }
+                ],
+                staticClass: "card-body"
+              },
+              [
+                _vm._v("\n            Values:\n            "),
+                _c(
+                  "ol",
+                  _vm._l(_vm.validlistitems, function(item) {
+                    return _c("li", { key: item.id }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(item.value) +
+                          "\n                "
+                      )
+                    ])
+                  }),
+                  0
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.list.edit,
+                    expression: "list.edit"
+                  }
+                ],
+                staticClass: "card-header",
+                on: {
+                  click: function($event) {
+                    return _vm.saveEdit(_vm.list)
+                  }
+                }
+              },
+              [_vm._m(1)]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.list.edit,
+                    expression: "list.edit"
+                  }
+                ],
+                staticClass: "card-body"
+              },
+              [
+                _c(
+                  "ol",
+                  _vm._l(_vm.listarray, function(item, index) {
+                    return _c("li", { key: item.id }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: item.value,
+                            expression: "item.value"
+                          }
+                        ],
+                        attrs: { type: "text", placeholder: "New option" },
+                        domProps: { value: item.value },
+                        on: {
+                          keypress: function($event) {
+                            return _vm.checkKey($event, index)
+                          },
+                          blur: function($event) {
+                            return _vm.checkList(index)
+                          },
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(item, "value", $event.target.value)
+                          }
+                        }
+                      })
+                    ])
+                  }),
+                  0
+                )
+              ]
+            )
+          ])
+        : _vm._e()
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "d-flex justify-content-end" }, [
+      _c("i", { staticClass: "fas fa-edit" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "d-flex justify-content-end" }, [
+      _c("i", { staticClass: "fas fa-save" })
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableTextComponent.vue?vue&type=template&id=647bdebe&":
 /*!*************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VEditableTextComponent.vue?vue&type=template&id=647bdebe& ***!
@@ -37992,122 +38293,112 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c("div", [
-      _c("div", { staticClass: "form-row" }, [
-        _c(
-          "label",
-          {
-            staticClass: "col-3 col-form-label",
-            attrs: { for: "fieldtitleid" }
-          },
-          [_vm._v("Field title:")]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "col-9 align-self-center" },
-          [
-            _c("editable-text", {
-              attrs: { edittext: _vm.title, fid: "fieldtitleid" },
-              on: {
-                "update:edittext": function($event) {
-                  _vm.title = $event
-                }
-              }
-            })
-          ],
-          1
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-row" }, [
-        _c(
-          "label",
-          {
-            staticClass: "col-3 col-form-label",
-            attrs: { for: "fieldtitleid" }
-          },
-          [_vm._v("Field title:")]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-9 align-self-center" }, [
+    _c(
+      "div",
+      [
+        _c("div", { staticClass: "form-row" }, [
           _c(
-            "select",
+            "label",
             {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.cbselected,
-                  expression: "cbselected"
-                }
-              ],
-              attrs: { id: "fieldtype", name: "fieldtype" },
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.cbselected = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
-              }
+              staticClass: "col-3 col-form-label",
+              attrs: { for: "fieldtitleid" }
             },
-            _vm._l(_vm.options, function(option) {
-              return _c(
-                "option",
-                { key: option.id, domProps: { value: option.id } },
-                [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(option.value) +
-                      "\n                    "
-                  )
-                ]
-              )
-            }),
-            0
+            [_vm._v("Field title:")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-9 align-self-center" },
+            [
+              _c("editable-text", {
+                attrs: { edittext: _vm.title, fid: "fieldtitleid" },
+                on: {
+                  "update:edittext": function($event) {
+                    _vm.title = $event
+                  }
+                }
+              })
+            ],
+            1
           )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-row justify-content-center" }, [
-        _vm.cbselected > 1 && _vm.cbselected < 5
-          ? _c("div", { staticClass: "card col-8" }, [
-              _c(
-                "div",
-                {
-                  staticClass: "card-header",
-                  on: { click: _vm.editlistvalues }
-                },
-                [_vm._m(0)]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-body" }, [
-                _vm._v("\n                    Values:\n                ")
-              ])
-            ])
-          : _vm._e()
-      ])
-    ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-3 col-form-label",
+              attrs: { for: "fieldtitleid" }
+            },
+            [_vm._v("Field title:")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-9 align-self-center" }, [
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.cbselected,
+                    expression: "cbselected"
+                  }
+                ],
+                attrs: { id: "fieldtype", name: "fieldtype" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.cbselected = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              _vm._l(_vm.options, function(option) {
+                return _c(
+                  "option",
+                  { key: option.id, domProps: { value: option.id } },
+                  [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(option.value) +
+                        "\n                    "
+                    )
+                  ]
+                )
+              }),
+              0
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("editable-list", {
+          attrs: { cbselected: _vm.cbselected, edittext: _vm.listvalues },
+          on: {
+            "update:edittext": function($event) {
+              _vm.listvalues = $event
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          attrs: { type: "hidden", name: "tst" },
+          domProps: { value: _vm.listvalues }
+        })
+      ],
+      1
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex justify-content-end" }, [
-      _c("i", { staticClass: "fas fa-edit" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -50300,6 +50591,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 Vue.component('vform-component', __webpack_require__(/*! ./components/VFormComponent.vue */ "./resources/js/components/VFormComponent.vue")["default"]);
 Vue.component('editable-text', __webpack_require__(/*! ./components/VEditableTextComponent.vue */ "./resources/js/components/VEditableTextComponent.vue")["default"]);
 Vue.component('vform-field-component', __webpack_require__(/*! ./components/VFormFieldComponent.vue */ "./resources/js/components/VFormFieldComponent.vue")["default"]);
+Vue.component('editable-list', __webpack_require__(/*! ./components/VEditableListComponent.vue */ "./resources/js/components/VEditableListComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -50354,6 +50646,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/VEditableListComponent.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/VEditableListComponent.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./VEditableListComponent.vue?vue&type=template&id=0d7184d0& */ "./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0&");
+/* harmony import */ var _VEditableListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./VEditableListComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _VEditableListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/VEditableListComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VEditableListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./VEditableListComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableListComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VEditableListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./VEditableListComponent.vue?vue&type=template&id=0d7184d0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VEditableListComponent.vue?vue&type=template&id=0d7184d0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VEditableListComponent_vue_vue_type_template_id_0d7184d0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

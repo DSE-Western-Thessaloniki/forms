@@ -33,25 +33,8 @@
                     </select>
                 </div>
             </div>
-            <div class="form-row justify-content-center">
-                <div
-                v-if="cbselected > 1 && cbselected < 5"
-                class="card col-8"
-                >
-                    <div class="card-header" @click="editlistvalues">
-                        <div class="d-flex justify-content-end">
-                            <i
-                            class="fas fa-edit"
-
-                            >
-                            </i>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        Values:
-                    </div>
-                </div>
-            </div>
+            <editable-list :cbselected="cbselected" :edittext.sync="listvalues"></editable-list>
+            <input type="hidden" name="tst" :value="listvalues"/>
         </div>
     </div>
 </template>
@@ -97,16 +80,13 @@
                         value: "File upload"
                     }
                 ],
-                listvalues: [],
+                listvalues: "",
             }
         },
         methods: {
             emitDelete: function() {
                 this.$emit('delfield', this.id);
             },
-            editlistvalues: function() {
-                console.log('Edit values!')
-            }
         }
     }
 </script>

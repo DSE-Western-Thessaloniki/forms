@@ -23,7 +23,7 @@ window.Vue = require('vue');
 Vue.component('vform-component', require('./components/VFormComponent.vue').default);
 Vue.component('editable-text', require('./components/VEditableTextComponent.vue').default);
 Vue.component('vform-field-component', require('./components/VFormFieldComponent.vue').default);
-
+Vue.component('editable-list', require('./components/VEditableListComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
