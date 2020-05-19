@@ -11,8 +11,8 @@
         <input
             type="text"
             ref="input"
-            class="editable-text-input"
-            :id="this.fid"
+            class="editable-text-input col-12"
+            :name="this.fid"
             v-model="text.val"
             v-show="text.edit"
             @keypress="checkKey($event, text)"

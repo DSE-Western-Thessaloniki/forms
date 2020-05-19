@@ -12,7 +12,7 @@
             <div class="form-row">
                 <label for="fieldtitleid" class="col-3 col-form-label">Field title:</label>
                 <div class="col-9 align-self-center">
-                    <editable-text :edittext.sync="title" fid="fieldtitleid"></editable-text>
+                    <editable-text :edittext.sync="title" :fid="'field['+this.id+'][title]'"></editable-text>
                 </div>
             </div>
             <div class="form-row">
@@ -20,7 +20,7 @@
                 <div class="col-9 align-self-center">
                     <select
                     id="fieldtype"
-                    name="fieldtype"
+                    :name="'field['+this.id+'][type]'"
                     v-model="cbselected"
                     >
                         <option
@@ -33,8 +33,14 @@
                     </select>
                 </div>
             </div>
-            <editable-list :cbselected="cbselected" :edittext.sync="listvalues"></editable-list>
-            <input type="hidden" name="tst" :value="listvalues"/>
+            <div v-if="this.cbselected > 1 && this.cbselected < 5">
+                <editable-list
+                :cbselected="cbselected"
+                :edittext.sync="listvalues">
+                </editable-list>
+
+                <input type="hidden" :name="'field['+this.id+'][values]'" :value="listvalues"/>
+            </div>
         </div>
     </div>
 </template>

@@ -1963,7 +1963,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -2171,6 +2170,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var fieldObj = {
   id: 0,
   title: "New field",
@@ -2212,6 +2220,12 @@ var fieldObj = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -37946,133 +37960,131 @@ var render = function() {
     "div",
     { staticClass: "editable-list-group form-row justify-content-center" },
     [
-      this.cbselected > 1 && this.cbselected < 5
-        ? _c("div", { staticClass: "card col-8" }, [
-            _c(
-              "div",
+      _c("div", { staticClass: "card col-8" }, [
+        _c(
+          "div",
+          {
+            directives: [
               {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.list.edit,
-                    expression: "!list.edit"
-                  }
-                ],
-                staticClass: "card-header",
-                on: {
-                  click: function($event) {
-                    return _vm.toggleEdit(_vm.list)
-                  }
-                }
-              },
-              [_vm._m(0)]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.list.edit,
+                expression: "!list.edit"
+              }
+            ],
+            staticClass: "card-header",
+            on: {
+              click: function($event) {
+                return _vm.toggleEdit(_vm.list)
+              }
+            }
+          },
+          [_vm._m(0)]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
               {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.list.edit,
-                    expression: "!list.edit"
-                  }
-                ],
-                staticClass: "card-body"
-              },
-              [
-                _vm._v("\n            Values:\n            "),
-                _c(
-                  "ol",
-                  _vm._l(_vm.validlistitems, function(item) {
-                    return _c("li", { key: item.id }, [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(item.value) +
-                          "\n                "
-                      )
-                    ])
-                  }),
-                  0
-                )
-              ]
-            ),
-            _vm._v(" "),
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.list.edit,
+                expression: "!list.edit"
+              }
+            ],
+            staticClass: "card-body"
+          },
+          [
+            _vm._v("\n            Values:\n            "),
             _c(
-              "div",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.list.edit,
-                    expression: "list.edit"
-                  }
-                ],
-                staticClass: "card-header",
-                on: {
-                  click: function($event) {
-                    return _vm.saveEdit(_vm.list)
-                  }
-                }
-              },
-              [_vm._m(1)]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.list.edit,
-                    expression: "list.edit"
-                  }
-                ],
-                staticClass: "card-body"
-              },
-              [
-                _c(
-                  "ol",
-                  _vm._l(_vm.listarray, function(item, index) {
-                    return _c("li", { key: item.id }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: item.value,
-                            expression: "item.value"
-                          }
-                        ],
-                        attrs: { type: "text", placeholder: "New option" },
-                        domProps: { value: item.value },
-                        on: {
-                          keypress: function($event) {
-                            return _vm.checkKey($event, index)
-                          },
-                          blur: function($event) {
-                            return _vm.checkList(index)
-                          },
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(item, "value", $event.target.value)
-                          }
-                        }
-                      })
-                    ])
-                  }),
-                  0
-                )
-              ]
+              "ol",
+              _vm._l(_vm.validlistitems, function(item) {
+                return _c("li", { key: item.id }, [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(item.value) +
+                      "\n                "
+                  )
+                ])
+              }),
+              0
             )
-          ])
-        : _vm._e()
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.list.edit,
+                expression: "list.edit"
+              }
+            ],
+            staticClass: "card-header",
+            on: {
+              click: function($event) {
+                return _vm.saveEdit(_vm.list)
+              }
+            }
+          },
+          [_vm._m(1)]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.list.edit,
+                expression: "list.edit"
+              }
+            ],
+            staticClass: "card-body"
+          },
+          [
+            _c(
+              "ol",
+              _vm._l(_vm.listarray, function(item, index) {
+                return _c("li", { key: item.id }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: item.value,
+                        expression: "item.value"
+                      }
+                    ],
+                    attrs: { type: "text", placeholder: "New option" },
+                    domProps: { value: item.value },
+                    on: {
+                      keypress: function($event) {
+                        return _vm.checkKey($event, index)
+                      },
+                      blur: function($event) {
+                        return _vm.checkList(index)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(item, "value", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              }),
+              0
+            )
+          ]
+        )
+      ])
     ]
   )
 }
@@ -38156,8 +38168,8 @@ var render = function() {
         }
       ],
       ref: "input",
-      staticClass: "editable-text-input",
-      attrs: { type: "text", id: this.fid },
+      staticClass: "editable-text-input col-12",
+      attrs: { type: "text", name: this.fid },
       domProps: { value: _vm.text.val },
       on: {
         keypress: function($event) {
@@ -38207,7 +38219,11 @@ var render = function() {
           _c(
             "div",
             { staticClass: "card-header" },
-            [_c("editable-text", { attrs: { edittext: "New Form" } })],
+            [
+              _c("editable-text", {
+                attrs: { edittext: "New Form", fid: "title" }
+              })
+            ],
             1
           ),
           _vm._v(" "),
@@ -38216,6 +38232,8 @@ var render = function() {
               "ul",
               { staticClass: "list-group list-group-flush" },
               [
+                _vm._m(0),
+                _vm._v(" "),
                 _vm._l(_vm.fields, function(field) {
                   return _c(
                     "li",
@@ -38258,7 +38276,29 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", { staticClass: "list-group-item" }, [
+      _c("div", { staticClass: "form-row" }, [
+        _c(
+          "label",
+          { staticClass: "col-3 col-form-label", attrs: { for: "notes" } },
+          [_vm._v("Notes:")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-9 align-self-center" }, [
+          _c("textarea", {
+            staticClass: "col-12",
+            attrs: { id: "notes", name: "notes" }
+          })
+        ])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -38293,109 +38333,119 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c(
-      "div",
-      [
-        _c("div", { staticClass: "form-row" }, [
+    _c("div", [
+      _c("div", { staticClass: "form-row" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-3 col-form-label",
+            attrs: { for: "fieldtitleid" }
+          },
+          [_vm._v("Field title:")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-9 align-self-center" },
+          [
+            _c("editable-text", {
+              attrs: {
+                edittext: _vm.title,
+                fid: "field[" + this.id + "][title]"
+              },
+              on: {
+                "update:edittext": function($event) {
+                  _vm.title = $event
+                }
+              }
+            })
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-row" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-3 col-form-label",
+            attrs: { for: "fieldtitleid" }
+          },
+          [_vm._v("Field title:")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-9 align-self-center" }, [
           _c(
-            "label",
+            "select",
             {
-              staticClass: "col-3 col-form-label",
-              attrs: { for: "fieldtitleid" }
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.cbselected,
+                  expression: "cbselected"
+                }
+              ],
+              attrs: { id: "fieldtype", name: "field[" + this.id + "][type]" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.cbselected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
             },
-            [_vm._v("Field title:")]
-          ),
-          _vm._v(" "),
-          _c(
+            _vm._l(_vm.options, function(option) {
+              return _c(
+                "option",
+                { key: option.id, domProps: { value: option.id } },
+                [
+                  _vm._v(
+                    "\n                        " +
+                      _vm._s(option.value) +
+                      "\n                    "
+                  )
+                ]
+              )
+            }),
+            0
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      this.cbselected > 1 && this.cbselected < 5
+        ? _c(
             "div",
-            { staticClass: "col-9 align-self-center" },
             [
-              _c("editable-text", {
-                attrs: { edittext: _vm.title, fid: "fieldtitleid" },
+              _c("editable-list", {
+                attrs: { cbselected: _vm.cbselected, edittext: _vm.listvalues },
                 on: {
                   "update:edittext": function($event) {
-                    _vm.title = $event
+                    _vm.listvalues = $event
                   }
                 }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                attrs: {
+                  type: "hidden",
+                  name: "field[" + this.id + "][values]"
+                },
+                domProps: { value: _vm.listvalues }
               })
             ],
             1
           )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-row" }, [
-          _c(
-            "label",
-            {
-              staticClass: "col-3 col-form-label",
-              attrs: { for: "fieldtitleid" }
-            },
-            [_vm._v("Field title:")]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-9 align-self-center" }, [
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.cbselected,
-                    expression: "cbselected"
-                  }
-                ],
-                attrs: { id: "fieldtype", name: "fieldtype" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.cbselected = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
-              },
-              _vm._l(_vm.options, function(option) {
-                return _c(
-                  "option",
-                  { key: option.id, domProps: { value: option.id } },
-                  [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(option.value) +
-                        "\n                    "
-                    )
-                  ]
-                )
-              }),
-              0
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("editable-list", {
-          attrs: { cbselected: _vm.cbselected, edittext: _vm.listvalues },
-          on: {
-            "update:edittext": function($event) {
-              _vm.listvalues = $event
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("input", {
-          attrs: { type: "hidden", name: "tst" },
-          domProps: { value: _vm.listvalues }
-        })
-      ],
-      1
-    )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = []

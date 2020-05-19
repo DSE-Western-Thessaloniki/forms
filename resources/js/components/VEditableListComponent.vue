@@ -3,7 +3,6 @@
     class="editable-list-group form-row justify-content-center"
     >
         <div
-        v-if="this.cbselected > 1 && this.cbselected < 5"
         class="card col-8"
         >
             <div

@@ -10885,7 +10885,6 @@ a.text-dark:focus {
 .editable-text-label {
   -webkit-text-decoration: underline dotted blue;
           text-decoration: underline dotted blue;
-  padding: 3px 2px 3px 2px;
 }
 
 .editable-text-label i {
@@ -10894,6 +10893,10 @@ a.text-dark:focus {
 
 .editable-text-group:hover i {
   display: inherit;
+}
+
+#notes {
+  height: 10em;
 }
 
 /*!
