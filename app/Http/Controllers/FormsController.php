@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Form;
+use App\FormField;
+use Illuminate\Support\Facades\Auth;
 
 class FormsController extends Controller
 {
@@ -49,14 +51,24 @@ class FormsController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
-            'body' => 'required'
         ]);
 
         // Create form
         $form =  new Form;
         $form->title = $request->input('title');
-        $form->body = $request->input('body');
+        $form->notes = $request->input('notes');
+        $form->user_id = Auth::id();
         $form->save();
+
+        $formfield = $request->input('field');
+        foreach(array_keys($formfield) as $key) {
+            $field = new FormField;
+            $field->sort_id = $key;
+            $field->title = $formfield[$key]['title'];
+            $field->type = $formfield[$key]['type'];
+            $field->listvalues = isset($formfield[$key]['values']) ? $formfield[$key]['values'] : '';
+            $form->formfields()->save($field);
+        }
 
         return redirect('/forms')->with('success', 'Form created');
     }
