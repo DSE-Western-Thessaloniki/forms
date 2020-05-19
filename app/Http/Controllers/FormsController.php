@@ -66,7 +66,7 @@ class FormsController extends Controller
             $field->sort_id = $key;
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
-            $field->listvalues = isset($formfield[$key]['values']) ? $formfield[$key]['values'] : '';
+            $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->formfields()->save($field);
         }
 
