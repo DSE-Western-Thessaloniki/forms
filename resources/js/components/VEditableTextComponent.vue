@@ -51,7 +51,7 @@
             saveEdit: function(text) {
                 //save your changes
                 if (text.val == '') {
-                    text.val = 'New Form'
+                    text.val = this.edittext
                 }
                 this.$emit('update:edittext', text.val);
                 this.toggleEdit(text);
