@@ -4,7 +4,7 @@
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-header">
-                        <editable-text edittext="New Form" fid="title">
+                        <editable-text :edittext="this.title" fid="title">
                         </editable-text>
                     </div>
 
@@ -23,6 +23,8 @@
                                 <vform-field-component
                                 :value.sync="field.title"
                                 :id="field.id"
+                                :type="field.type"
+                                :listvalues="field.listvalues"
                                 v-on:delfield="delField"
                                 ></vform-field-component>
                             </li>
@@ -47,15 +49,40 @@
     var fieldObj = {
         id: 0,
         title: "New field",
-        type: "integer",
+        type: 0,
         validators: [],
+        listvalues: "",
     }
 
     export default {
+        props: {
+            parse: {
+                type: Boolean,
+                default: false,
+            },
+            parsetitle: {
+                type: String,
+                default: "New form",
+            },
+            parseobj: {
+                type: Array,
+            },
+        },
         mounted() {
             console.log('Component mounted.')
+            /*if (this.parse === true) {
+                this.title = this.parsetitle
+                this.fields = this.parseobj
+            }*/
+
         },
         data: function() {
+            if (this.parse) {
+                return {
+                    title: this.parsetitle,
+                    fields: this.parseobj,
+                }
+            }
             return {
                 title: "New form",
                 fields: [JSON.parse( JSON.stringify( fieldObj ) )]

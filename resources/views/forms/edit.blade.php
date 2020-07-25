@@ -1,18 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Create Form</h1>
+    <h1 class="text-center">{{__('Edit Form')}}</h1>
     {!! Form::open(['action' => ['FormsController@update', $form->id],
                     'method' => 'POST']) !!}
-        <div class="form-group">
-            {{Form::label('title', 'Title')}}
-            {{Form::text('title', $form->title, ['class' => 'form-control', 'placeholder' => 'Title'])}}
+
+
+        <vform-component
+            :parse=true
+            :parseobj="{{ $form->formFields->toJson() }}"
+            parsetitle="{{ $form->title }}"
+        >
+        </vform-component>
+
+        <br/>
+        <div class="col-md-10 d-flex justify-content-end">
+            {{Form::hidden('_method', 'PUT')}}
+            {{Form::submit(__('Save'), ['class' => 'btn btn-primary'])}}
         </div>
-        <div class="form-group">
-            {{Form::label('body', 'Body')}}
-            {{Form::textarea('body', $form->body, ['id' => 'article-ckeditor', 'class' => 'form-control', 'placeholder' => 'Body text'])}}
-        </div>
-        {{Form::hidden('_method', 'PUT')}}
-        {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
     {!! Form::close() !!}
 @endsection

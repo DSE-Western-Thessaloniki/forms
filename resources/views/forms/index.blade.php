@@ -2,6 +2,8 @@
 
 @section('content')
     <h1>Forms</h1>
+    <a class="nav-link" href="/forms/create">Create form</a>
+
     @if(count($forms) > 0)
         @foreach($forms as $form)
             <div class="card card-body bg-light">

@@ -47,7 +47,7 @@
 
 <script>
     export default {
-        props: ['value', 'id'],
+        props: ['value', 'id', 'type', 'listvalues'],
         watch: {
             title: function(value) {
                 this.$emit('update:value', value);
@@ -59,7 +59,7 @@
         data: function() {
             return {
                 title: this.value ? this.value : "New field",
-                cbselected: 0,
+                cbselected: this.type,
                 options: [
                     {
                         id: 0,
@@ -86,7 +86,7 @@
                         value: "File upload"
                     }
                 ],
-                listvalues: "",
+                listvalues: this.listvalues,
             }
         },
         methods: {
