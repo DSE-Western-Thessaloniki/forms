@@ -14,7 +14,7 @@
                                 <div class="form-row">
                                     <label for="notes" class="col-3 col-form-label">Notes:</label>
                                     <div class="col-9 align-self-center">
-                                        <textarea id="notes" name="notes" class="col-12">
+                                        <textarea id="notes" name="notes" class="col-12" v-model="notes">
                                         </textarea>
                                     </div>
                                 </div>
@@ -64,6 +64,9 @@
                 type: String,
                 default: "New form",
             },
+            parsenotes: {
+                type: String,
+            },
             parseobj: {
                 type: Array,
             },
@@ -78,9 +81,19 @@
         },
         data: function() {
             if (this.parse) {
+                var maxid = 0
+
+                for (const [key, value] of Object.entries(this.parseobj)) {
+                    if (maxid < value.id) {
+                        maxid = value.id
+                    }
+                }
+
                 return {
                     title: this.parsetitle,
+                    notes: this.parsenotes,
                     fields: this.parseobj,
+                    cur_id: maxid,
                 }
             }
             return {
@@ -90,7 +103,7 @@
         },
         methods: {
             addField: function() {
-                fieldObj.id = fieldObj.id + 1;
+                fieldObj.id = this.cur_id + 1;
                 this.fields.push(JSON.parse( JSON.stringify( fieldObj ) ));
             },
 

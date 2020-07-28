@@ -10,6 +10,7 @@
             :parse=true
             :parseobj="{{ $form->formFields->toJson() }}"
             parsetitle="{{ $form->title }}"
+            parsenotes="{{ $form->notes }}"
         >
         </vform-component>
 

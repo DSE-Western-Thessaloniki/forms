@@ -86,7 +86,7 @@
                         value: "File upload"
                     }
                 ],
-                listvalues: this.listvalues,
+                //listvalues: this.listvalues,
             }
         },
         methods: {
