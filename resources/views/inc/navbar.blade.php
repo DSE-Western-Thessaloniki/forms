@@ -10,9 +10,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" href="/">{{ __('Home') }}</a>
-                </li>
+                </li>-->
                 @auth
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboard">{{ __('Dashboard') }}</a>

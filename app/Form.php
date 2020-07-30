@@ -18,4 +18,8 @@ class Form extends Model
     public function formfields() {
         return $this->hasMany('App\FormField');
     }
+
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
 }
