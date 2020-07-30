@@ -82,7 +82,10 @@ class FormsController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-        return view('forms.show')->with('form', $form);
+        if ($form)
+            return view('forms.show')->with('form', $form);
+        else
+            return view('home');
     }
 
     /**
@@ -94,7 +97,10 @@ class FormsController extends Controller
     public function edit($id)
     {
         $form = Form::find($id);
-        return view('forms.edit')->with('form', $form);
+        if ($form)
+            return view('forms.edit')->with('form', $form);
+        else
+            return view('home');
     }
 
     /**
