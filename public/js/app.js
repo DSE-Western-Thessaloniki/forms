@@ -2198,8 +2198,10 @@ var fieldObj = {
   title: "New field",
   type: 0,
   validators: [],
-  listvalues: ""
+  listvalues: "",
+  sort_id: 0
 };
+var notes;
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     parse: {
@@ -2227,6 +2229,7 @@ var fieldObj = {
   data: function data() {
     if (this.parse) {
       var maxid = 0;
+      var maxsortid = 0;
 
       for (var _i = 0, _Object$entries = Object.entries(this.parseobj); _i < _Object$entries.length; _i++) {
         var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
@@ -2236,24 +2239,35 @@ var fieldObj = {
         if (maxid < value.id) {
           maxid = value.id;
         }
+
+        if (maxsortid < value.sort_id) {
+          maxsortid = value.sort_id;
+        }
       }
 
       return {
         title: this.parsetitle,
         notes: this.parsenotes,
         fields: this.parseobj,
-        cur_id: maxid
+        cur_id: maxid,
+        cur_sort_id: maxsortid
       };
     }
 
     return {
       title: "New form",
-      fields: [JSON.parse(JSON.stringify(fieldObj))]
+      notes: "",
+      fields: [JSON.parse(JSON.stringify(fieldObj))],
+      cur_id: 0,
+      cur_sort_id: 0
     };
   },
   methods: {
     addField: function addField() {
-      fieldObj.id = this.cur_id + 1;
+      this.cur_id++;
+      this.cur_sort_id++;
+      fieldObj.id = this.cur_id;
+      fieldObj.sort_id = this.cur_sort_id;
       this.fields.push(JSON.parse(JSON.stringify(fieldObj)));
     },
     delField: function delField(id) {
@@ -2355,8 +2369,8 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         id: 5,
         value: "File upload"
-      }] //listvalues: this.listvalues,
-
+      }],
+      dlistvalues: this.listvalues
     };
   },
   methods: {
@@ -38448,10 +38462,13 @@ var render = function() {
             "div",
             [
               _c("editable-list", {
-                attrs: { cbselected: _vm.cbselected, edittext: _vm.listvalues },
+                attrs: {
+                  cbselected: _vm.cbselected,
+                  edittext: _vm.dlistvalues
+                },
                 on: {
                   "update:edittext": function($event) {
-                    _vm.listvalues = $event
+                    _vm.dlistvalues = $event
                   }
                 }
               }),
@@ -38461,7 +38478,7 @@ var render = function() {
                   type: "hidden",
                   name: "field[" + this.id + "][values]"
                 },
-                domProps: { value: _vm.listvalues }
+                domProps: { value: _vm.dlistvalues }
               })
             ],
             1

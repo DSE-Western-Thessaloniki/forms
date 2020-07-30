@@ -52,7 +52,10 @@
         type: 0,
         validators: [],
         listvalues: "",
+        sort_id: 0,
     }
+
+    var notes;
 
     export default {
         props: {
@@ -82,10 +85,14 @@
         data: function() {
             if (this.parse) {
                 var maxid = 0
+                var maxsortid = 0
 
                 for (const [key, value] of Object.entries(this.parseobj)) {
                     if (maxid < value.id) {
                         maxid = value.id
+                    }
+                    if (maxsortid < value.sort_id) {
+                        maxsortid = value.sort_id
                     }
                 }
 
@@ -94,16 +101,23 @@
                     notes: this.parsenotes,
                     fields: this.parseobj,
                     cur_id: maxid,
+                    cur_sort_id: maxsortid,
                 }
             }
             return {
                 title: "New form",
-                fields: [JSON.parse( JSON.stringify( fieldObj ) )]
+                notes: "",
+                fields: [JSON.parse( JSON.stringify( fieldObj ) )],
+                cur_id: 0,
+                cur_sort_id: 0,
             }
         },
         methods: {
             addField: function() {
-                fieldObj.id = this.cur_id + 1;
+                this.cur_id++;
+                this.cur_sort_id++;
+                fieldObj.id = this.cur_id;
+                fieldObj.sort_id = this.cur_sort_id;
                 this.fields.push(JSON.parse( JSON.stringify( fieldObj ) ));
             },
 

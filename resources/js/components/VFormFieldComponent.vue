@@ -36,10 +36,10 @@
             <div v-if="this.cbselected > 1 && this.cbselected < 5">
                 <editable-list
                 :cbselected="cbselected"
-                :edittext.sync="listvalues">
+                :edittext.sync="dlistvalues">
                 </editable-list>
 
-                <input type="hidden" :name="'field['+this.id+'][values]'" :value="listvalues"/>
+                <input type="hidden" :name="'field['+this.id+'][values]'" :value="dlistvalues"/>
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
                         value: "File upload"
                     }
                 ],
-                //listvalues: this.listvalues,
+                dlistvalues: this.listvalues,
             }
         },
         methods: {
