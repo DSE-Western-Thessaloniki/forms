@@ -12,7 +12,7 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
                                 <div class="form-row">
-                                    <label for="notes" class="col-3 col-form-label">Notes:</label>
+                                    <label for="notes" class="col-3 col-form-label">Σημειώσεις:</label>
                                     <div class="col-9 align-self-center">
                                         <textarea id="notes" name="notes" class="col-12" v-model="notes">
                                         </textarea>
@@ -34,7 +34,7 @@
                                 class="btn btn-primary"
                                 @click="addField"
                                 >
-                                    <i class="fas fa-plus-circle"></i>__('Add field')
+                                    <i class="fas fa-plus-circle"></i> Προσθήκη πεδίου
                                 </button>
                             </li>
                         </ul>

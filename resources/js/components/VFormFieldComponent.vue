@@ -10,13 +10,13 @@
         </div>
         <div>
             <div class="form-row">
-                <label for="fieldtitleid" class="col-3 col-form-label">Field title:</label>
+                <label for="fieldtitleid" class="col-3 col-form-label">Τίτλος πεδίου:</label>
                 <div class="col-9 align-self-center">
                     <editable-text :edittext.sync="title" :fid="'field['+this.id+'][title]'"></editable-text>
                 </div>
             </div>
             <div class="form-row">
-                <label for="fieldtitleid" class="col-3 col-form-label">Field title:</label>
+                <label for="fieldtitleid" class="col-3 col-form-label">Τίτλος πεδίου:</label>
                 <div class="col-9 align-self-center">
                     <select
                     id="fieldtype"
@@ -58,32 +58,32 @@
         },
         data: function() {
             return {
-                title: this.value ? this.value : "New field",
+                title: this.value ? this.value : "Νέο πεδίο",
                 cbselected: this.type,
                 options: [
                     {
                         id: 0,
-                        value: "Text field"
+                        value: "Πεδίο κειμένου"
                     },
                     {
                         id: 1,
-                        value: "Text area"
+                        value: "Περιοχή κειμένου"
                     },
                     {
                         id: 2,
-                        value: "Multiple choice"
+                        value: "Επιλογή ενός από πολλά"
                     },
                     {
                         id: 3,
-                        value: "Checkboxes"
+                        value: "Πολλαπλή επιλογή"
                     },
                     {
                         id: 4,
-                        value: "Drop-down list"
+                        value: "Λίστα επιλογών"
                     },
                     {
                         id: 5,
-                        value: "File upload"
+                        value: "Ανέβασμα αρχείου"
                     }
                 ],
                 dlistvalues: this.listvalues,

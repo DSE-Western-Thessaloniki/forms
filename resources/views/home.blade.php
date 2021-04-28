@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Πίνακας ελέγχου</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,8 +14,7 @@
                         </div>
                     @endif
 
-                    <a class="nav-link" href="/forms/create">Create form</a>
-                    You are logged in!
+                    <a class="nav-link" href="/forms/create">Δημιουργία φόρμας</a>
                 </div>
             </div>
         </div>

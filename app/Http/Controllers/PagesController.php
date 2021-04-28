@@ -16,14 +16,4 @@ class PagesController extends Controller
         $title = "Index page";
         return view('pages.index')->with('title', $title);
     }
-
-    /**
-     * About page
-     *
-     * @return view
-     */
-    public function about()
-    {
-        return view('pages.about');
-    }
 }

@@ -12,12 +12,9 @@
             <ul class="navbar-nav mr-auto">
                 @auth
                 <li class="nav-item">
-                    <a class="nav-link" href="/forms">{{ __('Forms') }}</a>
+                    <a class="nav-link" href="/forms">Φόρμα</a>
                 </li>
                 @endauth
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">{{ __('About') }}</a>
-                </li>
             </ul>
 
             <!-- Right Side Of Navbar -->
@@ -25,12 +22,12 @@
                 <!-- Authentication Links -->
                 @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        <a class="nav-link" href="{{ route('login') }}">Σύνδεση</a>
                     </li>
                 @else
                     <li class="nav-item">
                         @if (Route::has('register'))
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            <a class="nav-link" href="{{ route('register') }}">Εγγραφή</a>
                         @endif
                     </li>
                     <li class="nav-item dropdown">
@@ -42,7 +39,7 @@
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                                      onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
+                                Αποσύνδεση
                             </a>
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
