@@ -16,11 +16,11 @@
                         </div>
 
                         <div class="col">
-                            <!-- The following lines are needed to be able to delete a form -->
-                            {!!Form::open(['action' => ['FormsController@destroy', $form->id], 'method' => 'POST', 'class' => 'float-right']) !!}
-                                {{Form::hidden('_method', 'DELETE')}}
-                                {{Form::submit('Delete', ['class' => 'btn btn-danger'])}}
-                            {!!Form::close()!!}
+                            <form action="{{ route('forms.destroy', $form->id)}}" method="post" class="float-right">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger" type="submit">{{ __('Delete') }}</button>
+                            </form>
                         </div>
                     </div>
             </div>

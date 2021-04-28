@@ -14,6 +14,7 @@
                         </div>
                     @endif
 
+                    <a class="nav-link" href="/forms/create">Create form</a>
                     You are logged in!
                 </div>
             </div>

@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\SetupController;
+use App\Http\Controllers\FormsController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,18 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'PagesController@index');
-Route::get('/about', 'PagesController@about');
-Route::get('/setup', 'SetupController@setupPage');
-Route::post('/setup', 'SetupController@saveSetup')->name('setup');
+Route::get('/', [PagesController::class, 'index']);
+Route::get('/about', [PagesController::class, 'about']);
+Route::get('/setup', [SetupController::class, 'setupPage']);
+Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
 
-Route::resource('forms', 'FormsController');
+Route::resource('forms', FormsController::class);
 
 Auth::routes([
     'reset' => false,
     'verify' => false
 ]);
 
-Route::get('/dashboard', 'DashboardController@index');
-
-Route::get('/home', 'DashboardController@index')->name('home');
+Route::get('/home', [DashboardController::class, 'index'])->name('home');

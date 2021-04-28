@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Option;
+use App\Models\Option;
 
 class FirstRun
 {

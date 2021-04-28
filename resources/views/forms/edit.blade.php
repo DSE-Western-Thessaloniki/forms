@@ -2,8 +2,7 @@
 
 @section('content')
     <h1 class="text-center">{{__('Edit Form')}}</h1>
-    {!! Form::open(['action' => ['FormsController@update', $form->id],
-                    'method' => 'POST']) !!}
+    <form action="{{ route('forms.update', $form->id)}}" method="post">
 
 
         <vform-component
@@ -16,8 +15,9 @@
 
         <br/>
         <div class="col-md-10 d-flex justify-content-end">
-            {{Form::hidden('_method', 'PUT')}}
-            {{Form::submit(__('Save'), ['class' => 'btn btn-primary'])}}
+            @csrf
+            @method('PUT')
+            <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
         </div>
-    {!! Form::close() !!}
+    </form>
 @endsection
