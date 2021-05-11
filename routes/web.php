@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\SetupController;
-use App\Http\Controllers\FormsController;
 use App\Http\Controllers\DashboardController;
+
+use App\Http\Controllers\Admin\FormsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,15 @@ Route::get('/', [PagesController::class, 'index']);
 Route::get('/setup', [SetupController::class, 'setupPage']);
 Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
 
-Route::resource('forms', FormsController::class);
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware('auth')
+    ->group(
+        function () {
+            Route::resource('forms', FormsController::class);
+        }
+    );
+
 
 Auth::routes([
     'reset' => false,
