@@ -4,8 +4,69 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03780718c18a6631afb5f178e82969b0",
+    "content-hash": "81f5ef4b3393b9f9e54d5e14e811708f",
     "packages": [
+        {
+            "name": "apereo/phpcas",
+            "version": "1.3.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/apereo/phpCAS.git",
+                "reference": "7325865c4cfb5005ed4e4c5cf01823be1726a2a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/7325865c4cfb5005ed4e4c5cf01823be1726a2a0",
+                "reference": "7325865c4cfb5005ed4e4c5cf01823be1726a2a0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4.0",
+                "psr/log": "^1.0.0"
+            },
+            "require-dev": {
+                "monolog/monolog": "^1.0.0",
+                "phpunit/phpunit": ">=4.8.35 <8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "source/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Joachim Fritschi",
+                    "homepage": "https://wiki.jasig.org/display/~fritschi"
+                },
+                {
+                    "name": "Adam Franco",
+                    "homepage": "https://wiki.jasig.org/display/~adamfranco"
+                }
+            ],
+            "description": "Provides a simple API for authenticating users against a CAS server",
+            "homepage": "https://wiki.jasig.org/display/CASC/phpCAS",
+            "keywords": [
+                "apereo",
+                "cas",
+                "jasig"
+            ],
+            "support": {
+                "issues": "https://github.com/apereo/phpCAS/issues",
+                "source": "https://github.com/apereo/phpCAS/tree/1.3.9"
+            },
+            "time": "2021-01-31T21:13:59+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "1.3.0",
@@ -2715,6 +2776,73 @@
                 }
             ],
             "time": "2020-08-18T17:17:46+00:00"
+        },
+        {
+            "name": "subfission/cas",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/subfission/cas.git",
+                "reference": "cbf64efd00ce10de3d7d5f00aeab976cd88db23e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/subfission/cas/zipball/cbf64efd00ce10de3d7d5f00aeab976cd88db23e",
+                "reference": "cbf64efd00ce10de3d7d5f00aeab976cd88db23e",
+                "shasum": ""
+            },
+            "require": {
+                "apereo/phpcas": "^1.3",
+                "illuminate/support": "^6.0|^7.0|^8.0",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Subfission\\Cas\\CasServiceProvider"
+                    ],
+                    "aliases": {
+                        "Cas": "Subfission\\Cas\\Facades\\Cas"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Subfission\\Cas\\": "src/Subfission/Cas/"
+                },
+                "files": [
+                    "src/Subfission/Cas/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "subfission",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Adds CAS support to Laravel 5.x, 6.x, 7.x & 8.x",
+            "keywords": [
+                "SSO",
+                "cas",
+                "laravel",
+                "laravel 6",
+                "laravel 7",
+                "laravel 8",
+                "phpCAS"
+            ],
+            "support": {
+                "issues": "https://github.com/subfission/cas/issues",
+                "source": "https://github.com/subfission/cas/tree/v4.0.0"
+            },
+            "time": "2020-09-16T01:01:06+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

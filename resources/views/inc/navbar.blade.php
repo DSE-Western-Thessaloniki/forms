@@ -19,7 +19,7 @@
                 <!-- Authentication Links -->
                 @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Σύνδεση</a>
+                        <a class="nav-link" href="{{ route('admin.login') }}">Σύνδεση</a>
                     </li>
                 @else
                     <li class="nav-item">
@@ -33,13 +33,13 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
+                            <a class="dropdown-item" href="{{ route('admin.logout') }}"
                                                      onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                 Αποσύνδεση
                             </a>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
                         </div>
