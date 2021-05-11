@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportsController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Admin\FormsController;
 
@@ -29,13 +32,17 @@ Route::prefix('admin')
     ->group(
         function () {
             Route::resource('forms', FormsController::class);
+            Auth::routes([
+                'reset' => false,
+                'verify' => false
+            ]);
         }
     );
 
+Route::resource('reports', ReportsController::class)
+    ->missing(function (Request $request) {
+        return Redirect::route('reports.index');
+    });
 
-Auth::routes([
-    'reset' => false,
-    'verify' => false
-]);
 
 Route::get('/home', [DashboardController::class, 'index'])->name('home');

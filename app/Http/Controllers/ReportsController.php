@@ -9,7 +9,7 @@ use App\Models\FormField;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\Auth;
 
-class FormsController extends Controller
+class ReportsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -30,17 +30,7 @@ class FormsController extends Controller
     {
         //$forms = Form::all();
         $forms = Form::orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.forms.index')->with('forms', $forms);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('admin.forms.create');
+        return view('reports.index')->with('forms', $forms);
     }
 
     /**
@@ -72,7 +62,7 @@ class FormsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα δημιουργήθηκε');
+        return redirect(route('reports.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
     }
 
     /**
@@ -85,7 +75,7 @@ class FormsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('admin.forms.show')->with('form', $form);
+            return view('reports.show')->with('form', $form);
         else
             return view('home');
     }
@@ -100,7 +90,7 @@ class FormsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('admin.forms.edit')->with('form', $form);
+            return view('reports.edit')->with('form', $form);
         else
             return view('home');
     }
@@ -147,21 +137,6 @@ class FormsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα ενημερώθηκε');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $form = Form::find($id);
-        $form->formfields()->delete();
-        $form->delete();
-
-        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα διαγράφηκε');
+        return redirect(route('reports.index'))->with('success', 'Η αναφορά ενημερώθηκε');
     }
 }
