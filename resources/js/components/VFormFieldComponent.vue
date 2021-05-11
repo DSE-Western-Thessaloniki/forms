@@ -84,6 +84,10 @@
                     {
                         id: 5,
                         value: "Ανέβασμα αρχείου"
+                    },
+                    {
+                        id: 6,
+                        value: "Ημερομηνία"
                     }
                 ],
                 dlistvalues: this.listvalues,

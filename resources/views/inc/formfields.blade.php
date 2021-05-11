@@ -42,5 +42,8 @@
         @if ($field->type == 5)
             <input type="file" class="form-control-file" id="{!!$field->title!!}">
         @endif
+        @if ($field->type == 6)
+            <input type="date" class="form-control" id="{!!$field->title!!}">
+        @endif
     </div>
 </div>
