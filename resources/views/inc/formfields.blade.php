@@ -45,5 +45,17 @@
         @if ($field->type == 6)
             <input type="date" class="form-control" id="{!!$field->title!!}">
         @endif
+        @if ($field->type == 7)
+            <input type="number" class="form-control" id="{!!$field->title!!}">
+        @endif
+        @if ($field->type == 8)
+            <input type="tel" class="form-control" id="{!!$field->title!!}">
+        @endif
+        @if ($field->type == 9)
+            <input type="email" class="form-control" id="{!!$field->title!!}">
+        @endif
+        @if ($field->type == 10)
+            <input type="url" class="form-control" id="{!!$field->title!!}">
+        @endif
     </div>
 </div>

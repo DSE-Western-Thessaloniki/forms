@@ -88,7 +88,24 @@
                     {
                         id: 6,
                         value: "Ημερομηνία"
-                    }
+                    },
+                    {
+                        id: 7,
+                        value: "Αριθμός"
+                    },
+                    {
+                        id: 8,
+                        value: "Τηλέφωνο"
+                    },
+                    {
+                        id: 9,
+                        value: "E-mail"
+                    },
+                    {
+                        id: 10,
+                        value: "Διεύθυνση ιστοσελίδας"
+                    },
+
                 ],
                 dlistvalues: this.listvalues,
             }
