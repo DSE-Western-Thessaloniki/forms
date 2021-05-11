@@ -48,7 +48,7 @@
 <script>
     var fieldObj = {
         id: 0,
-        title: "New field",
+        title: "Νέο πεδίο",
         type: 0,
         validators: [],
         listvalues: "",
@@ -65,7 +65,7 @@
             },
             parsetitle: {
                 type: String,
-                default: "New form",
+                default: "Νέα φόρμα",
             },
             parsenotes: {
                 type: String,
@@ -105,7 +105,7 @@
                 }
             }
             return {
-                title: "New form",
+                title: "Νέα φόρμα",
                 notes: "",
                 fields: [JSON.parse( JSON.stringify( fieldObj ) )],
                 cur_id: 0,

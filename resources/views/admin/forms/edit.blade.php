@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center">{{__('Edit Form')}}</h1>
-    <form action="{{ route('forms.update', $form->id)}}" method="post">
+    <h1 class="text-center">Επεξεργασία φόρμας</h1>
+    <form action="{{ route('admin.forms.update', $form->id) }}" method="post">
 
 
         <vform-component
@@ -17,7 +17,7 @@
         <div class="col-md-10 d-flex justify-content-end">
             @csrf
             @method('PUT')
-            <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
+            <button class="btn btn-primary" type="submit">Αποθήκευση</button>
         </div>
     </form>
 @endsection

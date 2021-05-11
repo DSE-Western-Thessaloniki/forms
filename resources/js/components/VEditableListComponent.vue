@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="card-body" v-show="!list.edit">
-                Values:
+                Τιμές:
                 <ol>
                     <li v-for="item in validlistitems" :key="item.id">
                         {{ item.value }}
@@ -42,7 +42,7 @@
                         <input
                         type="text"
                         v-model="item.value"
-                        placeholder="New option"
+                        placeholder="Νέα επιλογή"
                         @keypress="checkKey($event, index)"
                         @blur="checkList(index)"
                         />

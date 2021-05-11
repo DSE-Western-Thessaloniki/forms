@@ -11,9 +11,6 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 @auth
-                <li class="nav-item">
-                    <a class="nav-link" href="/forms">Φόρμα</a>
-                </li>
                 @endauth
             </ul>
 

@@ -2,7 +2,7 @@
 
 @section('content')
     <br/>
-    <a href="/forms" class="btn btn-secondary" role="button">Πίσω</a>
+    <a href="{{route('admin.forms.index')}}" class="btn btn-secondary" role="button">Πίσω</a>
     <h1>{{$form->title}}</h1>
     <h3>{{$form->notes}}</h3>
     <hr/>
@@ -18,10 +18,10 @@
     </div>
     <small>Δημιουργήθηκε στις {{$form->created_at}}</small>
     <hr/>
-    <a href="/forms/{{$form->id}}/edit" class="btn btn-primary">Επεξεργασία</a>
+    <a href="{{ route('admin.forms.edit', $form->id) }}" class="btn btn-primary">Επεξεργασία</a>
 
     <!-- The following lines are needed to be able to delete a form -->
-    <form action="{{ route('forms.destroy', $form->id)}}" method="post" class="float-right">
+    <form action="{{ route('admin.forms.destroy', $form->id)}}" method="post" class="float-right">
         @csrf
         @method('DELETE')
         <button class="btn btn-danger" type="submit">Διαγραφή</button>

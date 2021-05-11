@@ -30,7 +30,7 @@ class FormsController extends Controller
     {
         //$forms = Form::all();
         $forms = Form::orderBy('created_at', 'desc')->paginate(15);
-        return view('forms.index')->with('forms', $forms);
+        return view('admin.forms.index')->with('forms', $forms);
     }
 
     /**
@@ -40,7 +40,7 @@ class FormsController extends Controller
      */
     public function create()
     {
-        return view('forms.create');
+        return view('admin.forms.create');
     }
 
     /**
@@ -72,7 +72,7 @@ class FormsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect('/forms')->with('success', 'Form created');
+        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα δημιουργήθηκε');
     }
 
     /**
@@ -85,7 +85,7 @@ class FormsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('forms.show')->with('form', $form);
+            return view('admin.forms.show')->with('form', $form);
         else
             return view('home');
     }
@@ -100,7 +100,7 @@ class FormsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('forms.edit')->with('form', $form);
+            return view('admin.forms.edit')->with('form', $form);
         else
             return view('home');
     }
@@ -147,7 +147,7 @@ class FormsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect('/forms')->with('success', 'Form updated');
+        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα ενημερώθηκε');
     }
 
     /**
@@ -162,6 +162,6 @@ class FormsController extends Controller
         $form->formfields()->delete();
         $form->delete();
 
-        return redirect('/forms')->with('success', 'Form deleted');
+        return redirect(route('admin.forms.index'))->with('success', 'Η φόρμα διαγράφηκε');
     }
 }

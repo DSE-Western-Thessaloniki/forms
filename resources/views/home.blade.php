@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">Πίνακας ελέγχου</div>
 
@@ -14,7 +14,38 @@
                         </div>
                     @endif
 
-                    <a class="nav-link" href="/forms/create">Δημιουργία φόρμας</a>
+                    @if(Auth::user()->isAdministrator())
+                    <a class="btn btn-light home-button" href="{{ route('admin.user.index') }}">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h1 class="display-3">@icon('fas fa-users')</h1>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Χρήστες</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    @endif
+
+                    <a class="btn btn-light home-button" href="{{ route('admin.forms.index') }}">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h1 class="display-3">@icon('fas fa-file-medical-alt')</h1>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Φόρμες</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
                 </div>
             </div>
         </div>
