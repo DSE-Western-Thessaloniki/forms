@@ -28,18 +28,24 @@ Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware('auth')
     ->group(
         function () {
-            Route::resource('forms', FormsController::class);
+            Route::resource('forms', FormsController::class)
+                ->middleware('auth');
             Auth::routes([
                 'reset' => false,
-                'verify' => false
+                'verify' => false,
+                'register' => false
             ]);
         }
     );
 
+Route::get('/login', function() {
+    cas()->authenticate();
+});
+
 Route::resource('reports', ReportsController::class)
+    ->middleware('cas.auth')
     ->missing(function (Request $request) {
         return Redirect::route('reports.index');
     });
