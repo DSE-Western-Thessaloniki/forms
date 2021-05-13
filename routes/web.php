@@ -40,12 +40,16 @@ Route::prefix('admin')
         }
     );
 
-Route::get('/login', function() {
-    cas()->authenticate();
-});
+// Route::get('/login', function() {
+//     cas()->authenticate();
+// });
+
+Route::get('/login', [PagesController::class, 'login'])->name('login');
+Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
+Route::get('/logout', [PagesController::class, 'logout'])->name('logout');
 
 Route::resource('reports', ReportsController::class)
-    ->middleware('cas.auth')
+    ->middleware('sch.test')
     ->missing(function (Request $request) {
         return Redirect::route('reports.index');
     });

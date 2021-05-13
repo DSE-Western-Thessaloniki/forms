@@ -13,7 +13,26 @@ class PagesController extends Controller
      */
     public function index()
     {
-        $title = "Index page";
-        return view('pages.index')->with('title', $title);
+        return view('pages.index');
+    }
+
+    public function login() {
+        return view('pages.login');
+    }
+
+    public function checkLogin(Request $request) {
+        // Αν στάλθηκε αναγνωριστικό
+        if ($request->input('school_id')) {
+            $request->session()->put('school_id', $request->input('school_id'));
+            return redirect(route('reports.index'));
+        }
+
+        // Αλλιώς πήγαινε πάλι στο login
+        return redirect('pages.login');
+    }
+
+    public function logout() {
+        session()->forget('school_id');
+        return redirect('pages.index');
     }
 }

@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cas.auth'  => \Subfission\Cas\Middleware\CASAuth::class,
         'cas.guest' => \Subfission\Cas\Middleware\RedirectCASAuthenticated::class,
+        'sch.test' => \App\Http\Middleware\SchoolTestMiddleware::class,
     ];
 }
