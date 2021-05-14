@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Admin\FormsController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,13 @@ Route::prefix('admin')
                 'verify' => false,
                 'register' => false
             ]);
+            Route::prefix('user')->name('user.')->group(
+                function () {
+                    Route::get('/{user}/password', [UserController::class, 'password'])->name('password');
+                    Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('change_password');
+                }
+            );
+            Route::resource('user', UserController::class);
         }
     );
 
