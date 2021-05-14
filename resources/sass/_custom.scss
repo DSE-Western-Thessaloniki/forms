@@ -1,0 +1,22 @@
+.admin-button, .home-button {
+    width: 22em;
+    max-height: 20em;
+    margin: 0 1em;
+}
+
+.admin-button div.card, .home-button div.card {
+    padding: 0.5em;
+}
+
+.admin-icon {
+    width: 256px;
+    height: 256px;
+}
+
+.role-list {
+    list-style-type: none;
+}
+
+table th {
+    text-align: center;
+}
