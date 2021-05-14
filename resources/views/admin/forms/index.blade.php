@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Φόρμες</h1>
-    <a class="nav-link" href="{{ route('admin.forms.create') }}">Δημιουργία φόρμας</a>
+    <a class="btn btn-primary my-2" href="{{ route('admin.forms.create') }}">@icon('fas fa-plus') Δημιουργία φόρμας</a>
 
     @if(count($forms) > 0)
         @foreach($forms as $form)
