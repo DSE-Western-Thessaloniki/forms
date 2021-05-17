@@ -10,7 +10,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-                @auth
+                @auth('web')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.form.index')}}">Φόρμες</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.school.index')}}">Σχολεία</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.user.index')}}">Χρήστες</a>
+                </li>
                 @endauth
             </ul>
 

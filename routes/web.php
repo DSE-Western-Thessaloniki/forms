@@ -32,7 +32,7 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(
         function () {
-            Route::resource('forms', FormsController::class)
+            Route::resource('form', FormsController::class)
                 ->middleware('auth');
             Auth::routes([
                 'reset' => false,

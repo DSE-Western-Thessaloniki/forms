@@ -2,7 +2,7 @@
 
 @section('content')
     <h1 class="text-center">Δημιουργίας φόρμας</h1>
-    <form action="{{ route('admin.forms.store') }}" method="post">
+    <form action="{{ route('admin.form.store') }}" method="post">
         <vform-component></vform-component>
 
         <br/>

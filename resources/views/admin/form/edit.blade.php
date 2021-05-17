@@ -2,7 +2,7 @@
 
 @section('content')
     <h1 class="text-center">Επεξεργασία φόρμας</h1>
-    <form action="{{ route('admin.forms.update', $form->id) }}" method="post">
+    <form action="{{ route('admin.form.update', $form->id) }}" method="post">
 
 
         <vform-component
