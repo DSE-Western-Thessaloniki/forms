@@ -13,7 +13,7 @@
         @if ($field->type == 2)
             @foreach (json_decode($field->listvalues) as $listvalues)
             <div class="form-check">
-                <input type="radio" class="form-control" name="{!!$field->title!!}" id="{!!$field->title!!}{!!$listvalues->id!!}" value="{!!$listvalues->id!!}">
+                <input type="radio" class="form-check-input" name="{!!$field->title!!}" id="{!!$field->title!!}{!!$listvalues->id!!}" value="{!!$listvalues->id!!}">
                 <label class="form-check-label" for="{!!$field->title!!}{!!$listvalues->id!!}">
                     {!!$listvalues->value!!}
                 </label>
@@ -23,7 +23,7 @@
         @if ($field->type == 3)
             @foreach (json_decode($field->listvalues) as $listvalues)
             <div class="form-check">
-                <input type="checkbox" class="form-control" name="{!!$field->title!!}" id="{!!$field->title!!}{!!$listvalues->id!!}" value="{!!$listvalues->id!!}">
+                <input type="checkbox" class="form-check-input" name="{!!$field->title!!}" id="{!!$field->title!!}{!!$listvalues->id!!}" value="{!!$listvalues->id!!}">
                 <label class="form-check-label" for="{!!$field->title!!}{!!$listvalues->id!!}">
                     {!!$listvalues->value!!}
                 </label>
