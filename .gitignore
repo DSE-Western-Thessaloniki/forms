@@ -4,6 +4,7 @@
 /public/js/app.js
 /public/js/vuejs_code_split/*
 /public/css/app.css
+/public/mix-manifest.json
 /storage/*.key
 /vendor
 /.idea
