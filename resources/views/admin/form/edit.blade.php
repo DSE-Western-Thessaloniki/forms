@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('content')
     <h1 class="text-center">Επεξεργασία φόρμας</h1>
