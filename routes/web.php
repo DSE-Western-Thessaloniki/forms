@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SchoolsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,7 @@ use App\Http\Controllers\Admin\UserController;
 |
 */
 
-Route::get('/', [PagesController::class, 'index']);
+Route::get('/', [PagesController::class, 'index'])->name('index');
 Route::get('/setup', [SetupController::class, 'setupPage']);
 Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
 
@@ -44,7 +45,10 @@ Route::prefix('admin')
                     Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('change_password');
                 }
             );
-            Route::resource('user', UserController::class);
+            Route::resource('user', UserController::class)
+                ->middleware('auth');
+            Route::resource('school', SchoolsController::class)
+                ->middleware('auth');
         }
     );
 
@@ -54,7 +58,7 @@ Route::prefix('admin')
 
 Route::get('/login', [PagesController::class, 'login'])->name('login');
 Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
-Route::get('/logout', [PagesController::class, 'logout'])->name('logout');
+Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
 
 Route::resource('reports', ReportsController::class)
     ->middleware('sch.test')

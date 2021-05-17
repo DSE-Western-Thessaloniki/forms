@@ -31,7 +31,7 @@ class PagesController extends Controller
                 $school = School::where('code', $school_id)->first();
             }
             if ($school) {
-                Auth::guard('school')->login($school->username);
+                Auth::guard('school')->login($school);
                 $request->session()->put('school_id', $school_id);
                 $request->session()->put('school_name', $request->input('school_name'));
                 return redirect(route('reports.index'));
@@ -46,6 +46,6 @@ class PagesController extends Controller
         Auth::guard('school')->logout();
         session()->forget('school_id');
         session()->forget('school_name');
-        return redirect(route('pages.index'));
+        return redirect(route('index'));
     }
 }
