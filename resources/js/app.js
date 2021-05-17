@@ -20,11 +20,11 @@ import Vue from 'vue';
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('vform-component', require('./components/VFormComponent.vue').default);
-Vue.component('editable-text', require('./components/VEditableTextComponent.vue').default);
-Vue.component('vform-field-component', require('./components/VFormFieldComponent.vue').default);
-Vue.component('editable-list', require('./components/VEditableListComponent.vue').default);
-Vue.component('rolecomponent', require('./components/RoleComponent.vue').default);
+Vue.component('vform-component', () => import('./components/VFormComponent.vue'));
+Vue.component('editable-text', () => import('./components/VEditableTextComponent.vue'));
+Vue.component('vform-field-component', () => import('./components/VFormFieldComponent.vue'));
+Vue.component('editable-list', () => import('./components/VEditableListComponent.vue'));
+Vue.component('rolecomponent', () => import('./components/RoleComponent.vue'));
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
