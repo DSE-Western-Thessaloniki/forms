@@ -1,7 +1,9 @@
 /node_modules
 /public/hot
 /public/storage
-/public/js/app.js
+/public/js/app.js*
+/public/js/manifest.js*
+/public/js/vendor.js*
 /public/js/vuejs_code_split/*
 /public/css/app.css
 /public/mix-manifest.json

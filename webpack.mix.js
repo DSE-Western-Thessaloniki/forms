@@ -19,9 +19,12 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
-   .vue({ version: 2 });
+   .vue({ version: 2 })
+   .extract(['vue', 'jquery', 'bootstrap', 'popper.js', 'axios', 'lodash'])
+   .version();
 
 if (!mix.inProduction()) {
-    mix.sourceMaps();
+    mix.sourceMaps()
+       .browserSync('forms.test');
 }
 
