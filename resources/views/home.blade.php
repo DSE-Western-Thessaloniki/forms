@@ -48,7 +48,7 @@
                         </a>
                         @endif
 
-                        <a class="btn btn-light col-md-4" href="{{ route('admin.forms.index') }}">
+                        <a class="btn btn-light col-md-4" href="{{ route('admin.form.index') }}">
                             <div class="card">
                                 <div class="row no-gutters">
                                     <div class="col-md-4">
