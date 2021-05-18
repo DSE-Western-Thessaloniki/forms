@@ -1,33 +1,71 @@
 @extends('layouts.admin.app')
 
 @section('content')
-    <h1>Φόρμες</h1>
-    <a class="btn btn-primary my-2" href="{{ route('admin.form.create') }}">@icon('fas fa-plus') Δημιουργία φόρμας</a>
-
-    @if(count($forms) > 0)
-        @foreach($forms as $form)
-            <div class="card card-body bg-light">
-                    <h3><a href="{{ route('admin.form.show', $form->id) }}">{{$form->title}}</a></h3>
-                    <p>{{ $form->notes }}</p>
-                    <small>Δημιουργήθηκε στις {{$form->created_at}} από τον/την {{ $form->user->name }}</small>
-
-                    <div class="row align-items-center justify-content-start pt-4">
-                        <div class="col">
-                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">Επεξεργασία</a>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Φόρμες</div>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
                         </div>
+                    @endif
 
-                        <div class="col">
-                            <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger" type="submit">Διαγραφή</button>
-                            </form>
+                    <div class="btn-toolbar pb-2" role="toolbar">
+                        <div class="btn-group mr-2">
+                            <a class="btn btn-primary my-2" href="{{ route('admin.form.create') }}">
+                                @icon('fas fa-plus') Δημιουργία φόρμας
+                            </a>
                         </div>
                     </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Τίτλος</th>
+                                    <th>Σημειώσεις</th>
+                                    <th>Ημ. δημιουργίας</th>
+                                    <th>Ημ. ενημέρωσης</th>
+                                    <th>Χρήστης</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($forms as $form)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $form->title }}</td>
+                                        <td>{{ $form->notes }}</td>
+                                        <td>{{ $form->created_at }}</td>
+                                        <td>{{ $form->updated_at }}</td>
+                                        <td>{{ $form->user->name }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">Επεξεργασία</a>
+                                        </td>
+                                        <td>
+                                            <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-danger" type="submit">Διαγραφή</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8">Δεν βρέθηκαν φόρμες</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{ $forms->links() }} <!-- Σελιδοποίηση -->
             </div>
-        @endforeach
-        {{$forms->links()}}
-    @else
-        <p>Δεν βρέθηκαν φόρμες</p>
-    @endif
+        </div>
+    </div>
+</div>
 @endsection
