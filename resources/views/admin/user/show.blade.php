@@ -62,7 +62,19 @@
                             <td>
                                 <ul class="role-list">
                                     @foreach ($user->roles as $role)
-                                    <li>{{ $role->name }}</li>
+                                    <li>
+                                        @php
+                                            if ($role->name == "Administrator") {
+                                                echo "Διαχειριστής";
+                                            }
+                                            elseif ($role->name == "Author") {
+                                                echo "Συγγραφέας";
+                                            }
+                                            elseif ($role->name == "User") {
+                                                echo "Χρήστης";
+                                            }
+                                        @endphp
+                                    </li>
                                     @endforeach
                                 </ul>
                             </td>

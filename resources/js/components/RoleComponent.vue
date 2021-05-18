@@ -11,6 +11,10 @@
                             <label for="Administrator" class="form-check-label">Διαχειριστής</label>
                         </div>
                         <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="Author" id="Author" value="1" v-model="author">
+                            <label for="Author" class="form-check-label">Συγγραφέας</label>
+                        </div>
+                        <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="User" id="User" value="1" v-model="user">
                             <label for="User" class="form-check-label">Χρήστης</label>
                         </div>
@@ -31,12 +35,14 @@
         mounted() {
             this.cur_roles=JSON.parse(this.current_roles);
             this.administrator=this.cur_roles.includes('Administrator');
+            this.author=this.cur_roles.includes('Author');
             this.user=this.cur_roles.includes('User');
         },
         data: function() {
             return {
                 cur_roles: '',
                 administrator: false,
+                author: false,
                 user: false,
             }
         },
