@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\School;
+use App\Models\SchoolCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -28,7 +29,8 @@ class SchoolsController extends Controller
      */
     public function create()
     {
-        return view('admin.school.create');
+        $categories = SchoolCategory::all('name');
+        return view('admin.school.create')->with('categories', $categories);
     }
 
     /**
