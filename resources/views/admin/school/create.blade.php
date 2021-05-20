@@ -81,6 +81,12 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="category" class="col-md-4 col-form-label text-md-right">Κατηγορία</label>
+                        <div class="col-md-6">
+                            <vselect id="category" name="category" class="form-control" options='{{ implode(",", $categories->toArray()) }}'></vselect>
+                        </div>
+                    </div>
 
                     <div class="form-group row">
                         <div class="col-2">
