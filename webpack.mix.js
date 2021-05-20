@@ -21,9 +21,9 @@ require('laravel-mix-purgecss');
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
    .vue({ version: 2 })
-   .purgeCss()
    .extract()
-   .version();
+   .version('js/vuejs_code_split/*.js')
+   .purgeCss();
 
 if (!mix.inProduction()) {
     mix.sourceMaps()
