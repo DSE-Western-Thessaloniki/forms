@@ -29,7 +29,7 @@ class SchoolsController extends Controller
      */
     public function create()
     {
-        $categories = SchoolCategory::all('name');
+        $categories = SchoolCategory::all();
         return view('admin.school.create')->with('categories', $categories);
     }
 
@@ -41,11 +41,13 @@ class SchoolsController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:schools'],
             'username' => ['required', 'string', 'max:255', 'unique:schools'],
             'code' => ['required', 'string', 'min:7', 'max:255', 'unique:schools'],
+            'category' => ['required', 'integer', 'min:1'],
         ]);
 
         $school = new School([
@@ -53,6 +55,7 @@ class SchoolsController extends Controller
             'email' => $request->get('email'),
             'username' => $request->get('username'),
             'code' => $request->get('code'),
+            'category_id' => $request->get('category'),
             'active' => 1,
             'updated_by' => Auth::user()->id,
         ]);

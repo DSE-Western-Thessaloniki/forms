@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\User;
+use App\Models\SchoolCategory;
 
 class School extends Authenticatable
 {
@@ -16,7 +17,7 @@ class School extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'code', 'email', 'password', 'active', 'updated_by'
+        'name', 'username', 'code', 'email', 'password', 'active', 'updated_by', 'category_id'
     ];
 
     /**
@@ -30,5 +31,9 @@ class School extends Authenticatable
 
     public function user() {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function category() {
+        return $this->belongsTo(SchoolCategory::class, 'category_id');
     }
 }

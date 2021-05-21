@@ -60,7 +60,7 @@ class SchoolCategoriesController extends Controller
      */
     public function show(SchoolCategory $schoolcategory)
     {
-        return redirect('admin.school.schoolcategory.index');
+        return view('admin.school.schoolcategory.show', compact('schoolcategory'));
     }
 
     /**

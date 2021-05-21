@@ -29,6 +29,7 @@
                                 <tr>
                                     <th></th>
                                     <th>Όνομα Κατηγορίας</th>
+                                    <th>Αριθμός Σχολείων<br/>(αυτόματη καταμέτρηση)</th>
                                     <th>Id</th>
                                     <th></th>
                                     <th></th>
@@ -38,7 +39,8 @@
                                 @forelse($categories as $category)
                                 <tr>
                                     <td>{{$loop->iteration}}.</td>
-                                    <td>{{$category->name}}</td>
+                                    <td><a href="{{route('admin.school.schoolcategory.show', $category->id)}}">{{$category->name}}</a></td>
+                                    <td>{{ count($category->schools) }}</td>
                                     <td>{{$category->id}}</td>
                                     <td>
                                         <a href="{{ route('admin.school.schoolcategory.edit', $category) }}" class="btn btn-primary m-1">Επεξεργασία</a><br/>

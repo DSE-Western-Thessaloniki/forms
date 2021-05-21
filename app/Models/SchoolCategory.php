@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\School;
 
 class SchoolCategory extends Model
 {
@@ -15,4 +16,7 @@ class SchoolCategory extends Model
         'name',
     ];
 
+    public function schools() {
+        return $this->hasMany(School::class, 'category_id');
+    }
 }

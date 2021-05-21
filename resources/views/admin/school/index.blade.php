@@ -38,6 +38,8 @@
                                     <th>Κατηγορία</th>
                                     <th>Ενεργό</th>
                                     <th>Ενημερώθηκε από</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,6 +62,7 @@
                                         @icon('times')
                                     </td>
                                 @endif
+                                <td>{{$school->user->name}}</td>
                                 <td>
                                     <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">Επεξεργασία</a><br/>
                                 </td>
