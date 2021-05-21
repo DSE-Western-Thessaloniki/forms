@@ -45,8 +45,8 @@
                                         @else
                                             <span class="text-success h2">@icon('fas fa-user')</span>
                                         @endif
-                                        <a href="{{ route('admin.user.show', $user->id) }}">{{$user->username}}</td>
-                                    <td>{{$user->name}}</a></td>
+                                        <a href="{{ route('admin.user.show', $user->id) }}">{{$user->username}}</a></td>
+                                    <td>{{$user->name}}</td>
                                     <td><pre class="text-center">{{$user->email}}</pre></td>
                                     @if($user->active)
                                         <td class="text-center text-success">
