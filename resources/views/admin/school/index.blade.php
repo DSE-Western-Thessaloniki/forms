@@ -20,7 +20,7 @@
                             <a class="btn btn-primary" href="{{ route('admin.school.create')}}">
                             @icon('fas fa-plus') Δημιουργία σχολικής μονάδας
                             </a>
-                            <a class="btn btn-success" href="{{ route('admin.school.category.index')}}">
+                            <a class="btn btn-success" href="{{ route('admin.school.schoolcategory.index')}}">
                                 @icon('fas fa-list') Διαχείριση κατηγοριών
                                 </a>
                             </div>
