@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SchoolsController;
+use App\Http\Controllers\Admin\SchoolCategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,8 +49,16 @@ Route::prefix('admin')
             );
             Route::resource('user', UserController::class)
                 ->middleware('auth');
+            Route::prefix('school')
+                ->name('school.')
+                ->group(
+                    function () {
+                        Route::resource('schoolcategory', SchoolCategoriesController::class)
+                            ->middleware('auth');
+                    }
+                );
             Route::resource('school', SchoolsController::class)
-                ->middleware('auth');
+            ->middleware('auth');
         }
     );
 
