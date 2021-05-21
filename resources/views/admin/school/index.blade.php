@@ -1,33 +1,90 @@
 @extends('layouts.admin.app')
 
 @section('content')
-    <h1>Σχολεία</h1>
-    <a class="btn btn-primary my-2" href="{{ route('admin.school.create') }}">@icon('fas fa-plus') Δημιουργία σχολικής μονάδας</a>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Σχολεία</div>
 
-    @if(count($schools) > 0)
-        @foreach($schools as $school)
-            <div class="card card-body bg-light">
-                    <h3><a href="{{ route('admin.school.show', $school->id) }}">{{$school->username}}</a></h3>
-                    <p>{{ $school->name }}</p>
-                    <small>Τελευταία ενημέρωση από {{ $school->user->name }}</small>
-
-                    <div class="row align-items-center justify-content-start pt-4">
-                        <div class="col">
-                            <a href="{{ route('admin.school.edit', $school->id) }}" class="btn btn-primary">Επεξεργασία</a>
+                @if(Auth::user()->isAdministrator())
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
                         </div>
+                    @endif
 
-                        <div class="col">
-                            <form action="{{ route('admin.school.destroy', $school->id)}}" method="post" class="float-right">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger" type="submit">Διαγραφή</button>
-                            </form>
-                        </div>
+                    <div class="btn-toolbar pb-2" role="toolbar">
+                        <div class="btn-group mr-2">
+                            <a class="btn btn-primary" href="{{ route('admin.school.create')}}">
+                            @icon('fas fa-plus') Δημιουργία σχολικής μονάδας
+                            </a>
+                            <a class="btn btn-success" href="{{ route('admin.school.category.index')}}">
+                                @icon('fas fa-list') Διαχείριση κατηγοριών
+                                </a>
+                            </div>
                     </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Όνομα σχολείου</th>
+                                    <th>Όνομα χρήστη</th>
+                                    <th>Κωδικός</th>
+                                    <th>E-mail</th>
+                                    <th>Κατηγορία</th>
+                                    <th>Ενεργό</th>
+                                    <th>Ενημερώθηκε από</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @forelse($schools as $school)
+                            <tr>
+                                <td>{{ $loop->iteration }}.</td>
+                                <td>
+                                    <a href="{{ route('admin.school.show', $school->id) }}">{{$school->name}}</a>
+                                </td>
+                                <td>{{$school->username}}</td>
+                                <td>{{$school->code}}</td>
+                                <td><pre class="text-center">{{$school->email}}</pre></td>
+                                <td>{{$school->category->name}}</td>
+                                @if($school->active)
+                                    <td class="text-center text-success">
+                                        @icon('check')
+                                    </td>
+                                @else
+                                    <td class="text-center text-danger">
+                                        @icon('times')
+                                    </td>
+                                @endif
+                                <td>
+                                    <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">Επεξεργασία</a><br/>
+                                </td>
+                                <td>
+                                    <form action="{{ route('admin.school.destroy', $school->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger" type="submit">Διαγραφή</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8">Δεν βρέθηκαν σχολικές μονάδες</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        @endforeach
-        {{$schools->links()}}
-    @else
-        <p>Δεν βρέθηκαν σχολικές μονάδες</p>
-    @endif
+            @else
+                Δεν επιτρέπεται η πρόσβαση
+            @endif
+        </div>
+    </div>
+</div>
+</div>
 @endsection
