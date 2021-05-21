@@ -15,7 +15,7 @@
 
                     <div class="btn-toolbar pb-2" role="toolbar">
                         <div class="btn-group mr-2">
-                            <a class="btn btn-primary my-2" href="{{ route('admin.form.create') }}">
+                            <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
                                 @icon('fas fa-plus') Δημιουργία φόρμας
                             </a>
                         </div>
