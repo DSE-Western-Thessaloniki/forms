@@ -33,7 +33,7 @@ class School extends Authenticatable
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function category() {
-        return $this->belongsTo(SchoolCategory::class, 'category_id');
+    public function categories() {
+        return $this->belongsToMany(SchoolCategory::class, 'school_category_school');
     }
 }

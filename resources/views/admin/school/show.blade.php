@@ -65,6 +65,17 @@
                         </tr>
 
                         <tr>
+                            <td>Κατηγορίες</td>
+                            <td class="text-center">
+                                <ul>
+                                @foreach ($school->categories as $category)
+                                    <li>{{$category->name}}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td class="col-2">
                                 <a class="btn btn-danger" href="{{ route('admin.school.index') }}">Επιστροφή</a>
                             </td>

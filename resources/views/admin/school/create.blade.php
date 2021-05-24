@@ -85,12 +85,14 @@
                         <label for="category" class="col-md-4 col-form-label text-md-right">Κατηγορία</label>
 
                         <div class="col-md-6">
-                            <select id="category" type="category" class="form-control @error('category') is-invalid @enderror" name="category" value="{{ old('category') }}">
-                                <option value="-1">Παρακαλώ επιλέξτε</option>
-                                @foreach ($categories as $category)
-                                    <option value={{ $category->id }}>{{ $category->name }}</option>
-                                @endforeach
-                            </select>
+                            <pillbox
+                                :options="{{ json_encode($categories) }}"
+                                name="category"
+                                @if(old('category'))
+                                value="{{ old('category') }}"
+                                @endif
+                                >
+                            </pillbox>
 
                             @error('category')
                                 <span class="invalid-feedback" role="alert">

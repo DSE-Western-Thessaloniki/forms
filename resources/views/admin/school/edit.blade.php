@@ -82,6 +82,38 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="category" class="col-md-4 col-form-label text-md-right">Κατηγορία</label>
+
+                        <div class="col-md-6">
+                            <pillbox
+                                :options="{{ json_encode($categories) }}"
+                                name="category"
+                                value="{{ $category_string }}"
+                                >
+                            </pillbox>
+
+                            @error('category')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-4 col-form-label text-md-right">Ενεργός</label>
+
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                @if ($school->active)
+                                    <input id="active" type="checkbox" class="form-check-input" name="active" value="1" checked="checked">
+                                @else
+                                    <input id="active" type="checkbox" class="form-check-input" name="active" value="1">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="form-group row">
                         <div class="col-2">

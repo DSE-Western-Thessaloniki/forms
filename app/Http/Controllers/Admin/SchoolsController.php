@@ -41,26 +41,41 @@ class SchoolsController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:schools'],
             'username' => ['required', 'string', 'max:255', 'unique:schools'],
             'code' => ['required', 'string', 'min:7', 'max:255', 'unique:schools'],
-            'category' => ['required', 'integer', 'min:1'],
+            'category' => ['required', 'string', 'max:255'],
         ]);
+
+        // Έλεγχος αν οι κατηγορίες υπάρχουν
+        $category_answer = explode(',', $request->get('category'));
+        $categories = array();
+        foreach ($category_answer as $category) {
+            if (SchoolCategory::find($category)) {
+                array_push($categories, $category);
+            }
+            else {
+                return redirect(route('admin.school.index'))
+                    ->with('status', 'Άκυρες κατηγορίες');
+            }
+        }
 
         $school = new School([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'username' => $request->get('username'),
             'code' => $request->get('code'),
-            'category_id' => $request->get('category'),
             'active' => 1,
             'updated_by' => Auth::user()->id,
         ]);
 
         $school->save();
+
+        foreach ($categories as $category) {
+            $school->categories()->attach($category);
+        }
 
         return redirect(route('admin.school.show', [$school]))
             ->with('status', 'Η σχολική μονάδα αποθηκεύτηκε!');
@@ -85,7 +100,14 @@ class SchoolsController extends Controller
      */
     public function edit(School $school)
     {
-        return view('admin.school.edit', compact('school'));
+        $categories = SchoolCategory::all();
+        $category_arr = array();
+        foreach ($school->categories as $category) {
+            array_push($category_arr, $category->id);
+        }
+        return view('admin.school.edit', compact('school'))
+            ->with('categories', $categories)
+            ->with('category_string', implode(',', $category_arr));
     }
 
     /**
@@ -102,7 +124,21 @@ class SchoolsController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('schools')->ignore($school)],
             'username' => ['required', 'string', 'max:255', Rule::unique('schools')->ignore($school)],
             'code' => ['required', 'string', 'min:7', 'max:255', Rule::unique('schools')->ignore($school)],
+            'category' => ['required', 'string', 'max:255'],
         ]);
+
+        // Έλεγχος αν οι κατηγορίες υπάρχουν
+        $category_answer = explode(',', $request->get('category'));
+        $categories = array();
+        foreach ($category_answer as $category) {
+            if (SchoolCategory::find($category)) {
+                array_push($categories, $category);
+            }
+            else {
+                return redirect(route('admin.school.index'))
+                    ->with('status', 'Άκυρες κατηγορίες');
+            }
+        }
 
         $school->username = $request->get('username');
         $school->name = $request->get('name');
@@ -110,6 +146,8 @@ class SchoolsController extends Controller
         $school->code = $request->get('code');
         $school->active = $request->get('active') == 1 ? 1 : 0;
         $school->updated_by = Auth::user()->id;
+
+        $school->categories()->sync($categories);
 
         $school->save();
 

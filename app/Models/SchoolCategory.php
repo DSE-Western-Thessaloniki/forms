@@ -17,6 +17,6 @@ class SchoolCategory extends Model
     ];
 
     public function schools() {
-        return $this->hasMany(School::class, 'category_id');
+        return $this->belongsToMany(School::class, 'school_category_school');
     }
 }

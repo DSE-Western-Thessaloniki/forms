@@ -35,7 +35,7 @@
                                     <th>Όνομα χρήστη</th>
                                     <th>Κωδικός</th>
                                     <th>E-mail</th>
-                                    <th>Κατηγορία</th>
+                                    <th>Κατηγορίες</th>
                                     <th>Ενεργό</th>
                                     <th>Ενημερώθηκε από</th>
                                     <th></th>
@@ -52,7 +52,13 @@
                                 <td>{{$school->username}}</td>
                                 <td>{{$school->code}}</td>
                                 <td><pre class="text-center">{{$school->email}}</pre></td>
-                                <td>{{$school->category->name}}</td>
+                                <td>
+                                    <ul class="list-unstyled">
+                                    @foreach ($school->categories as $category)
+                                        <li>{{$category->name}}</li>
+                                    @endforeach
+                                    </ul>
+                                </td>
                                 @if($school->active)
                                     <td class="text-center text-success">
                                         @icon('check')
