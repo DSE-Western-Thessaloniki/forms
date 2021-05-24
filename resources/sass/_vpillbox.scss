@@ -1,0 +1,11 @@
+.vpillbox__component {
+    display: flex;
+    flex-direction: column;
+}
+
+.vpillbox__vpills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-size: 1.2em;
+}
