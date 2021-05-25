@@ -19,6 +19,14 @@ class Form extends Model
         return $this->hasMany('App\Models\FormField');
     }
 
+    public function schools() {
+        return $this->belongsToMany('App\Models\School');
+    }
+
+    public function school_categories() {
+        return $this->belongsToMany('App\Models\SchoolCategory');
+    }
+
     public function user() {
         return $this->belongsTo('App\Models\User');
     }
