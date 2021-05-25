@@ -30,6 +30,7 @@ class AddCategoryToSchools extends Migration
     public function down()
     {
         Schema::table('schools', function (Blueprint $table) {
+            $table->dropForeign('category_id');
             $table->dropColumn('category_id');
         });
     }
