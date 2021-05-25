@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="form-group row align-items-center">
-                        <label class="col-md-4 col-form-label text-md-right">Ενεργός</label>
+                        <div class="col-md-4 col-form-label"></div>
 
                         <div class="col-md-6">
                             <div class="form-check">
@@ -111,6 +111,7 @@
                                 @else
                                     <input id="active" type="checkbox" class="form-check-input" name="active" value="1">
                                 @endif
+                                <label class="form-check-label" for="active">Ενεργός</label>
                             </div>
                         </div>
                     </div>
