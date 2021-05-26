@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Form;
 class FormField extends Model
 {
     // Table name
@@ -19,6 +20,6 @@ class FormField extends Model
     public $timestamps = true;
 
     public function form() {
-        $this->belongsTo('App\Form');
+        $this->belongsTo(Form::class);
     }
 }
