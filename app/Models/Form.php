@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\FormField;
+use App\Models\User;
+use App\Models\School;
+use App\Models\SchoolCategory;
+
 class Form extends Model
 {
     // Table name
@@ -16,18 +21,18 @@ class Form extends Model
     public $timestamps = true;
 
     public function formfields() {
-        return $this->hasMany('App\Models\FormField');
+        return $this->hasMany(FormField::class);
     }
 
     public function schools() {
-        return $this->belongsToMany('App\Models\School');
+        return $this->belongsToMany(School::class);
     }
 
     public function school_categories() {
-        return $this->belongsToMany('App\Models\SchoolCategory');
+        return $this->belongsToMany(SchoolCategory::class);
     }
 
     public function user() {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 }
