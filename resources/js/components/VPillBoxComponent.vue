@@ -1,6 +1,6 @@
 <template>
     <div class="vpillbox__template">
-        <div class="vpillbox__component form-group" tabindex="0">
+        <div class="vpillbox__component form-group">
             <div class="vpillbox__vpills">
                 <span v-for="vpill in vpills" :key="vpill.id" :id="vpill.id" class="badge badge-primary m-1 pl-2">{{ vpill.value }}
                     <button type="button" class="btn btn-primary mx-1" @click="removePill(vpill.id)">
