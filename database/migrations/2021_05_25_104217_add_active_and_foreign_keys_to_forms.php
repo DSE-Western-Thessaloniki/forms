@@ -34,8 +34,8 @@ class AddActiveAndForeignKeysToForms extends Migration
     public function down()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->dropForeign('school_id');
-            $table->dropForeign('school_category_id');
+            $table->dropForeign(['school_id']);
+            $table->dropForeign(['school_category_id']);
             $table->dropColumn('school_id');
             $table->dropColumn('school_category_id');
             $table->dropColumn('active');
