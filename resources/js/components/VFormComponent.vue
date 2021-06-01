@@ -40,6 +40,37 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="card mt-5">
+                    <div class="card-header">
+                        Διαθέσιμη σε
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="form-row">
+                                    <label for="categories" class="m-2">Κατηγορίες:</label>
+                                    <pillbox class="flex-fill"
+                                        :options="this.categories"
+                                        name="categories"
+                                    >
+                                    </pillbox>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="form-row">
+                                    <label for="schools" class="m-2">Σχολικές μονάδες:</label>
+                                    <pillbox class="flex-fill"
+                                        :options="this.schools"
+                                        placeholder="Επιλέξτε σχολική μονάδα"
+                                        name="schools"
+                                    >
+                                    </pillbox>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -73,6 +104,8 @@
             parseobj: {
                 type: Array,
             },
+            schools: Array,
+            categories: Array,
         },
         mounted() {
             console.log('Component mounted.')

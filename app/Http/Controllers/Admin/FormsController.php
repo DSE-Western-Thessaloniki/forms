@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\Form;
+use App\Models\School;
+use App\Models\SchoolCategory;
 use App\Models\User;
 use App\Models\FormField;
 use Illuminate\Foundation\Auth\User as AuthUser;
@@ -41,7 +43,11 @@ class FormsController extends Controller
      */
     public function create()
     {
-        return view('admin.form.create');
+        $schools = School::where('active', 1)->get(['id', 'name']);
+        $categories = SchoolCategory::all('id', 'name');
+        return view('admin.form.create')
+            ->with('schools', $schools)
+            ->with('categories', $categories);
     }
 
     /**
