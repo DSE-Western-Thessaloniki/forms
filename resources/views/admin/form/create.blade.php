@@ -9,9 +9,13 @@
         >
         </vform-component>
 
-        <br/>
-        <div class="col-md-10 d-flex justify-content-end">
-            <button class="btn btn-primary" type="submit">Αποθήκευση</button>
+        <div class="form-group row mt-5">
+            <div class="col-2">
+                <a class="btn btn-danger" href="{{ route('admin.form.index') }}">Ακύρωση</a>
+            </div>
+            <div class="col-md-10 d-flex justify-content-end">
+                <button class="btn btn-primary" type="submit">Αποθήκευση</button>
+            </div>
         </div>
         @csrf
     </form>

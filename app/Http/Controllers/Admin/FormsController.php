@@ -67,6 +67,7 @@ class FormsController extends Controller
         $form->title = $request->input('title');
         $form->notes = $request->input('notes');
         $form->user_id = Auth::id();
+        $form->active = true;
         $form->save();
 
         $formfield = $request->input('field');
@@ -77,6 +78,32 @@ class FormsController extends Controller
             $field->type = $formfield[$key]['type'];
             $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->formfields()->save($field);
+        }
+
+        // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
+        $category_answer = explode(',', $request->get('categories'));
+        $categories = array();
+        foreach ($category_answer as $category) {
+            if (SchoolCategory::find($category)) {
+                array_push($categories, $category);
+            }
+        }
+
+        foreach ($categories as $category) {
+            $form->school_categories()->attach($category);
+        }
+
+        // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
+        $school_answer = explode(',', $request->get('schools'));
+        $schools = array();
+        foreach ($school_answer as $school) {
+            if (School::find($school)) {
+                array_push($schools, $school);
+            }
+        }
+
+        foreach ($schools as $school) {
+            $form->schools()->attach($school);
         }
 
         return redirect(route('admin.form.index'))->with('success', 'Η φόρμα δημιουργήθηκε');
@@ -106,8 +133,28 @@ class FormsController extends Controller
     public function edit($id)
     {
         $form = Form::find($id);
-        if ($form)
-            return view('admin.form.edit')->with('form', $form);
+        if ($form) {
+            $schools = School::where('active', 1)->get(['id', 'name']);
+            $categories = SchoolCategory::all('id', 'name');
+
+
+            $school_selected_values = array();
+            foreach($form->schools as $school) {
+                array_push($school_selected_values, $school->id);
+            }
+
+            $category_selected_values = array();
+                foreach($form->school_categories as $category) {
+                    array_push($category_selected_values, $category->id);
+            }
+
+            return view('admin.form.edit')
+                ->with('schools', $schools)
+                ->with('categories', $categories)
+                ->with('school_selected_values', implode(",", $school_selected_values))
+                ->with('category_selected_values', implode(",", $category_selected_values))
+                ->with('form', $form);
+        }
         else
             return view('home');
     }
@@ -153,6 +200,28 @@ class FormsController extends Controller
             $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->formfields()->save($field);
         }
+
+        // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
+        $category_answer = explode(',', $request->get('categories'));
+        $categories = array();
+        foreach ($category_answer as $category) {
+            if (SchoolCategory::find($category)) {
+                array_push($categories, $category);
+            }
+        }
+
+        $form->school_categories()->sync($categories);
+
+        // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
+        $school_answer = explode(',', $request->get('schools'));
+        $schools = array();
+        foreach ($school_answer as $school) {
+            if (School::find($school)) {
+                array_push($schools, $school);
+            }
+        }
+
+        $form->schools()->sync($schools);
 
         return redirect(route('admin.form.index'))->with('success', 'Η φόρμα ενημερώθηκε');
     }
