@@ -52,13 +52,15 @@
         },
         methods: {
             addPill: function(value) {
-                this.selectedOptions.push(value);
-                var name = "";
-                this.options.forEach(option => {
-                    if (option.id == value)
-                        name = option.name;
-                });
-                this.vpills.push({id: value, value: name});
+                if (value != "") {
+                    this.selectedOptions.push(value);
+                    var name = "";
+                    this.options.forEach(option => {
+                        if (option.id == value)
+                            name = option.name;
+                    });
+                    this.vpills.push({id: value, value: name});
+                }
             },
             optionChanged: function(event) {
                 if (!this.selectedOptions.includes(event.target.value)) {
