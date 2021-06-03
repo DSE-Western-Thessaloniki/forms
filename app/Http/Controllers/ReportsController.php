@@ -33,8 +33,11 @@ class ReportsController extends Controller
         $forms = Form::whereHas('schools', function ($q) use ($school) {
                 $q->where('school_id', $school->id);
             })
-            ->orWhereHas('school_categories', function ($q) use ($categories) {
-                $q->whereIn('school_category_id', $categories ? $categories : array());
+            ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                $q->orWhereHas('school_categories', function ($q) use ($categories) {
+                    $q->whereIn('school_category_id', $categories);
+                });
+
             })
             ->orderBy('created_at', 'desc')->paginate(15);
         return view('reports.index')->with('forms', $forms);
