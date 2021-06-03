@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Form;
-use App\Models\User;
 use App\Models\FormField;
+use App\Models\School;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,8 +27,16 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        //$forms = Form::all();
-        $forms = Form::orderBy('created_at', 'desc')->paginate(15);
+        $id = Auth::guard('school')->user()->id;
+        $school = School::find($id);
+        $categories = $school->categories;
+        $forms = Form::whereHas('schools', function ($q) use ($school) {
+                $q->where('school_id', $school->id);
+            })
+            ->orWhereHas('school_categories', function ($q) use ($categories) {
+                $q->whereIn('school_category_id', $categories ? $categories : array());
+            })
+            ->orderBy('created_at', 'desc')->paginate(15);
         return view('reports.index')->with('forms', $forms);
     }
 
