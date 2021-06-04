@@ -38,7 +38,7 @@
                                 @forelse($forms as $form)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $form->title }}</td>
+                                        <td><a href="{{ route('admin.form.show', $form->id) }}">{{ $form->title }}</a></td>
                                         <td>{{ $form->notes }}</td>
                                         <td>{{ $form->created_at }}</td>
                                         <td>{{ $form->updated_at }}</td>
