@@ -82,7 +82,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8">Δεν βρέθηκαν σχολικές μονάδες</td>
+                                <td colspan="10">Δεν βρέθηκαν σχολικές μονάδες</td>
                             </tr>
                             @endforelse
                         </tbody>
