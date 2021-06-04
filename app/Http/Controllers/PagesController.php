@@ -34,7 +34,7 @@ class PagesController extends Controller
                 Auth::guard('school')->login($school);
                 $request->session()->put('school_id', $school_id);
                 $request->session()->put('school_name', $request->input('school_name'));
-                return redirect(route('reports.index'));
+                return redirect(route('report.index'));
             }
         }
 

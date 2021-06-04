@@ -40,7 +40,7 @@ class ReportsController extends Controller
 
             })
             ->orderBy('created_at', 'desc')->paginate(15);
-        return view('reports.index')->with('forms', $forms);
+        return view('report.index')->with('forms', $forms);
     }
 
     /**
@@ -72,7 +72,7 @@ class ReportsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect(route('reports.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
+        return redirect(route('report.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
     }
 
     /**
@@ -85,7 +85,7 @@ class ReportsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('reports.show')->with('form', $form);
+            return view('report.show')->with('form', $form);
         else
             return view('home');
     }
@@ -100,7 +100,7 @@ class ReportsController extends Controller
     {
         $form = Form::find($id);
         if ($form)
-            return view('reports.edit')->with('form', $form);
+            return view('report.edit')->with('form', $form);
         else
             return view('home');
     }
@@ -147,6 +147,6 @@ class ReportsController extends Controller
             $form->formfields()->save($field);
         }
 
-        return redirect(route('reports.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+        return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
     }
 }

@@ -70,10 +70,10 @@ Route::get('/login', [PagesController::class, 'login'])->name('login');
 Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
 Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
 
-Route::resource('reports', ReportsController::class)
+Route::resource('report', ReportsController::class)
     ->middleware('sch.test')
     ->missing(function (Request $request) {
-        return Redirect::route('reports.index');
+        return Redirect::route('report.index');
     });
 
 
