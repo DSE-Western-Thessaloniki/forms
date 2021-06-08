@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Form;
 class FormField extends Model
 {
-    // Table name
-    // Not really needed as Laravel takes the plural form of the model as
-    // a default name for the table...
-    protected $table = 'formfields';
-
     protected $fillable = ['sort_id'];
 
     // Primary key

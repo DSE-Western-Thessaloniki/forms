@@ -20,7 +20,7 @@ class Form extends Model
     // Timestamps
     public $timestamps = true;
 
-    public function formfields() {
+    public function form_fields() {
         return $this->hasMany(FormField::class);
     }
 

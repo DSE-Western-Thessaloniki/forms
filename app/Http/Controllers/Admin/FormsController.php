@@ -77,7 +77,7 @@ class FormsController extends Controller
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
             $field->listvalues = $formfield[$key]['values'] ?? '';
-            $form->formfields()->save($field);
+            $form->form_fields()->save($field);
         }
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
@@ -181,24 +181,21 @@ class FormsController extends Controller
 
         // Check if we should delete fields
         $formfield = $request->input('field');
-        $oldfields = $form->formfields;
+        $oldfields = $form->form_fields;
         foreach($oldfields as $oldfield) {
             if (!array_key_exists($oldfield->id, $formfield)) {
                 $oldfield->delete();
-                #$field = $form->formfields()
-                #            ->where('sort_id', $oldfield->sort_id)
-                #            ->delete();
             }
         }
 
         // Update or add fields
         foreach(array_keys($formfield) as $key) {
-            $field = $form->formfields()->firstOrNew(['id' => $key]);
+            $field = $form->form_fields()->firstOrNew(['id' => $key]);
             $field->sort_id = $key;
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
             $field->listvalues = $formfield[$key]['values'] ?? '';
-            $form->formfields()->save($field);
+            $form->form_fields()->save($field);
         }
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
@@ -235,7 +232,7 @@ class FormsController extends Controller
     public function destroy($id)
     {
         $form = Form::find($id);
-        $form->formfields()->delete();
+        $form->form_fields()->delete();
         $form->delete();
 
         return redirect(route('admin.form.index'))->with('success', 'Η φόρμα διαγράφηκε');

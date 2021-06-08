@@ -16,7 +16,7 @@
             Συμπληρωμένη φόρμα - {{ Auth::guard('school')->user()->name }}
         </div>
         <div class="card-body">
-            @foreach ($form->formfields as $field)
+            @foreach ($form->form_fields as $field)
                 @include('inc.formfields')
             @endforeach
         </div>
