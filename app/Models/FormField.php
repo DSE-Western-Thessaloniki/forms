@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Form;
+use App\Models\FormFieldData;
 class FormField extends Model
 {
     protected $fillable = ['sort_id'];
@@ -16,5 +17,9 @@ class FormField extends Model
 
     public function form() {
         $this->belongsTo(Form::class);
+    }
+
+    public function field_data() {
+        $this->hasMany(FormFieldData::class);
     }
 }
