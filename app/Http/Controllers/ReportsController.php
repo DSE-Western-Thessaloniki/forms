@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Form;
 use App\Models\FormField;
+use App\Models\FormFieldData;
 use App\Models\School;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\Auth;
@@ -51,28 +52,28 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'title' => 'required',
+        // ]);
 
-        // Create form
-        $form =  new Form;
-        $form->title = $request->input('title');
-        $form->notes = $request->input('notes');
-        $form->user_id = Auth::id();
-        $form->save();
+        // // Create form
+        // $form =  new Form;
+        // $form->title = $request->input('title');
+        // $form->notes = $request->input('notes');
+        // $form->user_id = Auth::id();
+        // $form->save();
 
-        $formfield = $request->input('field');
-        foreach(array_keys($formfield) as $key) {
-            $field = new FormField;
-            $field->sort_id = $key;
-            $field->title = $formfield[$key]['title'];
-            $field->type = $formfield[$key]['type'];
-            $field->listvalues = $formfield[$key]['values'] ?? '';
-            $form->formfields()->save($field);
-        }
+        // $formfield = $request->input('field');
+        // foreach(array_keys($formfield) as $key) {
+        //     $field = new FormField;
+        //     $field->sort_id = $key;
+        //     $field->title = $formfield[$key]['title'];
+        //     $field->type = $formfield[$key]['type'];
+        //     $field->listvalues = $formfield[$key]['values'] ?? '';
+        //     $form->form_fields()->save($field);
+        // }
 
-        return redirect(route('report.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
+        // return redirect(route('report.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
     }
 
     /**
@@ -114,37 +115,11 @@ class ReportsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'title' => 'required',
-        ]);
-
-        // Update form
-        $form = Form::find($id);
-        $form->title = $request->input('title');
-        $form->notes = $request->input('notes');
-        $form->user_id = Auth::id();
-        $form->save();
-
-        // Check if we should delete fields
-        $formfield = $request->input('field');
-        $oldfields = $form->formfields;
-        foreach($oldfields as $oldfield) {
-            if (!array_key_exists($oldfield->id, $formfield)) {
-                $oldfield->delete();
-                #$field = $form->formfields()
-                #            ->where('sort_id', $oldfield->sort_id)
-                #            ->delete();
-            }
-        }
-
-        // Update or add fields
-        foreach(array_keys($formfield) as $key) {
-            $field = $form->formfields()->firstOrNew(['id' => $key]);
-            $field->sort_id = $key;
-            $field->title = $formfield[$key]['title'];
-            $field->type = $formfield[$key]['type'];
-            $field->listvalues = $formfield[$key]['values'] ?? '';
-            $form->formfields()->save($field);
+        $form = Form::with('form_fields')->find($id);
+        $fields = $form->form_fields;
+        foreach ($fields as $field) {
+            $data = $request->input("f".$field->id);
+            $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id], ['data' => $data]);
         }
 
         return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
