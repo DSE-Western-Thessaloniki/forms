@@ -16,7 +16,7 @@
     </div><br />
     @endif
 
-    <form action={{ route('report.update', Auth::guard('school')->user()->id) }} method='post'>
+    <form action={{ route('report.update', $form->id) }} method='post'>
 
     <h1>{{$form->title}}</h1>
     <h3>{{$form->notes}}</h3>
