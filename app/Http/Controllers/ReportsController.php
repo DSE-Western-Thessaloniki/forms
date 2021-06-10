@@ -45,38 +45,6 @@ class ReportsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // $this->validate($request, [
-        //     'title' => 'required',
-        // ]);
-
-        // // Create form
-        // $form =  new Form;
-        // $form->title = $request->input('title');
-        // $form->notes = $request->input('notes');
-        // $form->user_id = Auth::id();
-        // $form->save();
-
-        // $formfield = $request->input('field');
-        // foreach(array_keys($formfield) as $key) {
-        //     $field = new FormField;
-        //     $field->sort_id = $key;
-        //     $field->title = $formfield[$key]['title'];
-        //     $field->type = $formfield[$key]['type'];
-        //     $field->listvalues = $formfield[$key]['values'] ?? '';
-        //     $form->form_fields()->save($field);
-        // }
-
-        // return redirect(route('report.index'))->with('success', 'Η αναφορά αποθηκεύτηκε');
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
