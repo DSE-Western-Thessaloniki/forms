@@ -1,8 +1,11 @@
 @extends('layouts.admin.app')
 
 @section('content')
-    <br/>
-    <a href="{{route('admin.form.index')}}" class="btn btn-secondary" role="button">Πίσω</a>
+    <div class="btn-group">
+        <a href="{{route('admin.form.index')}}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+        <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">@icon('fas fa-edit') Επεξεργασία</a>
+        <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
+    </div>
     <h1>{{$form->title}}</h1>
     <h3>{{$form->notes}}</h3>
     <hr/>
@@ -18,12 +21,10 @@
     </div>
     <small>Δημιουργήθηκε στις {{$form->created_at}}</small>
     <hr/>
-    <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">Επεξεργασία</a>
 
     <!-- The following lines are needed to be able to delete a form -->
-    <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
+    <form action="{{ route('admin.form.destroy', $form->id)}}" id="delete" method="post" class="float-right">
         @csrf
         @method('DELETE')
-        <button class="btn btn-danger" type="submit">Διαγραφή</button>
     </form>
 @endsection

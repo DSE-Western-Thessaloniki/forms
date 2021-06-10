@@ -70,13 +70,13 @@
                                 @endif
                                 <td>{{$school->user->name}}</td>
                                 <td>
-                                    <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">Επεξεργασία</a><br/>
+                                    <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
                                 </td>
                                 <td>
                                     <form action="{{ route('admin.school.destroy', $school->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">Διαγραφή</button>
+                                    <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                     </form>
                                 </td>
                             </tr>

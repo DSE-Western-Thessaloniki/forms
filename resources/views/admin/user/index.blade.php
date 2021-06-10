@@ -58,14 +58,14 @@
                                         </td>
                                     @endif
                                     <td>
-                                        <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">Επεξεργασία</a><br/>
-                                        <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">Αλλαγή κωδικού</a>
+                                        <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
+                                        <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">@icon('fas fa-key') Αλλαγή κωδικού</a>
                                     </td>
                                     <td>
                                         <form action="{{ route('admin.user.destroy', $user->id)}}" method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger" type="submit">Διαγραφή</button>
+                                        <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                         </form>
                                     </td>
                                 </tr>

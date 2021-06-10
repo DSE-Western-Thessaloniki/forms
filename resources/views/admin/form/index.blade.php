@@ -44,13 +44,13 @@
                                         <td>{{ $form->updated_at }}</td>
                                         <td>{{ $form->user->name }}</td>
                                         <td>
-                                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">Επεξεργασία</a>
+                                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
                                         </td>
                                         <td>
                                             <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-danger" type="submit">Διαγραφή</button>
+                                                <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                             </form>
                                         </td>
                                     </tr>
