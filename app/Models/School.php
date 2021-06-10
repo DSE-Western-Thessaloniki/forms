@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Models\Form;
+use App\Models\FormFieldData;
 use App\Models\User;
 use App\Models\SchoolCategory;
 
@@ -41,5 +42,9 @@ class School extends Authenticatable
 
     public function categories() {
         return $this->belongsToMany(SchoolCategory::class, 'school_category_school');
+    }
+
+    public function field_data() {
+        return $this->hasMany(FormFieldData::class);
     }
 }

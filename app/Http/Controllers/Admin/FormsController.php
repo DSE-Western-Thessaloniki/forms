@@ -237,4 +237,37 @@ class FormsController extends Controller
 
         return redirect(route('admin.form.index'))->with('success', 'Η φόρμα διαγράφηκε');
     }
+
+    /**
+     * Παρουσίαση δεδομένων φόρμας.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function formData($id)
+    {
+        $form = Form::find($id);
+        $form->load(
+                'form_fields',
+                'form_fields.field_data',
+                'form_fields.field_data.schools'
+        );
+
+        $dataTable = array();
+        $dataTableColumns = array();
+        foreach ($form->form_fields()->get() as $field) {
+            array_push($dataTableColumns, $field->title);
+            foreach ($field->field_data()->get() as $field_data) {
+                foreach ($field_data->schools()->get() as $school) {
+                    $dataTable[$school->code][$field->title] = $field_data->data;
+                }
+            }
+        }
+
+        $schools = School::all();
+        return view('admin.form.data')
+            ->with('dataTable', $dataTable)
+            ->with('dataTableColumns', $dataTableColumns)
+            ->with('schools', $schools);
+    }
 }

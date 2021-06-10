@@ -45,6 +45,7 @@
                                         <td>{{ $form->user->name }}</td>
                                         <td>
                                             <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
+                                            <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1">@icon('fas fa-table') Δεδομένα</a>
                                         </td>
                                         <td>
                                             <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">

@@ -34,6 +34,9 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(
         function () {
+            Route::get('/form/{form}/data', [FormsController::class, 'formData'])
+                ->name('form.data')
+                ->middleware('auth');
             Route::resource('form', FormsController::class)
                 ->middleware('auth');
             Auth::routes([
