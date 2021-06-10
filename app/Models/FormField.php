@@ -16,10 +16,10 @@ class FormField extends Model
     public $timestamps = true;
 
     public function form() {
-        $this->belongsTo(Form::class);
+        return $this->belongsTo(Form::class);
     }
 
     public function field_data() {
-        $this->hasMany(FormFieldData::class);
+        return $this->hasMany(FormFieldData::class);
     }
 }

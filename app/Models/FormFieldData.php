@@ -9,11 +9,13 @@ use App\Models\School;
 
 class FormFieldData extends Model
 {
+    protected $fillable = ['school_id', 'data'];
+
     public function form_fields() {
-        $this->belongsTo(FormField::class);
+        return $this->belongsTo(FormField::class);
     }
 
     public function schools() {
-        $this->belongsTo(School::class);
+        return $this->belongsTo(School::class);
     }
 }
