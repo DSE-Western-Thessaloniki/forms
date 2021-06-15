@@ -19,15 +19,18 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="list-group-item" v-for="field in fields" :key="field.id">
-                                <vform-field-component
-                                :value.sync="field.title"
-                                :id="field.id"
-                                :type="field.type"
-                                :listvalues="field.listvalues"
-                                v-on:delfield="delField"
-                                ></vform-field-component>
-                            </li>
+                            <draggable v-model="fields" handle=".handle" @end="dragEnded">
+                                <li class="list-group-item" v-for="field in fields" :key="field.id">
+                                    <vform-field-component
+                                    :value.sync="field.title"
+                                    :id="field.id"
+                                    :type="field.type"
+                                    :listvalues="field.listvalues"
+                                    v-on:delfield="delField"
+                                    ref='vform-fields'
+                                    ></vform-field-component>
+                                </li>
+                            </draggable>
                             <li class="list-group-item">
                                 <button
                                 type="button"
@@ -77,6 +80,8 @@
 </template>
 
 <script>
+    import draggable from 'vuedraggable';
+
     var fieldObj = {
         id: 0,
         title: "Νέο πεδίο",
@@ -89,6 +94,9 @@
     var notes;
 
     export default {
+        components: {
+            draggable,
+        },
         props: {
             parse: {
                 type: Boolean,
@@ -159,6 +167,20 @@
                        .indexOf(id);
 
                 ~removeIndex && this.fields.splice(removeIndex, 1);
+            },
+
+            dragEnded: function(e) {
+                console.log(e);
+                console.log(this.$refs['vform-fields'][e.newIndex].field_id);
+                console.log(this.$refs['vform-fields'][e.oldIndex].field_id);
+                //console.log(this.$children[e.oldIndex].name);
+                //console.log(this);
+                //console.log(this.$children[e.newIndex].name);
+                //[this.$children[e.oldIndex].name, this.$children[e.newIndex].name] = [this.$children[e.newIndex].name, this.$children[e.oldIndex].name]
+                //[this.$children[e.oldIndex].$refs.name, this.$children[e.newIndex].$refs.name] = [this.$children[e.newIndex].$refs.name, this.$children[e.oldIndex].$refs.name]
+                [this.$refs['vform-fields'][e.oldIndex].field_id,
+                 this.$refs['vform-fields'][e.newIndex].field_id] = [this.$refs['vform-fields'][e.newIndex].field_id,
+                                                                     this.$refs['vform-fields'][e.oldIndex].field_id];
             }
         }
     }

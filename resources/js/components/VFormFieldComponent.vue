@@ -1,26 +1,31 @@
 <template>
     <div>
-        <div class="d-flex justify-content-end">
-            <i
-            class="fas fa-times"
-            data-toggle="tooltip"
-            data-placement="top"
-            title="Delete field"
-            @click="emitDelete"></i>
+        <div class="d-flex justify-content-between">
+                <i
+                class="fas fa-align-justify handle mb-2"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Μετακίνηση"
+                ></i>
+                <i
+                class="fas fa-times"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Διαγραφή πεδίου"
+                @click="emitDelete"></i>
         </div>
         <div>
             <div class="form-row">
                 <label for="fieldtitleid" class="col-3 col-form-label">Τίτλος πεδίου:</label>
                 <div class="col-9 align-self-center">
-                    <editable-text :edittext.sync="title" :fid="'field['+this.id+'][title]'"></editable-text>
+                    <editable-text :edittext.sync="title" :fid="'field['+field_id+'][title]'"></editable-text>
                 </div>
             </div>
             <div class="form-row">
                 <label for="fieldtitleid" class="col-3 col-form-label">Τίτλος πεδίου:</label>
                 <div class="col-9 align-self-center">
                     <select
-                    id="fieldtype"
-                    :name="'field['+this.id+'][type]'"
+                    :name="'field['+field_id+'][type]'"
                     v-model="cbselected"
                     >
                         <option
@@ -39,7 +44,7 @@
                 :edittext.sync="dlistvalues">
                 </editable-list>
 
-                <input type="hidden" :name="'field['+this.id+'][values]'" :value="dlistvalues"/>
+                <input type="hidden" :name="'field['+field_id+'][values]'" :value="dlistvalues"/>
             </div>
         </div>
     </div>
@@ -108,6 +113,7 @@
 
                 ],
                 dlistvalues: this.listvalues,
+                field_id: this.id,
             }
         },
         methods: {

@@ -27,6 +27,7 @@ Vue.component('editable-list', () => import('./components/VEditableListComponent
 Vue.component('rolecomponent', () => import('./components/RoleComponent.vue'));
 Vue.component('pillbox', () => import('./components/VPillBoxComponent.vue'));
 Vue.component('vdatatable-component', () => import('./components/VDataTableComponent.vue'));
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
