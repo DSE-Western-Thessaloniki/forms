@@ -170,14 +170,6 @@
             },
 
             dragEnded: function(e) {
-                console.log(e);
-                console.log(this.$refs['vform-fields'][e.newIndex].field_id);
-                console.log(this.$refs['vform-fields'][e.oldIndex].field_id);
-                //console.log(this.$children[e.oldIndex].name);
-                //console.log(this);
-                //console.log(this.$children[e.newIndex].name);
-                //[this.$children[e.oldIndex].name, this.$children[e.newIndex].name] = [this.$children[e.newIndex].name, this.$children[e.oldIndex].name]
-                //[this.$children[e.oldIndex].$refs.name, this.$children[e.newIndex].$refs.name] = [this.$children[e.newIndex].$refs.name, this.$children[e.oldIndex].$refs.name]
                 [this.$refs['vform-fields'][e.oldIndex].field_id,
                  this.$refs['vform-fields'][e.newIndex].field_id] = [this.$refs['vform-fields'][e.newIndex].field_id,
                                                                      this.$refs['vform-fields'][e.oldIndex].field_id];
