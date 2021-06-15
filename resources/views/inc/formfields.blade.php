@@ -4,12 +4,16 @@
     </label>
     <div class="col-sm-9">
         @php
-            $data_array = $field->field_data()->where('school_id', session('school_id'))->first()->toArray();
-            try {
-                $data = $data_array['data'];
-            }
-            catch (\Exception $e) {
-                $data = '';
+            $data = "";
+            $data_collection = $field->field_data()->where('school_id', session('school_id'))->first();
+            if ($data_collection) {
+                $data_array = $data_collection->toArray();
+                try {
+                    $data = $data_array['data'];
+                }
+                catch (\Exception $e) {
+                    $data = '';
+                }
             }
         @endphp
 
@@ -51,9 +55,20 @@
             @endforeach
         @endif
         @if ($field->type == 3) <!-- Πολλαπλή επιλογή -->
+            @php
+                $selected = json_decode($data);
+            @endphp
             @foreach (json_decode($field->listvalues) as $listvalues)
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="f{!!$field->id!!}[]" id="f{!!$field->id!!}l{!!$listvalues->id!!}" value="{!!$listvalues->id!!}" {!! $disabled ?? '' !!}>
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="f{!!$field->id!!}[]"
+                    id="f{!!$field->id!!}l{!!$listvalues->id!!}"
+                    value="{!!$listvalues->id!!}"
+                    {!! $disabled ?? '' !!}
+                    {!! in_array($listvalues->id, $selected) ? 'checked' : '' !!}
+                >
                 <label class="form-check-label" for="f{!!$field->id!!}l{!!$listvalues->id!!}">
                     {!!$listvalues->value!!}
                 </label>

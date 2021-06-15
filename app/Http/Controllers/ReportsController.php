@@ -87,6 +87,9 @@ class ReportsController extends Controller
         $fields = $form->form_fields;
         foreach ($fields as $field) {
             $data = $request->input("f".$field->id);
+            if (is_array($data)) {
+                $data = json_encode($data);
+            }
             $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id], ['data' => $data]);
         }
 
