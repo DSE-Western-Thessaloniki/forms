@@ -8,7 +8,7 @@
 
             <vform-component
                 :parse=true
-                :parseobj="{{ $form->formFields->toJson() }}"
+                :parseobj="{{ $form->form_fields->toJson() }}"
                 parsetitle="{{ $form->title }}"
                 parsenotes="{{ $form->notes }}"
                 :schools="{{ json_encode($schools) }}"
