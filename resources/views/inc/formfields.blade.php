@@ -67,7 +67,7 @@
                     id="f{!!$field->id!!}l{!!$listvalues->id!!}"
                     value="{!!$listvalues->id!!}"
                     {!! $disabled ?? '' !!}
-                    {!! in_array($listvalues->id, $selected) ? 'checked' : '' !!}
+                    {!! $selected && in_array($listvalues->id, $selected) ? 'checked' : '' !!}
                 >
                 <label class="form-check-label" for="f{!!$field->id!!}l{!!$listvalues->id!!}">
                     {!!$listvalues->value!!}
