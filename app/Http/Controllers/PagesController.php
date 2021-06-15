@@ -23,17 +23,19 @@ class PagesController extends Controller
     }
 
     public function checkLogin(Request $request) {
+        $school_code = $request->input('school_code');
+
+        //$school_id = $request->input('school_id');
         // Αν στάλθηκε αναγνωριστικό
-        $school_id = $request->input('school_id');
-        if ($request->input('school_id')) {
-            $school = School::where('username', $school_id)->first();
+        if ($school_code) {
+            $school = School::where('username', $school_code)->first();
             if (!$school) { // Αν δεν βρέθηκε το id δες μήπως συνδέθηκαν με τα στοιχεία του MySchool
-                $school = School::where('code', $school_id)->first();
+                $school = School::where('code', $school_code)->first();
             }
             if ($school) {
                 Auth::guard('school')->login($school);
-                $request->session()->put('school_id', $school_id);
-                $request->session()->put('school_name', $request->input('school_name'));
+                $request->session()->put('school_id', $school->id);
+                $request->session()->put('school_name', $school->name);
                 return redirect(route('report.index'));
             }
         }
