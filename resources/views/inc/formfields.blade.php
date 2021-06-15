@@ -4,9 +4,9 @@
     </label>
     <div class="col-sm-9">
         @php
-            $data_array = $field->field_data()->where('school_id', session('school_id'))->get()->toArray();
+            $data_array = $field->field_data()->where('school_id', session('school_id'))->first()->toArray();
             try {
-                $data = $data_array[0]['data'];
+                $data = $data_array['data'];
             }
             catch (\Exception $e) {
                 $data = '';
