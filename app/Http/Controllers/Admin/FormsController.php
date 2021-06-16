@@ -259,7 +259,14 @@ class FormsController extends Controller
             array_push($dataTableColumns, $field->title);
             foreach ($field->field_data()->get() as $field_data) {
                 foreach ($field_data->schools()->get() as $school) {
-                    if ($field->type == 3) {
+                    if ($field->type == 2 || $field->type == 4) {
+                        $selections = json_decode($field->listvalues);
+                        foreach($selections as $selection) {
+                            if ($selection->id == $field_data->data) {
+                                $dataTable[$school->code][$field->title] = $selection->value;
+                            }
+                        }
+                    } elseif ($field->type == 3) {
                         $selections = json_decode($field->listvalues);
                         $data = json_decode($field_data->data);
                         $i = 0;
