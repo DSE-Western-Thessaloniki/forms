@@ -68,6 +68,7 @@ class FormsController extends Controller
         $form->notes = $request->input('notes');
         $form->user_id = Auth::id();
         $form->active = true;
+        $form->multiple = $request->input('multiple_input') ? true : false;
         $form->save();
 
         $formfield = $request->input('field');
@@ -177,6 +178,7 @@ class FormsController extends Controller
         $form->title = $request->input('title');
         $form->notes = $request->input('notes');
         $form->user_id = Auth::id();
+        $form->multiple = $request->input('multiple_input') ? true : false;
         $form->save();
 
         // Check if we should delete fields

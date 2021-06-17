@@ -18,6 +18,10 @@
                                         </textarea>
                                     </div>
                                 </div>
+                                <div class="form-row form-check">
+                                        <input type="checkbox" class="form-check-input" id="multiple_input" name="multiple_input" value=1 v-model="multiple">
+                                        <label class="form-check-label" for="multiple_input">Πολλαπλή συμπλήρωση στοιχείων φόρμας</label>
+                                </div>
                             </li>
                             <draggable v-model="fields" handle=".handle" @end="dragEnded">
                                 <li class="list-group-item" v-for="field in fields" :key="field.id">
@@ -114,6 +118,7 @@
             },
             schools: Array,
             categories: Array,
+            multiple: Boolean,
         },
         mounted() {
             console.log('Component mounted.')
