@@ -73,6 +73,7 @@ Route::get('/login', [PagesController::class, 'login'])->name('login');
 Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
 Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
 
+Route::get('/report/{id}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
 Route::resource('report', ReportsController::class)
     ->middleware('sch.test')
     ->missing(function (Request $request) {

@@ -75,6 +75,23 @@ class ReportsController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editRecord($id, $record)
+    {
+        $form = Form::find($id);
+        if ($form)
+            return view('report.edit')
+                ->with('form', $form)
+                ->with('record', $record);
+        else
+            return view('home');
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
