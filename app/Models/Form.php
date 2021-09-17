@@ -11,6 +11,8 @@ use App\Models\SchoolCategory;
 
 class Form extends Model
 {
+    use UsesUuid;
+
     // Table name
     // Not really needed as Laravel takes the plural form of the model as
     // a default name for the table...
