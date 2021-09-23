@@ -17,7 +17,12 @@
     @endif
 
     @php
-        $record = $record ?? 0;
+        if ($form->multiple) {
+            $record = $record ?? 0;
+        }
+        else {
+            $record = 0;
+        }
         $save = true;
     @endphp
 
