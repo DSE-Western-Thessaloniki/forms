@@ -18,6 +18,7 @@
 
     @php
         $record = $record ?? 0;
+        $save = true;
     @endphp
 
     <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>
@@ -61,68 +62,72 @@
 
                 @if ($record > $total_records)
                     Δεν υπάρχει η εγγραφή
+                    @php
+                        $save = false;
+                    @endphp
                 @else
                     @foreach ($form->form_fields as $field)
                     @include('inc.formfields')
                     @endforeach
-                @endif
 
-                @if($form->multiple) {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
+                    @if($form->multiple) {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
 
-                    <nav>
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item {{ $record > 0 ? '' : 'disabled' }}">
-                                <button
-                                    class="page-link"
-                                    type="submit"
-                                    formaction="{{ route('report.edit.record.update', [$form->id, $record, $record > 0 ? ($record - 1) : 0]) }}"
-                                    formmethod="post"
-                                    {{ $record > 0 ? "tabindex='-1' aria-disabled='true'" : '' }}
-                                >
-                                    @icon('fas fa-chevron-left')
-                                </button>
-                            </li>
-                            @for($i = 0; $i < ($total_records + 1); $i++)
-                            <li class="page-item {{ $i == $record ? 'active' : '' }}" >
-                                @if($i == $record)
-                                    <button type="button" class="page-link">{{ $i + 1 }}</a>
-                                @else
+                        <nav>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {{ $record > 0 ? '' : 'disabled' }}">
                                     <button
                                         class="page-link"
                                         type="submit"
-                                        formaction="{{ route('report.edit.record.update', [$form->id, $record, $i]) }}"
+                                        formaction="{{ route('report.edit.record.update', [$form->id, $record, $record > 0 ? ($record - 1) : 0]) }}"
                                         formmethod="post"
+                                        {{ $record > 0 ? "tabindex='-1' aria-disabled='true'" : '' }}
                                     >
-                                        {{ $i + 1 }}
+                                        @icon('fas fa-chevron-left')
                                     </button>
-                                @endif
-                            </li>
-                            @endfor
-                            <li class="page-item {{ $record < $total_records ? '' : 'disabled' }}">
-                                <button
-                                    class="page-link"
-                                    type="submit"
-                                    formaction="{{ route('report.edit.record.update', [$form->id, $record, $record < $total_records ? $record + 1 : $total_records]) }}"
-                                    formmethod="post"
-                                    {{ $record >= $total_records ? "tabindex='-1' aria-disabled='true'" : '' }}
-                                >
-                                    @icon('fas fa-chevron-right')
-                            </button>
-                            </li>
-                            <li class="page-item">
-                                <button
-                                    class="page-link"
-                                    type="submit"
-                                    formaction="{{ route('report.edit.record.update', [$form->id, $record, 'new']) }}"
-                                >
-                                    @icon('fas fa-asterisk') Νέα εγγραφή
+                                </li>
+                                @for($i = 0; $i < ($total_records + 1); $i++)
+                                <li class="page-item {{ $i == $record ? 'active' : '' }}" >
+                                    @if($i == $record)
+                                        <button type="button" class="page-link">{{ $i + 1 }}</a>
+                                    @else
+                                        <button
+                                            class="page-link"
+                                            type="submit"
+                                            formaction="{{ route('report.edit.record.update', [$form->id, $record, $i]) }}"
+                                            formmethod="post"
+                                        >
+                                            {{ $i + 1 }}
+                                        </button>
+                                    @endif
+                                </li>
+                                @endfor
+                                <li class="page-item {{ $record < $total_records ? '' : 'disabled' }}">
+                                    <button
+                                        class="page-link"
+                                        type="submit"
+                                        formaction="{{ route('report.edit.record.update', [$form->id, $record, $record < $total_records ? $record + 1 : $total_records]) }}"
+                                        formmethod="post"
+                                        {{ $record >= $total_records ? "tabindex='-1' aria-disabled='true'" : '' }}
+                                    >
+                                        @icon('fas fa-chevron-right')
                                 </button>
-                            </li>
-                        </ul>
-                    </nav>
-                    <hr/>
-                    <input type="text" class="form-control" value="{{ ($record + 1).' / '.($total_records + 1) }}" placeholder=""/>
+                                </li>
+                                <li class="page-item">
+                                    <button
+                                        class="page-link"
+                                        type="submit"
+                                        formaction="{{ route('report.edit.record.update', [$form->id, $record, 'new']) }}"
+                                    >
+                                        @icon('fas fa-asterisk') Νέα εγγραφή
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                        <hr/>
+                        <input type="text" class="form-control" value="{{ ($record + 1).' / '.($total_records + 1) }}" placeholder=""/>
+                    @endif
                 @endif
+
             </div>
         </div>
         <hr/>
@@ -134,7 +139,9 @@
             </div>
             <div class="col-10 d-flex justify-content-end">
                 @method('PUT')
-                <button class='btn btn-primary' type='submit'>Αποθήκευση</a>
+                @if($save)
+                    <button class='btn btn-primary' type='submit'>Αποθήκευση</a>
+                @endif
             </div>
         </div>
         @csrf
