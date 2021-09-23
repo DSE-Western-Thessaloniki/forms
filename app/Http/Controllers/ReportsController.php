@@ -53,10 +53,23 @@ class ReportsController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-        if ($form)
-            return view('report.show')->with('form', $form);
-        else
-            return view('home');
+
+        if ($form) {
+            $sch_id = Auth::guard('school')->user()->id;
+            $school = School::find($sch_id);
+            $categories = $school->categories;
+            $form_categories = $form->school_categories;
+            $in_category = false;
+            foreach ($categories as $category) {
+                if ($form_categories->contains($category))
+                    $in_category = true;
+            }
+            if ($form->schools()->where('school_id', Auth::guard('school')->user()->id)->count() > 0 || $in_category) {
+                    return view('report.show')->with('form', $form);
+            }
+        }
+
+        return redirect(route('report.index'));
     }
 
     /**
@@ -71,7 +84,7 @@ class ReportsController extends Controller
         if ($form)
             return view('report.edit')->with('form', $form);
         else
-            return view('home');
+            return redirect(route('report.index'));
     }
 
     /**
@@ -88,7 +101,7 @@ class ReportsController extends Controller
                 ->with('form', $form)
                 ->with('record', $record);
         else
-            return view('home');
+            return redirect(route('report.index'));
     }
 
     /**
@@ -101,16 +114,20 @@ class ReportsController extends Controller
     public function update(Request $request, $id)
     {
         $form = Form::with('form_fields')->find($id);
-        $fields = $form->form_fields;
-        foreach ($fields as $field) {
-            $data = $request->input("f".$field->id);
-            if (is_array($data)) {
-                $data = json_encode($data);
+        if ($form) {
+            $fields = $form->form_fields;
+            foreach ($fields as $field) {
+                $data = $request->input("f".$field->id);
+                if (is_array($data)) {
+                    $data = json_encode($data);
+                }
+                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id], ['data' => $data]);
             }
-            $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id], ['data' => $data]);
-        }
 
-        return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+            return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+        else
+            return redirect(route('report.index'));
     }
 
     /**
@@ -125,44 +142,48 @@ class ReportsController extends Controller
     public function updateRecord(Request $request, $id, $record, $next)
     {
         $form = Form::with('form_fields')->find($id);
-        $fields = $form->form_fields;
-        foreach ($fields as $field) {
-            $data = $request->input("f".$field->id);
-            if (is_array($data)) {
-                $data = json_encode($data);
-            }
-            $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $record], ['data' => $data]);
-        }
-
-        // Που πάμε τώρα;
-        if ($next === 'new') {
-            // Βρες την τελευταία εγγραφή
-            $last_record = 0;
+        if ($form) {
+            $fields = $form->form_fields;
             foreach ($fields as $field) {
-                if ($last_record < $field->field_data->count()) {
-                    $last_record = $field->field_data->count();
+                $data = $request->input("f".$field->id);
+                if (is_array($data)) {
+                    $data = json_encode($data);
                 }
+                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $record], ['data' => $data]);
             }
-            // Ετοίμασε τις εγγραφές στον πίνακα
-            foreach ($fields as $field) {
-                $data = null;
-                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $last_record], ['data' => $data]);
+
+            // Που πάμε τώρα;
+            if ($next === 'new') {
+                // Βρες την τελευταία εγγραφή
+                $last_record = 0;
+                foreach ($fields as $field) {
+                    if ($last_record < $field->field_data->count()) {
+                        $last_record = $field->field_data->count();
+                    }
+                }
+                // Ετοίμασε τις εγγραφές στον πίνακα
+                foreach ($fields as $field) {
+                    $data = null;
+                    $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $last_record], ['data' => $data]);
+                }
+                return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
             }
-            return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
-        }
 
-        if ($next === 'exit') {
-            return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
-        }
+            if ($next === 'exit') {
+                return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+            }
 
-        if ($next === 'next') {
-            return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
-        }
+            if ($next === 'next') {
+                return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+            }
 
-        if ($next === 'prev') {
-            return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
-        }
+            if ($next === 'prev') {
+                return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+            }
 
-        return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+            return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+        else
+            return redirect(route('report.index'));
     }
 }
