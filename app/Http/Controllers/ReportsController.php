@@ -164,7 +164,5 @@ class ReportsController extends Controller
         }
 
         return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
-        //return "OK";
-        //dd([$id, $record, $request, $next]);
     }
 }
