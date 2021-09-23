@@ -112,4 +112,59 @@ class ReportsController extends Controller
 
         return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
     }
+
+    /**
+     * Update the specified resource in storage and move to the "next" record.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $id The form id
+     * @param  int $record The record to be saved
+     * @param  int|String $next The next record to go to
+     * @return \Illuminate\Http\Response
+     */
+    public function updateRecord(Request $request, $id, $record, $next)
+    {
+        $form = Form::with('form_fields')->find($id);
+        $fields = $form->form_fields;
+        foreach ($fields as $field) {
+            $data = $request->input("f".$field->id);
+            if (is_array($data)) {
+                $data = json_encode($data);
+            }
+            $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $record], ['data' => $data]);
+        }
+
+        // Που πάμε τώρα;
+        if ($next === 'new') {
+            // Βρες την τελευταία εγγραφή
+            $last_record = 0;
+            foreach ($fields as $field) {
+                if ($last_record < $field->field_data->count()) {
+                    $last_record = $field->field_data->count();
+                }
+            }
+            // Ετοίμασε τις εγγραφές στον πίνακα
+            foreach ($fields as $field) {
+                $data = null;
+                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $last_record], ['data' => $data]);
+            }
+            return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+
+        if ($next === 'exit') {
+            return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+
+        if ($next === 'next') {
+            return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+
+        if ($next === 'prev') {
+            return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+        }
+
+        return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+        //return "OK";
+        //dd([$id, $record, $request, $next]);
+    }
 }
