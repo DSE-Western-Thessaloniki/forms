@@ -37,7 +37,7 @@
                             <tbody>
                                 @forelse($forms as $form)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $loop->iteration + $forms->firstItem() - 1 }}</td>
                                         <td><a href="{{ route('admin.form.show', $form->id) }}">{{ $form->title }}</a></td>
                                         <td>{{ $form->notes }}</td>
                                         <td>{{ $form->created_at }}</td>
