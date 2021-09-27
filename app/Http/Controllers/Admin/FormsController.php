@@ -32,7 +32,7 @@ class FormsController extends Controller
     public function index()
     {
         //$forms = Form::all();
-        $forms = Form::orderBy('created_at', 'desc')->paginate(15);
+        $forms = Form::orderBy('created_at', 'desc')->with('user')->paginate(15);
         return view('admin.form.index')->with('forms', $forms);
     }
 

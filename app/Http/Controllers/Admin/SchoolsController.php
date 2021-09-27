@@ -18,7 +18,9 @@ class SchoolsController extends Controller
      */
     public function index()
     {
-        $schools = School::orderBy('created_at', 'desc')->paginate(25);
+        $schools = School::orderBy('created_at', 'desc')
+            ->with('user', 'categories')
+            ->paginate(10);
         return view('admin.school.index')->with('schools', $schools);
     }
 
