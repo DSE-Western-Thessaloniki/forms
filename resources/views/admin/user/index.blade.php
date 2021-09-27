@@ -42,6 +42,8 @@
                                     <td>
                                         @if($user->isAdministrator())
                                             <span class="text-dark h2">@icon('fas fa-user-ninja')</span>
+                                        @elseif ($user->roles()->where('name', 'Author')->count() > 0)
+                                            <span class="text-danger h2">@icon('fas fa-user-edit')</span>
                                         @else
                                             <span class="text-success h2">@icon('fas fa-user')</span>
                                         @endif
