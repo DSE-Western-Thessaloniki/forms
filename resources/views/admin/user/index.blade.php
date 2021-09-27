@@ -38,7 +38,7 @@
                             <tbody>
                                 @forelse($users as $user)
                                 <tr>
-                                    <td>{{ $loop->iteration }}.</td>
+                                    <td>{{ $loop->iteration + $users->firstItem() - 1 }}.</td>
                                     <td>
                                         @if($user->isAdministrator())
                                             <span class="text-dark h2">@icon('fas fa-user-ninja')</span>
@@ -79,6 +79,7 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $users->links() }}
                 </div>
                 @else
                     Δεν επιτρέπεται η πρόσβαση
