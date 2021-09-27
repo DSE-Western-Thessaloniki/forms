@@ -55,18 +55,8 @@ class ReportsController extends Controller
         $form = Form::find($id);
 
         if ($form) {
-            $sch_id = Auth::guard('school')->user()->id;
-            $school = School::find($sch_id);
-            $categories = $school->categories;
-            $form_categories = $form->school_categories;
-            $in_category = false;
-            foreach ($categories as $category) {
-                if ($form_categories->contains($category))
-                    $in_category = true;
-            }
-            if ($form->schools()->where('school_id', Auth::guard('school')->user()->id)->count() > 0 || $in_category) {
-                    return view('report.show')->with('form', $form);
-            }
+            $this->authorize('view', Auth::guard('school')->user());
+            return view('report.show')->with('form', $form);
         }
 
         return redirect(route('report.index'));
@@ -81,10 +71,12 @@ class ReportsController extends Controller
     public function edit($id)
     {
         $form = Form::find($id);
-        if ($form)
+        if ($form) {
+            $this->authorize('update', Auth::guard('school')->user());
             return view('report.edit')->with('form', $form);
-        else
-            return redirect(route('report.index'));
+        }
+
+        return redirect(route('report.index'));
     }
 
     /**
@@ -96,10 +88,12 @@ class ReportsController extends Controller
     public function editRecord($id, $record)
     {
         $form = Form::find($id);
-        if ($form)
+        if ($form) {
+            $this->authorize('update', Auth::guard('school')->user());
             return view('report.edit')
                 ->with('form', $form)
                 ->with('record', $record);
+        }
         else
             return redirect(route('report.index'));
     }
@@ -115,6 +109,7 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
+            $this->authorize('update', Auth::guard('school')->user());
             $fields = $form->form_fields;
             foreach ($fields as $field) {
                 $data = $request->input("f".$field->id);
@@ -143,6 +138,7 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
+            $this->authorize('update', Auth::guard('school')->user());
             $fields = $form->form_fields;
             foreach ($fields as $field) {
                 $data = $request->input("f".$field->id);
