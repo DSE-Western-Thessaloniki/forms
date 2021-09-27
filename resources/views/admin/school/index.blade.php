@@ -7,7 +7,6 @@
             <div class="card">
                 <div class="card-header">Σχολεία</div>
 
-                @if(Auth::user()->isAdministrator())
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -45,7 +44,7 @@
                             <tbody>
                             @forelse($schools as $school)
                             <tr>
-                                <td>{{ $loop->iteration }}.</td>
+                                <td>{{ $loop->iteration + $schools->firstItem() - 1 }}.</td>
                                 <td>
                                     <a href="{{ route('admin.school.show', $school->id) }}">{{$school->name}}</a>
                                 </td>
@@ -70,14 +69,18 @@
                                 @endif
                                 <td>{{$school->user->name}}</td>
                                 <td>
-                                    <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
+                                    @if(Auth::user()->roles->where('name', 'Administrator')->count() > 0)
+                                        <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
+                                    @endif
                                 </td>
                                 <td>
-                                    <form action="{{ route('admin.school.destroy', $school->id)}}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
-                                    </form>
+                                    @if(Auth::user()->roles->where('name', 'Administrator')->count() > 0)
+                                        <form action="{{ route('admin.school.destroy', $school->id)}}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
@@ -88,10 +91,8 @@
                         </tbody>
                     </table>
                 </div>
+                {{ $schools->links() }}
             </div>
-            @else
-                Δεν επιτρέπεται η πρόσβαση
-            @endif
         </div>
     </div>
 </div>
