@@ -1,0 +1,9 @@
+{
+	"@class" : "org.apereo.cas.services.RegexRegisteredService",
+	"serviceId":"^http://.+/.+",
+	"name" : "casTest",
+	"id" : 1,
+	"evaluationOrder" : 1,
+	"allowedAttributes":["uid","cn","mail"]
+}
+   

@@ -1,0 +1,12 @@
+{
+    "tstsch": {
+        "uid": ["999"],
+        "mail": ["tst@sch.gr"],
+        "cn": ["Dokimastiki monada"]
+    },
+    "tstuser": {
+        "uid":["111"],
+        "mail":["a@a.net"],
+        "cn":["Dokimastikos xrhsths"]
+    }
+}
