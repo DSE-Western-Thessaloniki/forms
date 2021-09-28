@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\Form;
 use App\Models\School;
