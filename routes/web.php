@@ -65,15 +65,19 @@ Route::prefix('admin')
         }
     );
 
-// Route::get('/login', function() {
-//     cas()->authenticate();
-// });
+Route::get('/login', function() {
+    return Redirect::route('report.index');
+})->name('login');
 
-Route::get('/login', [PagesController::class, 'login'])->name('login');
-Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
-Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
+//Route::get('/login', [PagesController::class, 'login'])->name('login');
+//Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
+//Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
 
-Route::middleware('sch.test')
+Route::get('/logout', function() {
+    cas()->logout();
+})->middleware('cas.auth')->name('logout');
+
+Route::middleware('cas.auth')
     ->group(function () {
         Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');
         Route::get('/report/{report}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
