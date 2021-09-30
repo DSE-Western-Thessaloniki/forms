@@ -26,7 +26,11 @@
         $save = true;
     @endphp
 
-    <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>
+    @if ($form->multiple)
+        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>    
+    @else
+        <form action={{ route('report.update', $form->id) }} method='post'>
+    @endif
 
         <h1>{{$form->title}}</h1>
         <h3>{{$form->notes}}</h3>
