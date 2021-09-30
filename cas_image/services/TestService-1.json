@@ -4,6 +4,9 @@
 	"name" : "casTest",
 	"id" : 1,
 	"evaluationOrder" : 1,
-	"allowedAttributes":["uid","cn","mail"]
+	"attributeReleasePolicy" : {
+		"@class" : "org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy",
+		"allowedAttributes": [ "java.util.ArrayList", ["uid","cn","mail"] ]
+	}
 }
    
