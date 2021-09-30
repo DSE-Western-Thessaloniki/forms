@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormFieldData;
 use App\Models\School;
+use App\Models\User;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,8 +29,8 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        $id = Auth::guard('school')->user()->id;
-        $school = School::find($id);
+        $id = cas()->getAttribute('uid');
+        $school = School::where('username', $id)->first();
         $categories = $school->categories;
         $forms = Form::whereHas('schools', function ($q) use ($school) {
                 $q->where('school_id', $school->id);
@@ -71,8 +72,10 @@ class ReportsController extends Controller
     public function edit($id)
     {
         $form = Form::find($id);
+        $user = new User();
+        $user->username = cas()->getAttribute('uid');
         if ($form) {
-            $this->authorize('update', Auth::guard('school')->user());
+            $this->authorizeForUser($user, 'update', $form);
             return view('report.edit')->with('form', $form);
         }
 
@@ -88,8 +91,10 @@ class ReportsController extends Controller
     public function editRecord($id, $record)
     {
         $form = Form::find($id);
+        $user = new User();
+        $user->username = cas()->getAttribute('uid');
         if ($form) {
-            $this->authorize('update', Auth::guard('school')->user());
+            $this->authorize('update', $form);
             return view('report.edit')
                 ->with('form', $form)
                 ->with('record', $record);
@@ -109,14 +114,17 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
-            $this->authorize('update', Auth::guard('school')->user());
+            $user = new User();
+            $user->username = cas()->getAttribute('uid');
+            $school = School::where('username', $user->username)->first();
+            $this->authorizeForUser($user, 'update', $form);
             $fields = $form->form_fields;
             foreach ($fields as $field) {
                 $data = $request->input("f".$field->id);
                 if (is_array($data)) {
                     $data = json_encode($data);
                 }
-                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id], ['data' => $data]);
+                $field->field_data()->updateOrCreate(['school_id' => $school->id], ['data' => $data]);
             }
 
             return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
@@ -138,14 +146,17 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
-            $this->authorize('update', Auth::guard('school')->user());
+            $user = new User();
+            $user->username = cas()->getAttribute('uid');
+            $school = School::where('username', $user->username)->first();
+            $this->authorizeForUser($user, 'update', $form);
             $fields = $form->form_fields;
             foreach ($fields as $field) {
                 $data = $request->input("f".$field->id);
                 if (is_array($data)) {
                     $data = json_encode($data);
                 }
-                $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $record], ['data' => $data]);
+                $field->field_data()->updateOrCreate(['school_id' => $school->id, 'record' => $record], ['data' => $data]);
             }
 
             // Που πάμε τώρα;

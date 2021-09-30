@@ -78,8 +78,8 @@ class FormPolicy
      */
     public function update(User $user, Form $form)
     {
-        if (Auth::guard('school')->check()) { // The user is a school
-            $school = School::find($user->id);
+        if (cas()->isAuthenticated()) { // The user is a school
+            $school = School::where('username', $user->username)->first();
             $categories = $school->categories;
             $form_categories = $form->school_categories;
             $in_category = false;
@@ -87,7 +87,7 @@ class FormPolicy
                 if ($form_categories->contains($category))
                     $in_category = true;
             }
-            if ($form->schools()->where('school_id', Auth::guard('school')->user()->id)->count() > 0 || $in_category)
+            if ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category)
                 return true;
             return false;
         }
