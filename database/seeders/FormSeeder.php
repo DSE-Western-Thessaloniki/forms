@@ -5,12 +5,40 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Form;
 use App\Models\FormField;
+use Faker\Generator;
+use Illuminate\Container\Container;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Illuminate\Support\Str;
 
 class FormSeeder extends Seeder
 {
+    /**
+     * The current Faker instance.
+     *
+     * @var \Faker\Generator
+     */
+    protected $faker;
+
+    /**
+     * Create a new seeder instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->faker = $this->withFaker();
+    }
+
+    /**
+     * Get a new Faker instance.
+     *
+     * @return \Faker\Generator
+     */
+    protected function withFaker()
+    {
+        return Container::getInstance()->make(Generator::class);
+    }
+
     /**
      * Run the database seeds.
      *
@@ -19,6 +47,10 @@ class FormSeeder extends Seeder
     public function run()
     {
         $user = User::where('username', 'admin0')->first();
+
+        if (!$user) {
+            throw new \Exception('User admin0 not found!');
+        }
 
         Form::factory()
             ->count(40)
@@ -41,7 +73,7 @@ class FormSeeder extends Seeder
                                     $listvalues,
                                     [
                                         "id" => $i,
-                                        "value" => Str::random(),
+                                        "value" => $this->faker->word(),
                                     ]
                                 );
                             }
