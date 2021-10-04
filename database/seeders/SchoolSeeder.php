@@ -25,6 +25,10 @@ class SchoolSeeder extends Seeder
         $epal = SchoolCategory::where('name', 'ΕΠΑΛ')->first();
         $smeae = SchoolCategory::where('name', 'ΣΜΕΑΕ')->first();
 
+        if (!($user && $gymnasio && $gel && $epal && $smeae)) {
+            throw new \Exception('You have to run UserSeeder and SchoolCategorySeeder first!');
+        }
+
         // Φτιάξε 10 Γυμνάσια
         $schools = School::factory()
             ->count(10)
