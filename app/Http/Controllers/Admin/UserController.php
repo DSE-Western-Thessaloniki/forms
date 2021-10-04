@@ -70,7 +70,7 @@ class UserController extends Controller
 
         $user->save();
 
-        $userRole = Role::all()->where('name', 'User');
+        $userRole = Role::where('name', 'User')->first();
         $user->roles()->attach($userRole);
 
         return redirect(route('admin.user.show', [$user]))
