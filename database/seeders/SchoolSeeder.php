@@ -33,9 +33,7 @@ class SchoolSeeder extends Seeder
                 'active' => $sequence->index % 2,
             ]))
             ->category(SchoolFactory::gymnasio)
-            ->forUser([
-                'username' => 'admin0',
-            ])
+            ->for($user)
             ->create();
 
 
@@ -54,9 +52,7 @@ class SchoolSeeder extends Seeder
                 'active' => $sequence->index % 2,
             ]))
             ->category(SchoolFactory::gymnasio)
-            ->forUser([
-                'username' => 'admin0',
-            ])
+            ->for($user)
             ->create();
 
         foreach ($schools as $school) {
@@ -74,9 +70,7 @@ class SchoolSeeder extends Seeder
                 'active' => $sequence->index % 2,
             ]))
             ->category(SchoolFactory::epal)
-            ->forUser([
-                'username' => 'admin0',
-            ])
+            ->for($user)
             ->create();
 
 
