@@ -59,7 +59,7 @@
 
                         <tr>
                             <td>Ρόλοι</td>
-                            <td>
+                            <td class="text-center">
                                 <ul class="role-list">
                                     @foreach ($user->roles as $role)
                                     <li>
