@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Http\Traits\UsesUuid;
 use App\Models\FormField;
@@ -13,6 +14,7 @@ use App\Models\SchoolCategory;
 class Form extends Model
 {
     use UsesUuid;
+    use HasFactory;
 
     // Table name
     // Not really needed as Laravel takes the plural form of the model as
