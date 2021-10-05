@@ -44,7 +44,7 @@
     <input
         type="checkbox"
         class="form-check-input"
-        name="f{!!$field->id!!}"
+        name="f{!!$field->id!!}[]"
         id="f{!!$field->id!!}l{!!$listvalues->id!!}"
         value="{!!$listvalues->id!!}"
         {!! $disabled ?? '' !!}
