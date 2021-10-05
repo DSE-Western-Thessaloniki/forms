@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\SchoolCategory;
 use App\Models\Form;
 use App\Models\FormField;
+use App\Models\School;
+use App\Models\User;
 use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Database\Seeder;
@@ -52,12 +54,12 @@ class FormSeeder extends Seeder
             throw new \Exception('User admin0 not found!');
         }
 
-        Form::factory()
+        $forms = Form::factory()
             ->count(40)
             ->for($user)
             ->has(
                 FormField::factory()
-                    ->count(rand(1, 20))
+                    ->count(15)
                     ->state(new Sequence(function($sequence) {
                         $type = rand(0,10);
 
@@ -95,5 +97,11 @@ class FormSeeder extends Seeder
                 'form_fields'
             )
             ->create();
+
+            // Σύνδεση φόρμας με σχολική μονάδα και κατηγορία σχολείου
+            foreach($forms as $form) {
+                $form->schools()->attach(School::inRandomOrder()->first()->id);
+                $form->school_categories()->attach(SchoolCategory::inRandomOrder()->first()->id);
+            }
     }
 }
