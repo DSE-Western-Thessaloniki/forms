@@ -252,7 +252,7 @@ class FormsController extends Controller
         $form->load(
                 'form_fields',
                 'form_fields.field_data',
-                'form_fields.field_data.schools'
+                'form_fields.field_data.school'
         );
 
         $dataTable = array();
@@ -260,7 +260,7 @@ class FormsController extends Controller
         foreach ($form->form_fields()->get() as $field) {
             array_push($dataTableColumns, $field->title);
             foreach ($field->field_data()->get() as $field_data) {
-                foreach ($field_data->schools()->get() as $school) {
+                foreach ($field_data->school()->get() as $school) {
                     if ($field->type == 2 || $field->type == 4) {
                         $selections = json_decode($field->listvalues);
                         foreach($selections as $selection) {
