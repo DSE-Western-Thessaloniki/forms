@@ -53,12 +53,15 @@ class FormFieldDataSeeder extends Seeder
                     $this->create_field_data($form, $field, $school);
                 }
 
-                // Κάποια σχολεία της κατηγορίας πρέπει επίσης να δώσουν στοιχεία
-                foreach ($form->school_categories as $category) {
-                    $keys = array_rand($category->schools->toArray(), rand(1, count($category->schools)));
-                    if (!is_array($keys)) {
-                        $keys = [$keys];
-                    }
+            }
+
+            // Κάποια σχολεία της κατηγορίας πρέπει επίσης να δώσουν στοιχεία
+            foreach ($form->school_categories as $category) {
+                $keys = array_rand($category->schools->toArray(), rand(1, count($category->schools)));
+                if (!is_array($keys)) {
+                    $keys = [$keys];
+                }
+                foreach ($form->form_fields as $field) {
                     foreach ($keys as $key) {
                         if (!in_array($category->schools[$key], $form->schools->toArray())) {
                             $this->create_field_data($form, $field, $category->schools[$key]);
