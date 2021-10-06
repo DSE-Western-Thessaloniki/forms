@@ -16,6 +16,6 @@ class TestDataSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(SchoolSeeder::class);
         $this->call(FormSeeder::class);
-        $this->call(FormFieldData::class);
+        $this->call(FormFieldDataSeeder::class);
     }
 }
