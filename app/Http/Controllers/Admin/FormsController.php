@@ -27,9 +27,9 @@ class FormsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index() : \Illuminate\Contracts\View\View
     {
         //$forms = Form::all();
         $forms = Form::orderBy('created_at', 'desc')->with('user')->paginate(15);
@@ -39,9 +39,9 @@ class FormsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create() : \Illuminate\Contracts\View\View
     {
         $schools = School::where('active', 1)->get(['id', 'name']);
         $categories = SchoolCategory::all('id', 'name');
@@ -54,9 +54,9 @@ class FormsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request) : \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -114,9 +114,9 @@ class FormsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show($id) : \Illuminate\Contracts\View\View
     {
         $form = Form::find($id);
         if ($form)
@@ -129,9 +129,9 @@ class FormsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id) : \Illuminate\Contracts\View\View
     {
         $form = Form::find($id);
         if ($form) {
@@ -165,9 +165,9 @@ class FormsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) : \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -229,9 +229,9 @@ class FormsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy($id) : \Illuminate\Http\RedirectResponse
     {
         $form = Form::find($id);
         $form->form_fields()->delete();
@@ -244,9 +244,9 @@ class FormsController extends Controller
      * Παρουσίαση δεδομένων φόρμας.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function formData($id)
+    public function formData($id) : \Illuminate\Contracts\View\View
     {
         $form = Form::find($id);
         $form->load(
