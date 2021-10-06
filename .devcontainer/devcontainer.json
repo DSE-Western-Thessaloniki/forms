@@ -47,7 +47,8 @@
 		"tabnine.tabnine-vscode",
 		"octref.vetur",
 		"visualstudioexptteam.vscodeintellicode",
-		"redhat.vscode-yaml"
+		"redhat.vscode-yaml",
+        "m1guelpf.better-pest"
 	],
 	"remoteUser": "sail",
 	// "forwardPorts": [],
