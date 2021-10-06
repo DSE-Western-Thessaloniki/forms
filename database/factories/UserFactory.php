@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -59,16 +60,14 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the user is suspended.
+     * Indicate that the user is administrator.
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function admin()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'username' => 'admin',
-            ];
-        });
+        return $this->has(
+            Role::factory()->state(['name' => 'Administrator'])
+        );
     }
 }
