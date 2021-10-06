@@ -265,7 +265,7 @@ class FormsController extends Controller
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
-                            $dataTable[$field_data->school->code][$field->title] = $selection->value;
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
                         }
                     }
                 } elseif ($field->type == 3) {
@@ -275,11 +275,11 @@ class FormsController extends Controller
                     foreach($data as $item) {
                         foreach($selections as $selection) {
                             if ($selection->id == $item) {
-                                if ($i == 0) {
-                                    $dataTable[$field_data->school->code][$field->title] = $selection->value;
+                                if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
                                 }
                                 else {
-                                    $dataTable[$field_data->school->code][$field->title] .= ", ".$selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
                                 }
                             }
                         }
@@ -288,7 +288,7 @@ class FormsController extends Controller
 
                 }
                 else {
-                    $dataTable[$field_data->school->code][$field->title] = $field_data->data;
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
                 }
             }
         }

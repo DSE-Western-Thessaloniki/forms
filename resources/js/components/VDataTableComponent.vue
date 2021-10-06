@@ -9,14 +9,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="school in schools" :key="school.id">
-                    <td>{{ school.name }}</td>
-                    <td>{{ school.code }}</td>
+                <tr v-for="line in lines" :key="line.id">
+                    <td>{{ line.name }}</td>
+                    <td>{{ line.code }}</td>
                     <td v-for="column in columnsObj" :key="column.id">
                         {{
-                            ((typeof(data[school.code]) != "undefined") &&
-                             (typeof(data[school.code][column.title]) != "undefined")) ?
-                            data[school.code][column.title] :
+                            ((typeof(data[line.code]) != "undefined") &&
+                             (typeof(data[line.code][column.title]) != "undefined") &&
+                             (typeof(data[line.code][column.title][line.record]) != "undefined")) ?
+                            data[line.code][column.title][line.record] :
                             ''
                         }}
                     </td>
@@ -39,21 +40,47 @@
             console.log(this.columns);
             console.log(this.data);
             console.log(this.schools);
-        },
-        data: function() {
-            var columnsObj = Array();
-            var i=0;
-            this.columns.forEach(column => {
-                columnsObj.push({id: i, title: column});
-            });
-
-            return {
-                columnsObj: columnsObj,
-            }
+            console.log(this.lines);
         },
         methods: {
         },
         computed: {
+            columnsObj: function() {
+                var columnsObj = Array();
+                var i=0;
+                this.columns.forEach(column => {
+                    columnsObj.push({id: i, title: column});
+                    i += 1
+                });
+
+                return columnsObj;
+            },
+            lines: function() {
+                var i = 0;
+                var lines = Array();
+                this.schools.forEach(school => {
+                    var record = 0;
+                    do {
+                        var ok = false;
+                        this.columnsObj.forEach(column => {
+                            if ((typeof(this.data[school.code]) != "undefined") &&
+                                (typeof(this.data[school.code][column.title]) != "undefined") &&
+                                (typeof(this.data[school.code][column.title][record]) != "undefined"))
+                                {
+                                    ok = true;
+                                }
+                        });
+
+                        if (ok || record == 0) {
+                            lines.push({id: i, code: school.code, name: school.name, record: record});
+                            i += 1;
+                        }
+                        record += 1;
+                    } while (ok);
+                });
+
+                return lines;
+            }
         }
     }
 </script>
