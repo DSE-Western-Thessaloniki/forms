@@ -50,7 +50,7 @@ class FormFieldDataSeeder extends Seeder
             foreach ($form->form_fields as $field) {
                 // Κάθε σχολείο πρέπει να συμπληρώσει την φόρμα
                 foreach ($form->schools as $school) {
-                    $this->create_field_data($form, $field, $school, 1);
+                    $this->create_field_data($field, $school, 1);
                 }
 
             }
@@ -68,7 +68,7 @@ class FormFieldDataSeeder extends Seeder
                 foreach ($form->form_fields as $field) {
                     foreach ($keys as $key) {
                         if (!in_array($category->schools[$key], $form->schools->toArray())) {
-                            $this->create_field_data($form, $field, $category->schools[$key], $count);
+                            $this->create_field_data($field, $category->schools[$key], $count);
                         }
                     }
                 }
@@ -76,7 +76,7 @@ class FormFieldDataSeeder extends Seeder
         }
     }
 
-    protected function create_field_data($form, $field, $school, $count)
+    protected function create_field_data($field, $school, $count)
     {
         FormFieldData::factory()
             ->count($count)
