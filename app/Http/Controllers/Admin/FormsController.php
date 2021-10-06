@@ -257,39 +257,38 @@ class FormsController extends Controller
 
         $dataTable = array();
         $dataTableColumns = array();
-        foreach ($form->form_fields()->get() as $field) {
+        foreach ($form->form_fields as $field) {
             array_push($dataTableColumns, $field->title);
-            foreach ($field->field_data()->get() as $field_data) {
-                foreach ($field_data->school()->get() as $school) {
-                    if ($field->type == 2 || $field->type == 4) {
-                        $selections = json_decode($field->listvalues);
-                        foreach($selections as $selection) {
-                            if ($selection->id == $field_data->data) {
-                                $dataTable[$school->code][$field->title] = $selection->value;
-                            }
+            foreach ($field->field_data as $field_data) {
+                $field_data->school;
+                if ($field->type == 2 || $field->type == 4) {
+                    $selections = json_decode($field->listvalues);
+                    foreach($selections as $selection) {
+                        if ($selection->id == $field_data->data) {
+                            $dataTable[$field_data->school->code][$field->title] = $selection->value;
                         }
-                    } elseif ($field->type == 3) {
-                        $selections = json_decode($field->listvalues);
-                        $data = json_decode($field_data->data);
-                        $i = 0;
-                        foreach($data as $item) {
-                            foreach($selections as $selection) {
-                                if ($selection->id == $item) {
-                                    if ($i == 0) {
-                                        $dataTable[$school->code][$field->title] = $selection->value;
-                                    }
-                                    else {
-                                        $dataTable[$school->code][$field->title] .= ", ".$selection->value;
-                                    }
+                    }
+                } elseif ($field->type == 3) {
+                    $selections = json_decode($field->listvalues);
+                    $data = json_decode($field_data->data);
+                    $i = 0;
+                    foreach($data as $item) {
+                        foreach($selections as $selection) {
+                            if ($selection->id == $item) {
+                                if ($i == 0) {
+                                    $dataTable[$field_data->school->code][$field->title] = $selection->value;
+                                }
+                                else {
+                                    $dataTable[$field_data->school->code][$field->title] .= ", ".$selection->value;
                                 }
                             }
-                            $i++;
                         }
+                        $i++;
+                    }
 
-                    }
-                    else {
-                        $dataTable[$school->code][$field->title] = $field_data->data;
-                    }
+                }
+                else {
+                    $dataTable[$field_data->school->code][$field->title] = $field_data->data;
                 }
             }
         }
