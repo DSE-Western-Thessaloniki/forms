@@ -18,8 +18,11 @@
                             <a class="btn btn-primary" href="{{ route('admin.form.index') }}">
                                 @icon('fas fa-long-arrow-alt-left') Επιστροφή
                             </a>
-                            <a class="btn btn-success" href="{{ route('admin.form.data.csv', $form)}}">
+                            <a class="btn btn-danger" href="{{ route('admin.form.data.csv', $form)}}">
                                 @icon('fas fa-file-csv') Λήψη αρχείου csv
+                            </a>
+                            <a class="btn btn-success" href="{{ route('admin.form.data.xlsx', $form)}}">
+                                @icon('fas fa-file-excel') Λήψη αρχείου excel
                             </a>
                         </div>
                     </div>

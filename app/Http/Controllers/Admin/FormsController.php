@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use XLSXWriter;
 
 class FormsController extends Controller
 {
@@ -394,4 +395,89 @@ class FormsController extends Controller
         return response()->download($fname);
     }
 
+    /**
+     * Λήψη δεδομένων φόρμας.
+     *
+     * @param  int  $id
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function formDataXLSX($id) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $form = Form::find($id);
+        $form->load(
+                'form_fields',
+                'form_fields.field_data',
+                'form_fields.field_data.school'
+        );
+
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+        foreach ($form->form_fields as $field) {
+            array_push($dataTableColumns, $field->title);
+            foreach ($field->field_data as $field_data) {
+                $field_data->school;
+                if ($field->type == 2 || $field->type == 4) {
+                    $selections = json_decode($field->listvalues);
+                    foreach($selections as $selection) {
+                        if ($selection->id == $field_data->data) {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                        }
+                    }
+                } elseif ($field->type == 3) {
+                    $selections = json_decode($field->listvalues);
+                    $data = json_decode($field_data->data);
+                    $i = 0;
+                    foreach($data as $item) {
+                        foreach($selections as $selection) {
+                            if ($selection->id == $item) {
+                                if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                                }
+                                else {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
+                                }
+                            }
+                        }
+                        $i++;
+                    }
+
+                }
+                else {
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
+                }
+            }
+        }
+
+        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        $schools = $form->schools;
+        $categories = $form->school_categories;
+        foreach($categories as $category) {
+            $schools = $schools->concat($category->schools);
+        }
+
+        $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".xlsx";
+        $writer = new XLSXWriter();
+
+        $data = array();
+        array_push($data, $dataTableColumns);
+        $row = array();
+        foreach($schools as $school) {
+            // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
+            $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
+
+            $school = School::where('code', $school->code)->first();
+            for ($i = 0; $i < $records; $i++) {
+                array_push($row, $school->name, $school->code);
+                foreach(array_slice($dataTableColumns, 2) as $column) {
+                    array_push($row, $dataTable[$school->code][$column][$i] ?? '');
+                }
+                array_push($data, $row);
+                $row = array();
+            }
+        }
+
+        $writer->writeSheet($data);
+        $writer->writeToFile($fname);
+
+        return response()->download($fname);
+    }
 }

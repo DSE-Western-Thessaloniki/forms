@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "faf7ee543e5f2ccb71cb6321db5bf0e3",
+    "content-hash": "f2b984b99887234a0711ba78dd0c52d8",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -2038,6 +2038,52 @@
                 }
             ],
             "time": "2021-09-25T08:23:19+00:00"
+        },
+        {
+            "name": "mk-j/php_xlsxwriter",
+            "version": "0.38",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mk-j/PHP_XLSXWriter.git",
+                "reference": "00579529fea072851789505b2dec0d14cdfffe60"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mk-j/PHP_XLSXWriter/zipball/00579529fea072851789505b2dec0d14cdfffe60",
+                "reference": "00579529fea072851789505b2dec0d14cdfffe60",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zip": "*",
+                "php": ">=5.2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "project",
+            "autoload": {
+                "classmap": [
+                    "xlsxwriter.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Library to write XLSX files",
+            "homepage": "https://github.com/mk-j/PHP_XLSXWriter",
+            "keywords": [
+                "excel",
+                "library",
+                "php",
+                "xls",
+                "xlsx"
+            ],
+            "support": {
+                "issues": "https://github.com/mk-j/PHP_XLSXWriter/issues",
+                "source": "https://github.com/mk-j/PHP_XLSXWriter/tree/master"
+            },
+            "time": "2020-01-11T02:53:20+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8924,5 +8970,5 @@
         "php": "^7.4|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }
