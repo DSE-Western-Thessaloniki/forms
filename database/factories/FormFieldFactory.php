@@ -23,6 +23,9 @@ class FormFieldFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
+            'type' => 0,
+            'sort_id' => 0,
+            'listvalues' => ''
         ];
     }
 }
