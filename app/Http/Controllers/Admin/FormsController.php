@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\User;
 use App\Models\FormField;
 use Illuminate\Foundation\Auth\User as AuthUser;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 class FormsController extends Controller
 {
@@ -293,10 +294,104 @@ class FormsController extends Controller
             }
         }
 
-        $schools = School::all();
+        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        $schools = $form->schools;
+        $categories = $form->school_categories;
+        foreach($categories as $category) {
+            $schools = $schools->concat($category->schools);
+        }
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
             ->with('dataTableColumns', $dataTableColumns)
-            ->with('schools', $schools);
+            ->with('schools', $schools)
+            ->with('form', $form);
     }
+
+    /**
+     * Λήψη δεδομένων φόρμας.
+     *
+     * @param  int  $id
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function formDataCSV($id) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $form = Form::find($id);
+        $form->load(
+                'form_fields',
+                'form_fields.field_data',
+                'form_fields.field_data.school'
+        );
+
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+        foreach ($form->form_fields as $field) {
+            array_push($dataTableColumns, $field->title);
+            foreach ($field->field_data as $field_data) {
+                $field_data->school;
+                if ($field->type == 2 || $field->type == 4) {
+                    $selections = json_decode($field->listvalues);
+                    foreach($selections as $selection) {
+                        if ($selection->id == $field_data->data) {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                        }
+                    }
+                } elseif ($field->type == 3) {
+                    $selections = json_decode($field->listvalues);
+                    $data = json_decode($field_data->data);
+                    $i = 0;
+                    foreach($data as $item) {
+                        foreach($selections as $selection) {
+                            if ($selection->id == $item) {
+                                if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                                }
+                                else {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
+                                }
+                            }
+                        }
+                        $i++;
+                    }
+
+                }
+                else {
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
+                }
+            }
+        }
+
+        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        $schools = $form->schools;
+        $categories = $form->school_categories;
+        foreach($categories as $category) {
+            $schools = $schools->concat($category->schools);
+        }
+
+        $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".csv";
+        $fd = fopen($fname, 'w');
+        if ($fd === false) {
+            die('Failed to open temporary file');
+        }
+
+        fputcsv($fd, $dataTableColumns);
+        $row = array();
+        foreach($schools as $school) {
+            // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
+            $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
+
+            $school = School::where('code', $school->code)->first();
+            for ($i = 0; $i < $records; $i++) {
+                array_push($row, $school->name, $school->code);
+                foreach(array_slice($dataTableColumns, 2) as $column) {
+                    array_push($row, $dataTable[$school->code][$column][$i] ?? '');
+                }
+                fputcsv($fd, $row);
+                $row = array();
+            }
+        }
+
+        fclose($fd);
+
+        return response()->download($fname);
+    }
+
 }
