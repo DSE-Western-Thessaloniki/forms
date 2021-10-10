@@ -60,7 +60,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the user is administrator.
+     * Indicate that the user is an administrator.
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
@@ -68,6 +68,30 @@ class UserFactory extends Factory
     {
         return $this->has(
             Role::factory()->state(['name' => 'Administrator'])
+        );
+    }
+
+    /**
+     * Indicate that the user is an author.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function author()
+    {
+        return $this->has(
+            Role::factory()->state(['name' => 'Author'])
+        );
+    }
+
+    /**
+     * Indicate that the user is a user.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function user()
+    {
+        return $this->has(
+            Role::factory()->state(['name' => 'User'])
         );
     }
 }
