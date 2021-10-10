@@ -50,7 +50,10 @@ Route::prefix('admin')
                 'verify' => false,
                 'register' => false
             ]);
-            Route::prefix('user')->name('user.')->group(
+            Route::prefix('user')
+                ->name('user.')
+                ->middleware('auth')
+                ->group(
                 function () {
                     Route::get('/{user}/password', [UserController::class, 'password'])->name('password');
                     Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('change_password');
