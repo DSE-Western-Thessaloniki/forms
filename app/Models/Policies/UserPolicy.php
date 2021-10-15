@@ -22,7 +22,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->roles()->where('name', 'UserViewAny')->exists();
+        return false;
     }
 
     /**
@@ -34,7 +34,10 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return $user->roles()->where('name', 'UserView')->exists();
+        if ($user === $model) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -45,7 +48,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->roles()->where('name', 'UserCreate')->exists();
+        return false;
     }
 
     /**
@@ -57,7 +60,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->roles()->where('name', 'UserUpdate')->exists();
+        return false;
     }
 
     /**
@@ -69,7 +72,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return $user->roles()->where('name', 'UserDelete')->exists();
+        return false;
     }
 
     /**
@@ -81,7 +84,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model)
     {
-        return $user->roles()->where('name', 'UserRestore')->exists();
+        return false;
     }
 
     /**
@@ -93,6 +96,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        return $user->roles()->where('name', 'UserForceDelete')->exists();
+        return false;
     }
 }
