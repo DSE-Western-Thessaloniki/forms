@@ -150,10 +150,8 @@ class UserController extends Controller
 
     public function password(User $user)
     {
-        if (Auth::user()->isAdministrator()) {
-            return view('admin.user.password')->with('user', $user);
-        }
-        abort(403);
+        $this->authorize('update', Auth::user(), $user);
+        return view('admin.user.password')->with('user', $user);
     }
 
     public function changePassword(Request $request, User $user)
