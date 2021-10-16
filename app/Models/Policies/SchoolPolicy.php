@@ -12,7 +12,7 @@ class SchoolPolicy
 
     public function before(User $user, $ability)
     {
-        return $user->isAdministrator();
+        return $user->isAdministrator() ? true : null;
     }
 
     /**
@@ -23,7 +23,7 @@ class SchoolPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -35,7 +35,7 @@ class SchoolPolicy
      */
     public function view(User $user, School $school)
     {
-        return true;
+        return false;
     }
 
     /**
