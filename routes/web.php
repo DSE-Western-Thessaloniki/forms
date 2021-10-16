@@ -52,7 +52,7 @@ Route::prefix('admin')
             ]);
             Route::prefix('user')
                 ->name('user.')
-                ->middleware('auth')
+                ->middleware('auth','can:update,user')
                 ->group(
                 function () {
                     Route::get('/{user}/password', [UserController::class, 'password'])->name('password');
