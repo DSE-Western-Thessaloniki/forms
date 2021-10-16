@@ -7,7 +7,6 @@
             <div class="card">
                 <div class="card-header">Χρήστες</div>
 
-                @if(Auth::user()->isAdministrator())
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -16,11 +15,11 @@
                     @endif
                     @if ($errors->any())
                     <div class="alert alert-danger">
-                      <ul>
-                          @foreach ($errors->all() as $error)
+                    <ul>
+                        @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
-                          @endforeach
-                      </ul>
+                        @endforeach
+                    </ul>
                     </div><br />
                     @endif
 
@@ -81,7 +80,11 @@
                         </tr>
                         <tr>
                             <td class="col-2">
-                                <a class="btn btn-danger" href="{{ route('admin.user.index') }}">{{ __('Back') }}</a>
+                            @can('viewAny', App\Models\User::class)
+                                <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Ακύρωση</a>
+                            @else
+                                <a class="btn btn-danger" href="{{ route('admin.index') }}">Ακύρωση</a>
+                            @endcan
                             </td>
                             <td class="col-10 d-flex justify-content-end">
                                 <a class="btn btn-primary" href="{{ route('admin.user.edit', $user->id)}}">{{ __('Edit') }}</a>
@@ -89,9 +92,6 @@
                         </tr>
                     </table>
                 </div>
-                @else
-                    Δεν επιτρέπεται η πρόσβαση
-                @endif
             </div>
         </div>
     </div>

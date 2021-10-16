@@ -9,18 +9,18 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before(User $current_user, $ability)
     {
-        return $user->isAdministrator();
+        return $current_user->isAdministrator() ? true : null;
     }
 
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $current_user
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $current_user)
     {
         return false;
     }
@@ -28,22 +28,22 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      *
+     * @param  \App\Models\User  $current_user
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(User $current_user, User $user)
     {
-        return $user->id === $model->id;
+        return $current_user->is($user);
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $current_user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $current_user)
     {
         return false;
     }
@@ -51,23 +51,23 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      *
+     * @param  \App\Models\User  $current_user
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function update(User $user, User $model)
+    public function update(User $current_user, User $user)
     {
-        return $user->id === $model->id;
+        return $current_user->is($user);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
+     * @param  \App\Models\User  $current_user
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $current_user, User $user)
     {
         return false;
     }
@@ -75,11 +75,11 @@ class UserPolicy
     /**
      * Determine whether the user can restore the model.
      *
+     * @param  \App\Models\User  $current_user
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $current_user, User $user)
     {
         return false;
     }
@@ -87,11 +87,11 @@ class UserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
+     * @param  \App\Models\User  $current_user
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $current_user, User $user)
     {
         return false;
     }

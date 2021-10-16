@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->authorizeResource(User::class, 'user');
+        $this->authorizeResource(User::class);
     }
 
     /**
@@ -117,18 +117,21 @@ class UserController extends Controller
         $user->username = $request->get('username');
         $user->name = $request->get('name');
         $user->email = $request->get('email');
-        $user->active = $request->get('active') == 1 ? 1 : 0;
 
-        // Update roles
-        $roles = DB::table('roles')->get();
-        $new_roles = array();
-        foreach ($roles as $role) {
-            $check = $request->get($role->name);
-            if ($check == 1) {
-                array_push($new_roles, $role->id);
+        // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
+        if ($user->isAdministrator()) {
+            $user->active = $request->get('active') == 1 ? 1 : 0;
+
+            $roles = DB::table('roles')->get();
+            $new_roles = array();
+            foreach ($roles as $role) {
+                $check = $request->get($role->name);
+                if ($check == 1) {
+                    array_push($new_roles, $role->id);
+                }
             }
+            $user->roles()->sync($new_roles);
         }
-        $user->roles()->sync($new_roles);
 
         $user->save();
 

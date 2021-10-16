@@ -7,7 +7,6 @@
             <div class="card">
                 <div class="card-header">Χρήστες</div>
 
-                @if(Auth::user()->isAdministrator())
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -72,10 +71,18 @@
                         <div class="col-md-4"></div>
                         <div class="col-md-6 offset-sm-2">
                             <div class="form-check">
+                            @php
+                                if (Auth::user()->isAdministrator()) {
+                                    $disabled = "";
+                                }
+                                else {
+                                    $disabled = "disabled='disabled'";
+                                }
+                            @endphp
                             @if ($user->active)
-                                <input type="checkbox" class="form-check-input" name="active" id="active" value="1" checked="checked">
+                                <input type="checkbox" class="form-check-input" name="active" id="active" value="1" checked="checked" {{ $disabled }}>
                             @else
-                                <input type="checkbox" class="form-check-input" name="active" id="active" value="1">
+                                <input type="checkbox" class="form-check-input" name="active" id="active" value="1" {{ $disabled }}>
                             @endif
                             <label for="active" class="form-check-label">Ενεργός</label>
                             </div>
@@ -90,14 +97,21 @@
                                 array_push($roles, $role->name);
                             }
                             @endphp
-                            <rolecomponent current_roles="{{ json_encode($roles) }}">
+                            <rolecomponent
+                                current_roles="{{ json_encode($roles) }}"
+                                disabled="{{ Auth::user()->isAdministrator() ? '' : 'disabled' }}"
+                            >
                             </rolecomponent>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-2">
-                            <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Ακύρωση</a>
+                            @can('viewAny', App\Models\User::class)
+                                <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Ακύρωση</a>
+                            @else
+                                <a class="btn btn-danger" href="{{ route('admin.index') }}">Ακύρωση</a>
+                            @endcan
                         </div>
                         <div class="col-10 d-flex justify-content-end">
                             @method('PUT')
@@ -108,9 +122,6 @@
                     </form>
 
                 </div>
-                @else
-                    Δεν επιτρέπεται η πρόσβαση
-                @endif
             </div>
         </div>
     </div>
