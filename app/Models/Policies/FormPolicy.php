@@ -14,9 +14,7 @@ class FormPolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->isAdministrator()) {
-            return true;
-        }
+        return $user->isAdministrator() ? true : null;
     }
 
     /**
@@ -27,7 +25,7 @@ class FormPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -39,8 +37,8 @@ class FormPolicy
      */
     public function view(User $user, Form $form)
     {
-        if (Auth::guard('school')->check()) { // The user is a school
-            $school = School::find($user->id);
+        if (cas()->isAuthenticated()) { // The user is a school
+            $school = School::where('username', $user->username)->first();
             $categories = $school->categories;
             $form_categories = $form->school_categories;
             $in_category = false;
@@ -48,7 +46,7 @@ class FormPolicy
                 if ($form_categories->contains($category))
                     $in_category = true;
             }
-            if ($form->schools()->where('school_id', Auth::guard('school')->user()->id)->count() > 0 || $in_category)
+            if ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category)
                 return true;
             return false;
         }
@@ -108,7 +106,7 @@ class FormPolicy
      */
     public function delete(User $user, Form $form)
     {
-        if ($user->roles()->where('name', 'Author') && $form->user()->id === $user->id) {
+        if ($user->roles()->where('name', 'Author')->exists() && $form->user()->id === $user->id) {
             return true;
         }
 
@@ -124,7 +122,7 @@ class FormPolicy
      */
     public function restore(User $user, Form $form)
     {
-        //
+        return false;
     }
 
     /**
@@ -136,6 +134,6 @@ class FormPolicy
      */
     public function forceDelete(User $user, Form $form)
     {
-        //
+        return false;
     }
 }

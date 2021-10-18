@@ -23,7 +23,7 @@ class FormsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->authorizeResource(Form::class, 'form');
     }
 
     /**
@@ -33,7 +33,6 @@ class FormsController extends Controller
      */
     public function index() : \Illuminate\Contracts\View\View
     {
-        //$forms = Form::all();
         $forms = Form::orderBy('created_at', 'desc')->with('user')->paginate(15);
         return view('admin.form.index')->with('forms', $forms);
     }
@@ -109,7 +108,7 @@ class FormsController extends Controller
             $form->schools()->attach($school);
         }
 
-        return redirect(route('admin.form.index'))->with('success', 'Η φόρμα δημιουργήθηκε');
+        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα δημιουργήθηκε');
     }
 
     /**
@@ -224,7 +223,7 @@ class FormsController extends Controller
 
         $form->schools()->sync($schools);
 
-        return redirect(route('admin.form.index'))->with('success', 'Η φόρμα ενημερώθηκε');
+        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα ενημερώθηκε');
     }
 
     /**
@@ -239,7 +238,7 @@ class FormsController extends Controller
         $form->form_fields()->delete();
         $form->delete();
 
-        return redirect(route('admin.form.index'))->with('success', 'Η φόρμα διαγράφηκε');
+        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα διαγράφηκε');
     }
 
     /**
