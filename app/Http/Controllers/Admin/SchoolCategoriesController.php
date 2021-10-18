@@ -10,6 +10,16 @@ use App\Http\Controllers\Controller;
 class SchoolCategoriesController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(SchoolCategory::class, 'schoolcategory');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
