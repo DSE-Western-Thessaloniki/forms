@@ -7,7 +7,6 @@
             <div class="card">
                 <div class="card-header">Κατηγορίες</div>
 
-                @if(Auth::user()->isAdministrator())
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -62,9 +61,6 @@
                         </table>
                     </div>
                 </div>
-                @else
-                    Δεν επιτρέπεται η πρόσβαση
-                @endif
             </div>
         </div>
     </div>
