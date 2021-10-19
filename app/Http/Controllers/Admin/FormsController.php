@@ -114,68 +114,58 @@ class FormsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Illuminate\Contracts\View\View
      */
-    public function show($id) : \Illuminate\Contracts\View\View
+    public function show(Form $form) : \Illuminate\Contracts\View\View
     {
-        $form = Form::find($id);
-        if ($form)
-            return view('admin.form.show')->with('form', $form);
-        else
-            return view('home');
+        return view('admin.form.show')->with('form', $form);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id) : \Illuminate\Contracts\View\View
+    public function edit(Form $form) : \Illuminate\Contracts\View\View
     {
-        $form = Form::find($id);
-        if ($form) {
-            $schools = School::where('active', 1)->get(['id', 'name']);
-            $categories = SchoolCategory::all('id', 'name');
+        $schools = School::where('active', 1)->get(['id', 'name']);
+        $categories = SchoolCategory::all('id', 'name');
 
 
-            $school_selected_values = array();
-            foreach($form->schools as $school) {
-                array_push($school_selected_values, $school->id);
-            }
-
-            $category_selected_values = array();
-                foreach($form->school_categories as $category) {
-                    array_push($category_selected_values, $category->id);
-            }
-
-            return view('admin.form.edit')
-                ->with('schools', $schools)
-                ->with('categories', $categories)
-                ->with('school_selected_values', implode(",", $school_selected_values))
-                ->with('category_selected_values', implode(",", $category_selected_values))
-                ->with('form', $form);
+        $school_selected_values = array();
+        foreach($form->schools as $school) {
+            array_push($school_selected_values, $school->id);
         }
-        else
-            return view('home');
+
+        $category_selected_values = array();
+            foreach($form->school_categories as $category) {
+                array_push($category_selected_values, $category->id);
+        }
+
+        return view('admin.form.edit')
+            ->with('schools', $schools)
+            ->with('categories', $categories)
+            ->with('school_selected_values', implode(",", $school_selected_values))
+            ->with('category_selected_values', implode(",", $category_selected_values))
+            ->with('form', $form);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id) : \Illuminate\Http\RedirectResponse
+    public function update(Request $request, Form $form) : \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
         ]);
 
         // Update form
-        $form = Form::find($id);
         $form->title = $request->input('title');
         $form->notes = $request->input('notes');
         $form->user_id = Auth::id();
@@ -229,12 +219,11 @@ class FormsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id) : \Illuminate\Http\RedirectResponse
+    public function destroy(Form $form) : \Illuminate\Http\RedirectResponse
     {
-        $form = Form::find($id);
         $form->form_fields()->delete();
         $form->delete();
 
@@ -244,12 +233,11 @@ class FormsController extends Controller
     /**
      * Παρουσίαση δεδομένων φόρμας.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Illuminate\Contracts\View\View
      */
-    public function formData($id) : \Illuminate\Contracts\View\View
+    public function formData(Form $form) : \Illuminate\Contracts\View\View
     {
-        $form = Form::find($id);
         $form->load(
                 'form_fields',
                 'form_fields.field_data',
@@ -310,12 +298,11 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function formDataCSV($id) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataCSV(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $form = Form::find($id);
         $form->load(
                 'form_fields',
                 'form_fields.field_data',
@@ -397,12 +384,11 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      *
-     * @param  int  $id
+     * @param  \App\Models\Form  $form
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function formDataXLSX($id) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataXLSX(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $form = Form::find($id);
         $form->load(
                 'form_fields',
                 'form_fields.field_data',

@@ -166,6 +166,13 @@ it('cannot update a form as user', function(){
 
     $response = $this->actingAs($user)->put('/admin/form/'.$testForm->id, [
         'title' => 'Test Form2',
+        'field' => [
+            [
+                'title' => 'Test field',
+                'type' => 0,
+                'values' => ''
+            ]
+        ]
     ])->assertForbidden();
     $response->assertForbidden();
 });
@@ -176,6 +183,13 @@ it('cannot update a form as author', function(){
 
     $response = $this->actingAs($author)->put('/admin/form/'.$testForm->id, [
         'title' => 'Test Form2',
+        'field' => [
+            [
+                'title' => 'Test field',
+                'type' => 0,
+                'values' => ''
+            ]
+        ]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
@@ -187,6 +201,13 @@ it('can update a form as admin', function(){
 
     $response = $this->actingAs($admin)->put('/admin/form/'.$testForm->id, [
         'title' => 'Test Form2',
+        'field' => [
+            [
+                'title' => 'Test field',
+                'type' => 0,
+                'values' => ''
+            ]
+        ]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
