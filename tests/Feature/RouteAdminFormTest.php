@@ -212,3 +212,69 @@ it('can update a form as admin', function(){
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
 });
+
+it('can access a form\'s data as user', function() {
+    $user = User::factory()->user()->create();
+    $testForm = Form::factory()->for($user)->create(['active' => true]);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
+});
+
+it('can access a form\'s data as author', function() {
+    $author = User::factory()->author()->create();
+    $testForm = Form::factory()->for($author)->create(['active' => true]);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
+});
+
+it('can access a form\'s data as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $testForm = Form::factory()->for($admin)->create(['active' => true]);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
+});
+
+it('can access a form\'s data (csv) as user', function() {
+    $user = User::factory()->user()->create();
+    $testForm = Form::factory()->for($user)->create(['active' => true]);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+});
+
+it('can access a form\'s data (csv) as author', function() {
+    $author = User::factory()->author()->create();
+    $testForm = Form::factory()->for($author)->create(['active' => true]);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+});
+
+it('can access a form\'s data (csv) as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $testForm = Form::factory()->for($admin)->create(['active' => true]);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+});
+
+it('can access a form\'s data (xlsx) as user', function() {
+    $user = User::factory()->user()->create();
+    $testForm = Form::factory()->for($user)->create(['active' => true]);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+});
+
+it('can access a form\'s data (xlsx) as author', function() {
+    $author = User::factory()->author()->create();
+    $testForm = Form::factory()->for($author)->create(['active' => true]);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+});
+
+it('can access a form\'s data (xlsx) as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $testForm = Form::factory()->for($admin)->create(['active' => true]);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+});
