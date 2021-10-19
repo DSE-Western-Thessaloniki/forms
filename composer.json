@@ -23,6 +23,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
         "beyondcode/laravel-query-detector": "^1.5",
+        "brianium/paratest": "^6.3",
         "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.13",
         "laravel/sail": "^1.10",
@@ -30,6 +31,7 @@
         "nunomaduro/collision": "^5.0",
         "pestphp/pest": "^1.20",
         "pestphp/pest-plugin-laravel": "^1.1",
+        "pestphp/pest-plugin-parallel": "^0.3.1",
         "phpunit/phpunit": "^9.0"
     },
     "config": {
