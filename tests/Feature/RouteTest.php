@@ -3,6 +3,7 @@
 use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
+use Tests\TestCasManager;
 
 beforeEach(function() {
     $this->seed(OptionSeeder::class);

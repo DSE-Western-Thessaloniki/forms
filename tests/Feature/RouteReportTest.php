@@ -4,10 +4,7 @@ use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
 use Subfission\Cas\Facades\Cas;
-
-class TestCasManager {
-
-}
+use Tests\TestCasManager;
 
 beforeEach(function() {
     $this->seed(OptionSeeder::class);
