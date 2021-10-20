@@ -63,8 +63,8 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $forms->links() }} <!-- Σελιδοποίηση -->
                 </div>
-                {{ $forms->links() }} <!-- Σελιδοποίηση -->
             </div>
         </div>
     </div>
