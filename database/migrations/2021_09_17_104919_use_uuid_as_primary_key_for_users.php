@@ -60,7 +60,11 @@ class UseUuidAsPrimaryKeyForUsers extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->id('id')->change();
+            $table->dropColumn('id');
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->id('id');
         });
 
         Schema::table('forms', function (Blueprint $table) {
