@@ -15,9 +15,11 @@
 
                     <div class="btn-toolbar pb-2" role="toolbar">
                         <div class="btn-group mr-2">
+                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
                             <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
                                 @icon('fas fa-plus') Δημιουργία φόρμας
                             </a>
+                            @endif
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -44,15 +46,19 @@
                                         <td>{{ $form->updated_at }}</td>
                                         <td>{{ $form->user->name }}</td>
                                         <td>
+                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
                                             <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
+                                            @endif
                                             <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1">@icon('fas fa-table') Δεδομένα</a>
                                         </td>
                                         <td>
+                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
                                             <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
