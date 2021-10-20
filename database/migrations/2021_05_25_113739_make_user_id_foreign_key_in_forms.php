@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeUpdatedByColumnInUsers extends Migration
+class MakeUserIdBigintAndForeignKeyInForms extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class ChangeUpdatedByColumnInUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->uuid('updated_by')->change();
+        Schema::table('forms', function (Blueprint $table) {
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
         });
     }
 
@@ -25,8 +27,8 @@ class ChangeUpdatedByColumnInUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('updated_by')->change();
+        Schema::table('forms', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
         });
     }
 }

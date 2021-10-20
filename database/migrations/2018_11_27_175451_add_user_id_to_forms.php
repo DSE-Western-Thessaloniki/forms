@@ -14,7 +14,7 @@ class AddUserIdToForms extends Migration
     public function up()
     {
         Schema::table('forms', function($table) {
-            $table->integer('user_id');
+            $table->uuid('user_id');
         });
     }
 

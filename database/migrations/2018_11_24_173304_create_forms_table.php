@@ -14,7 +14,7 @@ class CreateFormsTable extends Migration
     public function up()
     {
         Schema::create('forms', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id');
             $table->string('title');
             $table->mediumText('notes');
             $table->timestamps();

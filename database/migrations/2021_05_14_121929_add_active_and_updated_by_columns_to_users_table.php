@@ -15,7 +15,7 @@ class AddActiveAndUpdatedByColumnsToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('active');
-            $table->bigInteger('updated_by');
+            $table->uuid('updated_by');
         });
     }
 
