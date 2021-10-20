@@ -14,7 +14,7 @@ class AddOnDeleteCascadeOnFormFields extends Migration
     public function up()
     {
         Schema::table('form_fields', function (Blueprint $table) {
-            $table->dropForeign(['form_id']);
+            $table->dropForeign('formfields_form_id_foreign');
             $table->foreign('form_id')
             ->references('id')
             ->on('forms')
@@ -31,7 +31,7 @@ class AddOnDeleteCascadeOnFormFields extends Migration
     {
         Schema::table('form_fields', function (Blueprint $table) {
             $table->dropForeign(['form_id']);
-            $table->foreign('form_id')
+            $table->foreign('form_id', 'formfields_form_id_foreign')
             ->references('id')
             ->on('forms');
         });

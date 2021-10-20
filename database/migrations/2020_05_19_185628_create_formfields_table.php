@@ -15,7 +15,10 @@ class CreateFormfieldsTable extends Migration
     {
         Schema::create('formfields', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('form_id')->constrained();
+            $table->uuid('form_id');
+            $table->foreign('form_id')
+                ->references('id')
+                ->on('forms');
             $table->integer('sort_id');
             $table->string('title');
             $table->integer('type');

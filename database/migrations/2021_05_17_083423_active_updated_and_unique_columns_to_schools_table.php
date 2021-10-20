@@ -15,7 +15,7 @@ class ActiveUpdatedAndUniqueColumnsToSchoolsTable extends Migration
     {
         Schema::table('schools', function (Blueprint $table) {
             $table->boolean('active');
-            $table->bigInteger('updated_by');
+            $table->uuid('updated_by');
             $table->unique('code');
             $table->unique('username');
         });
