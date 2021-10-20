@@ -1,25 +1,32 @@
 <?php
 
-use App\Models\Option;
 use Database\Seeders\OptionSeeder;
 use Laravel\Dusk\Browser;
-
-beforeEach(function() {
-
-});
-
-// it('should be ok', function() {
-//     $option = new Option();
-//     $option->name = 'first_run';
-//     $option->value = 0;
-//     $option->save();
-//     expect($option)->toBeInstanceOf('App\Models\Option');
-// });
+use function Pest\Faker\faker;
 
 it('shows first run setup', function () {
+    $this->seed(OptionSeeder::class);
 
     $this->browse(function (Browser $browser) {
         $browser->visit('/')
             ->assertSee('Ρύθμιση διαχειριστή συστήματος');
     });
-})->tap(fn() => $this->seed(OptionSeeder::class));
+});
+
+it('completes first run setup', function () {
+    $this->seed(OptionSeeder::class);
+
+    $this->browse(function (Browser $browser) {
+        $password = faker()->password();
+        $browser->visit('/')
+            ->assertSee('Ρύθμιση διαχειριστή συστήματος')
+            ->type('name', faker()->name())
+            ->type('email', faker()->email())
+            ->type('username', faker()->username())
+            ->type('password', $password)
+            ->type('password_confirmation', $password)
+            ->click('button[type="submit"]')
+            ->waitForLocation('/home')
+            ->assertPathIs('/home');
+    });
+});

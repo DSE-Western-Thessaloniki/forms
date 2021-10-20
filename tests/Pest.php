@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /*
@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 |
 */
 
-uses(Tests\TestCase::class, DatabaseTransactions::class)->in('Feature');
+uses(Tests\TestCase::class, LazilyRefreshDatabase::class)->in('Feature');
 uses(Tests\DuskTestCase::class, DatabaseMigrations::class)->in('Browser');
 
 /*
