@@ -31,8 +31,8 @@ class ActiveUpdatedAndUniqueColumnsToSchoolsTable extends Migration
         Schema::table('schools', function (Blueprint $table) {
             $table->dropColumn('active');
             $table->dropColumn('updated_by');
-            $table->dropUnique('code');
-            $table->dropUnique('username');
+            $table->dropUnique(['code']);
+            $table->dropUnique(['username']);
         });
     }
 }

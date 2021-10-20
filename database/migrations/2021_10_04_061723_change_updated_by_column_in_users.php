@@ -26,7 +26,7 @@ class ChangeUpdatedByColumnInUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->id('updated_by')->change();
+            $table->bigInteger('updated_by')->change();
         });
     }
 }

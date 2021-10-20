@@ -64,21 +64,21 @@ class UseUuidAsPrimaryKeyForUsers extends Migration
         });
 
         Schema::table('forms', function (Blueprint $table) {
-            $table->id('user_id')->change();
+            $table->bigInteger('user_id')->unsigned()->change();
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
         });
 
         Schema::table('user_role', function (Blueprint $table) {
-            $table->id('user_id')->change();
+            $table->bigInteger('user_id')->unsigned()->change();
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
         });
 
         Schema::table('schools', function (Blueprint $table) {
-            $table->id('updated_by')->change();
+            $table->bigInteger('updated_by')->change();
         });
     }
 }

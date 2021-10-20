@@ -75,21 +75,21 @@ class UseUuidAsPrimaryKeyForForms extends Migration
         });
 
         Schema::table('form_fields', function (Blueprint $table) {
-            $table->id('form_id')->change();
+            $table->bigInteger('form_id')->unsigned()->change();
             $table->foreign('form_id', 'formfields_form_id_foreign')
                 ->references('id')
                 ->on('forms');
         });
 
         Schema::table('form_school', function (Blueprint $table) {
-            $table->id('form_id')->change();
+            $table->bigInteger('form_id')->unsigned()->change();
             $table->foreign('form_id')
                 ->references('id')
                 ->on('forms');
         });
 
         Schema::table('form_school_category', function (Blueprint $table) {
-            $table->id('form_id')->change();
+            $table->bigInteger('form_id')->unsigned()->change();
             $table->foreign('form_id')
                 ->references('id')
                 ->on('forms');
