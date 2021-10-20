@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Form;
 use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\TestDataSeeder;
+use Database\Seeders\UserSeeder;
 use Laravel\Dusk\Browser;
 use function Pest\Faker\faker;
 
@@ -11,7 +13,8 @@ beforeEach(function () {
     // εφαρμογής. Χρειαζόμαστε και το δεύτερο για να παραχθούν επιπλέον δοκιμαστικά
     // δεδομένα.
     $this->seed();
-    $this->seed(TestDataSeeder::class);
+    //$this->seed(TestDataSeeder::class);
+    $this->seed(UserSeeder::class);
 
     $first_run = Option::where('name', 'first_run')->first();
     $first_run->value=0;
@@ -19,13 +22,16 @@ beforeEach(function () {
 });
 
 it('cannot create/edit/delete forms as user', function () {
+    Form::factory()->for(User::where('username', 'admin0')->first())->create();
+
     $user = User::whereHas('roles', function ($query) {
         $query->where('name', 'User');
     })->first();
-    $this->actingAs($user)->browse(function (Browser $browser) {
-        $browser->visit('/admin/form')
-            ->assertDontSee('Διαγραφή')
-            ->assertDontSee('Επεξεργασία')
-            ->assertDontSee('Δημιουργία φόρμας');
+    $this->browse(function (Browser $browser) use ($user) {
+        $browser->loginAs($user)->visit('/admin/form')
+            ->assertSeeIn('div.card-header', 'Φόρμες')
+            ->assertDontSeeIn('button[type="submit"]', 'Διαγραφή')
+            ->assertDontSeeLink('Επεξεργασία')
+            ->assertDontSeeLink('Δημιουργία φόρμας');
     });
 });
