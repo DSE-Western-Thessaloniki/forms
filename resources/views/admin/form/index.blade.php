@@ -46,13 +46,13 @@
                                         <td>{{ $form->updated_at }}</td>
                                         <td>{{ $form->user->name }}</td>
                                         <td>
-                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
+                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
                                             <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
                                             @endif
                                             <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1">@icon('fas fa-table') Δεδομένα</a>
                                         </td>
                                         <td>
-                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
+                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
                                             <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
                                                 @csrf
                                                 @method('DELETE')
