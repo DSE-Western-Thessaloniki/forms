@@ -3,10 +3,8 @@
 namespace App\Models\Policies;
 
 use App\Models\Form;
-use App\Models\School;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
 class FormPolicy
 {
@@ -37,19 +35,6 @@ class FormPolicy
      */
     public function view(User $user, Form $form)
     {
-        // if (cas()->isAuthenticated()) { // The user is a school
-        //     $school = School::where('username', $user->username)->first();
-        //     $categories = $school->categories;
-        //     $form_categories = $form->school_categories;
-        //     $in_category = false;
-        //     foreach ($categories as $category) {
-        //         if ($form_categories->contains($category))
-        //             $in_category = true;
-        //     }
-        //     if ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category)
-        //         return true;
-        //     return false;
-        // }
         return true;
     }
 
@@ -76,20 +61,6 @@ class FormPolicy
      */
     public function update(User $user, Form $form)
     {
-        // if (cas()->isAuthenticated()) { // The user is a school
-        //     $school = School::where('username', $user->username)->first();
-        //     $categories = $school->categories;
-        //     $form_categories = $form->school_categories;
-        //     $in_category = false;
-        //     foreach ($categories as $category) {
-        //         if ($form_categories->contains($category))
-        //             $in_category = true;
-        //     }
-        //     if ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category)
-        //         return true;
-        //     return false;
-        // }
-
         if ($user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id) {
             return true;
         }
