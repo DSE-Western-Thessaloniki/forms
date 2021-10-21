@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Form;
-use App\Models\FormField;
-use App\Models\FormFieldData;
 use App\Models\School;
 use App\Models\User;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
@@ -31,18 +28,22 @@ class ReportsController extends Controller
     {
         $id = cas()->getAttribute('uid');
         $school = School::where('username', $id)->first();
-        $categories = $school->categories;
-        $forms = Form::whereHas('schools', function ($q) use ($school) {
-                $q->where('school_id', $school->id);
-            })
-            ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
-                $q->orWhereHas('school_categories', function ($q) use ($categories) {
-                    $q->whereIn('school_category_id', $categories);
-                });
+        if ($school) {
+            $categories = $school->categories;
+            $forms = Form::whereHas('schools', function ($q) use ($school) {
+                    $q->where('school_id', $school->id);
+                })
+                ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                    $q->orWhereHas('school_categories', function ($q) use ($categories) {
+                        $q->whereIn('school_category_id', $categories);
+                    });
 
-            })
-            ->orderBy('created_at', 'desc')->paginate(15);
-        return view('report.index')->with('forms', $forms);
+                })
+                ->orderBy('created_at', 'desc')->paginate(15);
+            return view('report.index')->with('forms', $forms);
+        }
+
+        return view('pages.deny_access');
     }
 
     /**
