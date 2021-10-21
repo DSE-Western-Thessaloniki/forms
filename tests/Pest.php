@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Subfission\Cas\Facades\Cas;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,37 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function test_cas_null()
 {
-    // ..
+    Cas::shouldReceive('isAuthenticated')
+        ->andReturnNull();
+    Cas::shouldReceive('user')
+        ->andReturnNull();
+    Cas::shouldReceive('logout')
+        ->andReturnNull();
+    Cas::shouldReceive('client')
+        ->andReturnNull();
+}
+
+function test_cas_not_logged_in() {
+    Cas::shouldReceive('checkAuthentication')
+        ->andReturnFalse();
+    Cas::shouldReceive('authenticate')
+        ->andThrow(Exception::class,"Must authenticate with CAS");
+}
+
+function test_cas_logged_in() {
+    Cas::shouldReceive('isAuthenticated')
+        ->andReturnTrue();
+    Cas::shouldReceive('checkAuthentication')
+        ->andReturnTrue();
+    Cas::shouldReceive('getAttribute')
+        ->with('uid')
+        ->andReturn('999');
+    Cas::shouldReceive('getAttribute')
+        ->with('mail')
+        ->andReturn('tst@sch.gr');
+    Cas::shouldReceive('getAttribute')
+        ->with('cn')
+        ->andReturn('Dokimastiki monada');
 }
