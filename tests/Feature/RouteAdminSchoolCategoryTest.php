@@ -53,6 +53,24 @@ it('can access a school category\'s info as admin', function() {
     $this->actingAs($admin)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertOk();
 });
 
+it('cannot access a school category\'s creation form as user', function() {
+    $user = User::factory()->user()->create();
+
+    $this->actingAs($user)->get('/admin/school/schoolcategory/create')->assertForbidden();
+});
+
+it('cannot access a school category\'s creation form as author', function() {
+    $author = User::factory()->author()->create();
+
+    $this->actingAs($author)->get('/admin/school/schoolcategory/create')->assertForbidden();
+});
+
+it('can access a school category\'s creation form as admin', function() {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)->get('/admin/school/schoolcategory/create')->assertOk();
+});
+
 it('cannot create a school category as user', function(){
     $user = User::factory()->user()->create();
 
@@ -64,7 +82,7 @@ it('cannot create a school category as user', function(){
 it('cannot create a school category as author', function(){
     $author = User::factory()->author()->create();
 
-    $this->actingAs($author)->post('/admin/school', [
+    $this->actingAs($author)->post('/admin/school/schoolcategory', [
         'name' => "Test Category",
     ])->assertForbidden();
 });
