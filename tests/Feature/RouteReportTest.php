@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Form;
+use App\Models\FormField;
 use App\Models\Option;
 use App\Models\School;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
-//use Subfission\Cas\Facades\Cas;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Tests\TestCasManager;
 
 beforeEach(function() {
@@ -19,7 +21,6 @@ beforeEach(function() {
 
     test_cas_null();
 });
-
 
 it('gets cas/login without logging in', function($url) {
 
@@ -56,7 +57,6 @@ it('can access reports as user logged in through cas', function() {
 
     test_cas_logged_in();
 
-
     School::factory()->for(User::factory())->create([
         'name' => 'Test School',
         'username' => '999',
@@ -65,4 +65,74 @@ it('can access reports as user logged in through cas', function() {
     $this->get('/report')
         ->assertDontSee('Σφάλμα')
         ->assertSee('Δεν βρέθηκαν φόρμες');
+});
+
+it('can show a report as user logged in through cas', function() {
+
+    test_cas_logged_in();
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create();
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->get('/report/'.$form->id)
+        ->assertOk()
+        ->assertDontSee('Σφάλμα')
+        ->assertSee($form->title)
+        ->assertSee($form->notes);
+});
+
+it('can edit a report as user logged in through cas', function() {
+
+    test_cas_logged_in();
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create();
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->get('/report/'.$form->id.'/edit')
+        ->assertOk()
+        ->assertDontSee('Σφάλμα')
+        ->assertSee($form->title)
+        ->assertSee($form->notes);
 });
