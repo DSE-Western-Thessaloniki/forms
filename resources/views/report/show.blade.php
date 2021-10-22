@@ -13,7 +13,7 @@
     <hr/>
     <div class="card">
         <div class="card-header">
-            Συμπληρωμένη φόρμα - {{ Auth::guard('school')->user()->name }}
+            Συμπληρωμένη φόρμα - {{ cas()->getAttribute('cn') }}
         </div>
         <div class="card-body">
             @foreach ($form->form_fields as $field)
