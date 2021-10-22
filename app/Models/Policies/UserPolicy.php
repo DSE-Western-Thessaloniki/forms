@@ -71,28 +71,4 @@ class UserPolicy
     {
         return false;
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $current_user
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function restore(User $current_user, User $user)
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $current_user
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function forceDelete(User $current_user, User $user)
-    {
-        return false;
-    }
 }

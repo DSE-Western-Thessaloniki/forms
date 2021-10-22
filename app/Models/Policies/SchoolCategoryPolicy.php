@@ -72,28 +72,4 @@ class SchoolCategoryPolicy
     {
         return false;
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, SchoolCategory $schoolCategory)
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, SchoolCategory $schoolCategory)
-    {
-        return false;
-    }
 }

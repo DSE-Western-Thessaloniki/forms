@@ -78,10 +78,6 @@ Route::get('/login', function() {
     return Redirect::route('report.index');
 })->name('login');
 
-//Route::get('/login', [PagesController::class, 'login'])->name('login');
-//Route::post('/login', [PagesController::class, 'checkLogin'])->name('checkLogin');
-//Route::post('/logout', [PagesController::class, 'logout'])->name('logout');
-
 Route::get('/logout', function() {
     cas()->logout();
 })->middleware('cas.auth')->name('logout');

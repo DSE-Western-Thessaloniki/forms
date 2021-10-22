@@ -83,28 +83,4 @@ class FormPolicy
 
         return false;
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Form $form)
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Form $form)
-    {
-        return false;
-    }
 }
