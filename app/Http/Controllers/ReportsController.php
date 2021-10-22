@@ -55,9 +55,10 @@ class ReportsController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-
+        $user = new User();
+        $user->username = cas()->getAttribute('uid');
         if ($form) {
-            $this->authorize('view', Auth::guard('school')->user());
+            $this->authorizeForUser($user, 'view', $form);
             return view('report.show')->with('form', $form);
         }
 
