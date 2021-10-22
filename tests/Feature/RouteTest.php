@@ -29,6 +29,8 @@ it('shows first run setup', function() {
     $response = $this->get('/');
 
     $response->assertRedirect('/setup');
+
+    $this->get('/setup')->assertOk();
 });
 
 it('cannot get /setup after first run setup', function() {
