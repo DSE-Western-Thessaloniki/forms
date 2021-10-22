@@ -88,12 +88,8 @@ class SetupController extends Controller
         $first_run->value = 0;
         $first_run->save();
 
-        if ($request->wantsJson()) {
-            return new Response('', 201);
-        } else {
-            Auth::login($user);
-            return redirect(RouteServiceProvider::HOME);
-        }
+        Auth::login($user);
+        return redirect(RouteServiceProvider::HOME);
     }
 
     /**
