@@ -116,9 +116,13 @@ class ReportsController extends Controller
         $form = Form::find($id);
         if ($form) {
             if ($this->school_has_access($form)) {
-                return view('report.edit')
-                ->with('form', $form)
-                ->with('record', $record);
+                if ($form->multiple) {
+                    return view('report.edit')
+                        ->with('form', $form)
+                        ->with('record', $record);
+                }
+
+                return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
             }
 
             return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
