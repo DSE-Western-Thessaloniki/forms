@@ -573,7 +573,9 @@ it('cannot edit a report record as user logged in through cas (no permission) (n
                 })),
             'form_fields'
         )
-        ->create();
+        ->create([
+            'multiple' => false,
+        ]);
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
@@ -603,7 +605,9 @@ it('cannot edit a report record as user logged in through cas (direct relation) 
                 })),
             'form_fields'
         )
-        ->create();
+        ->create([
+            'multiple' => false,
+        ]);
 
     $form->schools()->attach($school);
     $form->save();
@@ -642,7 +646,9 @@ it('cannot edit a report record as user logged in through cas (indirect relation
                 })),
             'form_fields'
         )
-        ->create();
+        ->create([
+            'multiple' => false,
+        ]);
 
     $form->school_categories()->attach($school_category);
     $form->save();
