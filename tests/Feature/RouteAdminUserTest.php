@@ -107,7 +107,7 @@ it('can create another user as admin', function() {
         'password_confirmation' => 'mySecretPassword'
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User saved!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Ο χρήστης αποθηκεύτηκε!');
 });
 
 it('cannot edit another user\'s info as user', function() {
@@ -208,27 +208,27 @@ it('can delete another user as admin', function() {
 
     $response = $this->actingAs($admin)->delete('/admin/user/'.$testUser->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User deleted!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Ο χρήστης διαγράφηκε!');
 });
 
-it('cannot delete it\' own user as user', function() {
+it('cannot delete it\'s own user as user', function() {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->delete('/admin/user/'.$user->id)->assertForbidden();
 });
 
-it('cannot delete it\' own user as author', function() {
+it('cannot delete it\'s own user as author', function() {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->delete('/admin/user/'.$author->id)->assertForbidden();
 });
 
-it('can delete it\' own user as admin', function() {
+it('can delete it\'s own user as admin', function() {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->delete('/admin/user/'.$admin->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User deleted!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Ο χρήστης διαγράφηκε!');
 });
 
 it('cannot update another user\'s data as user', function() {
@@ -263,10 +263,10 @@ it('can update another user\'s data as admin', function() {
         'username' => 'testUser'
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User updated!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
 });
 
-it('can update it\' own user data as user', function() {
+it('can update it\'s own user data as user', function() {
     $user = User::factory()->user()->create();
 
     $response = $this->actingAs($user)->put('/admin/user/'.$user->id, [
@@ -275,10 +275,10 @@ it('can update it\' own user data as user', function() {
         'username' => 'testUser'
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User updated!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
 });
 
-it('can update it\' own user data as author', function() {
+it('can update it\'s own user data as author', function() {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)->put('/admin/user/'.$author->id, [
@@ -287,10 +287,10 @@ it('can update it\' own user data as author', function() {
         'username' => 'testUser'
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User updated!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
 });
 
-it('can update it\' own user data data as admin', function() {
+it('can update it\'s own user data data as admin', function() {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->put('/admin/user/'.$admin->id, [
@@ -299,5 +299,5 @@ it('can update it\' own user data data as admin', function() {
         'username' => 'testUser'
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('User updated!');
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
 });
