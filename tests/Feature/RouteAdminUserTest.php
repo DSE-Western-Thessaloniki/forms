@@ -3,6 +3,7 @@
 use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
+use Database\Seeders\RoleSeeder;
 
 beforeEach(function() {
     $this->seed(OptionSeeder::class);
@@ -300,4 +301,116 @@ it('can update it\'s own user data data as admin', function() {
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
+});
+
+it('can change a user\'s password as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $user = User::factory()->user()->create();
+
+    $response = $this->actingAs($admin)->post('/admin/user/'.$user->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertRedirect(route('admin.user.index'))
+        ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
+});
+
+it('cannot change a user\'s password as user', function() {
+    $user = User::factory()->user()->create();
+    $user2 = User::factory()->user()->create();
+
+    $response = $this->actingAs($user2)->post('/admin/user/'.$user->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertForbidden();
+});
+
+it('cannot change a user\'s password as author', function() {
+    $user = User::factory()->user()->create();
+    $author = User::factory()->author()->create();
+
+    $response = $this->actingAs($author)->post('/admin/user/'.$user->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertForbidden();
+});
+
+it('can change it\'s own password as user', function() {
+    $user = User::factory()->user()->create();
+
+    $response = $this->actingAs($user)->post('/admin/user/'.$user->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertRedirect(route('admin.user.index'))
+        ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
+});
+
+it('can change it\'s own password as author', function() {
+    $author = User::factory()->author()->create();
+
+    $response = $this->actingAs($author)->post('/admin/user/'.$author->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertRedirect(route('admin.user.index'))
+        ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
+});
+
+it('can change it\'s own password as admin', function() {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->post('/admin/user/'.$admin->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertRedirect(route('admin.user.index'))
+        ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
+});
+
+it('cannot update it\'s own role as user', function() {
+    $this->seed(RoleSeeder::class);
+    $user = User::factory()->user()->create();
+
+    $response = $this->actingAs($user)->put('/admin/user/'.$user->id, [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'username' => 'testUser',
+        'Administrator' => 1,
+    ]);
+    $response->assertStatus(302);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
+    $this->assertEquals($user->roles()->where('name', 'Administrator')->count(), 0);
+});
+
+it('cannot update it\'s own role as author', function() {
+    $this->seed(RoleSeeder::class);
+    $author = User::factory()->author()->create();
+
+    $response = $this->actingAs($author)->put('/admin/user/'.$author->id, [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'username' => 'testUser',
+        'Administrator' => 1,
+    ]);
+    $response->assertStatus(302);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
+    $this->assertEquals($author->roles()->where('name', 'Administrator')->count(), 0);
+});
+
+it('can update it\'s own role as admin', function() {
+    $this->seed(RoleSeeder::class);
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->put('/admin/user/'.$admin->id, [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'username' => 'testUser',
+        'Author' => 1,
+    ]);
+    $response->assertStatus(302);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
+    $this->assertEquals($admin->roles()->where('name', 'Author')->count(), 1);
 });
