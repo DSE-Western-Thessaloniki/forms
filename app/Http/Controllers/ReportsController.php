@@ -19,6 +19,11 @@ class ReportsController extends Controller
     {
     }
 
+    /**
+     * Create a new controller instance.
+     * @param Form $form
+     * @return bool|Illuminate\Support\Facades\View
+     */
     private function school_has_access(Form $form)
     {
         $school = School::where('username', cas()->getAttribute('uid'))->first();
@@ -75,11 +80,18 @@ class ReportsController extends Controller
     {
         $form = Form::find($id);
         if ($form) {
-            if ($this->school_has_access($form)) {
-                return view('report.show')->with('form', $form);
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    return view('report.show')->with('form', $form);
+                }
+
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
-            return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -95,11 +107,18 @@ class ReportsController extends Controller
     {
         $form = Form::find($id);
         if ($form) {
-            if ($this->school_has_access($form)) {
-                return view('report.edit')->with('form', $form);
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    return view('report.edit')->with('form', $form);
+                }
+
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
-            return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -115,17 +134,24 @@ class ReportsController extends Controller
     {
         $form = Form::find($id);
         if ($form) {
-            if ($this->school_has_access($form)) {
-                if ($form->multiple) {
-                    return view('report.edit')
-                        ->with('form', $form)
-                        ->with('record', $record);
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    if ($form->multiple) {
+                        return view('report.edit')
+                            ->with('form', $form)
+                            ->with('record', $record);
+                    }
+
+                    return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
-            return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -142,20 +168,27 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
-            if ($this->school_has_access($form)) {
-                $fields = $form->form_fields;
-                foreach ($fields as $field) {
-                    $data = $request->input("f".$field->id);
-                    if (is_array($data)) {
-                        $data = json_encode($data);
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    $fields = $form->form_fields;
+                    foreach ($fields as $field) {
+                        $data = $request->input("f".$field->id);
+                        if (is_array($data)) {
+                            $data = json_encode($data);
+                        }
+                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id], ['data' => $data]);
                     }
-                    $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id], ['data' => $data]);
+
+                    return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
                 }
 
-                return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
-            return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -174,54 +207,61 @@ class ReportsController extends Controller
     {
         $form = Form::with('form_fields')->find($id);
         if ($form) {
-            if ($this->school_has_access($form)) {
-                $fields = $form->form_fields;
-                foreach ($fields as $field) {
-                    $data = $request->input("f".$field->id);
-                    if (is_array($data)) {
-                        $data = json_encode($data);
-                    }
-                    $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $record], ['data' => $data]);
-                }
-
-                // Που πάμε τώρα;
-                if ($next === 'new') {
-                    // Βρες την τελευταία εγγραφή
-                    $last_record = 0;
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    $fields = $form->form_fields;
                     foreach ($fields as $field) {
-                        if ($last_record < $field->field_data->count()) {
-                            $last_record = $field->field_data->count();
+                        $data = $request->input("f".$field->id);
+                        if (is_array($data)) {
+                            $data = json_encode($data);
                         }
+                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $record], ['data' => $data]);
                     }
-                    // Ετοίμασε τις εγγραφές στον πίνακα
-                    foreach ($fields as $field) {
-                        $data = null;
-                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $last_record], ['data' => $data]);
+
+                    // Που πάμε τώρα;
+                    if ($next === 'new') {
+                        // Βρες την τελευταία εγγραφή
+                        $last_record = 0;
+                        foreach ($fields as $field) {
+                            if ($last_record < $field->field_data->count()) {
+                                $last_record = $field->field_data->count();
+                            }
+                        }
+                        // Ετοίμασε τις εγγραφές στον πίνακα
+                        foreach ($fields as $field) {
+                            $data = null;
+                            $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $last_record], ['data' => $data]);
+                        }
+                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
                     }
-                    return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
+
+                    if ($next === 'exit') {
+                        return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+                    }
+
+                    if ($next === 'next') {
+                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+                    }
+
+                    if ($next === 'prev') {
+                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+                    }
+
+                    if (is_numeric($next) && is_int(intval($next))) {
+                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+                    }
+                    else {
+                        return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+                    }
                 }
 
-                if ($next === 'exit') {
-                    return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
-                }
-
-                if ($next === 'next') {
-                    return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
-                }
-
-                if ($next === 'prev') {
-                    return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
-                }
-
-                if (is_numeric($next) && is_int(intval($next))) {
-                    return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
-                }
-                else {
-                    return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
-                }
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
-            return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
