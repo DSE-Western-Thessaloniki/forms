@@ -28,7 +28,9 @@ use App\Http\Controllers\Admin\SchoolCategoriesController;
 Route::get('/', [PagesController::class, 'index'])->name('index');
 Route::get('/setup', [SetupController::class, 'setupPage']);
 Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
-Route::get('/admin', [DashboardController::class, 'index'])->name('admin.index');
+Route::get('/admin', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('admin.index');
 
 Route::prefix('admin')
     ->name('admin.')
