@@ -74,7 +74,7 @@ class UserController extends Controller
         $user->roles()->attach($userRole);
 
         return redirect(route('admin.user.show', [$user]))
-            ->with('status', 'User saved!');
+            ->with('status', 'Ο χρήστης αποθηκεύτηκε!');
     }
 
     /**
@@ -135,7 +135,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect(route('admin.user.index'))->with('status', 'User updated!');
+        return redirect(route('admin.user.index'))->with('status', 'Τα στοιχεία του χρήστη ενημερώθηκαν!');
     }
 
     /**
@@ -148,7 +148,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect(route('admin.user.index'))->with('status', 'User deleted!');
+        return redirect(route('admin.user.index'))->with('status', 'Ο χρήστης διαγράφηκε!');
     }
 
     public function password(User $user)
@@ -167,7 +167,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->get('password'));
             $user->save();
 
-            return redirect()->route('admin.user.index')->with('status', __('Password changed!'));
+            return redirect()->route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
         }
         abort(403);
     }
