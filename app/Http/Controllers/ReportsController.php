@@ -149,7 +149,7 @@ class ReportsController extends Controller
                     if (is_array($data)) {
                         $data = json_encode($data);
                     }
-                    $field->field_data()->updateOrCreate(['school_id' => cas()->getAttribute('uid')], ['data' => $data]);
+                    $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id], ['data' => $data]);
                 }
 
                 return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
@@ -181,7 +181,7 @@ class ReportsController extends Controller
                     if (is_array($data)) {
                         $data = json_encode($data);
                     }
-                    $field->field_data()->updateOrCreate(['school_id' => cas()->getAttributes('uid'), 'record' => $record], ['data' => $data]);
+                    $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $record], ['data' => $data]);
                 }
 
                 // Που πάμε τώρα;
@@ -196,7 +196,7 @@ class ReportsController extends Controller
                     // Ετοίμασε τις εγγραφές στον πίνακα
                     foreach ($fields as $field) {
                         $data = null;
-                        $field->field_data()->updateOrCreate(['school_id' => Auth::guard('school')->user()->id, 'record' => $last_record], ['data' => $data]);
+                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $last_record], ['data' => $data]);
                     }
                     return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
                 }
@@ -213,7 +213,12 @@ class ReportsController extends Controller
                     return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
                 }
 
-                return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+                if (is_numeric($next) && is_int(intval($next))) {
+                    return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+                }
+                else {
+                    return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
+                }
             }
 
             return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
