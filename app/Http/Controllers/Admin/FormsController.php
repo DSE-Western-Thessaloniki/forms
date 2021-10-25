@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\School;
 use App\Models\SchoolCategory;
-use App\Models\User;
 use App\Models\FormField;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -140,8 +138,8 @@ class FormsController extends Controller
         }
 
         $category_selected_values = array();
-            foreach($form->school_categories as $category) {
-                array_push($category_selected_values, $category->id);
+        foreach($form->school_categories as $category) {
+            array_push($category_selected_values, $category->id);
         }
 
         return view('admin.form.edit')
