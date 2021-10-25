@@ -63,6 +63,7 @@ class ReportsController extends Controller
                     });
 
                 })
+                ->with('user')
                 ->orderBy('created_at', 'desc')->paginate(15);
             return view('report.index')->with('forms', $forms);
         }
