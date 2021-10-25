@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\Form;
+use App\Models\FormField;
+use App\Models\School;
+use App\Models\SchoolCategory;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Subfission\Cas\Facades\Cas;
@@ -77,4 +83,55 @@ function test_cas_logged_in() {
     Cas::shouldReceive('getAttribute')
         ->with('cn')
         ->andReturn('Dokimastiki monada');
+}
+
+function test_create_one_form_for_user(User $user): Form {
+    $form = Form::factory()
+    ->for($user)
+    ->has(
+        FormField::factory()
+            ->count(10)
+            ->state(new Sequence(function($sequence) {
+                $type = $sequence->index;
+
+                // Δεν χρησιμοποιείται ο τύπος για την επιλογή αρχείου
+                if ($type == 5) {
+                    $type = 0;
+                }
+                // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
+                if (in_array($type, [2, 3, 4])) {
+                    $listvalues = array();
+                    for ($i = 0; $i < rand(1, 10); $i++) {
+                        array_push(
+                            $listvalues,
+                            [
+                                "id" => $i,
+                                "value" => 'Test',
+                            ]
+                        );
+                    }
+
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => $type,
+                        'listvalues' => json_encode($listvalues)
+                    ];
+                }
+                else {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => $type,
+                        'listvalues' => ''
+                    ];
+                }
+            })),
+        'form_fields'
+    )
+    ->create();
+
+    // Σύνδεση φόρμας με σχολική μονάδα και κατηγορία σχολείου
+    $form->schools()->attach(School::inRandomOrder()->first()->id);
+    $form->school_categories()->attach(SchoolCategory::inRandomOrder()->first()->id);
+
+    return $form;
 }
