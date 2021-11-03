@@ -14,6 +14,8 @@ beforeEach(function() {
     $this->app->singleton('cas', function () {
         return new TestCasManager();
     });
+
+    test_cas_null();
 });
 
 it('can get /', function() {
