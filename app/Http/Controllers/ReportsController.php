@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
+    // Κρατάει το μοντέλο της σχολικής μονάδας μετά τον έλεγχο από την συνάρτηση school_has_access
+    private $school_model_cache = null;
+
     /**
      * Create a new controller instance.
      *
@@ -29,6 +32,7 @@ class ReportsController extends Controller
         $school = School::where('username', cas()->getAttribute('uid'))->first();
 
         if (!$school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
+            $this->school_model_cache = null;
             return view('pages.deny_access');
         }
 
@@ -40,6 +44,7 @@ class ReportsController extends Controller
                 $in_category = true;
         }
 
+        $this->school_model_cache = $school;
         return ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category);
     }
 
@@ -84,7 +89,9 @@ class ReportsController extends Controller
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
                 if ($access) {
-                    return view('report.show')->with('form', $form);
+                    return view('report.show')
+                        ->with('form', $form)
+                        ->with('school', $this->school_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -111,7 +118,9 @@ class ReportsController extends Controller
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
                 if ($access) {
-                    return view('report.edit')->with('form', $form);
+                    return view('report.edit')
+                        ->with('form', $form)
+                        ->with('school', $this->school_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');

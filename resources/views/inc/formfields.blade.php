@@ -1,6 +1,9 @@
 @php
 $data = "";
-$data_collection = $field->field_data()->where('school_id', session('school_id'))->where('record', $record ?? 0)->first();
+$data_collection = $field->field_data
+    ->where('school_id', $school->id)
+    ->where('record', $record ?? 0)
+    ->first();
 if ($data_collection) {
     $data_array = $data_collection->toArray();
     try {

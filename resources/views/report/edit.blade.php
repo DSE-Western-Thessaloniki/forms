@@ -27,7 +27,7 @@
     @endphp
 
     @if ($form->multiple)
-        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>    
+        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>
     @else
         <form action={{ route('report.update', $form->id) }} method='post'>
     @endif
@@ -59,10 +59,10 @@
                 $total_records = 0;
                 $records_exist = false;
                 foreach($form->form_fields as $field) {
-                    if ($field->field_data->count()) {
+                    if ($field->field_data->where('school_id', $school->id)->count()) {
                         $records_exist = true;
                     }
-                    $max_record_count = $field->field_data->max('record');
+                    $max_record_count = $field->field_data->where('school_id', $school->id)->max('record');
                     if ($total_records < $max_record_count) {
                         $total_records = $max_record_count;
                     }
