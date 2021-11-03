@@ -41,21 +41,6 @@
             </div>
             <div class="card-body">
                 @php
-                /*$table = array();
-                foreach($form->form_fields as $field) {
-                    $data = "";
-                    $data_collection = $field->field_data()->where('school_id', session('school_id'))->get();
-                    $rows = $data_collection->count() ?? 0;
-                    if ($data_collection) {
-                        $data_array = $data_collection->toArray();
-                        for ($i=0; $i < $rows; $i++) {
-                            $table[$field->title][$i] = $data_array[$i]['data'] ?? '';
-                        }
-                    }
-                }*/
-                @endphp
-
-                @php
                 $total_records = 0;
                 $records_exist = false;
                 foreach($form->form_fields as $field) {
@@ -133,7 +118,6 @@
                             </ul>
                         </nav>
                         <hr/>
-                        <input type="text" class="form-control" value="{{ ($record + 1).' / '.($total_records + 1) }}" placeholder=""/>
                     @endif
                 @endif
 
