@@ -181,7 +181,8 @@ class ReportsController extends Controller
                     if ($form->multiple) {
                         return view('report.edit')
                             ->with('form', $form)
-                            ->with('record', $record);
+                            ->with('record', $record)
+                            ->with('school', $this->school_model_cache);
                     }
 
                     return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
