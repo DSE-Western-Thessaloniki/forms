@@ -88,6 +88,7 @@ Route::middleware('cas.auth')
     ->group(function () {
         Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');
         Route::get('/report/{report}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
+        Route::get('/report/{report}/record/{record}', [ReportsController::class, 'showRecord'])->name('report.show.record');
         Route::resource('report', ReportsController::class)
             ->missing(function (Request $request) {
                 return Redirect::route('report.index');

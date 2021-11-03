@@ -106,6 +106,37 @@ class ReportsController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @param  int  $record
+     * @return \Illuminate\Http\Response
+     */
+    public function showRecord($id, $record)
+    {
+        $form = Form::find($id);
+        if ($form) {
+            $access = $this->school_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    return view('report.show')
+                        ->with('form', $form)
+                        ->with('record', $record)
+                        ->with('school', $this->school_model_cache);
+                }
+
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            }
+
+            // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
+            // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
+            return $access;
+        }
+
+        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
