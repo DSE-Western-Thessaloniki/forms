@@ -235,6 +235,33 @@ it('can show a report as user logged in through cas (direct relation)', function
                 })),
             'form_fields'
         )
+        ->state([ 'multiple' => false ])
+        ->create();
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->get('/report/'.$form->id)
+        ->assertOk()
+        ->assertDontSee('Σφάλμα')
+        ->assertSee($form->title)
+        ->assertSee($form->notes);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->state([ 'multiple' => true ])
         ->create();
 
     $form->schools()->attach($school);
@@ -274,6 +301,7 @@ it('can show a report as user logged in through cas (indirect relation)', functi
                 })),
             'form_fields'
         )
+        ->state([ 'multiple' => false ])
         ->create();
 
     $school->categories()->attach($school_category);
@@ -287,6 +315,33 @@ it('can show a report as user logged in through cas (indirect relation)', functi
         ->assertDontSee('Σφάλμα')
         ->assertSee($form->title)
         ->assertSee($form->notes);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->state([ 'multiple' => true ])
+        ->create();
+
+    $form->school_categories()->attach($school_category);
+    $form->save();
+
+    $this->get('/report/'.$form->id)
+        ->assertOk()
+        ->assertDontSee('Σφάλμα')
+        ->assertSee($form->title)
+        ->assertSee($form->notes);
+
 });
 
 it('cannot edit a report that doesn\'t exist as user logged in through cas', function() {
