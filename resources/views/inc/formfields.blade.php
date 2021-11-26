@@ -1,21 +1,5 @@
 @php
-$data = "";
-if (isset($school)) {
-    $data_collection = $field->field_data()
-        ->where('school_id', $school->id)
-        ->where('record', $record ?? 0)
-        ->first();
-
-    if ($data_collection) {
-        $data_array = $data_collection->toArray();
-        try {
-            $data = $data_array['data'];
-        }
-        catch (\Exception $e) {
-            $data = '';
-        }
-    }
-}
+$data = $data_dict[$field->id] ?? '';
 @endphp
 
 <div class="form-group row">

@@ -45,6 +45,7 @@
                     ->where('form_id', $form->id)
                     ->where('school_id', $school->id)
                     ->max('record');
+                $total_records = $total_records ?? 0;
                 @endphp
 
                 @if ($record > $total_records)
