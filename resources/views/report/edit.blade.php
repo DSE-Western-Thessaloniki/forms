@@ -41,17 +41,12 @@
             </div>
             <div class="card-body">
                 @php
-                $total_records = 0;
-                $records_exist = false;
-                foreach($form->form_fields as $field) {
-                    if ($field->field_data->where('school_id', $school->id)->count()) {
-                        $records_exist = true;
-                    }
-                    $max_record_count = $field->field_data->where('school_id', $school->id)->max('record');
-                    if ($total_records < $max_record_count) {
-                        $total_records = $max_record_count;
-                    }
-                }
+                $total_records = DB::table('form_fields')
+                    ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
+                    ->where('form_id', $form->id)
+                    ->where('school_id', $school->id)
+                    ->max('record');
+                $total_records = $total_records ?? 0;
                 @endphp
 
                 @if ($record > $total_records)
