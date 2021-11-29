@@ -24,7 +24,7 @@
 </head>
 <body>
     @include('inc.admin.navbar')
-    <div class="container" id="app">
+    <div class="container-fluid" id="app">
 
         <main class="py-4">
             @include('inc.messages')
