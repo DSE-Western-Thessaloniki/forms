@@ -60,14 +60,16 @@ class ReportsController extends Controller
         $school = School::where('username', $id)->first();
         if ($school) {
             $categories = $school->categories;
-            $forms = Form::whereHas('schools', function ($q) use ($school) {
-                    $q->where('school_id', $school->id);
-                })
-                ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
-                    $q->orWhereHas('school_categories', function ($q) use ($categories) {
-                        $q->whereIn('school_category_id', $categories);
+            $forms = Form::where('active', true)
+                ->where(function($query) use ($school, $categories) { // Προσθήκη παρένθεσης
+                    $query->whereHas('schools', function ($q) use ($school) {
+                        $q->where('school_id', $school->id);
+                    })
+                    ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                        $q->orWhereHas('school_categories', function ($q) use ($categories) {
+                            $q->whereIn('school_category_id', $categories);
+                        });
                     });
-
                 })
                 ->with('user')
                 ->orderBy('created_at', 'desc')->paginate(15);
@@ -85,7 +87,7 @@ class ReportsController extends Controller
      */
     public function show($id)
     {
-        $form = Form::find($id);
+        $form = Form::where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
@@ -123,7 +125,7 @@ class ReportsController extends Controller
      */
     public function showRecord($id, $record)
     {
-        $form = Form::find($id);
+        $form = Form::where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
@@ -161,7 +163,7 @@ class ReportsController extends Controller
      */
     public function edit($id)
     {
-        $form = Form::find($id);
+        $form = Form::where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
@@ -198,7 +200,7 @@ class ReportsController extends Controller
      */
     public function editRecord($id, $record)
     {
-        $form = Form::find($id);
+        $form = Form::where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
@@ -241,7 +243,7 @@ class ReportsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $form = Form::with('form_fields')->find($id);
+        $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
@@ -280,7 +282,7 @@ class ReportsController extends Controller
      */
     public function updateRecord(Request $request, $id, $record, $next)
     {
-        $form = Form::with('form_fields')->find($id);
+        $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
