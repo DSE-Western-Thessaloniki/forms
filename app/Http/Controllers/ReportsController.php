@@ -90,17 +90,11 @@ class ReportsController extends Controller
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
                 if ($access) {
-                    $record_data = DB::table('form_fields')
-                        ->select('form_fields.id', 'form_field_data.data')
-                        ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                        ->where('form_id', $form->id)
-                        ->where('school_id', $this->school_model_cache->id)
-                        ->where('record', 0)
-                        ->get();
+                    $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', 0)->get();
 
                     $data_dict = array();
                     foreach ($record_data as $item) {
-                        $data_dict[$item->id] = $item->data;
+                        $data_dict[$item->form_field_id] = $item->data;
                     }
 
                     return view('report.show')
@@ -134,17 +128,11 @@ class ReportsController extends Controller
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
                 if ($access) {
-                    $record_data = DB::table('form_fields')
-                        ->select('form_fields.id', 'form_field_data.data')
-                        ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                        ->where('form_id', $form->id)
-                        ->where('school_id', $this->school_model_cache->id)
-                        ->where('record', $record)
-                        ->get();
+                    $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
 
                     $data_dict = array();
                     foreach ($record_data as $item) {
-                        $data_dict[$item->id] = $item->data;
+                        $data_dict[$item->form_field_id] = $item->data;
                     }
 
                     return view('report.show')
@@ -178,23 +166,17 @@ class ReportsController extends Controller
             $access = $this->school_has_access($form);
             if (is_bool($access)) {
                 if ($access) {
-                        $record_data = DB::table('form_fields')
-                            ->select('form_fields.id', 'form_field_data.data')
-                            ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                            ->where('form_id', $form->id)
-                            ->where('school_id', $this->school_model_cache->id)
-                            ->where('record', 0)
-                            ->get();
+                    $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', 0)->get();
 
-                        $data_dict = array();
-                        foreach ($record_data as $item) {
-                            $data_dict[$item->id] = $item->data;
-                        }
+                    $data_dict = array();
+                    foreach ($record_data as $item) {
+                        $data_dict[$item->form_field_id] = $item->data;
+                    }
 
-                        return view('report.edit')
-                            ->with('form', $form)
-                            ->with('data_dict', $data_dict)
-                            ->with('school', $this->school_model_cache);
+                    return view('report.edit')
+                        ->with('form', $form)
+                        ->with('data_dict', $data_dict)
+                        ->with('school', $this->school_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -222,17 +204,11 @@ class ReportsController extends Controller
             if (is_bool($access)) {
                 if ($access) {
                     if ($form->multiple) {
-                        $record_data = DB::table('form_fields')
-                            ->select('form_fields.id', 'form_field_data.data')
-                            ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                            ->where('form_id', $form->id)
-                            ->where('school_id', $this->school_model_cache->id)
-                            ->where('record', $record)
-                            ->get();
+                        $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
 
                         $data_dict = array();
                         foreach ($record_data as $item) {
-                            $data_dict[$item->id] = $item->data;
+                            $data_dict[$item->form_field_id] = $item->data;
                         }
 
                         return view('report.edit')

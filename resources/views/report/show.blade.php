@@ -40,11 +40,7 @@
             </div>
             <div class="card-body">
                 @php
-                $total_records = DB::table('form_fields')
-                    ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                    ->where('form_id', $form->id)
-                    ->where('school_id', $school->id)
-                    ->max('record');
+                $total_records = $form->data()->where('school_id', $school->id)->max('record');
                 $total_records = $total_records ?? 0;
                 @endphp
 

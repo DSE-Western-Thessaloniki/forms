@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Http\Traits\UsesUuid;
 use App\Models\FormField;
+use App\Models\FormFieldData;
 use App\Models\User;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -39,5 +40,9 @@ class Form extends Model
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function data() {
+        return $this->hasManyThrough(FormFieldData::class, FormField::class);
     }
 }
