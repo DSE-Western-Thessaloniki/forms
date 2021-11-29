@@ -463,4 +463,35 @@ class FormsController extends Controller
 
         return response()->download($fname);
     }
+
+    /**
+     * Αλλαγή κατάστασης φόρμας.
+     *
+     * @param  \App\Models\Form  $form
+     * @param  int  $state
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setActive(Form $form, int $state) : \Illuminate\Http\RedirectResponse
+    {
+        if (in_array($state, [0, 1])) {
+            $form->active = $state;
+            $form->save();
+
+            return redirect(route('admin.form.index'))->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
+        }
+    }
+
+    /**
+     * Εναλλαγή κατάστασης φόρμας (από ενεργή σε ανενεργή και το ανάποδο).
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function toggleActive(Form $form) : \Illuminate\Http\RedirectResponse
+    {
+        $form->active = $form->active ? 0 : 1;
+        $form->save();
+
+        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
+    }
 }

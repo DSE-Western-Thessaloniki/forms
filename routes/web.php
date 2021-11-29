@@ -45,6 +45,12 @@ Route::prefix('admin')
             Route::get('/form/{form}/data', [FormsController::class, 'formData'])
                 ->name('form.data')
                 ->middleware('auth');
+            Route::get('/form/{form}/active/set/{state}', [FormsController::class, 'setActive'])
+                ->name('form.active.set')
+                ->middleware('auth');
+            Route::get('/form/{form}/active/toggle', [FormsController::class, 'toggleActive'])
+                ->name('form.active.toggle')
+                ->middleware('auth');
             Route::resource('form', FormsController::class)
                 ->middleware('auth');
             Auth::routes([

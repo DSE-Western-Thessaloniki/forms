@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card">
@@ -32,6 +32,7 @@
                                     <th>Ημ. δημιουργίας</th>
                                     <th>Ημ. ενημέρωσης</th>
                                     <th>Χρήστης</th>
+                                    <th>Ενεργή</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -45,6 +46,15 @@
                                         <td>{{ $form->created_at }}</td>
                                         <td>{{ $form->updated_at }}</td>
                                         <td>{{ $form->user->name }}</td>
+                                        <td class='text-center'>
+                                            @if($form->active)
+                                            <span class='text-success'>@icon('fas fa-check')</span>
+                                            <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-secondary m-1'>Αλλαγή</a>
+                                            @else
+                                            <div class='text-danger'>@icon('fas fa-times')</div>
+                                            <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-secondary m-1'>Αλλαγή</a>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
                                             <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
