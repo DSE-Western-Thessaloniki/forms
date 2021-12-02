@@ -46,7 +46,7 @@
         },
         props: {
             options: Array,
-            value: [String, Number],
+            value: String,
             name: String,
             placeholder: String,
         },

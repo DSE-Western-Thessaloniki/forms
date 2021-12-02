@@ -60,6 +60,7 @@
                                 <div class="form-row">
                                     <label for="categories" class="m-2">Κατηγορίες:</label>
                                     <pillbox class="flex-fill"
+                                        :value="category_selected_values"
                                         :options="this.categories"
                                         name="categories"
                                     >
@@ -70,6 +71,7 @@
                                 <div class="form-row">
                                     <label for="schools" class="m-2">Σχολικές μονάδες:</label>
                                     <pillbox class="flex-fill"
+                                        :value="school_selected_values"
                                         :options="this.schools"
                                         placeholder="Επιλέξτε σχολική μονάδα"
                                         name="schools"
@@ -123,6 +125,8 @@
             categories: Array,
             multiple: Boolean,
             restricted: Boolean,
+            category_selected_values: String,
+            school_selected_values: String,
         },
         mounted() {
             console.log('Component mounted.')
