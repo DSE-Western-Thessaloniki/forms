@@ -7,6 +7,7 @@
         >
             <div
             class="card-header"
+            v-if="!restricted"
             @click="toggleEdit(list)"
             v-show="!list.edit"
             >
@@ -75,7 +76,7 @@
                 listarray: this.edittext.length ? JSON.parse(this.edittext) : [],
             }
         },
-        props: ['cbselected', 'edittext', 'fid'],
+        props: ['cbselected', 'edittext', 'fid', 'restricted'],
         methods: {
             toggleEdit: function(list) {
                 list.edit = !list.edit;

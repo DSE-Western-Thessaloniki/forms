@@ -3,10 +3,12 @@
     class="editable-text-group"
     >
         <span
+        v-if="!restricted"
         v-show="!text.edit"
         @click="toggleEdit(text)"
         class="editable-text-label"
         ><a>{{text.val}}</a><i class="fas fa-pencil-alt editable-text-icon"></i></span>
+        <span v-if="restricted">{{text.val}}</span>
 
         <input
             type="text"
@@ -35,7 +37,7 @@
                 }
             }
         },
-        props: ['edittext', 'fid'],
+        props: ['edittext', 'fid', 'restricted'],
         methods: {
             toggleEdit: function(text) {
                 text.edit = !text.edit;

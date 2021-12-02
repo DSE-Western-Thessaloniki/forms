@@ -32,6 +32,8 @@
                                     :listvalues="field.listvalues"
                                     v-on:delfield="delField"
                                     ref='vform-fields'
+                                    :restricted="restricted && !field.new_field"
+                                    :no_drag="restricted"
                                     ></vform-field-component>
                                 </li>
                             </draggable>
@@ -93,6 +95,7 @@
         validators: [],
         listvalues: "",
         sort_id: 0,
+        new_field: false,
     }
 
     var notes;
@@ -119,6 +122,7 @@
             schools: Array,
             categories: Array,
             multiple: Boolean,
+            restricted: Boolean,
         },
         mounted() {
             console.log('Component mounted.')
@@ -164,6 +168,7 @@
                 this.cur_sort_id++;
                 fieldObj.id = this.cur_id;
                 fieldObj.sort_id = this.cur_sort_id;
+                fieldObj.new_field = true;
                 this.fields.push(JSON.parse( JSON.stringify( fieldObj ) ));
             },
 

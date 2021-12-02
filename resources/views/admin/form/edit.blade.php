@@ -15,7 +15,8 @@
                 :categories="{{ json_encode($categories) }}"
                 :school_selected_values="{{ json_encode($school_selected_values) }}"
                 :category_selected_values="{{ json_encode($category_selected_values) }}"
-                :multiple="{{ $form->multiple }}"
+                :multiple="{{ $form->multiple ? "true" : "false" }}"
+                :restricted="{{ $form->active ? "true" : "false" }}"
             >
             >
             </vform-component>
