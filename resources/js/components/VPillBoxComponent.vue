@@ -25,7 +25,6 @@
 <script>
     export default {
         mounted() {
-            console.log('Component mounted.');
             var vueobj = this;
             this.$nextTick(() => {
                 if (typeof vueobj.value == "string" || vueobj.value instanceof String) {

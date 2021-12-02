@@ -36,11 +36,6 @@
             schools: Array,
         },
         mounted() {
-            console.log("DataTable is mounted.");
-            console.log(this.columns);
-            console.log(this.data);
-            console.log(this.schools);
-            console.log(this.lines);
         },
         methods: {
         },

@@ -129,12 +129,6 @@
             school_selected_values: String,
         },
         mounted() {
-            console.log('Component mounted.')
-            /*if (this.parse === true) {
-                this.title = this.parsetitle
-                this.fields = this.parseobj
-            }*/
-
         },
         data: function() {
             if (this.parse) {

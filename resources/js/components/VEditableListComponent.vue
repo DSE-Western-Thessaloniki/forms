@@ -57,7 +57,6 @@
 <script>
     export default {
         mounted() {
-            console.log('Component mounted.');
             this.$nextTick(function() {
             if (this.listarray.length &&
             (this.listarray[this.listarray.length - 1].value != ''))
