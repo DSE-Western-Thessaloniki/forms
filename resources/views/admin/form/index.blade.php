@@ -12,7 +12,6 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
                     <div class="btn-toolbar pb-2" role="toolbar">
                         <div class="btn-group mr-2">
                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
@@ -22,64 +21,77 @@
                             @endif
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Τίτλος</th>
-                                    <th>Σημειώσεις</th>
-                                    <th>Ημ. δημιουργίας</th>
-                                    <th>Ημ. ενημέρωσης</th>
-                                    <th>Χρήστης</th>
-                                    <th>Ενεργή</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($forms as $form)
-                                    <tr>
-                                        <td>{{ $loop->iteration + $forms->firstItem() - 1 }}</td>
-                                        <td><a href="{{ route('admin.form.show', $form->id) }}">{{ $form->title }}</a></td>
-                                        <td>{{ $form->notes }}</td>
-                                        <td>{{ $form->created_at }}</td>
-                                        <td>{{ $form->updated_at }}</td>
-                                        <td>{{ $form->user->name }}</td>
-                                        <td class='text-center'>
-                                            @if($form->active)
-                                            <span class='text-success'>@icon('fas fa-check')</span>
-                                            <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-secondary m-1'>Αλλαγή</a>
-                                            @else
-                                            <div class='text-danger'>@icon('fas fa-times')</div>
-                                            <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-secondary m-1'>Αλλαγή</a>
-                                            @endif
-                                        </td>
-                                        <td>
+                    <div class="container">
+                        @forelse ($forms as $form)
+                            <div class="card my-2">
+                                <div class="card-header">
+                                    <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}. {{ $form->title }}</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class='col-10 d-flex flex-column'>
+                                            <div class='flex-grow-1'>
+                                                {{ $form->notes }}
+                                            </div>
+                                            <div class='pt-4'>
+                                                <div class='row'>
+                                                    <div class='col-10'>
+                                                        <div class="progress">
+                                                            @php
+                                                                $forms_filled = $form->data_count / $form->form_fields->count();
+                                                                $school_categories = $form->school_categories()->withCount('schools')->get();
+                                                                $should_have = 0;
+                                                                foreach ($school_categories as $school_category) {
+                                                                    $should_have += $school_category->schools_count;
+                                                                }
+                                                                $should_have += $form->schools->count();
+                                                                $percent = round($forms_filled / $should_have * 100, 2);
+                                                            @endphp
+                                                            <div class="progress-bar" role="progressbar" style="width: {{ $percent }}%" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100">{{ $percent }}%</div>
+                                                        </div>
+                                                        <div class="small pt-2">
+                                                            Ημερομηνία δημιουργίας: {{ $form->created_at }}
+                                                        </div>
+                                                        @if($form->created_at != $form->updated_at)
+                                                        <div class="small">
+                                                            Ημερομηνία τροποποίησης: {{ $form->updated_at }}
+                                                        </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class='col-2'>
+                                                        Ενεργή:
+                                                        @if($form->active)
+                                                        <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-light m-1'><span class='text-success'>@icon('fas fa-check')</span></a>
+                                                        @else
+                                                        <a href="{{ route('admin.form.active.toggle', $form) }}" class='btn btn-light m-1'><span class='text-danger'>@icon('fas fa-times')</span></a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='col-2'>
                                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
-                                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a>
+                                            <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1 float-right">@icon('fas fa-edit') Επεξεργασία</a>
                                             @endif
-                                            <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1">@icon('fas fa-table') Δεδομένα</a>
-                                        </td>
-                                        <td>
+                                            <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1 float-right">@icon('fas fa-table') Δεδομένα</a>
                                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
                                             <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
+                                                <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                             </form>
                                             @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8">Δεν βρέθηκαν φόρμες</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            Δεν βρέθηκαν φόρμες
+                        @endforelse
+                        <div class="text-align-center">
+                            {{ $forms->links() }} <!-- Σελιδοποίηση -->
+                        </div>
                     </div>
-                    {{ $forms->links() }} <!-- Σελιδοποίηση -->
                 </div>
             </div>
         </div>

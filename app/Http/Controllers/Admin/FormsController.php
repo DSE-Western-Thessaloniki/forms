@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\FormField;
+use App\Models\FormFieldData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -31,7 +32,14 @@ class FormsController extends Controller
      */
     public function index() : \Illuminate\Contracts\View\View
     {
-        $forms = Form::orderBy('created_at', 'desc')->with('user')->paginate(15);
+        $forms = Form::orderBy('created_at', 'desc')
+            ->withCount(['data' => function($query) {
+                $query->where('record', 0);
+            }])
+            ->with('user')
+            ->with('schools')
+            ->with('form_fields')
+            ->paginate(15);
         return view('admin.form.index')->with('forms', $forms);
     }
 
