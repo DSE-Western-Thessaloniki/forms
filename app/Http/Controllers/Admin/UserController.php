@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->paginate(10);
+        $users = User::with('roles')->paginate(15);
         return view('admin.user.index')->with('users', $users);
     }
 
@@ -130,6 +130,7 @@ class UserController extends Controller
                     array_push($new_roles, $role->id);
                 }
             }
+            dd($new_roles);
             $user->roles()->sync($new_roles);
         }
 

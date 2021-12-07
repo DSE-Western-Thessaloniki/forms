@@ -12,18 +12,19 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <div class="btn-toolbar pb-2" role="toolbar">
-                        <div class="btn-group mr-2">
-                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
-                            <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
-                                @icon('fas fa-plus') Δημιουργία φόρμας
-                            </a>
-                            @endif
-                        </div>
-                    </div>
                     <div class="container">
+                        <div class="btn-toolbar pb-2" role="toolbar">
+                            <div class="btn-group mr-2">
+                                @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
+                                <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
+                                    @icon('fas fa-plus') Δημιουργία φόρμας
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+
                         @forelse ($forms as $form)
-                            <div class="card my-2">
+                            <div class="card my-2 shadow-sm">
                                 <div class="card-header">
                                     <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}. {{ $form->title }}</a>
                                 </div>

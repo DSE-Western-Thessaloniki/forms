@@ -30,7 +30,7 @@ class SchoolsController extends Controller
     {
         $schools = School::orderBy('created_at', 'desc')
             ->with('user', 'categories')
-            ->paginate(10);
+            ->paginate(15);
         return view('admin.school.index')->with('schools', $schools);
     }
 

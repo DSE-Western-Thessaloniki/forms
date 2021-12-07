@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card">
@@ -22,62 +22,62 @@
                             </a>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Όνομα χρήστη</th>
-                                    <th>Όνομα</th>
-                                    <th>E-mail</th>
-                                    <th>Ενεργός</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($users as $user)
-                                <tr>
-                                    <td>{{ $loop->iteration + $users->firstItem() - 1 }}.</td>
-                                    <td>
-                                        @if($user->roles->where('name', 'Administrator')->count() > 0)
-                                            <span class="text-dark h2">@icon('fas fa-user-ninja')</span>
-                                        @elseif ($user->roles->where('name', 'Author')->count() > 0)
-                                            <span class="text-danger h2">@icon('fas fa-user-edit')</span>
-                                        @else
-                                            <span class="text-success h2">@icon('fas fa-user')</span>
-                                        @endif
-                                        <a href="{{ route('admin.user.show', $user->id) }}">{{$user->username}}</a></td>
-                                    <td>{{$user->name}}</td>
-                                    <td><pre class="text-center">{{$user->email}}</pre></td>
-                                    @if($user->active)
-                                        <td class="text-center text-success">
-                                            @icon('check')
-                                        </td>
-                                    @else
-                                        <td class="text-center text-danger">
-                                            @icon('times')
-                                        </td>
+
+                    <div class="row justify-content-md-center">
+                        @forelse($users as $user)
+                        <div class="col-xl-4">
+                            <div class="card my-2 shadow">
+                                @if($user->active)
+                                <div class="card-header">
+                                @else
+                                <div class="card-header bg-danger text-white">
+                                @endif
+                                    <a href="{{ route('admin.user.show', $user->id) }}">{{$user->username}}</a>
+                                    @if(!$user->active)
+                                    <em>(Ανενεργός)</em>
                                     @endif
-                                    <td>
-                                        <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
-                                        <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">@icon('fas fa-key') Αλλαγή κωδικού</a>
-                                    </td>
-                                    <td>
-                                        <form action="{{ route('admin.user.destroy', $user->id)}}" method="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="6">Δεν υπάρχουν διαθέσιμοι χρήστες</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    @if($user->roles->where('name', 'Administrator')->count() > 0)
+                                                        <span class="text-dark h1">@icon('fas fa-user-ninja')</span>
+                                                    @elseif ($user->roles->where('name', 'Author')->count() > 0)
+                                                        <span class="text-danger h1">@icon('fas fa-user-edit')</span>
+                                                    @else
+                                                        <span class="text-success h1">@icon('fas fa-user')</span>
+                                                    @endif
+                                                </div>
+                                                <div class="col-10">
+                                                    <div>
+                                                        Όνομα: {{$user->name}}
+                                                    </div>
+                                                    <div>
+                                                        E-mail: {{$user->email}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row justify-content-md-center">
+                                            <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
+                                            <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">@icon('fas fa-key') Αλλαγή κωδικού</a>
+                                            <form action="{{ route('admin.user.destroy', $user->id)}}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
+                                            </form>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                            Δεν υπάρχουν διαθέσιμοι χρήστες
+                        @endforelse
                     </div>
                     {{ $users->links() }}
                 </div>
