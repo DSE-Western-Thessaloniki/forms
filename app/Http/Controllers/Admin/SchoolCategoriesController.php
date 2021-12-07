@@ -26,7 +26,7 @@ class SchoolCategoriesController extends Controller
      */
     public function index()
     {
-        $categories = SchoolCategory::all();
+        $categories = SchoolCategory::with('schools')->get();
         return view('admin.school.schoolcategory.index')->with('categories', $categories);
     }
 
