@@ -25,8 +25,10 @@ mix.js('resources/js/app.js', 'public/js')
    .version('js/vuejs_code_split/*.js')
    .purgeCss();
 
+mix.setResourceRoot('/'+process.env.MIX_APP_DIR+'/')
+
 if (!mix.inProduction()) {
-    mix.sourceMaps()
-       .browserSync('forms.test');
+    mix.sourceMaps();
+       //.browserSync('forms.test');
 }
 
