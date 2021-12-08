@@ -19,8 +19,10 @@
                                     </div>
                                 </div>
                                 <div class="form-row form-check">
-                                        <input type="checkbox" class="form-check-input" id="multiple_input" name="multiple_input" value=1 v-model="multiple">
-                                        <label class="form-check-label" for="multiple_input">Πολλαπλή συμπλήρωση στοιχείων φόρμας</label>
+                                        <input v-if="restricted" type="checkbox" class="form-check-input" id="multiple_input" name="multiple_input" value=1 v-model="multiple" hidden>
+                                        <input v-else type="checkbox" class="form-check-input" id="multiple_input" name="multiple_input" value=1 v-model="multiple">
+                                        <label v-if="restricted" class="form-check-label d-none" for="multiple_input">Πολλαπλή συμπλήρωση στοιχείων φόρμας</label>
+                                        <label v-else class="form-check-label" for="multiple_input">Πολλαπλή συμπλήρωση στοιχείων φόρμας</label>
                                 </div>
                             </li>
                             <draggable v-model="fields" handle=".handle" @end="dragEnded">
