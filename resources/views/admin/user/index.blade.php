@@ -78,8 +78,8 @@
                         @empty
                             Δεν υπάρχουν διαθέσιμοι χρήστες
                         @endforelse
+                        {{ $users->links() }}
                     </div>
-                    {{ $users->links() }}
                 </div>
                 @else
                     Δεν επιτρέπεται η πρόσβαση
