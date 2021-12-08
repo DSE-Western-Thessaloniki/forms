@@ -66,8 +66,8 @@ class UserFactory extends Factory
      */
     public function admin()
     {
-        return $this->has(
-            Role::factory()->state(['name' => 'Administrator'])
+        return $this->hasAttached(
+            Role::factory()->state(['name' => 'Administrator'])->count(1)
         );
     }
 
@@ -78,8 +78,8 @@ class UserFactory extends Factory
      */
     public function author()
     {
-        return $this->has(
-            Role::factory()->state(['name' => 'Author'])
+        return $this->hasAttached(
+            Role::factory()->state(['name' => 'Author'])->count(1)
         );
     }
 
@@ -90,8 +90,8 @@ class UserFactory extends Factory
      */
     public function user()
     {
-        return $this->has(
-            Role::factory()->state(['name' => 'User'])
+        return $this->hasAttached(
+            Role::factory()->state(['name' => 'User'])->count(1)
         );
     }
 }

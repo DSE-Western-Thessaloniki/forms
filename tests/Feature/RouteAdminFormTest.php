@@ -811,7 +811,7 @@ it('can update a form as admin', function(){
 
 it('can access a form\'s data as user', function() {
     $user = User::factory()->user()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -822,7 +822,7 @@ it('can access a form\'s data as user', function() {
 
 it('can access a form\'s data as author', function() {
     $author = User::factory()->author()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -832,7 +832,7 @@ it('can access a form\'s data as author', function() {
 
 it('can access a form\'s data as admin', function() {
     $admin = User::factory()->admin()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -842,7 +842,7 @@ it('can access a form\'s data as admin', function() {
 
 it('can access a form\'s data (csv) as user', function() {
     $user = User::factory()->user()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -852,7 +852,7 @@ it('can access a form\'s data (csv) as user', function() {
 
 it('can access a form\'s data (csv) as author', function() {
     $author = User::factory()->author()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -862,7 +862,7 @@ it('can access a form\'s data (csv) as author', function() {
 
 it('can access a form\'s data (csv) as admin', function() {
     $admin = User::factory()->admin()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -872,7 +872,7 @@ it('can access a form\'s data (csv) as admin', function() {
 
 it('can access a form\'s data (xlsx) as user', function() {
     $user = User::factory()->user()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -882,7 +882,7 @@ it('can access a form\'s data (xlsx) as user', function() {
 
 it('can access a form\'s data (xlsx) as author', function() {
     $author = User::factory()->author()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -892,7 +892,7 @@ it('can access a form\'s data (xlsx) as author', function() {
 
 it('can access a form\'s data (xlsx) as admin', function() {
     $admin = User::factory()->admin()->create();
-    $this->seed([UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);

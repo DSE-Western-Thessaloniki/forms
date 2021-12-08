@@ -130,7 +130,6 @@ class UserController extends Controller
                     array_push($new_roles, $role->id);
                 }
             }
-            dd($new_roles);
             $user->roles()->sync($new_roles);
         }
 
