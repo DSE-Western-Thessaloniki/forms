@@ -89,7 +89,7 @@
                         @empty
                             Δεν βρέθηκαν φόρμες
                         @endforelse
-                        <div class="text-align-center">
+                        <div class="row justify-content-md-center">
                             {{ $forms->links() }} <!-- Σελιδοποίηση -->
                         </div>
                     </div>
