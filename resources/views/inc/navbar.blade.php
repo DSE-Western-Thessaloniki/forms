@@ -14,10 +14,13 @@
         <!-- Right Side Of Navbar -->
         <ul class="navbar-nav ml-auto">
             <!-- Authentication Links -->
-            @if(cas()->isAuthenticated())
+            @php
+                $school = App\Models\School::where('username', cas()->getAttribute('uid'))->first();
+            @endphp
+            @if(cas()->isAuthenticated() && $school)
                 <li class="nav-item dropdown">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        {{ App\Models\School::where('username', cas()->getAttribute('uid'))->first()->name }} <span class="caret"></span>
+                        {{ $school->name }} <span class="caret"></span>
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
