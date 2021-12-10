@@ -178,4 +178,66 @@ class SchoolsController extends Controller
 
         return redirect(route('admin.school.index'))->with('status', 'Η σχολική μονάδα διαγράφηκε!');
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\School  $school
+     * @return \Illuminate\Support\Facades\View
+     */
+    public function showImport()
+    {
+        return view('admin.school.import');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\School  $school
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required'
+        ]);
+
+        $uploadedFile = $request->file('file');
+        $data = str_getcsv($uploadedFile);
+        if (!empty($data) && count($data[0]) != 5) { // Δοκίμασε το ';' ως διαχωριστικό
+            $data = str_getcsv($uploadedFile, ';');
+        }
+
+        if (empty($data)) {
+            return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+        }
+
+        foreach ($data as $row) {
+            if (count($row) != 5) {
+                return redirect(route('admin.school.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
+            }
+
+            $school = new School;
+            $school->name = $row[0];
+            $school->username = $row[1];
+            $school->code = $row[2];
+            $school->email = $row[3];
+            $school->active = true;
+            $category_name = $row[4];
+            $category = SchoolCategory::where('name', $category_name)->first();
+
+            if (!$category) { // Η κατηγορία υπάρχει ήδη
+                $category = new SchoolCategory;
+                $category->name = $row[4];
+                $category->save();
+            }
+
+            $school->categories()->attach($category);
+
+            $school->save();
+        }
+
+        return redirect(route('admin.school.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');
+    }
+
 }

@@ -1,0 +1,85 @@
+@extends('layouts.admin.app')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Σχολεία</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    </div><br />
+                    @endif
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+
+                                <div class="card text-white bg-info">
+                                    <div class="card-header">
+                                        Οδηγίες για εισαγωγή αρχείου σχολείων
+                                    </div>
+                                    <div class="card-body">
+                                        Το αρχείο για εισαγωγή πρέπει να είναι ένα csv αρχείο σε κωδικοποίηση UTF8 και το οποίο θα έχει έναν πίνακα με τις στήλες του να περιέχουν τα
+                                        παρακάτω δεδομένα:
+                                        <ul>
+                                            <li>Όνομα σχολείου</li>
+                                            <li>Όνομα χρήστη</li>
+                                            <li>Κωδικός ΥΠΑΙΘ</li>
+                                            <li>e-mail</li>
+                                            <li>Κατηγορία σχολείου</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <form action={{ route('admin.school.import') }} method='post'>
+
+                                    <div class="form-group row">
+                                        <label for="file" class="col-md-4 col-form-label text-md-right">Αρχείο για εισαγωγή</label>
+
+                                        <div class="col-md-6">
+                                            <input id="file" type="file" class="form-control @error('file') is-invalid @enderror" name="file" value="{{ old('file') }}" required autocomplete="file" autofocus>
+
+                                            @error('file')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-2">
+                                            <a class="btn btn-danger" href="{{ route('admin.school.index') }}">Ακύρωση</a>
+                                        </div>
+                                        <div class="col-10 d-flex justify-content-end">
+                                            <button class='btn btn-primary' type='submit'>Εισαγωγή</a>
+                                        </div>
+                                    </div>
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

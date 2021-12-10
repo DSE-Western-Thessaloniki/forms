@@ -23,6 +23,9 @@
                                 <a class="btn btn-success" href="{{ route('admin.school.schoolcategory.index')}}">
                                     @icon('fas fa-list') Διαχείριση κατηγοριών
                                 </a>
+                                <a class="btn btn-secondary" href="{{ route('admin.school.import')}}">
+                                    @icon('fas fa-file-csv') Εισαγωγή δεδομένων σχολικών μονάδων
+                                </a>
                             </div>
                         </div>
 

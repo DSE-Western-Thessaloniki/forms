@@ -70,6 +70,14 @@ Route::prefix('admin')
             Route::resource('user', UserController::class)
                 ->middleware('auth');
             Route::prefix('school')
+                ->middleware('auth')
+                ->group(
+                function() {
+                    Route::get('/import', [SchoolsController::class, 'showImport'])->name('school.import');
+                    Route::post('/import', [SchoolsController::class, 'import'])->name('school.import');
+                }
+            );
+            Route::prefix('school')
                 ->name('school.')
                 ->group(
                     function () {
