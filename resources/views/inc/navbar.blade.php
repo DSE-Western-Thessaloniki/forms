@@ -15,7 +15,9 @@
         <ul class="navbar-nav ml-auto">
             <!-- Authentication Links -->
             @php
-                $school = App\Models\School::where('username', cas()->getAttribute('uid'))->first();
+                if (cas()->isAuthenticated()) {
+                    $school = App\Models\School::where('username', cas()->getAttribute('uid'))->first();
+                }
             @endphp
             @if(cas()->isAuthenticated() && $school)
                 <li class="nav-item dropdown">
