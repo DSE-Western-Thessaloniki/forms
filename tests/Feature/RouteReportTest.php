@@ -51,7 +51,7 @@ it('denies access to users not in the schools table', function() {
 
     test_cas_logged_in();
 
-    $this->get('/report')->assertSee('Σφάλμα');
+    $this->get('/report')->assertOk()->assertSee('Σφάλμα');
 });
 
 it('can access reports as user logged in through cas', function() {
