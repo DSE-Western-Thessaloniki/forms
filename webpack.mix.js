@@ -25,7 +25,25 @@ mix.js('resources/js/app.js', 'public/js')
    .version('js/vuejs_code_split/*.js')
    .purgeCss();
 
-mix.setResourceRoot('/'+process.env.MIX_APP_DIR+'/')
+// Εύρεση resource path από το APP_URL
+var resources_dir;
+var index = 0;
+index = process.env.APP_URL.indexOf('//');
+if (index === -1) {
+    console.log('Σφάλμα με τον ορισμό του APP_URL στο .env!');
+    process.exit(1);
+}
+index = process.env.APP_URL.indexOf('/', index + 2);
+if (index === -1) {
+    resources_dir = '/';
+} else {
+    resources_dir = process.env.APP_URL.substring(index);
+    if (!resources_dir.endsWith('/')) {
+        resources_dir += '/';
+    }
+}
+
+mix.setResourceRoot(resources_dir)
 
 if (!mix.inProduction()) {
     mix.sourceMaps();
