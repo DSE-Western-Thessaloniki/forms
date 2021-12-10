@@ -30,7 +30,9 @@ class ReportsController extends Controller
      */
     private function school_has_access(Form $form)
     {
-        $school = School::where('username', cas()->getAttribute('uid'))->first();
+        $school = School::where('username', cas()->getAttribute('uid'))
+            ->orWhere('email', cas()->getAttribute('mail'))
+            ->first();
 
         if (!$school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
             $this->school_model_cache = null;
@@ -56,8 +58,9 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        $id = cas()->getAttribute('uid');
-        $school = School::where('username', $id)->first();
+        $school = School::where('username', cas()->getAttribute('uid'))
+            ->orWhere('email', cas()->getAttribute('mail'))
+            ->first();
         if ($school) {
             $categories = $school->categories;
             $forms = Form::where('active', true)
@@ -254,7 +257,11 @@ class ReportsController extends Controller
                         if (is_array($data)) {
                             $data = json_encode($data);
                         }
-                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id], ['data' => $data]);
+                        $field->field_data()
+                            ->updateOrCreate(
+                                ['school_id' => School::where('username', cas()->getAttribute('uid'))->orWhere('email', cas()->getAttribute('mail'))->first()->id],
+                                ['data' => $data]
+                            );
                     }
 
                     return redirect(route('report.index'))->with('success', 'Η αναφορά ενημερώθηκε');
@@ -293,7 +300,7 @@ class ReportsController extends Controller
                         if (is_array($data)) {
                             $data = json_encode($data);
                         }
-                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $record], ['data' => $data]);
+                        $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->orWhere('email', cas()->getAttribute('mail'))->first()->id, 'record' => $record], ['data' => $data]);
                     }
 
                     // Που πάμε τώρα;
@@ -308,7 +315,7 @@ class ReportsController extends Controller
                         // Ετοίμασε τις εγγραφές στον πίνακα
                         foreach ($fields as $field) {
                             $data = null;
-                            $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->first()->id, 'record' => $last_record], ['data' => $data]);
+                            $field->field_data()->updateOrCreate(['school_id' => School::where('username', cas()->getAttribute('uid'))->orWhere('email', cas()->getAttribute('mail'))->first()->id, 'record' => $last_record], ['data' => $data]);
                         }
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
                     }
