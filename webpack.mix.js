@@ -12,19 +12,6 @@ require('laravel-mix-purgecss');
  |
  */
 
- mix.webpackConfig({
-    output:{
-        chunkFilename:'js/vuejs_code_split/[name].js',
-    }
-});
-
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .vue({ version: 2 })
-   .extract()
-   .version('js/vuejs_code_split/*.js')
-   .purgeCss();
-
 // Εύρεση resource path από το APP_URL
 var resources_dir;
 var index = 0;
@@ -42,6 +29,20 @@ if (index === -1) {
         resources_dir += '/';
     }
 }
+
+mix.webpackConfig({
+    output:{
+        chunkFilename:'js/vuejs_code_split/[name].js',
+        publicPath: resources_dir,
+    }
+});
+
+mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css')
+   .vue({ version: 2 })
+   .extract()
+   .version('js/vuejs_code_split/*.js')
+   .purgeCss();
 
 mix.setResourceRoot(resources_dir)
 
