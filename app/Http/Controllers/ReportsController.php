@@ -8,6 +8,7 @@ use App\Models\School;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
@@ -36,6 +37,7 @@ class ReportsController extends Controller
 
         if (!$school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
             $this->school_model_cache = null;
+            Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
             return view('pages.deny_access');
         }
 
@@ -79,6 +81,7 @@ class ReportsController extends Controller
             return view('report.index')->with('forms', $forms);
         }
 
+        Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
         return view('pages.deny_access');
     }
 
