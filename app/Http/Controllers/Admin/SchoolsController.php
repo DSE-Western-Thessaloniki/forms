@@ -199,13 +199,25 @@ class SchoolsController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required'
+            'csvfile' => 'required|file|mimes:csv,txt',
         ]);
 
-        $uploadedFile = $request->file('file');
-        $data = str_getcsv($uploadedFile);
+        $uploadedFile = $request->file('csvfile');
+        $data = [];
+        if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
+            while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                array_push($data, $row_data);
+            }
+            fclose($handle);
+        }
+
         if (!empty($data) && count($data[0]) != 5) { // Δοκίμασε το ';' ως διαχωριστικό
-            $data = str_getcsv($uploadedFile, ';');
+            if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
+                while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                    array_push($data, $row_data);
+                }
+                fclose($handle);
+            }
         }
 
         if (empty($data)) {
@@ -223,6 +235,9 @@ class SchoolsController extends Controller
             $school->code = $row[2];
             $school->email = $row[3];
             $school->active = true;
+            $school->updated_by = Auth::user()->id;
+            $school->save();
+
             $category_name = $row[4];
             $category = SchoolCategory::where('name', $category_name)->first();
 
@@ -234,7 +249,6 @@ class SchoolsController extends Controller
 
             $school->categories()->attach($category);
 
-            $school->save();
         }
 
         return redirect(route('admin.school.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');

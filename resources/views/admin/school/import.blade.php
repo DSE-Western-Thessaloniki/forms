@@ -48,15 +48,15 @@
 
                         <div class="row mt-2">
                             <div class="col-12">
-                                <form action={{ route('admin.school.import') }} method='post'>
+                                <form enctype="multipart/form-data" action={{ route('admin.school.import') }} method='post'>
 
                                     <div class="form-group row">
-                                        <label for="file" class="col-md-4 col-form-label text-md-right">Αρχείο για εισαγωγή</label>
+                                        <label for="csvfile" class="col-md-4 col-form-label text-md-right">Αρχείο για εισαγωγή</label>
 
                                         <div class="col-md-6">
-                                            <input id="file" type="file" class="form-control @error('file') is-invalid @enderror" name="file" value="{{ old('file') }}" required autocomplete="file" autofocus>
+                                            <input accept=".csv,text/csv" id="csvfile" type="file" class="form-control @error('csvfile') is-invalid @enderror" name="csvfile" value="{{ old('csvfile') }}" required autocomplete="csvfile" autofocus>
 
-                                            @error('file')
+                                            @error('csvfile')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
