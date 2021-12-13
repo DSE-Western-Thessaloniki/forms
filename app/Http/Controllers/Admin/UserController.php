@@ -119,7 +119,7 @@ class UserController extends Controller
         $user->email = $request->get('email');
 
         // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
-        if ($user->isAdministrator()) {
+        if (Auth::user()->isAdministrator()) {
             $user->active = $request->get('active') == 1 ? 1 : 0;
 
             $roles = DB::table('roles')->get();
