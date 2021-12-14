@@ -534,4 +534,98 @@ class FormsController extends Controller
             ->with('form', $form)
             ->with('schools', $filtered_schools);
     }
+
+    /**
+     * Λήψη δεδομένων φόρμας.
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function missingCSV(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+
+        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        $schools = $form->schools()->get();
+        foreach($form->school_categories()->get() as $category) {
+            $schools = $schools->merge($category->schools()->get());
+        }
+        $schools = $schools->unique('id');
+        $data = $form->data()->get();
+        $answer = [];
+        $data->each(function($item, $key) use ($answer) {
+            $answer[$item->school_id] = true;
+        });
+        $seen = [];
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+            if (in_array($school, $seen) || isset($answer[$school->id])) {
+                return false;
+            }
+
+            array_push($seen, $school);
+            return true;
+        });
+
+        $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp."-missing.csv";
+        $fd = fopen($fname, 'w');
+        if ($fd === false) {
+            die('Failed to open temporary file');
+        }
+
+        fputcsv($fd, $dataTableColumns);
+        foreach($filtered_schools as $school) {
+            fputcsv($fd, [$school->name, $school->code]);
+        }
+
+        fclose($fd);
+
+        return response()->download($fname);
+    }
+
+    /**
+     * Λήψη δεδομένων φόρμας.
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function missingXLSX(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+
+        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        $schools = $form->schools()->get();
+        foreach($form->school_categories()->get() as $category) {
+            $schools = $schools->merge($category->schools()->get());
+        }
+        $schools = $schools->unique('id');
+        $data = $form->data()->get();
+        $answer = [];
+        $data->each(function($item, $key) use ($answer) {
+            $answer[$item->school_id] = true;
+        });
+        $seen = [];
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+            if (in_array($school, $seen) || isset($answer[$school->id])) {
+                return false;
+            }
+
+            array_push($seen, $school);
+            return true;
+        });
+
+        $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp."-missing.xlsx";
+        $writer = new XLSXWriter();
+
+        $data = array();
+        array_push($data, $dataTableColumns);
+        foreach($filtered_schools as $school) {
+            array_push($data, [$school->name, $school->code]);
+        }
+
+        $writer->writeSheet($data);
+        $writer->writeToFile($fname);
+
+        return response()->download($fname);
+    }
 }

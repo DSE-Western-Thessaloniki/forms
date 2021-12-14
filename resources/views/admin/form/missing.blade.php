@@ -15,7 +15,13 @@
 
                     <div class="btn-toolbar pb-2" role="toolbar">
                         <div class="btn-group mr-2">
-                            <a href="{{route('admin.form.index')}}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+                            <a href="{{route('admin.form.index')}}" class="btn btn-primary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+                            <a class="btn btn-danger" href="{{ route('admin.form.missing.csv', $form)}}">
+                                @icon('fas fa-file-csv') Λήψη αρχείου csv
+                            </a>
+                            <a class="btn btn-success" href="{{ route('admin.form.missing.xlsx', $form)}}">
+                                @icon('fas fa-file-excel') Λήψη αρχείου excel
+                            </a>
                         </div>
                     </div>
                     <h1>{{$form->title}}</h1>
