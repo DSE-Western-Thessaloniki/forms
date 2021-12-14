@@ -36,6 +36,9 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(
         function () {
+            Route::get('/form/{form}/missing', [FormsController::class, 'missing'])
+                ->name('form.missing')
+                ->middleware('auth');
             Route::get('/form/{form}/data/csv', [FormsController::class, 'formDataCSV'])
                 ->name('form.data.csv')
                 ->middleware('auth');

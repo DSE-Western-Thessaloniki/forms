@@ -1,0 +1,58 @@
+@extends('layouts.admin.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Φόρμες</div>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <div class="btn-toolbar pb-2" role="toolbar">
+                        <div class="btn-group mr-2">
+                            <a href="{{route('admin.form.index')}}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+                        </div>
+                    </div>
+                    <h1>{{$form->title}}</h1>
+                    <h3>Σχολικές μονάδες που δεν απάντησαν:</h3>
+                    <hr/>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Σχολική Μονάδα</th>
+                                    <th>Κωδικός</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($schools as $school)
+                                    <tr>
+                                        <td>
+                                            {{ $school->name }}
+                                        </td>
+                                        <td>
+                                            {{ $school->code }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="2">
+                                            Δεν υπάρχει καμία σχολική μονάδα που να μην απάντησε!!!
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

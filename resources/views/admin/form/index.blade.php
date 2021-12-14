@@ -82,6 +82,7 @@
                                                 <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
                                             </form>
                                             @endif
+                                            <a href="{{ route('admin.form.missing', $form) }}" class="btn btn-secondary m-1 float-right">@icon('fas fa-exclamation') Απομένουν</a>
                                         </div>
                                     </div>
                                 </div>

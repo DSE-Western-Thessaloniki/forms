@@ -502,4 +502,36 @@ class FormsController extends Controller
 
         return redirect(route('admin.form.index'))->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
     }
+
+    /**
+     * Εμφάνιση σχολικών μονάδων που δεν απάντησαν.
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function missing(Form $form) : \Illuminate\Contracts\View\View
+    {
+        $schools = $form->schools()->get();
+        foreach($form->school_categories()->get() as $category) {
+            $schools = $schools->merge($category->schools()->get());
+        }
+        $schools = $schools->unique('id');
+        $data = $form->data()->get();
+        $answer = [];
+        $data->each(function($item, $key) use ($answer) {
+            $answer[$item->school_id] = true;
+        });
+        $seen = [];
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+            if (in_array($school, $seen) || isset($answer[$school->id])) {
+                return false;
+            }
+
+            array_push($seen, $school);
+            return true;
+        });
+        return view('admin.form.missing')
+            ->with('form', $form)
+            ->with('schools', $filtered_schools);
+    }
 }
