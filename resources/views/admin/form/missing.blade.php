@@ -31,6 +31,7 @@
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
+                                    <th>Α/Α</th>
                                     <th>Σχολική Μονάδα</th>
                                     <th>Κωδικός</th>
                                 </tr>
@@ -38,6 +39,9 @@
                             <tbody>
                                 @forelse ($schools as $school)
                                     <tr>
+                                        <td>
+                                            {{ $loop->index + 1 }}
+                                        </td>
                                         <td>
                                             {{ $school->name }}
                                         </td>
