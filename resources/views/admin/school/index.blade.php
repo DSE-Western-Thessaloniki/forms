@@ -15,7 +15,7 @@
                     @endif
 
                     <div class="container-fluid">
-                        <div class="btn-toolbar pb-2" role="toolbar">
+                        <div class="btn-toolbar pb-2 justify-content-between" role="toolbar">
                             <div class="btn-group mr-2">
                                 <a class="btn btn-primary" href="{{ route('admin.school.create')}}">
                                     @icon('fas fa-plus') Δημιουργία σχολικής μονάδας
@@ -27,6 +27,12 @@
                                     @icon('fas fa-file-csv') Εισαγωγή δεδομένων σχολικών μονάδων
                                 </a>
                             </div>
+                            <form class="form-horizontal" id="search" method="GET" action="{{ route('admin.school.index') }}">
+                                <div class="input-group" role="group">
+                                    <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..." name="filter" value="{{ $filter }}">
+                                    <button type="submit" class="btn btn-primary ml-2" form="search">Αναζήτηση</button>
+                                </div>
+                            </form>
                         </div>
 
                         <div class="row justify-content-md-center">

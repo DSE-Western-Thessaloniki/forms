@@ -26,12 +26,25 @@ class SchoolsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $schools = School::orderBy('created_at', 'desc')
-            ->with('user', 'categories')
-            ->paginate(15);
-        return view('admin.school.index')->with('schools', $schools);
+        $filter = $request->get('filter');
+        if ($filter) {
+            $schools = School::orderBy('created_at', 'desc')
+                ->where('name', 'like', '%'.$filter.'%')
+                ->orWhere('code', 'like', '%'.$filter.'%')
+                ->orWhere('username', 'like', '%'.$filter.'%')
+                ->with('user', 'categories')
+                ->paginate(15);
+        }
+        else {
+            $schools = School::orderBy('created_at', 'desc')
+                ->with('user', 'categories')
+                ->paginate(15);
+        }
+        return view('admin.school.index')
+            ->with('schools', $schools)
+            ->with('filter', $filter);
     }
 
     /**
