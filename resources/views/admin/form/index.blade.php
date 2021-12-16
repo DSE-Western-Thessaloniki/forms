@@ -12,7 +12,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <div class="btn-toolbar pb-2" role="toolbar">
+                    <div class="btn-toolbar pb-2 justify-content-between" role="toolbar">
                         <div class="btn-group mr-2">
                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
                             <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
@@ -20,6 +20,12 @@
                             </a>
                             @endif
                         </div>
+                        <form class="form-horizontal" id="search" method="GET" action="{{ route('admin.form.index') }}">
+                            <div class="input-group" role="group">
+                                <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..." name="filter" value="{{ $filter }}">
+                                <button type="submit" class="btn btn-primary ml-2" form="search">Αναζήτηση</button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="container">
@@ -70,6 +76,9 @@
                                                             Ημερομηνία τροποποίησης: {{ $form->updated_at }}
                                                         </div>
                                                         @endif
+                                                        <div class="small pt-2">
+                                                            Δημιουργήθηκε από: {{ $form->user->name }}
+                                                        </div>
                                                     </div>
                                                     <div class='col-2'>
                                                         Ενεργή:

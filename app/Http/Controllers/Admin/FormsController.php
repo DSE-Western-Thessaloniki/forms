@@ -30,17 +30,35 @@ class FormsController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function index() : \Illuminate\Contracts\View\View
+    public function index(Request $request) : \Illuminate\Contracts\View\View
     {
-        $forms = Form::orderBy('created_at', 'desc')
-            ->withCount(['data' => function($query) {
-                $query->where('record', 0);
-            }])
-            ->with('user')
-            ->with('schools')
-            ->with('form_fields')
-            ->paginate(15);
-        return view('admin.form.index')->with('forms', $forms);
+        $filter = $request->get('filter');
+        if ($filter) {
+            $forms = Form::orderBy('created_at', 'desc')
+                ->withCount(['data' => function($query) {
+                    $query->where('record', 0);
+                }])
+                ->where('id', 'like', '%'.$filter.'%')
+                ->orWhere('title', 'like', '%'.$filter.'%')
+                ->with('user')
+                ->with('schools')
+                ->with('form_fields')
+                ->paginate(15);
+        }
+        else {
+            $forms = Form::orderBy('created_at', 'desc')
+                ->withCount(['data' => function($query) {
+                    $query->where('record', 0);
+                }])
+                ->with('user')
+                ->with('schools')
+                ->with('form_fields')
+                ->paginate(15);
+        }
+
+        return view('admin.form.index')
+            ->with('forms', $forms)
+            ->with('filter', $filter);
     }
 
     /**
