@@ -168,4 +168,8 @@ class UserController extends Controller
         return redirect()->route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
     }
 
+    public function confirmDelete(User $user)
+    {
+        return view('admin.user.confirm_delete')->with('user', $user);
+    }
 }

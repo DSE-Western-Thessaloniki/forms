@@ -75,6 +75,14 @@ Route::prefix('admin')
             ]);
             Route::prefix('user')
                 ->name('user.')
+                ->middleware('auth','can:delete,user')
+                ->group(
+                function () {
+                    Route::get('/{user}/confirmDelete', [UserController::class, 'confirmDelete'])->name('confirmDelete');
+                }
+            );
+            Route::prefix('user')
+                ->name('user.')
                 ->middleware('auth','can:update,user')
                 ->group(
                 function () {

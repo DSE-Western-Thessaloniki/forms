@@ -62,13 +62,9 @@
                                         </li>
                                         <li class="list-group-item">
                                             <div class="row justify-content-md-center">
-                                            <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
-                                            <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">@icon('fas fa-key') Αλλαγή κωδικού</a>
-                                            <form action="{{ route('admin.user.destroy', $user->id)}}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
-                                            </form>
+                                                <a href="{{ route('admin.user.edit', $user)}}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
+                                                <a href="{{ route('admin.user.password', $user)}}" class="btn btn-success m-1">@icon('fas fa-key') Αλλαγή κωδικού</a>
+                                                <a class="btn btn-danger m-1" href="{{ route('admin.user.confirmDelete', $user)}}">@icon('fas fa-trash-alt') Διαγραφή</a>
                                             </div>
                                         </li>
                                     </ul>
