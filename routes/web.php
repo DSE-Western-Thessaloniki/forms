@@ -57,6 +57,9 @@ Route::prefix('admin')
             Route::get('/form/{form}/copy', [FormsController::class, 'copyForm'])
                 ->name('form.copy')
                 ->middleware('auth');
+            Route::get('/form/{form}/confirmDelete', [FormsController::class, 'confirmDelete'])
+                ->name('form.confirmDelete')
+                ->middleware('auth');
             Route::get('/form/{form}/active/set/{state}', [FormsController::class, 'setActive'])
                 ->name('form.active.set')
                 ->middleware('auth');

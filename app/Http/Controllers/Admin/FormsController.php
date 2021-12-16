@@ -660,4 +660,15 @@ class FormsController extends Controller
 
         return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function confirmDelete(Form $form) : \Illuminate\Contracts\View\View
+    {
+        return view('admin.form.confirm_delete')->with('form', $form);
+    }
 }

@@ -34,11 +34,7 @@
                                             <div>
                                                 <a class="btn btn-sm btn-primary mx-1" href="{{ route('admin.form.copy', $form) }}" data-toggle="tooltip" data-placement="top" title="Δημιουργία αντιγράφου">@icon('fas fa-copy')</a>
                                                 @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
-                                                <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-sm btn-danger mx-1" type="submit" data-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt')</button>
-                                                </form>
+                                                    <a class="btn btn-sm btn-danger mx-1" href="{{ route('admin.form.confirmDelete', $form) }}" data-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt')</a>
                                                 @endif
                                             </div>
                                         </div>
