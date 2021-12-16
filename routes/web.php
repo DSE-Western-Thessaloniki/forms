@@ -93,11 +93,20 @@ Route::prefix('admin')
             Route::resource('user', UserController::class)
                 ->middleware('auth');
             Route::prefix('school')
-                ->middleware('auth')
+                ->name('school.')
+                ->middleware('auth', 'can:delete,school')
                 ->group(
                 function() {
-                    Route::get('/import', [SchoolsController::class, 'showImport'])->name('school.import');
-                    Route::post('/import', [SchoolsController::class, 'import'])->name('school.import');
+                    Route::get('/{school}/confirmDelete', [SchoolsController::class, 'confirmDelete'])->name('confirmDelete');
+                }
+            );
+            Route::prefix('school')
+                ->middleware('auth', 'can:create,school')
+                ->name('school.')
+                ->group(
+                function() {
+                    Route::get('/import', [SchoolsController::class, 'showImport'])->name('import');
+                    Route::post('/import', [SchoolsController::class, 'import'])->name('import');
                 }
             );
             Route::prefix('school')

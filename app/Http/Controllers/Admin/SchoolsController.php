@@ -267,4 +267,15 @@ class SchoolsController extends Controller
         return redirect(route('admin.school.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\School  $school
+     * @return \Illuminate\Support\Facades\View
+     */
+    public function confirmDelete()
+    {
+        return view('admin.school.confirm_delete');
+    }
+
 }

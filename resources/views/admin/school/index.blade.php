@@ -67,11 +67,7 @@
                                                         <a href="{{ route('admin.school.edit', $school) }}" class="btn btn-primary m-1">@icon('fas fa-edit') Επεξεργασία</a><br/>
                                                     @endif
                                                     @if(Auth::user()->roles->where('name', 'Administrator')->count() > 0)
-                                                        <form action="{{ route('admin.school.destroy', $school->id)}}" method="post">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
-                                                        </form>
+                                                        <a class="btn btn-danger m-1" href="{{ route('admin.school.confirmDelete', $school) }}">@icon('fas fa-trash-alt') Διαγραφή</a>
                                                     @endif
                                                 </div>
                                             </div>
