@@ -26,7 +26,23 @@
                         @forelse ($forms as $form)
                             <div class="card my-2 shadow-sm">
                                 <div class="card-header">
-                                    <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}. {{ $form->title }}</a>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="flex-grow-1">
+                                                <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}. {{ $form->title }}</a>
+                                            </div>
+                                            <div>
+                                                <a class="btn btn-sm btn-primary mx-1" href="{{ route('admin.form.copy', $form) }}" data-toggle="tooltip" data-placement="top" title="Δημιουργία αντιγράφου">@icon('fas fa-copy')</a>
+                                                @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
+                                                <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger mx-1" type="submit" data-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt')</button>
+                                                </form>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -75,13 +91,6 @@
                                             <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary m-1 float-right">@icon('fas fa-edit') Επεξεργασία</a>
                                             @endif
                                             <a href="{{ route('admin.form.data', $form) }}" class="btn btn-success m-1 float-right">@icon('fas fa-table') Δεδομένα</a>
-                                            @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
-                                            <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger m-1" type="submit">@icon('fas fa-trash-alt') Διαγραφή</button>
-                                            </form>
-                                            @endif
                                             <a href="{{ route('admin.form.missing', $form) }}" class="btn btn-secondary m-1 float-right">@icon('fas fa-exclamation') Απομένουν</a>
                                         </div>
                                     </div>

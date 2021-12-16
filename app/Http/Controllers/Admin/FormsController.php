@@ -628,4 +628,36 @@ class FormsController extends Controller
 
         return response()->download($fname);
     }
+
+    /**
+     * Αντιγραφή φόρμας
+     *
+     * @param  \App\Models\Form  $form
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function copyForm(Form $form) : \Illuminate\Http\RedirectResponse
+    {
+        // Δημιουργία αντιγράφου
+        $form_clone = $form->replicate();
+        $form_clone->save();
+
+        foreach($form->form_fields()->get() as $item) {
+            $field = new FormField;
+            $field->sort_id = $item->sort_id;
+            $field->title = $item->title;
+            $field->type = $item->type;
+            $field->listvalues = $item->listvalues;
+            $form_clone->form_fields()->save($field);
+        }
+
+        foreach ($form->school_categories()->get() as $category) {
+            $form_clone->school_categories()->attach($category);
+        }
+
+        foreach ($form->schools()->get() as $school) {
+            $form_clone->schools()->attach($school);
+        }
+
+        return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
+    }
 }
