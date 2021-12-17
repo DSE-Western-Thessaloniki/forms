@@ -6,6 +6,8 @@
                     <th>Σχολική Μονάδα</th>
                     <th>Κωδικός</th>
                     <th v-for="column in columnsObj" :key="column.id">{{ column.title }}</th>
+                    <th>Δημιουργήθηκε</th>
+                    <th>Ενημερώθηκε</th>
                 </tr>
             </thead>
             <tbody>
@@ -16,11 +18,14 @@
                         {{
                             ((typeof(data[line.code]) != "undefined") &&
                              (typeof(data[line.code][column.title]) != "undefined") &&
-                             (typeof(data[line.code][column.title][line.record]) != "undefined")) ?
-                            data[line.code][column.title][line.record] :
+                             (typeof(data[line.code][column.title][line.record]) != "undefined") &&
+                             (typeof(data[line.code][column.title][line.record]['value']) != "undefined")) ?
+                            data[line.code][column.title][line.record]['value'] :
                             ''
                         }}
                     </td>
+                    <td>{{ created(line) }}</td>
+                    <td>{{ updated(line) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -38,6 +43,46 @@
         mounted() {
         },
         methods: {
+            created: function(line) {
+                var created_date;
+                this.columnsObj.forEach(column => {
+                    if ((typeof(this.data[line.code]) != "undefined") &&
+                        (typeof(this.data[line.code][column.title]) != "undefined") &&
+                        (typeof(this.data[line.code][column.title][line.record]) != "undefined")) {
+
+                        if (typeof(created_date) === "undefined") {
+                            created_date = new Date(this.data[line.code][column.title][line.record]['created']);
+                        } else {
+                            var temp_date = new Date(this.data[line.code][column.title][line.record]['created'])
+                            if (created_date > temp_date) {
+                                created_date = temp_date;
+                            }
+                        }
+                    }
+                });
+
+                return typeof(created_date) === "undefined" ? '' : created_date.toLocaleString();
+            },
+            updated: function(line) {
+                var updated_date;
+                this.columnsObj.forEach(column => {
+                    if ((typeof(this.data[line.code]) != "undefined") &&
+                        (typeof(this.data[line.code][column.title]) != "undefined") &&
+                        (typeof(this.data[line.code][column.title][line.record]) != "undefined")) {
+
+                        if (typeof(updated_date) === "undefined") {
+                            updated_date = new Date(this.data[line.code][column.title][line.record]['created']);
+                        } else {
+                            var temp_date = new Date(this.data[line.code][column.title][line.record]['created'])
+                            if (updated_date < temp_date) {
+                                updated_date = temp_date;
+                            }
+                        }
+                    }
+                });
+
+                return typeof(updated_date) === "undefined" ? '' : updated_date.toLocaleString();
+            }
         },
         computed: {
             columnsObj: function() {

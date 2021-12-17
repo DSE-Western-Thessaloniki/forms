@@ -278,7 +278,11 @@ class FormsController extends Controller
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
-                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $selection->value,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
                         }
                     }
                 } elseif ($field->type == 3) {
@@ -289,10 +293,14 @@ class FormsController extends Controller
                         foreach($selections as $selection) {
                             if ($selection->id == $item) {
                                 if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
                                 }
                                 else {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
                                 }
                             }
                         }
@@ -301,7 +309,11 @@ class FormsController extends Controller
 
                 }
                 else {
-                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                        'value' => $field_data->data,
+                        'created' => $field_data->created_at,
+                        'updated' => $field_data->updated_at
+                    ];
                 }
             }
         }
@@ -342,7 +354,11 @@ class FormsController extends Controller
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
-                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $selection->value,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
                         }
                     }
                 } elseif ($field->type == 3) {
@@ -353,10 +369,14 @@ class FormsController extends Controller
                         foreach($selections as $selection) {
                             if ($selection->id == $item) {
                                 if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
                                 }
                                 else {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
                                 }
                             }
                         }
@@ -365,10 +385,16 @@ class FormsController extends Controller
 
                 }
                 else {
-                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                        'value' => $field_data->data,
+                        'created' => $field_data->created_at,
+                        'updated' => $field_data->updated_at
+                    ];
                 }
             }
         }
+
+        array_push($dataTableColumns, 'Δημιουργήθηκε', 'Ενημερώθηκε');
 
         // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
         $schools = $form->schools;
@@ -392,9 +418,36 @@ class FormsController extends Controller
             $school = School::where('code', $school->code)->first();
             for ($i = 0; $i < $records; $i++) {
                 array_push($row, $school->name, $school->code);
-                foreach(array_slice($dataTableColumns, 2) as $column) {
-                    array_push($row, $dataTable[$school->code][$column][$i] ?? '');
+                $created_at = "";
+                $updated_at = "";
+                foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                    array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
+                    if (isset($dataTable[$school->code][$column][$i]['created'])) {
+                        $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
+                        if ($created_at == "") {
+                            $created_at = $temp_created_at;
+                        }
+                        else {
+                            if ($created_at > $temp_created_at) {
+                                $created_at = $temp_created_at;
+                            }
+                        }
+                    }
+                    if (isset($dataTable[$school->code][$column][$i]['updated'])) {
+                        $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
+                        if ($updated_at == "") {
+                            $updated_at = $temp_updated_at;
+                        }
+                        else {
+                            if ($updated_at < $temp_updated_at) {
+                                $updated_at = $temp_updated_at;
+                            }
+                        }
+                    }
                 }
+                $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                array_push($row, $created_string, $updated_string);
                 fputcsv($fd, $row);
                 $row = array();
             }
@@ -428,7 +481,11 @@ class FormsController extends Controller
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
-                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $selection->value,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
                         }
                     }
                 } elseif ($field->type == 3) {
@@ -439,10 +496,14 @@ class FormsController extends Controller
                         foreach($selections as $selection) {
                             if ($selection->id == $item) {
                                 if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
                                 }
                                 else {
-                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] .= ", ".$selection->value;
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
                                 }
                             }
                         }
@@ -451,10 +512,16 @@ class FormsController extends Controller
 
                 }
                 else {
-                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = $field_data->data;
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                        'value' => $field_data->data,
+                        'created' => $field_data->created_at,
+                        'updated' => $field_data->updated_at
+                    ];
                 }
             }
         }
+
+        array_push($dataTableColumns, 'Δημιουργήθηκε', 'Ενημερώθηκε');
 
         // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
         $schools = $form->schools;
@@ -476,9 +543,36 @@ class FormsController extends Controller
             $school = School::where('code', $school->code)->first();
             for ($i = 0; $i < $records; $i++) {
                 array_push($row, $school->name, $school->code);
-                foreach(array_slice($dataTableColumns, 2) as $column) {
-                    array_push($row, $dataTable[$school->code][$column][$i] ?? '');
+                $created_at = "";
+                $updated_at = "";
+                foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                    array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
+                    if (isset($dataTable[$school->code][$column][$i]['created'])) {
+                        $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
+                        if ($created_at == "") {
+                            $created_at = $temp_created_at;
+                        }
+                        else {
+                            if ($created_at > $temp_created_at) {
+                                $created_at = $temp_created_at;
+                            }
+                        }
+                    }
+                    if (isset($dataTable[$school->code][$column][$i]['updated'])) {
+                        $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
+                        if ($updated_at == "") {
+                            $updated_at = $temp_updated_at;
+                        }
+                        else {
+                            if ($updated_at < $temp_updated_at) {
+                                $updated_at = $temp_updated_at;
+                            }
+                        }
+                    }
                 }
+                $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                array_push($row, $created_string, $updated_string);
                 array_push($data, $row);
                 $row = array();
             }
@@ -536,11 +630,11 @@ class FormsController extends Controller
         $schools = $schools->unique('id');
         $data = $form->data()->get();
         $answer = [];
-        $data->each(function($item, $key) use ($answer) {
+        $data->each(function($item, $key) use (&$answer) {
             $answer[$item->school_id] = true;
         });
         $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
             if (in_array($school, $seen) || isset($answer[$school->id])) {
                 return false;
             }
@@ -572,11 +666,11 @@ class FormsController extends Controller
         $schools = $schools->unique('id');
         $data = $form->data()->get();
         $answer = [];
-        $data->each(function($item, $key) use ($answer) {
+        $data->each(function($item, $key) use (&$answer) {
             $answer[$item->school_id] = true;
         });
         $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
             if (in_array($school, $seen) || isset($answer[$school->id])) {
                 return false;
             }
@@ -619,11 +713,11 @@ class FormsController extends Controller
         $schools = $schools->unique('id');
         $data = $form->data()->get();
         $answer = [];
-        $data->each(function($item, $key) use ($answer) {
+        $data->each(function($item, $key) use (&$answer) {
             $answer[$item->school_id] = true;
         });
         $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, $seen) {
+        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
             if (in_array($school, $seen) || isset($answer[$school->id])) {
                 return false;
             }
