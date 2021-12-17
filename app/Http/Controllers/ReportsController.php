@@ -290,7 +290,7 @@ class ReportsController extends Controller
      * @param  int|String $next The next record to go to
      * @return \Illuminate\Http\Response
      */
-    public function updateRecord(Request $request, $id, $record, $next)
+    public function updateRecord(Request $request, $id, int $record, $next)
     {
         $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
