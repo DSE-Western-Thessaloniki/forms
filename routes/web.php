@@ -96,12 +96,12 @@ Route::prefix('admin')
                 ->name('school.')
                 ->middleware('auth', 'can:delete,school')
                 ->group(
-                function() {
-                    Route::get('/{school}/confirmDelete', [SchoolsController::class, 'confirmDelete'])->name('confirmDelete');
-                }
-            );
+                    function() {
+                        Route::get('/{school}/confirmDelete', [SchoolsController::class, 'confirmDelete'])->name('confirmDelete');
+                    }
+                );
             Route::prefix('school')
-                ->middleware('auth', 'can:create,school')
+                ->middleware('auth', 'can:create,App\Models\School')
                 ->name('school.')
                 ->group(
                 function() {

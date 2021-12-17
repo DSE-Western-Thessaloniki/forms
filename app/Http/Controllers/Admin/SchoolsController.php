@@ -273,9 +273,10 @@ class SchoolsController extends Controller
      * @param  \App\Models\School  $school
      * @return \Illuminate\Support\Facades\View
      */
-    public function confirmDelete()
+    public function confirmDelete(School $school)
     {
-        return view('admin.school.confirm_delete');
+        return view('admin.school.confirm_delete')
+            ->with('school', $school);
     }
 
 }
