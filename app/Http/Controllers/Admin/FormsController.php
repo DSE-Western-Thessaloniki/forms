@@ -324,6 +324,7 @@ class FormsController extends Controller
         foreach($categories as $category) {
             $schools = $schools->concat($category->schools);
         }
+        $schools = $schools->unique('id');
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
             ->with('dataTableColumns', $dataTableColumns)
@@ -402,6 +403,7 @@ class FormsController extends Controller
         foreach($categories as $category) {
             $schools = $schools->concat($category->schools);
         }
+        $schools = $schools->unique('id');
 
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".csv";
         $fd = fopen($fname, 'w');
@@ -529,6 +531,7 @@ class FormsController extends Controller
         foreach($categories as $category) {
             $schools = $schools->concat($category->schools);
         }
+        $schools = $schools->unique('id');
 
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".xlsx";
         $writer = new XLSXWriter();
