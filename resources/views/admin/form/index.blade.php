@@ -50,7 +50,7 @@
                                     <div class="row">
                                         <div class='col-10 d-flex flex-column'>
                                             <div class='flex-grow-1'>
-                                                {{ $form->notes }}
+                                                <span class='pre-wrap'>{{ $form->notes }}</span>
                                             </div>
                                             <div class='pt-4'>
                                                 <div class='row'>

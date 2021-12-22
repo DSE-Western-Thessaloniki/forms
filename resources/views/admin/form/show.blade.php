@@ -7,7 +7,7 @@
         <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
     </div>
     <h1>{{$form->title}}</h1>
-    <h3>{{$form->notes}}</h3>
+    <h3 class="pre-wrap">{{$form->notes}}</h3>
     <hr/>
     <div class="card">
         <div class="card-header">
