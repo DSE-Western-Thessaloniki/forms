@@ -64,7 +64,10 @@
                                                                     $should_have += $school_category->schools_count;
                                                                 }
                                                                 $should_have += $form->schools->count();
-                                                                $percent = round($forms_filled / $should_have * 100, 2);
+                                                                $percent = 0;
+                                                                if ($should_have > 0) {
+                                                                    $percent = round($forms_filled / $should_have * 100, 2);
+                                                                }
                                                             @endphp
                                                             <div class="progress-bar" role="progressbar" style="width: {{ $percent }}%" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100">{{ $percent }}%</div>
                                                         </div>
