@@ -43,7 +43,7 @@
                             {{ option.value }}
                         </option>
                     </select>
-                    <div v-if="restricted" v-text="options[cbselected].value"></div>
+                    <div v-if="restricted" v-text="optionText"></div>
                     <input type="text" v-if="restricted" hidden="true" :name="'field['+field_id+'][type]'" v-model="cbselected"/>
                 </div>
             </div>
@@ -129,6 +129,19 @@
             emitDelete: function() {
                 this.$emit('delfield', this.id);
             },
+        },
+        computed: {
+            optionText: function() {
+                var text;
+
+                var vueobj = this;
+                this.options.forEach(function(item) {
+                    if (item.id == vueobj.cbselected) {
+                        text = item.value;
+                    }
+                });
+                return text;
+            }
         }
     }
 </script>
