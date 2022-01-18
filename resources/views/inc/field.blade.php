@@ -87,7 +87,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data !!}"
+    value="{!! $data == '' ? 0 : $data !!}"
     {!! $disabled ?? '' !!}
 >
 @endif
