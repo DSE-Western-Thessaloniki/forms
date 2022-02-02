@@ -307,6 +307,12 @@ class FormsController extends Controller
                         $i++;
                     }
 
+                } elseif ($field->type == 7) {
+                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                        'value' => intval($field_data->data),
+                        'created' => $field_data->created_at,
+                        'updated' => $field_data->updated_at
+                    ];
                 }
                 else {
                     $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
