@@ -6,7 +6,7 @@ $data = $data_dict[$field->id] ?? '';
     <label for="{!!$field->title!!}" class="col-md-3 col-form-label">
         {{ $field->title }}
     </label>
-    @if($field->type == 7)
+    @if($field->type == \App\Models\FormField::TYPE_NUMBER)
     <div class="col-md-3">
     @else
     <div class="col-md-9">

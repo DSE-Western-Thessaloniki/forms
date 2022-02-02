@@ -18,6 +18,19 @@ class FormField extends Model
     // Timestamps
     public $timestamps = true;
 
+    // Τύποι πεδίων
+    const TYPE_TEXT = 0;
+    const TYPE_TEXTAREA = 1;
+    const TYPE_RADIO_BUTTON = 2;
+    const TYPE_CHECKBOX = 3;
+    const TYPE_SELECT = 4;
+    const TYPE_FILE = 5;
+    const TYPE_DATE = 6;
+    const TYPE_NUMBER = 7;
+    const TYPE_TELEPHONE = 8;
+    const TYPE_EMAIL = 9;
+    const TYPE_URL = 10;
+
     public function form() {
         return $this->belongsTo(Form::class);
     }

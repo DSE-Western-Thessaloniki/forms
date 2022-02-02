@@ -1,4 +1,4 @@
-@if ($field->type == 0) <!-- Πεδίο κειμένου -->
+@if ($field->type == \App\Models\FormField::TYPE_TEXT) <!-- Πεδίο κειμένου -->
 <input
     type="text"
     class="form-control"
@@ -8,7 +8,7 @@
     {!! $disabled ?? '' !!}
 >
 @endif
-@if ($field->type == 1) <!-- Περιοχή κειμένου -->
+@if ($field->type == \App\Models\FormField::TYPE_TEXTAREA) <!-- Περιοχή κειμένου -->
 <textarea
     class="form-control"
     id="f{!!$field->id!!}"
@@ -17,7 +17,7 @@
     {!! $disabled ?? '' !!}
 >{{ $data }}</textarea>
 @endif
-@if ($field->type == 2) <!-- Επιλογή ενός από πολλά -->
+@if ($field->type == \App\Models\FormField::TYPE_RADIO_BUTTON) <!-- Επιλογή ενός από πολλά -->
 @foreach (json_decode($field->listvalues) as $listvalues)
 <div class="form-check">
     <input
@@ -35,7 +35,7 @@
 </div>
 @endforeach
 @endif
-@if ($field->type == 3) <!-- Πολλαπλή επιλογή -->
+@if ($field->type == \App\Models\FormField::TYPE_CHECKBOX) <!-- Πολλαπλή επιλογή -->
 @php
     $selected = json_decode($data);
 @endphp
@@ -56,7 +56,7 @@
 </div>
 @endforeach
 @endif
-@if ($field->type == 4) <!-- Λίστα επιλογών -->
+@if ($field->type == \App\Models\FormField::TYPE_SELECT) <!-- Λίστα επιλογών -->
 <select class="form-control" id="f{!!$field->id!!}" name="f{!!$field->id!!}" {!! $disabled ?? '' !!}>
     @foreach (json_decode($field->listvalues) as $listvalues)
         <option
@@ -68,10 +68,10 @@
     @endforeach
 </select>
 @endif
-@if ($field->type == 5) <!-- Αρχείο -->
+@if ($field->type == \App\Models\FormField::TYPE_FILE) <!-- Αρχείο -->
 <input type="file" class="form-control-file" id="f{!!$field->id!!}" name="f{!!$field->id!!}" {!! $disabled ?? '' !!}>
 @endif
-@if ($field->type == 6) <!-- Ημερομηνία -->
+@if ($field->type == \App\Models\FormField::TYPE_DATE) <!-- Ημερομηνία -->
 <input
     type="date"
     class="form-control"
@@ -81,7 +81,7 @@
     {!! $disabled ?? '' !!}
 >
 @endif
-@if ($field->type == 7) <!-- Αριθμός -->
+@if ($field->type == \App\Models\FormField::TYPE_NUMBER) <!-- Αριθμός -->
 <input
     type="number"
     class="form-control"
@@ -91,7 +91,7 @@
     {!! $disabled ?? '' !!}
 >
 @endif
-@if ($field->type == 8) <!-- Τηλέφωνο -->
+@if ($field->type == \App\Models\FormField::TYPE_TELEPHONE) <!-- Τηλέφωνο -->
 <input
     type="tel"
     class="form-control"
@@ -103,7 +103,7 @@
 >
 <small>Μορφή: 1234567890</small>
 @endif
-@if ($field->type == 9) <!-- E-mail -->
+@if ($field->type == \App\Models\FormField::TYPE_EMAIL) <!-- E-mail -->
 <input
     type="email"
     class="form-control"
@@ -113,7 +113,7 @@
     {!! $disabled ?? '' !!}
 >
 @endif
-@if ($field->type == 10) <!-- Url -->
+@if ($field->type == \App\Models\FormField::TYPE_URL) <!-- Url -->
 <input
     type="url"
     class="form-control"

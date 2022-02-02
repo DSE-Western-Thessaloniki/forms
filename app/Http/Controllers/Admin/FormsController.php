@@ -274,7 +274,7 @@ class FormsController extends Controller
             array_push($dataTableColumns, $field->title);
             foreach ($field->field_data as $field_data) {
                 $field_data->school;
-                if ($field->type == 2 || $field->type == 4) {
+                if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
@@ -285,7 +285,7 @@ class FormsController extends Controller
                             ];
                         }
                     }
-                } elseif ($field->type == 3) {
+                } elseif ($field->type == FormField::TYPE_CHECKBOX) {
                     $selections = json_decode($field->listvalues);
                     $data = json_decode($field_data->data);
                     $i = 0;
@@ -307,7 +307,7 @@ class FormsController extends Controller
                         $i++;
                     }
 
-                } elseif ($field->type == 7) {
+                } elseif ($field->type == FormField::TYPE_NUMBER) {
                     $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
                         'value' => intval($field_data->data),
                         'created' => $field_data->created_at,
@@ -357,7 +357,7 @@ class FormsController extends Controller
             array_push($dataTableColumns, $field->title);
             foreach ($field->field_data as $field_data) {
                 $field_data->school;
-                if ($field->type == 2 || $field->type == 4) {
+                if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
@@ -368,7 +368,7 @@ class FormsController extends Controller
                             ];
                         }
                     }
-                } elseif ($field->type == 3) {
+                } elseif ($field->type == FormField::TYPE_CHECKBOX) {
                     $selections = json_decode($field->listvalues);
                     $data = json_decode($field_data->data);
                     $i = 0;
@@ -390,7 +390,7 @@ class FormsController extends Controller
                         $i++;
                     }
 
-                } elseif ($field->type == 7) {
+                } elseif ($field->type == FormField::TYPE_NUMBER) {
                     $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
                         'value' => intval($field_data->data),
                         'created' => $field_data->created_at,
@@ -491,7 +491,7 @@ class FormsController extends Controller
             array_push($dataTableColumns, $field->title);
             foreach ($field->field_data as $field_data) {
                 $field_data->school;
-                if ($field->type == 2 || $field->type == 4) {
+                if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                     $selections = json_decode($field->listvalues);
                     foreach($selections as $selection) {
                         if ($selection->id == $field_data->data) {
@@ -502,7 +502,7 @@ class FormsController extends Controller
                             ];
                         }
                     }
-                } elseif ($field->type == 3) {
+                } elseif ($field->type == FormField::TYPE_CHECKBOX) {
                     $selections = json_decode($field->listvalues);
                     $data = json_decode($field_data->data);
                     $i = 0;
@@ -524,7 +524,7 @@ class FormsController extends Controller
                         $i++;
                     }
 
-                } elseif ($field->type == 7) {
+                } elseif ($field->type == FormField::TYPE_NUMBER) {
                     $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
                         'value' => intval($field_data->data),
                         'created' => $field_data->created_at,
