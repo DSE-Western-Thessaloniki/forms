@@ -1,9 +1,9 @@
 {
-    "name": "laravel/laravel",
+    "name": "DSE-West-Thessaloniki/forms",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Σύστημα δημιουργίας φορμών",
     "keywords": [
-        "framework",
+        "forms",
         "laravel"
     ],
     "license": "MIT",
