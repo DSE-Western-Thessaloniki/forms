@@ -677,7 +677,7 @@ class FormsController extends Controller
     public function missingCSV(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
 
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
 
         // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
         $schools = $form->schools()->get();
@@ -708,7 +708,7 @@ class FormsController extends Controller
 
         fputcsv($fd, $dataTableColumns);
         foreach($filtered_schools as $school) {
-            fputcsv($fd, [$school->name, $school->code]);
+            fputcsv($fd, [$school->name, $school->code, $school->telephone]);
         }
 
         fclose($fd);
@@ -724,7 +724,7 @@ class FormsController extends Controller
      */
     public function missingXLSX(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
 
         // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
         $schools = $form->schools()->get();
@@ -753,7 +753,7 @@ class FormsController extends Controller
         $data = array();
         array_push($data, $dataTableColumns);
         foreach($filtered_schools as $school) {
-            array_push($data, [$school->name, $school->code]);
+            array_push($data, [$school->name, $school->code, $school->telephone]);
         }
 
         $writer->writeSheet($data);

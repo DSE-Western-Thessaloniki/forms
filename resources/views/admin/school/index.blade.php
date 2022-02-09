@@ -55,6 +55,7 @@
                                                     <div>@icon('fas fa-user') Όνομα χρήστη: {{$school->username}}</div>
                                                     <div>@icon('fas fa-school') Κωδικός ΥΠΑΙΘ: {{$school->code}}</div>
                                                     <div>@icon('fas fa-envelope') E-mail: {{$school->email}}</div>
+                                                    <div>@icon('fas fa-phone-alt') Τηλέφωνο: {{$school->telephone}}</div>
                                                     <div class="flex-grow-1">
                                                         @icon('fas fa-tags') Κατηγορίες:
                                                         @foreach ($school->categories as $category)

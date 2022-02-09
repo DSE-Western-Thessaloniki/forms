@@ -69,6 +69,7 @@ class SchoolsController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:schools'],
+            'telephone' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:schools'],
             'code' => ['required', 'string', 'min:7', 'max:255', 'unique:schools'],
             'category' => ['required', 'string', 'max:255'],
@@ -91,6 +92,7 @@ class SchoolsController extends Controller
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'username' => $request->get('username'),
+            'telephone' => $request->get('telephone'),
             'code' => $request->get('code'),
             'active' => 1,
             'updated_by' => Auth::user()->id,
@@ -147,6 +149,7 @@ class SchoolsController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('schools')->ignore($school)],
+            'telephone' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('schools')->ignore($school)],
             'code' => ['required', 'string', 'min:7', 'max:255', Rule::unique('schools')->ignore($school)],
             'category' => ['required', 'string', 'max:255'],
@@ -168,6 +171,7 @@ class SchoolsController extends Controller
         $school->username = $request->get('username');
         $school->name = $request->get('name');
         $school->email = $request->get('email');
+        $school->telephone = $request->get('telephone');
         $school->code = $request->get('code');
         $school->active = $request->get('active') == 1 ? 1 : 0;
         $school->updated_by = Auth::user()->id;
@@ -247,16 +251,17 @@ class SchoolsController extends Controller
             $school->username = $row[1];
             $school->code = $row[2];
             $school->email = $row[3];
+            $school->telephone = $row[4];
             $school->active = true;
             $school->updated_by = Auth::user()->id;
             $school->save();
 
-            $category_name = $row[4];
+            $category_name = $row[5];
             $category = SchoolCategory::where('name', $category_name)->first();
 
             if (!$category) { // Η κατηγορία υπάρχει ήδη
                 $category = new SchoolCategory;
-                $category->name = $row[4];
+                $category->name = $row[5];
                 $category->save();
             }
 

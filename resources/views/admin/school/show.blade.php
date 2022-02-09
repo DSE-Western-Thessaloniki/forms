@@ -54,6 +54,13 @@
                         </tr>
 
                         <tr>
+                            <td>Τηλέφωνο</td>
+                            <td class="text-center">
+                                <pre>{{ $school->telephone }}</pre>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td>Ενεργός</td>
                             <td class="text-center">
                                 @if ($school->active)

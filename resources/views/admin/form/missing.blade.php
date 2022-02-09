@@ -34,6 +34,7 @@
                                     <th>Α/Α</th>
                                     <th>Σχολική Μονάδα</th>
                                     <th>Κωδικός</th>
+                                    <th>Τηλέφωνο</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,6 +48,9 @@
                                         </td>
                                         <td>
                                             {{ $school->code }}
+                                        </td>
+                                        <td>
+                                            {{ $school->telephone }}
                                         </td>
                                     </tr>
                                 @empty

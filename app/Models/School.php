@@ -22,7 +22,15 @@ class School extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'code', 'email', 'password', 'active', 'updated_by', 'category_id'
+        'name',
+        'username',
+        'code',
+        'email',
+        'telephone',
+        'password',
+        'active',
+        'updated_by',
+        'category_id'
     ];
 
     /**

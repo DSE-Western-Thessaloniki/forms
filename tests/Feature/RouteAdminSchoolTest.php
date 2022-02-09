@@ -78,6 +78,7 @@ it('cannot create a school as user', function() {
     $this->actingAs($user)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => strval($category->id),
@@ -91,6 +92,7 @@ it('cannot create a school as author', function() {
     $this->actingAs($author)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => strval($category->id),
@@ -104,6 +106,7 @@ it('can create a school as admin', function() {
     $response = $this->actingAs($admin)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => strval($category->id),
@@ -118,6 +121,7 @@ it('cannot create a school as user with invalid categories', function() {
     $this->actingAs($user)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => "0,1",
@@ -130,6 +134,7 @@ it('cannot create a school as author with invalid categories', function() {
     $this->actingAs($author)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => "0,1",
@@ -142,6 +147,7 @@ it('cannot create a school as admin with invalid categories', function() {
     $response = $this->actingAs($admin)->post('/admin/school', [
         'name' => "Test School",
         'email' => "test@example.com",
+        'telephone' => "123-456-7890",
         'username' => "testSchool",
         'code' => "9999999",
         'category' => "0,1",
@@ -208,6 +214,7 @@ it('cannot update a school as user', function() {
     $response = $this->actingAs($user)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => strval($category->id),
@@ -223,6 +230,7 @@ it('cannot update a school as author', function() {
     $response = $this->actingAs($author)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => strval($category->id),
@@ -238,6 +246,7 @@ it('can update a school as admin', function() {
     $response = $this->actingAs($admin)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => strval($category->id),
@@ -253,6 +262,7 @@ it('cannot update a school as user with invalid categories', function() {
     $response = $this->actingAs($user)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => "0,1",
@@ -267,6 +277,7 @@ it('cannot update a school as author with invalid categories', function() {
     $response = $this->actingAs($author)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => "0,1",
@@ -281,6 +292,7 @@ it('cannot update a school as admin with invalid categories', function() {
     $response = $this->actingAs($admin)->put('/admin/school/'.$testSchool->id, [
         'name' => 'Test School2',
         'email' => 'test@example.com',
+        'telephone' => "123-456-7890",
         'username' => 'testUser',
         'code' => '9999999',
         'category' => "0,1",

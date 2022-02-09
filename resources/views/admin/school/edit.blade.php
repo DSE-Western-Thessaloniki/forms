@@ -83,6 +83,20 @@
                     </div>
 
                     <div class="form-group row">
+                        <label for="telephone" class="col-md-4 col-form-label text-md-right">Τηλέφωνο</label>
+
+                        <div class="col-md-6">
+                            <input id="telephone" type="text" class="form-control @error('telephone') is-invalid @enderror" name="telephone" value="{{ $school->telephone }}" required autocomplete="telephone">
+
+                            @error('telephone')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label for="category" class="col-md-4 col-form-label text-md-right">Κατηγορία</label>
 
                         <div class="col-md-6">

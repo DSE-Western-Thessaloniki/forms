@@ -31,6 +31,7 @@ class SchoolFactory extends Factory
             'code' => $this->faker->numerify('#######'),
             'email' => $this->faker->email(),
             'active' => 1,
+            'telephone' => $this->faker->phoneNumber(),
         ];
     }
 
