@@ -47,7 +47,9 @@
 		"octref.vetur",
 		"visualstudioexptteam.vscodeintellicode",
 		"redhat.vscode-yaml",
-        "m1guelpf.better-pest"
+        "m1guelpf.better-pest",
+        "bmewburn.vscode-intelephense-client",
+        "RobertOstermann.inline-parameters-extended"
 	],
 	"remoteUser": "sail",
 	// "forwardPorts": [],
