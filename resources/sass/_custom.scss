@@ -22,3 +22,14 @@ table th {
 .footer {
     background-color: #f5f5f5;
 }
+
+thead.fixed-header th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: aliceblue;
+}
+
+.max-600 {
+    max-height: 600px;
+}

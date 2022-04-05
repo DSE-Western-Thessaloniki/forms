@@ -1,7 +1,7 @@
 <template>
-    <div class="table-responsive">
+    <div class="table-responsive d-flex max-600">
         <table class="table table-striped table-bordered table-hover">
-            <thead>
+            <thead class="fixed-header">
                 <tr>
                     <th>Σχολική Μονάδα</th>
                     <th>Κωδικός</th>
