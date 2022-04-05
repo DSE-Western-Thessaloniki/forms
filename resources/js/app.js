@@ -37,3 +37,11 @@ Vue.component('vdatatable-component', () => import('./components/VDataTableCompo
 const app = new Vue({
     el: '#app',
 });
+
+// Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
+var inputTypeNumbers = document.querySelectorAll("input[type=number]");
+for (var a = 0; a < inputTypeNumbers.length; a++) {
+    inputTypeNumbers[a].onwheel = function (event) {
+        event.target.blur();
+    };
+}
