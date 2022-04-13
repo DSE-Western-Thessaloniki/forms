@@ -56,6 +56,96 @@
 
                 <input type="hidden" :name="'field['+field_id+'][values]'" :value="dlistvalues"/>
             </div>
+            <div class="form-row foldable">
+                <p>
+                    <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" :data-target="advancedTarget" aria-expanded="false" aria-controls="advanced">
+                            <i class='fas fa-tools'></i> Προχωρημένες επιλογές
+                    </button>
+                </p>
+                <div class="collapse col-12" :id="advancedId">
+                    <div class="card card-body">
+                        <!-- Κριτήρια συμπλήρωσης -->
+                        <div class="pb-3">Κριτήρια συμπλήρωσης πεδίου:</div>
+                        <div class="px-4">
+                            <div class="input-group mb-1" v-if="[0,1].includes(cbselected)">
+                                <div class="input-group-prepend">
+                                    <div class="form-check col-12 input-group-text">
+                                        <input type="checkbox" id="uppercase" :name="'field['+field_id+'][capitals_enabled]'">
+                                    </div>
+                                </div>
+                                <label for="uppercase" class="flex-fill form-check-label input-group-text">Μόνο κεφαλαία</label>
+                            </div>
+                            <div class="input-group mb-1" v-if="cbselected==7">
+                                <div class="input-group-prepend">
+                                    <div class="form-check col-12 input-group-text">
+                                        <input type="checkbox" id="positive" :name="'field['+field_id+'][positive_enabled]'">
+                                    </div>
+                                </div>
+                                <label for="positive" class="flex-fill form-check-label input-group-text">Μόνο θετικοί αριθμοί</label>
+                            </div>
+                            <div class="input-group mb-1" v-if="[0,1,7,8,9,10].includes(cbselected)">
+                                <div class="input-group-prepend">
+                                    <div class="form-check col-12 input-group-text">
+                                        <input type="checkbox" id="field_width" v-model="field_width_enabled"  :name="'field['+field_id+'][field_width_enabled]'">
+                                        <label for="field_width" class="col-10 form-check-label">Πλάτος πεδίου</label>
+                                    </div>
+                                </div>
+                                <input type="number" class="flex-fill form-control" :disabled="!field_width_enabled" :name="'field['+field_id+'][field_width]'">
+                            </div>
+                            <div class="input-group mb-1" v-if="[0,1,7,8,9,10].includes(cbselected)">
+                                <div class="input-group-prepend">
+                                    <div class="form-check col-12 input-group-text">
+                                        <input type="checkbox" id="regex" v-model="regex_enabled" :name="'field['+field_id+'][regex_enabled]'">
+                                        <label for="regex" class="col-10 form-check-label">Regex</label>
+                                    </div>
+                                </div>
+                                <input type="text" class="flex-fill form-control" :disabled="!regex_enabled" :name="'field['+field_id+'][regex]'">
+                            </div>
+                        </div>
+
+                        <!-- Κριτήρια εμφάνισης -->
+                        <div class="pt-4 pb-2">Εμφάνιση πεδίου όταν:</div>
+                        <ul class="px-4">
+                            <li class="list-group-item col-12 d-flex" v-for="option in advancedOptionsCriteria" :key="option.id">
+                                <select :disabled="option.id==0" :name="'field['+field_id+']['+option.id+'][operator]'">
+                                    <option value="and">Και</option>
+                                    <option value="or">Ή</option>
+                                </select>
+
+                                <select v-model="option.check" :name="'field['+field_id+']['+option.id+'][visible]'">
+                                    <option value="always" selected>Πάντα</option>
+                                    <option value="when_field_is_active">Είναι ενεργό το πεδίο</option>
+                                    <option value="when_value">Η τιμή του πεδίου</option>
+                                </select>
+
+                                <select v-if="option.check=='when_field_is_active' || option.check=='when_value'" :name="'field['+field_id+']['+option.id+'][active_field]'">
+                                    <option>Πεδίο 1</option>
+                                    <option>Πεδίο 2</option>
+                                </select>
+
+                                <div v-if="option.check=='when_value'" class="d-flex flex-fill">
+                                    <div class="px-1 pt-1">είναι</div>
+                                    <select :name="'field['+field_id+']['+option.id+'][value_is]'">
+                                        <option value="gt">μεγαλύτερη από</option>
+                                        <option value="ge">μεγαλύτερη ή ίση από</option>
+                                        <option value="lt">μικρότερη από</option>
+                                        <option value="le">μικρότερη ή ίση από</option>
+                                        <option value="eq">ίση με</option>
+                                        <option value="ne">διαφορετική από</option>
+                                    </select>
+                                    <input type="text" class="flex-fill" :name="'field['+field_id+']['+option.id+'][value]'">
+                                </div>
+                                <button class="btn btn-primary btn-sm px-1 mx-1" type="button" @click="addAdvancedOptionsCriteria" v-if="canAddAdvancedOptionsCriteria(option.id)">
+                                    <i class='fas fa-plus'></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm px-1" type="button" @click="removeAdvancedOptionsCriteria" v-if="canRemoveAdvancedOptionsCriteria(option.id)">
+                                    <i class='fas fa-minus'></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -123,12 +213,29 @@
                 ],
                 dlistvalues: this.listvalues,
                 field_id: this.id,
+                advancedOptionsCriteria: [{id: 0, check: "always"}],
+                regex_enabled: false,
+                field_width_enabled: false
             }
         },
         methods: {
             emitDelete: function() {
                 this.$emit('delfield', this.id);
             },
+            addAdvancedOptionsCriteria: function() {
+                const i = this.advancedOptionsCriteria.at(-1).id + 1;
+                this.advancedOptionsCriteria.push({id: i, check: 0});
+            },
+            removeAdvancedOptionsCriteria: function() {
+                this.advancedOptionsCriteria.splice(-1);
+            },
+            canAddAdvancedOptionsCriteria: function(id) {
+                return this.advancedOptionsCriteria ? id == this.advancedOptionsCriteria.at(-1).id : true;
+            },
+            canRemoveAdvancedOptionsCriteria: function(id) {
+                return this.advancedOptionsCriteria ? id == this.advancedOptionsCriteria.at(-1).id && this.advancedOptionsCriteria.length > 1 : true;
+            }
+
         },
         computed: {
             optionText: function() {
@@ -141,6 +248,12 @@
                     }
                 });
                 return text;
+            },
+            advancedId: function() {
+                return 'advanced_f'+this.id;
+            },
+            advancedTarget: function() {
+                return '#advanced_f'+this.id;
             }
         }
     }
