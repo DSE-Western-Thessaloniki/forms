@@ -311,8 +311,8 @@ class ReportsController extends Controller
                         // Βρες την τελευταία εγγραφή
                         $last_record = 0;
                         foreach ($fields as $field) {
-                            if ($last_record < $field->field_data->count()) {
-                                $last_record = $field->field_data->count();
+                            if ($last_record < $field->field_data->where('school_id', $this->school_model_cache->id)->count()) {
+                                $last_record = $field->field_data->where('school_id', $this->school_model_cache->id)->count();
                             }
                         }
                         // Ετοίμασε τις εγγραφές στον πίνακα
