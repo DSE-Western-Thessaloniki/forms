@@ -14,11 +14,11 @@ class AddAdvancedCriteriaToFormFields extends Migration
     public function up()
     {
         Schema::table('form_fields', function (Blueprint $table) {
-            $table->string('regex')->after('listvalues');
-            $table->string('width')->after('regex');
-            $table->boolean('capitals')->after('regex');
-            $table->boolean('positive')->after('capitals');
-            $table->text('appear_when')->after('positive');
+            $table->string('regex')->default("")->after('listvalues');
+            $table->string('width')->default("")->after('regex');
+            $table->boolean('capitals')->default(false)->after('regex');
+            $table->boolean('positive')->default(false)->after('capitals');
+            $table->text('appear_when')->default("")->after('positive');
         });
     }
 
