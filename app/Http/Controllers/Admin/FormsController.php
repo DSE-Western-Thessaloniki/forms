@@ -33,13 +33,40 @@ class FormsController extends Controller
     public function index(Request $request) : \Illuminate\Contracts\View\View
     {
         $filter = $request->get('filter');
-        if ($filter) {
+        $only_active = $request->get('only_active') ?? 0;
+        if ($filter && $only_active) {
+            $forms = Form::orderBy('created_at', 'desc')
+                ->withCount(['data' => function($query) {
+                    $query->where('record', 0);
+                }])
+                ->where('active', '1')
+                ->query(function($query) use ($filter) {
+                    $query->where('id', 'like', '%'.$filter.'%')
+                    ->orWhere('title', 'like', '%'.$filter.'%');
+                })
+                ->with('user')
+                ->with('schools')
+                ->with('form_fields')
+                ->paginate(15);
+        }
+        else if ($filter) {
             $forms = Form::orderBy('created_at', 'desc')
                 ->withCount(['data' => function($query) {
                     $query->where('record', 0);
                 }])
                 ->where('id', 'like', '%'.$filter.'%')
                 ->orWhere('title', 'like', '%'.$filter.'%')
+                ->with('user')
+                ->with('schools')
+                ->with('form_fields')
+                ->paginate(15);
+        }
+        else if ($only_active) {
+            $forms = Form::orderBy('created_at', 'desc')
+                ->withCount(['data' => function($query) {
+                    $query->where('record', 0);
+                }])
+                ->where('active', '1')
                 ->with('user')
                 ->with('schools')
                 ->with('form_fields')
@@ -58,7 +85,8 @@ class FormsController extends Controller
 
         return view('admin.form.index')
             ->with('forms', $forms)
-            ->with('filter', $filter);
+            ->with('filter', $filter)
+            ->with('only_active', $only_active);
     }
 
     /**

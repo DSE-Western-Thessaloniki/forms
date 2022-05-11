@@ -21,7 +21,13 @@
                             @endif
                         </div>
                         <form class="form-horizontal" id="search" method="GET" action="{{ route('admin.form.index') }}">
-                            <div class="input-group" role="group">
+                            <div class="input-group align-items-center" role="group">
+                                <div class="form-check mr-2">
+                                    <input class="form-check-input" type="checkbox" id="only_active" name="only_active" value="1" {{ ($only_active ?? 0) ? "checked" : "" }} />
+                                    <label class="form-check-label" for="only_active">
+                                    Εμφάνιση μόνο ενεργών φορμών
+                                    </label>
+                                </div>
                                 <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..." name="filter" value="{{ $filter }}">
                                 <button type="submit" class="btn btn-primary ml-2" form="search">Αναζήτηση</button>
                             </div>
@@ -113,7 +119,13 @@
                             Δεν βρέθηκαν φόρμες
                         @endforelse
                         <div class="row justify-content-md-center">
-                            {{ $forms->links() }} <!-- Σελιδοποίηση -->
+                            @php
+                                $pagination_extra_fields = ['filter' => $filter];
+                                if ($only_active) {
+                                    $pagination_extra_fields += ['only_active' => 1];
+                                }
+                            @endphp
+                            {{ $forms->appends($pagination_extra_fields)->links() }} <!-- Σελιδοποίηση -->
                         </div>
                     </div>
                 </div>
