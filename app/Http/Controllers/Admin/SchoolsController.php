@@ -71,7 +71,7 @@ class SchoolsController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:schools'],
             'telephone' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:schools'],
-            'code' => ['required', 'string', 'min:7', 'max:255', 'unique:schools'],
+            'code' => ['required', 'string', 'min:6', 'max:255', 'unique:schools'],
             'category' => ['required', 'string', 'max:255'],
         ]);
 
@@ -151,7 +151,7 @@ class SchoolsController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('schools')->ignore($school)],
             'telephone' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('schools')->ignore($school)],
-            'code' => ['required', 'string', 'min:7', 'max:255', Rule::unique('schools')->ignore($school)],
+            'code' => ['required', 'string', 'min:6', 'max:255', Rule::unique('schools')->ignore($school)],
             'category' => ['required', 'string', 'max:255'],
         ]);
 
