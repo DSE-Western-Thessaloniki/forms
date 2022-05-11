@@ -140,7 +140,7 @@ class FormFieldDataSeeder extends Seeder
                         break;
                     case 8: // Τηλέφωνο
                         return [
-                            'data' => $this->faker->fixedLineNumber(),
+                            'data' => $this->faker->numerify("##########"),
                             'record' => $sequence->index
                         ];
                         break;
