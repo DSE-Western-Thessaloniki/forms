@@ -899,3 +899,41 @@ it('can access a form\'s data (xlsx) as admin', function() {
 
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
 });
+
+it('cannot copy a form as user', function() {
+    $user = User::factory()->user()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($user);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+
+    $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/copy');
+    $response->assertForbidden();
+});
+
+it('can copy a form as author', function() {
+    $author = User::factory()->author()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($author);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/copy');
+    $response->assertRedirect(route('admin.form.index'));
+    expect($response->getSession()->only(['status'])['status'])->toBe('Το αντίγραφο της φόρμας δημιουργήθηκε');
+    $this->assertModelExists($testForm);
+});
+
+it('can copy a form as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/copy');
+    $response->assertRedirect(route('admin.form.index'));
+    expect($response->getSession()->only(['status'])['status'])->toBe('Το αντίγραφο της φόρμας δημιουργήθηκε');
+    $this->assertModelExists($testForm);
+});
