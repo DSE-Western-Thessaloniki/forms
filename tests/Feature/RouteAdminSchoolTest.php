@@ -5,6 +5,8 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function() {
     $this->seed(OptionSeeder::class);
@@ -299,4 +301,91 @@ it('cannot update a school as admin with invalid categories', function() {
     ]);
     $response->assertRedirect(route('admin.school.index'));
     expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
+});
+
+it('cannot import a school as user', function() {
+    $user = User::factory()->user()->create();
+    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
+
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
+
+    $response = $this->actingAs($user)->post('/admin/school/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertForbidden();
+});
+
+it('cannot import a school as author', function() {
+    $author = User::factory()->author()->create();
+    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
+
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
+
+    $response = $this->actingAs($author)->post('/admin/school/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertForbidden();
+});
+
+it('can import a school as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
+
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
+
+    $response = $this->actingAs($admin)->post('/admin/school/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertRedirect(route('admin.school.index'));
+    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
+    $this->assertDatabaseHas('schools', [
+        'name' => 'Test School2'
+    ]);
+});
+
+it('can import a school as admin (with ; as delimiter)', function() {
+    $admin = User::factory()->admin()->create();
+    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
+
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    'Test School2;testUser;9999999;test@example.com;123-456-7890;testCategory');
+
+    $response = $this->actingAs($admin)->post('/admin/school/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertRedirect(route('admin.school.index'));
+    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
+    $this->assertDatabaseHas('schools', [
+        'name' => 'Test School2'
+    ]);
+});
+
+it('can import multiple schools as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
+
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    "Test School1,testUser,9999999,test@example.com,123-456-7890,testCategory
+Test School2,testUser2,9999991,test2@example.com,123-456-7891,testCategory
+Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory");
+
+    $response = $this->actingAs($admin)->post('/admin/school/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertRedirect(route('admin.school.index'));
+    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 3 σχολικών μονάδων');
+    $this->assertDatabaseCount('schools', 3);
 });
