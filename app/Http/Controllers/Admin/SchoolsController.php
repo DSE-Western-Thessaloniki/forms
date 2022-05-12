@@ -229,6 +229,7 @@ class SchoolsController extends Controller
         }
 
         if (!empty($data) && count($data[0]) != 6) { // Δοκίμασε το ';' ως διαχωριστικό
+            $data = [];
             if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
                 while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                     array_push($data, $row_data);
