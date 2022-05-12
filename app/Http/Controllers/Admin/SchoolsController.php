@@ -228,7 +228,7 @@ class SchoolsController extends Controller
             fclose($handle);
         }
 
-        if (!empty($data) && count($data[0]) != 5) { // Δοκίμασε το ';' ως διαχωριστικό
+        if (!empty($data) && count($data[0]) != 6) { // Δοκίμασε το ';' ως διαχωριστικό
             if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
                 while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                     array_push($data, $row_data);
@@ -242,7 +242,7 @@ class SchoolsController extends Controller
         }
 
         foreach ($data as $row) {
-            if (count($row) != 5) {
+            if (count($row) != 6) {
                 return redirect(route('admin.school.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
             }
 
