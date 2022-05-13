@@ -354,6 +354,10 @@ it('can import a school as admin', function() {
         'email' => 'test@example.com',
         'telephone' => '123-456-7890'
     ]);
+    $this->assertDatabaseCount('school_category_school', 1);
+    $this->assertDatabaseHas('school_category_school', [
+        'school_category_id' => $category->id
+    ]);
 });
 
 it('can import a school as admin (with ; as delimiter)', function() {
@@ -377,6 +381,10 @@ it('can import a school as admin (with ; as delimiter)', function() {
         'email' => 'test@example.com',
         'telephone' => '123-456-7890'
     ]);
+    $this->assertDatabaseCount('school_category_school', 1);
+    $this->assertDatabaseHas('school_category_school', [
+        'school_category_id' => $category->id
+    ]);
 });
 
 it('can import multiple schools as admin', function() {
@@ -396,4 +404,30 @@ Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory");
     $response->assertRedirect(route('admin.school.index'));
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 3 σχολικών μονάδων');
     $this->assertDatabaseCount('schools', 3);
+    $this->assertDatabaseHas('schools', [
+        'name' => 'Test School1',
+        'username' => 'testUser',
+        'code' => '9999999',
+        'email' => 'test@example.com',
+        'telephone' => '123-456-7890'
+    ]);
+    $this->assertDatabaseHas('schools', [
+        'name' => 'Test School2',
+        'username' => 'testUser2',
+        'code' => '9999991',
+        'email' => 'test2@example.com',
+        'telephone' => '123-456-7891'
+    ]);
+    $this->assertDatabaseHas('schools', [
+        'name' => 'Test School3',
+        'username' => 'testUser3',
+        'code' => '9999992',
+        'email' => 'test3@example.com',
+        'telephone' => '123-456-7892'
+    ]);
+    $this->assertDatabaseCount('school_category_school', 3);
+    $this->assertDatabaseHas('school_category_school', [
+        'school_category_id' => $category->id
+    ]);
+
 });
