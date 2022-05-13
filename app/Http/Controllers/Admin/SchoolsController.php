@@ -260,7 +260,7 @@ class SchoolsController extends Controller
             $category_name = $row[5];
             $category = SchoolCategory::where('name', $category_name)->first();
 
-            if (!$category) { // Η κατηγορία υπάρχει ήδη
+            if (!$category) { // Η κατηγορία δεν υπάρχει ήδη
                 $category = new SchoolCategory;
                 $category->name = $row[5];
                 $category->save();
