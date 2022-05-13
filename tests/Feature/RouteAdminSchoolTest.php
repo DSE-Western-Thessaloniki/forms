@@ -348,7 +348,11 @@ it('can import a school as admin', function() {
     $response->assertRedirect(route('admin.school.index'));
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
     $this->assertDatabaseHas('schools', [
-        'name' => 'Test School2'
+        'name' => 'Test School2',
+        'username' => 'testUser',
+        'code' => '9999999',
+        'email' => 'test@example.com',
+        'telephone' => '123-456-7890'
     ]);
 });
 
@@ -367,7 +371,11 @@ it('can import a school as admin (with ; as delimiter)', function() {
     $response->assertRedirect(route('admin.school.index'));
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
     $this->assertDatabaseHas('schools', [
-        'name' => 'Test School2'
+        'name' => 'Test School2',
+        'username' => 'testUser',
+        'code' => '9999999',
+        'email' => 'test@example.com',
+        'telephone' => '123-456-7890'
     ]);
 });
 
