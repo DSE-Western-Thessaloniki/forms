@@ -396,7 +396,7 @@ it('can import multiple schools as admin', function() {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
     "Test School1,testUser,9999999,test@example.com,123-456-7890,testCategory
 Test School2,testUser2,9999991,test2@example.com,123-456-7891,testCategory
-Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory");
+Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory2");
 
     $response = $this->actingAs($admin)->post('/admin/school/import', [
         'csvfile' => $file,
@@ -425,9 +425,7 @@ Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory");
         'email' => 'test3@example.com',
         'telephone' => '123-456-7892'
     ]);
-    $this->assertDatabaseCount('school_category_school', 3);
-    $this->assertDatabaseHas('school_category_school', [
-        'school_category_id' => $category->id
-    ]);
 
+    expect(SchoolCategory::where('name', 'testCategory')->first()->schools()->count())->toBe(2);
+    expect(SchoolCategory::where('name', 'testCategory2')->first()->schools()->count())->toBe(1);
 });
