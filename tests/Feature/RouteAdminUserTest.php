@@ -414,3 +414,32 @@ it('can update it\'s own role as admin', function() {
     expect($response->getSession()->only(['status'])['status'])->toBe('Τα στοιχεία του χρήστη ενημερώθηκαν!');
     $this->assertEquals($admin->roles()->where('name', 'Author')->count(), 1);
 });
+
+it('cannot login with deactivated account', function() {
+    $this->seed(RoleSeeder::class);
+    $user = User::factory()->user()->create();
+    $user->active = 0;
+    $user->save();
+
+    $response = $this->post('/admin/login', [
+        'username' => $user->username,
+        'password' => 'password'
+    ]);
+    $response->assertStatus(302)->assertRedirect(route('admin.login'));
+    expect($response->getSession()->only(['error'])['error'])->toBe('Ο λογαριασμός σας είναι απενεργοποιημένος.');
+});
+
+test('logout from admin redirects to admin login', function() {
+    $this->seed(RoleSeeder::class);
+    $user = User::factory()->user()->create();
+    $user->active = 1;
+    $user->save();
+
+    $response = $this->post('/admin/login', [
+        'username' => $user->username,
+        'password' => 'password'
+    ]);
+    $response->assertRedirect(route('home'));
+    $response = $this->post('/admin/logout');
+    $response->assertStatus(302)->assertRedirect(route('admin.login'));
+});
