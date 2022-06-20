@@ -370,7 +370,7 @@ class FormsController extends Controller
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
             ->with('dataTableColumns', $dataTableColumns)
-            ->with('schools', $schools)
+            ->with('schools', array_values($schools->toArray()))
             ->with('form', $form);
     }
 
