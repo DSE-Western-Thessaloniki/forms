@@ -64,7 +64,7 @@ class ReportsController extends Controller
             ->orWhere('email', cas()->getAttribute('mail'))
             ->first();
         if ($school) {
-            $categories = $school->categories;
+            $categories = $school->categories->pluck('id');
             $forms = Form::where('active', true)
                 ->where(function($query) use ($school, $categories) { // Προσθήκη παρένθεσης
                     $query->whereHas('schools', function ($q) use ($school) {
