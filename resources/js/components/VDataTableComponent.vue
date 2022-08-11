@@ -32,95 +32,95 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
 
-    export default {
-        props: {
-            columns: Array,
-            data: Object,
-            schools: Array,
-        },
-        mounted() {
-        },
-        methods: {
-            created: function(line) {
-                var created_date;
-                this.columnsObj.forEach(column => {
-                    if ((typeof(this.data[line.code]) != "undefined") &&
-                        (typeof(this.data[line.code][column.title]) != "undefined") &&
-                        (typeof(this.data[line.code][column.title][line.record]) != "undefined")) {
 
-                        if (typeof(created_date) === "undefined") {
-                            created_date = new Date(this.data[line.code][column.title][line.record]['created']);
-                        } else {
-                            var temp_date = new Date(this.data[line.code][column.title][line.record]['created'])
-                            if (created_date > temp_date) {
-                                created_date = temp_date;
-                            }
-                        }
-                    }
-                });
+const props = defineProps({
+    columns: Array,
+    data: Object,
+    schools: Array,
+});
 
-                return typeof(created_date) === "undefined" ? '' : created_date.toLocaleString();
-            },
-            updated: function(line) {
-                var updated_date;
-                this.columnsObj.forEach(column => {
-                    if ((typeof(this.data[line.code]) != "undefined") &&
-                        (typeof(this.data[line.code][column.title]) != "undefined") &&
-                        (typeof(this.data[line.code][column.title][line.record]) != "undefined")) {
+const created = (line) => {
+    var created_date;
 
-                        if (typeof(updated_date) === "undefined") {
-                            updated_date = new Date(this.data[line.code][column.title][line.record]['created']);
-                        } else {
-                            var temp_date = new Date(this.data[line.code][column.title][line.record]['created'])
-                            if (updated_date < temp_date) {
-                                updated_date = temp_date;
-                            }
-                        }
-                    }
-                });
+    columnsObj.value.forEach(column => {
+        if ((typeof (props.data[line.code]) != "undefined") &&
+            (typeof (props.data[line.code][column.title]) != "undefined") &&
+            (typeof (props.data[line.code][column.title][line.record]) != "undefined")) {
 
-                return typeof(updated_date) === "undefined" ? '' : updated_date.toLocaleString();
-            }
-        },
-        computed: {
-            columnsObj: function() {
-                var columnsObj = Array();
-                var i=0;
-                this.columns.forEach(column => {
-                    columnsObj.push({id: i, title: column});
-                    i += 1
-                });
-
-                return columnsObj;
-            },
-            lines: function() {
-                var i = 0;
-                var lines = Array();
-                this.schools.forEach(school => {
-                    var record = 0;
-                    do {
-                        var ok = false;
-                        this.columnsObj.forEach(column => {
-                            if ((typeof(this.data[school.code]) != "undefined") &&
-                                (typeof(this.data[school.code][column.title]) != "undefined") &&
-                                (typeof(this.data[school.code][column.title][record]) != "undefined"))
-                                {
-                                    ok = true;
-                                }
-                        });
-
-                        if (ok || record == 0) {
-                            lines.push({id: i, code: school.code, name: school.name, record: record});
-                            i += 1;
-                        }
-                        record += 1;
-                    } while (ok);
-                });
-
-                return lines;
+            if (typeof (created_date) === "undefined") {
+                created_date = new Date(props.data[line.code][column.title][line.record]['created']);
+            } else {
+                var temp_date = new Date(props.data[line.code][column.title][line.record]['created'])
+                if (created_date > temp_date) {
+                    created_date = temp_date;
+                }
             }
         }
-    }
+    });
+
+    return typeof (created_date) === "undefined" ? '' : created_date.toLocaleString();
+}
+
+const updated = (line) => {
+    var updated_date;
+
+    columnsObj.value.forEach(column => {
+        if ((typeof (props.data[line.code]) != "undefined") &&
+            (typeof (props.data[line.code][column.title]) != "undefined") &&
+            (typeof (props.data[line.code][column.title][line.record]) != "undefined")) {
+
+            if (typeof (updated_date) === "undefined") {
+                updated_date = new Date(props.data[line.code][column.title][line.record]['created']);
+            } else {
+                var temp_date = new Date(props.data[line.code][column.title][line.record]['created'])
+                if (updated_date < temp_date) {
+                    updated_date = temp_date;
+                }
+            }
+        }
+    });
+
+    return typeof (updated_date) === "undefined" ? '' : updated_date.toLocaleString();
+};
+
+const columnsObj = computed(() => {
+    var columnsObj = Array();
+    var i = 0;
+
+    props.columns.forEach(column => {
+        columnsObj.push({ id: i, title: column });
+        i += 1
+    });
+
+    return columnsObj;
+})
+
+const lines = computed(() => {
+    var i = 0;
+    var lines = Array();
+    props.schools.forEach(school => {
+        var record = 0;
+        do {
+            var ok = false;
+            columnsObj.value.forEach(column => {
+                if ((typeof (props.data[school.code]) != "undefined") &&
+                    (typeof (props.data[school.code][column.title]) != "undefined") &&
+                    (typeof (props.data[school.code][column.title][record]) != "undefined")) {
+                    ok = true;
+                }
+            });
+
+            if (ok || record == 0) {
+                lines.push({ id: i, code: school.code, name: school.name, record: record });
+                i += 1;
+            }
+            record += 1;
+        } while (ok);
+    });
+
+    return lines;
+});
 </script>

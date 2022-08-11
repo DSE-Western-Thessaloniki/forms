@@ -24,48 +24,50 @@
     </div>
 </template>
 
-<script>
-    export default {
-        mounted() {
-        },
-        data: function() {
-            return {
-                text: {
-                    val: this.edittext,
-                    edit: false
-                }
-            }
-        },
-        props: ['edittext', 'fid', 'restricted'],
-        methods: {
-            toggleEdit: function(text) {
-                text.edit = !text.edit;
+<script setup>
+import { ref, nextTick } from "vue";
 
-                // Focus input field
-                if(text.edit){
-                    this.$nextTick(function() {
-                        this.$refs.input.focus();
-                    })
-                }
-            },
+const emit = defineEmits(['update:edittext']);
 
-            saveEdit: function(text) {
-                //save your changes
-                if (text.val == '') {
-                    text.val = this.edittext
-                }
-                this.$emit('update:edittext', text.val);
-                this.toggleEdit(text);
-            },
+const props = defineProps([
+    'edittext',
+    'fid',
+    'restricted'
+]);
 
-            checkKey: function(e, text) {
-                if (e.which == 13 || e.keyCode == 13) {
-                    e.preventDefault();
-                    e.target.blur();
-                    return false;
-                }
-                return true;
-            }
-        }
+let text = ref({
+    val: props.edittext,
+    edit: false
+});
+
+const input = ref(null);
+
+const toggleEdit = (text) => {
+    text.edit = !text.edit;
+
+    // Focus input field
+    if(text.edit){
+        nextTick(function() {
+            input.value.focus();
+        })
     }
+};
+
+const saveEdit = (text) => {
+    //save your changes
+    if (text.val == '') {
+        text.val = props.edittext
+    }
+    emit('update:edittext', text.val);
+    toggleEdit(text);
+};
+
+const checkKey = (event, text) => {
+    if (event.which == 13 || event.keyCode == 13) {
+        event.preventDefault();
+        event.target.blur();
+        return false;
+    }
+    return true;
+};
 </script>
