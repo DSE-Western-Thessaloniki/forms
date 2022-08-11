@@ -8,28 +8,34 @@
                     <div class="col-10">
                         <div class="form-check">
                             <div v-if="disabled === 'disabled'">
-                                <input type="checkbox" class="form-check-input" name="Administrator" id="Administrator" value="1" v-model="administrator" disabled="disabled">
+                                <input type="checkbox" class="form-check-input" name="Administrator" id="Administrator"
+                                    value="1" v-model="administrator" disabled="disabled">
                             </div>
                             <div v-else>
-                                <input type="checkbox" class="form-check-input" name="Administrator" id="Administrator" value="1" v-model="administrator">
+                                <input type="checkbox" class="form-check-input" name="Administrator" id="Administrator"
+                                    value="1" v-model="administrator">
                             </div>
                             <label for="Administrator" class="form-check-label">Διαχειριστής</label>
                         </div>
                         <div class="form-check">
                             <div v-if="disabled === 'disabled'">
-                                <input type="checkbox" class="form-check-input" name="Author" id="Author" value="1" v-model="author" disabled="disabled">
+                                <input type="checkbox" class="form-check-input" name="Author" id="Author" value="1"
+                                    v-model="author" disabled="disabled">
                             </div>
                             <div v-else>
-                                <input type="checkbox" class="form-check-input" name="Author" id="Author" value="1" v-model="author">
+                                <input type="checkbox" class="form-check-input" name="Author" id="Author" value="1"
+                                    v-model="author">
                             </div>
                             <label for="Author" class="form-check-label">Συγγραφέας</label>
                         </div>
                         <div class="form-check">
                             <div v-if="disabled === 'disabled'">
-                                <input type="checkbox" class="form-check-input" name="User" id="User" value="1" v-model="user" disabled="disabled">
+                                <input type="checkbox" class="form-check-input" name="User" id="User" value="1"
+                                    v-model="user" disabled="disabled">
                             </div>
                             <div v-else>
-                                <input type="checkbox" class="form-check-input" name="User" id="User" value="1" v-model="user">
+                                <input type="checkbox" class="form-check-input" name="User" id="User" value="1"
+                                    v-model="user">
                             </div>
                             <label for="User" class="form-check-label">Χρήστης</label>
                         </div>
@@ -41,32 +47,25 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted, ref } from "vue";
 
-    export default {
-        props: {
-            current_roles: String,
-            disabled: String,
-        },
-        mounted() {
-            this.cur_roles=JSON.parse(this.current_roles);
-            this.administrator=this.cur_roles.includes('Administrator');
-            this.author=this.cur_roles.includes('Author');
-            this.user=this.cur_roles.includes('User');
-        },
-        data: function() {
-            return {
-                cur_roles: '',
-                administrator: false,
-                author: false,
-                user: false,
-            }
-        },
-        ready: function() {
-        },
-        methods: {
-        },
-        computed: {
-        }
-    }
+
+let cur_roles = ref('');
+let administrator = ref(false);
+let author = ref(false);
+let user = ref(false);
+
+const props = defineProps({
+    current_roles: String,
+    disabled: String,
+});
+
+
+onMounted(() => {
+    cur_roles.value = JSON.parse(props.current_roles);
+    administrator.value = cur_roles.value.includes('Administrator');
+    author.value = cur_roles.value.includes('Author');
+    user.value = cur_roles.value.includes('User');
+});
 </script>
