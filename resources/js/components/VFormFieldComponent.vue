@@ -35,9 +35,18 @@
 
                 <input type="hidden" :name="'field[' + field_id + '][values]'" :value="dataListValues" />
             </div>
+            <input type="hidden" :name="'field[' + field_id + '][sort_id]'" :value="sort_id" />
         </div>
     </div>
 </template>
+
+<script>
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    name: "vformfieldcomponent"
+})
+</script>
 
 <script setup>
 import { ref, watch, computed } from "vue";
@@ -51,7 +60,8 @@ const props = defineProps(
         'type',
         'listvalues',
         'restricted',
-        'no_drag'
+        'no_drag',
+        'sort_id',
     ]
 );
 

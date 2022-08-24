@@ -109,7 +109,7 @@ it('can create a form as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -136,7 +136,7 @@ it('can create a form as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -166,7 +166,7 @@ it('can create a form with school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
@@ -207,7 +207,7 @@ it('can create a form with school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
@@ -245,7 +245,7 @@ it('can create a form with fake school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -283,7 +283,7 @@ it('can create a form with fake school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -324,7 +324,7 @@ it('can create a form with schools as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
@@ -365,7 +365,7 @@ it('can create a form with schools as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
@@ -403,7 +403,7 @@ it('can create a form with fake schools as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'schools' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -441,7 +441,7 @@ it('can create a form with fake schools as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'schools' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -485,7 +485,7 @@ it('can create a form with schools and school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => strval($category1->id).','.strval($category2->id),
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
@@ -540,7 +540,7 @@ it('can create a form with schools and school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
         'categories' => strval($category1->id).','.strval($category2->id),
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);

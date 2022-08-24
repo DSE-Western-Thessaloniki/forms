@@ -65,7 +65,6 @@ const addPill = (value) => {
 }
 
 const optionChanged = (event) => {
-    console.log(event.target.value)
     if (!selectedOptions.value.includes(event.target.value)) {
         addPill(event.target.value);
     }
