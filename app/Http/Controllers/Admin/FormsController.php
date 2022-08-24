@@ -127,7 +127,7 @@ class FormsController extends Controller
         $formfield = $request->input('field');
         foreach(array_keys($formfield) as $key) {
             $field = new FormField;
-            $field->sort_id = $key;
+            $field->sort_id = $formfield[$key]['sort_id'];
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
             $field->listvalues = $formfield[$key]['values'] ?? '';
@@ -236,7 +236,7 @@ class FormsController extends Controller
         // Update or add fields
         foreach(array_keys($formfield) as $key) {
             $field = $form->form_fields()->firstOrNew(['id' => $key]);
-            $field->sort_id = $key;
+            $field->sort_id = $formfield[$key]['sort_id'] ?? $key;
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
             $field->listvalues = $formfield[$key]['values'] ?? '';

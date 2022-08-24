@@ -6,8 +6,23 @@
 
 require('./bootstrap');
 
-import Vue from 'vue';
+import { createApp, defineAsyncComponent } from "vue";
 
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+
+const app = createApp({});
+
+// Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
+var inputTypeNumbers = document.querySelectorAll("input[type=number]");
+for (var a = 0; a < inputTypeNumbers.length; a++) {
+    inputTypeNumbers[a].onwheel = function (event) {
+        event.target.blur();
+    };
+}
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -20,28 +35,12 @@ import Vue from 'vue';
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('vform-component', () => import('./components/VFormComponent.vue'));
-Vue.component('editable-text', () => import('./components/VEditableTextComponent.vue'));
-Vue.component('vform-field-component', () => import('./components/VFormFieldComponent.vue'));
-Vue.component('editable-list', () => import('./components/VEditableListComponent.vue'));
-Vue.component('rolecomponent', () => import('./components/RoleComponent.vue'));
-Vue.component('pillbox', () => import('./components/VPillBoxComponent.vue'));
-Vue.component('vdatatable-component', () => import('./components/VDataTableComponent.vue'));
+app.component('vform-component', defineAsyncComponent(() => import('./components/VFormComponent.vue')));
+app.component('editable-text', defineAsyncComponent(() => import('./components/VEditableTextComponent.vue')));
+app.component('vform-field-component', defineAsyncComponent(() => import('./components/VFormFieldComponent.vue')));
+app.component('editable-list', defineAsyncComponent(() => import('./components/VEditableListComponent.vue')));
+app.component('rolecomponent', defineAsyncComponent(() => import('./components/RoleComponent.vue')));
+app.component('pillbox', defineAsyncComponent(() => import('./components/VPillBoxComponent.vue')));
+app.component('vdatatable-component', defineAsyncComponent(() => import('./components/VDataTableComponent.vue')));
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const app = new Vue({
-    el: '#app',
-});
-
-// Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
-var inputTypeNumbers = document.querySelectorAll("input[type=number]");
-for (var a = 0; a < inputTypeNumbers.length; a++) {
-    inputTypeNumbers[a].onwheel = function (event) {
-        event.target.blur();
-    };
-}
+app.mount("#app");

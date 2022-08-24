@@ -27,7 +27,7 @@ class Form extends Model
     public $timestamps = true;
 
     public function form_fields() {
-        return $this->hasMany(FormField::class);
+        return $this->hasMany(FormField::class)->orderBy('sort_id');
     }
 
     public function schools() {

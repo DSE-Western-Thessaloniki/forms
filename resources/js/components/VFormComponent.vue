@@ -30,13 +30,17 @@
                                         στοιχείων φόρμας</label>
                                 </div>
                             </li>
-                            <draggable v-model="fields" handle=".handle" @end="dragEnded">
-                                <li class="list-group-item" v-for="field in fields" :key="field.id">
-                                    <vform-field-component :value.sync="field.title" :id="field.id" :type="field.type"
-                                        :listvalues="field.listvalues" v-on:deleteField="delField" ref='vform_fields'
-                                        :restricted="restricted && !field.new_field" :no_drag="restricted">
-                                    </vform-field-component>
-                                </li>
+                            <draggable v-model="fields" handle=".handle" item-key="id" @end="dragEnded">
+                                <template #item="{ element }">
+                                    <li class="list-group-item">
+                                        <vform-field-component :value.sync="element.title" :id="element.id"
+                                            :type="element.type" :listvalues="element.listvalues"
+                                            v-on:deleteField="delField" ref='vform_fields'
+                                            :restricted="restricted && !element.new_field" :no_drag="restricted"
+                                            :sort_id="element.sort_id">
+                                        </vform-field-component>
+                                    </li>
+                                </template>
                             </draggable>
                             <li class="list-group-item">
                                 <button type="button" class="btn btn-primary" @click="addField">
@@ -139,6 +143,9 @@ if (props.parse) {
     cur_sort_id = max_sort_id;
 }
 
+// Ταξινόμηση των πεδίων βάση του sort_id
+fields.value.sort((a, b) => a.sort_id - b.sort_id);
+
 const addField = () => {
     cur_id++;
     cur_sort_id++;
@@ -156,9 +163,13 @@ const delField = (id) => {
 };
 
 const dragEnded = (event) => {
-    [vform_fields.value[event.oldIndex].field_id,
-    vform_fields.value[event.newIndex].field_id] = [vform_fields.value[event.newIndex].field_id,
-    vform_fields.value[event.oldIndex].field_id];
+    console.log(event);
+    console.log(fields);
+    let sort_id = 1;
+    fields.value.forEach(function (item) {
+        item.sort_id = sort_id;
+        sort_id++;
+    })
 };
 
 </script>
