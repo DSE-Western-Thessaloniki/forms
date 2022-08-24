@@ -28,8 +28,8 @@ class SchoolFactory extends Factory
     {
         return [
             'username' => Str::random(8),
-            'code' => $this->faker->numerify('#######'),
-            'email' => $this->faker->email(),
+            'code' => $this->faker->unique()->numerify('#######'),
+            'email' => $this->faker->unique()->email(),
             'active' => 1,
             'telephone' => $this->faker->phoneNumber(),
         ];
