@@ -4,9 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-
 import { createApp, defineAsyncComponent } from "vue";
+import "./bootstrap";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -19,9 +18,17 @@ const app = createApp({});
 // Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
 var inputTypeNumbers = document.querySelectorAll("input[type=number]");
 for (var a = 0; a < inputTypeNumbers.length; a++) {
-    inputTypeNumbers[a].onwheel = function (event) {
-        event.target.blur();
-    };
+    let input = inputTypeNumbers[a];
+
+    if (input instanceof HTMLElement) {
+        input.onwheel = function (event) {
+            let target = event.target;
+
+            if (target instanceof HTMLElement) {
+                target.blur();
+            }
+        };
+    }
 }
 /**
  * The following block of code may be used to automatically register your
@@ -35,12 +42,37 @@ for (var a = 0; a < inputTypeNumbers.length; a++) {
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-app.component('vform-component', defineAsyncComponent(() => import('./components/VFormComponent.vue')));
-app.component('editable-text', defineAsyncComponent(() => import('./components/VEditableTextComponent.vue')));
-app.component('vform-field-component', defineAsyncComponent(() => import('./components/VFormFieldComponent.vue')));
-app.component('editable-list', defineAsyncComponent(() => import('./components/VEditableListComponent.vue')));
-app.component('rolecomponent', defineAsyncComponent(() => import('./components/RoleComponent.vue')));
-app.component('pillbox', defineAsyncComponent(() => import('./components/VPillBoxComponent.vue')));
-app.component('vdatatable-component', defineAsyncComponent(() => import('./components/VDataTableComponent.vue')));
+app.component(
+    "vform-component",
+    defineAsyncComponent(() => import("./components/VFormComponent.vue"))
+);
+app.component(
+    "editable-text",
+    defineAsyncComponent(
+        () => import("./components/VEditableTextComponent.vue")
+    )
+);
+app.component(
+    "vform-field-component",
+    defineAsyncComponent(() => import("./components/VFormFieldComponent.vue"))
+);
+app.component(
+    "editable-list",
+    defineAsyncComponent(
+        () => import("./components/VEditableListComponent.vue")
+    )
+);
+app.component(
+    "rolecomponent",
+    defineAsyncComponent(() => import("./components/RoleComponent.vue"))
+);
+app.component(
+    "pillbox",
+    defineAsyncComponent(() => import("./components/VPillBoxComponent.vue"))
+);
+app.component(
+    "vdatatable-component",
+    defineAsyncComponent(() => import("./components/VDataTableComponent.vue"))
+);
 
 app.mount("#app");

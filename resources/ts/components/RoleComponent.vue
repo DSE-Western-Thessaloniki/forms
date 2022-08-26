@@ -47,7 +47,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 
 
@@ -56,11 +56,10 @@ let administrator = ref(false);
 let author = ref(false);
 let user = ref(false);
 
-const props = defineProps({
-    current_roles: String,
-    disabled: String,
-});
-
+const props = defineProps<{
+    current_roles: string,
+    disabled: string,
+}>();
 
 onMounted(() => {
     cur_roles.value = JSON.parse(props.current_roles);

@@ -2,11 +2,11 @@
     <div class="vpillbox__template">
         <div class="vpillbox__component form-group">
             <div class="vpillbox__vpills">
-                <span v-for="vpill in vpills" :key="vpill.id" :id="vpill.id" class="badge badge-primary m-1 pl-2">
+                <span v-for="pill in pills" :key="pill.id" :id="pill.id" class="badge badge-primary m-1 pl-2">
                     {{
-                            vpill.value
+                            pill.value
                     }}
-                    <button type="button" class="btn btn-primary mx-1" @click="removePill(vpill.id)">
+                    <button type="button" class="btn btn-primary mx-1" @click="removePill(pill.id)">
                         <i class="fas fa-times"></i>
                     </button>
                 </span>
@@ -27,52 +27,59 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
 
-const props = defineProps({
-    options: Array,
-    value: String,
-    name: String,
-    placeholder: String,
-});
+const props = defineProps<{
+    options: Array<App.Models.SchoolCategory>,
+    value: string | number,
+    name: string,
+    placeholder: string,
+}>();
 
-let selectedOptions = ref([]);
-let vpills = ref([]);
+type Pill = { id: string, value: string };
+
+let selectedOptions = ref(Array<string>());
+let pills = ref(Array<Pill>());
 
 onMounted(() => {
     nextTick(() => {
-        if (typeof props.value === "string" || props.value instanceof String) {
+        if (typeof props.value === "string") {
             let values = props.value.split(',');
             values.forEach(val => addPill(val));
         }
-        else if (typeof props.value == "number" || props.value instanceof Number) {
+        else if (typeof props.value == "number") {
             addPill(props.value.toString());
         }
     });
 });
 
-const addPill = (value) => {
+const addPill = (value: string) => {
     if (value != "") {
         selectedOptions.value.push(value);
         var name = "";
         props.options.forEach(option => {
-            if (option.id == value)
+            if (option.id.toString() == value)
                 name = option.name;
         });
-        vpills.value.push({ id: value, value: name });
+        pills.value.push({ id: value, value: name });
     }
 }
 
-const optionChanged = (event) => {
-    if (!selectedOptions.value.includes(event.target.value)) {
-        addPill(event.target.value);
+const optionChanged = (event: Event) => {
+    const target = event.target;
+
+    if (target instanceof HTMLSelectElement) {
+        let value = target.value;
+        if (!selectedOptions.value.includes(value)) {
+            addPill(value);
+        }
+        target.value = "-1";
     }
-    event.target.value = -1;
 }
 
-const removePill = (option) => {
-    vpills.value = vpills.value.filter(pill => pill.id != option)
+const removePill = (option: string) => {
+    pills.value = pills.value.filter(pill => pill.id != option)
     selectedOptions.value = selectedOptions.value.filter(op => op != option);
 }
 </script>
