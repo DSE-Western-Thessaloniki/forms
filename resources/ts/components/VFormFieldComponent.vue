@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -48,22 +48,20 @@ export default defineComponent({
 })
 </script>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, computed } from "vue";
 
 const emit = defineEmits(['update:value', 'deleteField']);
 
-const props = defineProps(
-    [
-        'value',
-        'id',
-        'type',
-        'listvalues',
-        'restricted',
-        'no_drag',
-        'sort_id',
-    ]
-);
+const props = defineProps<{
+    id: number,
+    value: string,
+    type: number,
+    listvalues: string,
+    restricted: boolean,
+    no_drag?: boolean,
+    sort_id: number,
+}>();
 
 let title = ref(props.value ? props.value : "Νέο πεδίο");
 let cbselected = ref(props.type);
@@ -128,7 +126,7 @@ const optionText = computed(() => {
     let text;
 
     options.forEach(function (item) {
-        if (item.id == cbselected) {
+        if (item.id == cbselected.value) {
             text = item.value;
         }
     });

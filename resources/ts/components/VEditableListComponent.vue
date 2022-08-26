@@ -33,19 +33,21 @@
     </div>
 </template>
 
-<script setup>
-import { onMounted, nextTick, computed, ref } from 'vue';
+<script setup lang="ts">
+import { onMounted, nextTick, computed, ref, Ref } from 'vue';
 
 const emit = defineEmits(['update:edittext']);
 
-const props = defineProps([
-    'cbselected',
-    'edittext',
-    'fid',
-    'restricted'
-]);
+const props = defineProps<{
+    cbselected: number,
+    edittext: string,
+    restricted: boolean,
+}>();
 
-let list = ref({
+type List = { val: string, edit: boolean };
+type ValidListItem = { id: number, value: string }
+
+let list: Ref<List> = ref({
     val: props.edittext,
     edit: false
 });
@@ -64,7 +66,7 @@ onMounted(() => {
     });
 });
 
-const toggleEdit = (list) => {
+const toggleEdit = (list: List) => {
     list.edit = !list.edit;
     if (!list_array.value.length) {
         list_array.value.push({
@@ -74,7 +76,7 @@ const toggleEdit = (list) => {
     }
 };
 
-const saveEdit = (list) => {
+const saveEdit = (list: List) => {
     //save your changes
     var new_list = JSON.parse(JSON.stringify(list_array.value))
     new_list.pop();
@@ -83,7 +85,7 @@ const saveEdit = (list) => {
     toggleEdit(list);
 };
 
-const checkKey = (event, index) => {
+const checkKey = (event: KeyboardEvent, index: number) => {
     if (event.which == 13 || event.keyCode == 13) {
         event.preventDefault();
         return false;
@@ -97,7 +99,7 @@ const checkKey = (event, index) => {
     return true;
 }
 
-const checkList = (index) => {
+const checkList = (index: number) => {
     // If it isn't the last item and it is empty
     if ((list_array.length != (index + 1)) &&
         (list_array[index].length == 0)) {
@@ -109,7 +111,7 @@ const checkList = (index) => {
 }
 
 const validListItems = computed(() => {
-    var new_list = [];
+    var new_list = Array<ValidListItem>();
     if (list.value.val.length)
         new_list = JSON.parse(list.value.val);
     return new_list;
