@@ -44,7 +44,7 @@
         "websocket-extensions": "^0.1.4"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.14.0",
+        "@fortawesome/fontawesome-free": "^6.1.0",
         "vuedraggable": "^4.1.0"
     }
 }
