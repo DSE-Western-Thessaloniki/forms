@@ -34,7 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, nextTick, computed, ref, Ref } from 'vue';
+import { onMounted, nextTick, computed, ref } from 'vue';
+import type { Ref } from 'vue';
 
 const emit = defineEmits(['update:edittext']);
 

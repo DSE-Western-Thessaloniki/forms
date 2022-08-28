@@ -40,7 +40,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-type AssociativeArray<T = unknown> = { [key: string | number]: AssociativeArray<T> | T | undefined };
+type AssociativeArray<T = unknown> = {
+    [key: string | number]: AssociativeArray<T> | T | undefined;
+};
 type LineObject = { id: number, code: string, name: string, record: number }
 type ColumnObject = { id: number, title: string }
 

@@ -12,7 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, nextTick } from "vue";
+import { ref, nextTick } from "vue";
+import type { Ref } from 'vue';
 
 const emit = defineEmits(['update:edittext']);
 
