@@ -34,7 +34,7 @@ const props = defineProps<{
     options: Array<App.Models.SchoolCategory>,
     value: string | number,
     name: string,
-    placeholder: string,
+    placeholder?: string,
 }>();
 
 type Pill = { id: string, value: string };
