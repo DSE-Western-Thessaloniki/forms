@@ -31,7 +31,8 @@
                                 </div>
                             </li>
                             <draggable v-model="fields" handle=".handle" item-key="id" @end="dragEnded">
-                                <template #item="{ element }">
+                                <template
+                                    #item="{ element }: { element: App.Models.FormField & { new_field: boolean } }">
                                     <li class="list-group-item">
                                         <vform-field-component :value.sync="element.title" :id="element.id"
                                             :type="element.type" :listvalues="element.listvalues"
@@ -83,7 +84,8 @@
 
 <script setup lang="ts">
 import draggable from 'vuedraggable';
-import { ref, Ref, withDefaults } from "vue";
+import { ref, withDefaults } from "vue";
+import type { Ref } from 'vue';
 
 const props = withDefaults(defineProps<{
     parse?: boolean,
