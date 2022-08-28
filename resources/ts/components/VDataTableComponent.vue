@@ -17,15 +17,18 @@
                     <td v-for="column in columnsObj" :key="column.id">
                         {{
                                 ((typeof (data[line.code]) !== "undefined") &&
-                                    (typeof ((data[line.code] as AssociativeArray<string>)[column.title]) !== "undefined") &&
-                                    (typeof (((data[line.code] as AssociativeArray<string>)[column.title] as
-                                        AssociativeArray<string>)[line.record]) !== "undefined") &&
-                                    (typeof ((((data[line.code] as AssociativeArray<string>)[column.title] as
-                                        AssociativeArray<string>)[line.record] as AssociativeArray<string>)['value'])
+                                    (typeof ((data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined")
+                                    &&
+                                    (typeof (((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record]) !== "undefined") &&
+                                    (typeof ((((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record] as
+                                        App.Types.AssociativeArray<string>)['value'])
                                         !== "undefined")) ?
-                                    (((data[line.code] as AssociativeArray<string>)[column.title] as
-                                        AssociativeArray<string>)[line.record] as AssociativeArray<string>
-                                    )['value'] as string :
+                                    (((data[line.code] as
+                                        App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record] as
+                                        App.Types.AssociativeArray<string>)['value'] as string :
                                     ''
                         }}
                     </td>
@@ -40,15 +43,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-type AssociativeArray<T = unknown> = {
-    [key: string | number]: AssociativeArray<T> | T | undefined;
-};
 type LineObject = { id: number, code: string, name: string, record: number }
 type ColumnObject = { id: number, title: string }
 
 const props = defineProps<{
     columns: Array<string>,
-    data: AssociativeArray<string>,
+    data: App.Types.AssociativeArray<string>,
     schools: Array<App.Models.School>,
 }>();
 
@@ -57,10 +57,10 @@ const created = (line: LineObject) => {
 
     columnsObj.value.forEach(column => {
         if ((typeof (props.data[line.code]) !== "undefined") &&
-            (typeof ((props.data[line.code] as AssociativeArray<string>)[column.title]) !== "undefined") &&
-            (typeof (((props.data[line.code] as AssociativeArray<string>)[column.title] as AssociativeArray<string>)[line.record]) !== "undefined")) {
+            (typeof ((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+            (typeof (((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[line.record]) !== "undefined")) {
 
-            const dataLine = ((props.data[line.code] as AssociativeArray<string>)[column.title] as AssociativeArray<string>)[line.record] as AssociativeArray<string>
+            const dataLine = ((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[line.record] as App.Types.AssociativeArray<string>
             if (typeof (created_date) === "undefined") {
                 created_date = new Date(dataLine['created'] as string);
             } else {
@@ -80,10 +80,10 @@ const updated = (line: LineObject) => {
 
     columnsObj.value.forEach(column => {
         if ((typeof (props.data[line.code]) !== "undefined") &&
-            (typeof ((props.data[line.code] as AssociativeArray<string>)[column.title]) !== "undefined") &&
-            (typeof (((props.data[line.code] as AssociativeArray<string>)[column.title] as AssociativeArray<string>)[line.record]) !== "undefined")) {
+            (typeof ((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+            (typeof (((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[line.record]) !== "undefined")) {
 
-            const dataLine = ((props.data[line.code] as AssociativeArray<string>)[column.title] as AssociativeArray<string>)[line.record] as AssociativeArray<string>
+            const dataLine = ((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[line.record] as App.Types.AssociativeArray<string>
             if (typeof (updated_date) === "undefined") {
                 updated_date = new Date(dataLine['created'] as string);
             } else {
@@ -119,8 +119,8 @@ const lines = computed(() => {
             var ok = false;
             columnsObj.value.forEach(column => {
                 if ((typeof (props.data[school.code]) !== "undefined") &&
-                    (typeof ((props.data[school.code] as AssociativeArray<string>)[column.title]) !== "undefined") &&
-                    (typeof (((props.data[school.code] as AssociativeArray<string>)[column.title] as AssociativeArray<string>)[record]) !== "undefined")) {
+                    (typeof ((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+                    (typeof (((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
                     ok = true;
                 }
             });
