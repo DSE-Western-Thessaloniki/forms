@@ -2,7 +2,7 @@
     <div class="vpillbox__template">
         <div class="vpillbox__component form-group">
             <div class="vpillbox__vpills">
-                <span v-for="pill in pills" :key="pill.id" :id="pill.id" class="badge badge-primary m-1 pl-2">
+                <span v-for="pill in pills" :key="pill.id" :id="pill.id" class="badge bg-primary m-1 pl-2">
                     {{
                             pill.value
                     }}
@@ -12,7 +12,7 @@
                 </span>
             </div>
 
-            <select class="form-control" @change="optionChanged">
+            <select class="form-select" @change="optionChanged">
                 <option value="-1" disabled selected>
                     {{
                             props.placeholder ? props.placeholder : "Επιλέξτε κατηγορία/ες"

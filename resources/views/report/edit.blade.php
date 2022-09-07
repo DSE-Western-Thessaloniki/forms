@@ -121,11 +121,11 @@
         <hr/>
         <hr/>
         <hr/>
-        <div class="form-group row">
+        <div class="form-group row mb-3">
             <div class="col-2">
                 <a class="btn btn-danger" href="{{ route('report.index') }}">Ακύρωση</a>
             </div>
-            <div class="col-10 d-flex justify-content-end">
+            <div class="col d-flex justify-content-end">
                 @method('PUT')
                 @if($save)
                     <button class='btn btn-primary' type='submit'>Αποθήκευση</a>

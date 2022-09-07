@@ -11,7 +11,7 @@
                     @if(count($categories) == 0)
                         <p>Πρέπει πρώτα να δημιουργηθούν κατηγορίες σχολικών μονάδων.</p>
                         <div class="btn-toolbar pb-2" role="toolbar">
-                            <div class="btn-group mr-2">
+                            <div class="btn-group me-2">
                                 <a class="btn btn-success" href="{{ route('admin.school.schoolcategory.index')}}">
                                     @icon('fas fa-list') Διαχείριση κατηγοριών
                                 </a>
@@ -35,7 +35,7 @@
 
                         <form action={{ route('admin.school.store') }} method='post'>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-right">Όνομα</label>
 
                             <div class="col-md-6">
@@ -49,7 +49,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="username" class="col-md-4 col-form-label text-md-right">Όνομα χρήστη</label>
 
                             <div class="col-md-6">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="code" class="col-md-4 col-form-label text-md-right">Κωδικός Σχολικής Μονάδας</label>
 
                             <div class="col-md-6">
@@ -77,7 +77,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail</label>
 
                             <div class="col-md-6">
@@ -91,7 +91,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="telephone" class="col-md-4 col-form-label text-md-right">Τηλέφωνο</label>
 
                             <div class="col-md-6">
@@ -105,7 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <label for="category" class="col-md-4 col-form-label text-md-right">Κατηγορία</label>
 
                             <div class="col-md-6">
@@ -126,11 +126,11 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-3">
                             <div class="col-2">
                                 <a class="btn btn-danger" href="{{ route('admin.school.index') }}">Ακύρωση</a>
                             </div>
-                            <div class="col-10 d-flex justify-content-end">
+                            <div class="col d-flex justify-content-end">
                                 <button class='btn btn-primary' type='submit'>Αποθήκευση</a>
                             </div>
                         </div>

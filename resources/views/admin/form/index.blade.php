@@ -13,23 +13,23 @@
                         </div>
                     @endif
                     <div class="btn-toolbar pb-2 justify-content-between" role="toolbar">
-                        <div class="btn-group mr-2">
+                        <div class="btn-group me-2">
                             @if(Auth::user()->roles->whereNotIn('name', ['User'])->count())
                             <a class="btn btn-primary" href="{{ route('admin.form.create') }}">
                                 @icon('fas fa-plus') Δημιουργία φόρμας
                             </a>
                             @endif
                         </div>
-                        <form class="form-horizontal" id="search" method="GET" action="{{ route('admin.form.index') }}">
+                        <form id="search" method="GET" action="{{ route('admin.form.index') }}">
                             <div class="input-group align-items-center" role="group">
-                                <div class="form-check mr-2">
+                                <div class="form-check me-2">
                                     <input class="form-check-input" type="checkbox" id="only_active" name="only_active" value="1" {{ ($only_active ?? 0) ? "checked" : "" }} />
                                     <label class="form-check-label" for="only_active">
                                     Εμφάνιση μόνο ενεργών φορμών
                                     </label>
                                 </div>
                                 <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..." name="filter" value="{{ $filter }}">
-                                <button type="submit" class="btn btn-primary ml-2" form="search">Αναζήτηση</button>
+                                <button type="submit" class="btn btn-primary ms-2" form="search">Αναζήτηση</button>
                             </div>
                         </form>
                     </div>
@@ -39,14 +39,14 @@
                             <div class="card my-2 shadow-sm">
                                 <div class="card-header">
                                     <div class="container">
-                                        <div class="row">
+                                        <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}. {{ $form->title }}</a>
                                             </div>
                                             <div>
-                                                <a class="btn btn-sm btn-primary mx-1" href="{{ route('admin.form.copy', $form) }}" data-toggle="tooltip" data-placement="top" title="Δημιουργία αντιγράφου">@icon('fas fa-copy')</a>
+                                                <a class="btn btn-sm btn-primary mx-1" href="{{ route('admin.form.copy', $form) }}" data-bs-toggle="tooltip" data-placement="top" title="Δημιουργία αντιγράφου">@icon('fas fa-copy')</a>
                                                 @if(Auth::user()->roles->whereNotIn('name', ['User'])->count() && !(Auth::user()->roles->where('name', 'Author')->count() && Auth::user()->id != $form->user->id))
-                                                    <a class="btn btn-sm btn-danger mx-1" href="{{ route('admin.form.confirmDelete', $form) }}" data-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt')</a>
+                                                    <a class="btn btn-sm btn-danger mx-1" href="{{ route('admin.form.confirmDelete', $form) }}" data-bs-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt')</a>
                                                 @endif
                                             </div>
                                         </div>
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class='col-10 d-flex flex-column'>
+                                        <div class='col d-flex flex-column'>
                                             <div class='flex-grow-1'>
                                                 <span class='pre-wrap'>{{ $form->notes }}</span>
                                             </div>

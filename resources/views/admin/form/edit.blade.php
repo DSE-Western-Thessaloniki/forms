@@ -25,7 +25,7 @@
                 <div class="col-2">
                     <a class="btn btn-danger" href="{{ route('admin.form.index') }}">Ακύρωση</a>
                 </div>
-                <div class="col-10 d-flex justify-content-end">
+                <div class="col d-flex justify-content-end">
                     @csrf
                     @method('PUT')
                     <button class="btn btn-primary" type="submit">Αποθήκευση</button>

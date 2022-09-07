@@ -25,7 +25,7 @@
 
                     <form action={{ route('admin.user.store') }} method='post'>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="name" class="col-md-4 col-form-label text-md-right">Όνομα</label>
 
                         <div class="col-md-6">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="username" class="col-md-4 col-form-label text-md-right">Όνομα χρήστη</label>
 
                         <div class="col-md-6">
@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="email" class="col-md-4 col-form-label text-md-right">Διέυθυνση E-Mail</label>
 
                         <div class="col-md-6">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="password" class="col-md-4 col-form-label text-md-right">Κωδικός</label>
 
                         <div class="col-md-6">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Επιβεβαίωση κωδικού</label>
 
                         <div class="col-md-6">
@@ -89,11 +89,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-2">
                             <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Άκυρο</a>
                         </div>
-                        <div class="col-10 d-flex justify-content-end">
+                        <div class="col d-flex justify-content-end">
                             <button class='btn btn-primary' type='submit'>Αποθήκευση</a>
                         </div>
                     </div>

@@ -26,7 +26,7 @@
                                     <form action="{{ route('admin.form.destroy', $form->id)}}" method="post" class="float-right">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger" type="submit" data-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt') Διαγραφή</button>
+                                        <button class="btn btn-danger" type="submit" data-bs-toggle="tooltip" data-placement="top" title="Διαγραφή">@icon('fas fa-trash-alt') Διαγραφή</button>
                                     </form>
                                     @endif
                                 </div>

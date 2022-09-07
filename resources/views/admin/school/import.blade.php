@@ -51,10 +51,10 @@
                             <div class="col-12">
                                 <form enctype="multipart/form-data" action={{ route('admin.school.import') }} method='post'>
 
-                                    <div class="form-group row">
-                                        <label for="csvfile" class="col-md-4 col-form-label text-md-right">Αρχείο για εισαγωγή</label>
+                                    <div class="form-group row mb-3">
+                                        <label for="csvfile" class="col-md-auto col-form-label text-md-right">Αρχείο για εισαγωγή</label>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md">
                                             <input accept=".csv,text/csv" id="csvfile" type="file" class="form-control @error('csvfile') is-invalid @enderror" name="csvfile" value="{{ old('csvfile') }}" required autocomplete="csvfile" autofocus>
 
                                             @error('csvfile')
@@ -65,11 +65,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-3">
                                         <div class="col-2">
                                             <a class="btn btn-danger" href="{{ route('admin.school.index') }}">Ακύρωση</a>
                                         </div>
-                                        <div class="col-10 d-flex justify-content-end">
+                                        <div class="col d-flex justify-content-end">
                                             <button class='btn btn-primary' type='submit'>Εισαγωγή</a>
                                         </div>
                                     </div>

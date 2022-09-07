@@ -16,7 +16,7 @@
                     @endif
 
                     <div class="btn-toolbar pb-2" role="toolbar">
-                        <div class="btn-group mr-2">
+                        <div class="btn-group me-2">
                             <a class="btn btn-primary" href="{{ route('admin.user.create')}}">
                             @icon('plus-circle') Νέος χρήστης
                             </a>

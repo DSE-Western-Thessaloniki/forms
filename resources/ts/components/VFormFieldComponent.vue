@@ -8,17 +8,17 @@
                 title="Διαγραφή πεδίου" @click="emitDelete"></i>
         </div>
         <div>
-            <div class="form-row">
-                <label for="fieldtitleid" class="col-3 col-form-label">Τίτλος πεδίου:</label>
-                <div class="col-9 align-self-center">
+            <div class="row">
+                <label for="fieldtitleid" class="col-auto col-form-label">Τίτλος πεδίου:</label>
+                <div class="col align-self-center">
                     <editable-text :edittext.sync="title" :fid="'field[' + field_id + '][title]'"
                         :restricted="restricted">
                     </editable-text>
                 </div>
             </div>
-            <div class="form-row">
-                <label for="fieldtitleid" class="col-3 col-form-label">Τύπος πεδίου:</label>
-                <div class="col-9 align-self-center">
+            <div class="row">
+                <label for="fieldtitleid" class="col-auto col-form-label">Τύπος πεδίου:</label>
+                <div class="col align-self-center">
                     <select :name="'field[' + field_id + '][type]'" v-model="cbselected" v-if="!restricted">
                         <option v-for="option in options" :value="option.id" :key="option.id">
                             {{ option.value }}

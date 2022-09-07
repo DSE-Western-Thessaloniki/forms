@@ -1,5 +1,5 @@
 <template>
-    <div class="editable-list-group form-row justify-content-center">
+    <div class="editable-list-group row justify-content-center">
         <div class="card col-8">
             <div class="card-header" v-if="!restricted" @click="toggleEdit(list)" v-show="!list.edit">
                 <div class="d-flex justify-content-end">

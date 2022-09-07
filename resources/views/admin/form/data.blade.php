@@ -14,7 +14,7 @@
                     @endif
 
                     <div class="btn-toolbar pb-2" role="toolbar">
-                        <div class="btn-group mr-2">
+                        <div class="btn-group me-2">
                             <a class="btn btn-primary" href="{{ route('admin.form.index') }}">
                                 @icon('fas fa-long-arrow-alt-left') Επιστροφή
                             </a>

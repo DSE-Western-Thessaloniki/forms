@@ -11,14 +11,14 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="form-row">
-                                    <label for="notes" class="col-3 col-form-label">Σημειώσεις:</label>
-                                    <div class="col-9 align-self-center">
+                                <div class="row">
+                                    <label for="notes" class="col-auto col-form-label">Σημειώσεις:</label>
+                                    <div class="col align-self-center">
                                         <textarea id="notes" name="notes" class="col-12" v-model="notes">
                                         </textarea>
                                     </div>
                                 </div>
-                                <div class="form-row form-check">
+                                <div class="form-check">
                                     <input v-if="restricted" type="checkbox" class="form-check-input"
                                         id="multiple_input" name="multiple_input" value=1 v-model="allow_multiple"
                                         hidden>
@@ -59,7 +59,7 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="form-row">
+                                <div class="row">
                                     <label for="categories" class="m-2">Κατηγορίες:</label>
                                     <pillbox class="flex-fill" :value="category_selected_values"
                                         :options="props.categories" name="categories">
@@ -67,7 +67,7 @@
                                 </div>
                             </li>
                             <li class="list-group-item">
-                                <div class="form-row">
+                                <div class="row">
                                     <label for="schools" class="m-2">Σχολικές μονάδες:</label>
                                     <pillbox class="flex-fill" :value="school_selected_values" :options="props.schools"
                                         placeholder="Επιλέξτε σχολική μονάδα" name="schools">
