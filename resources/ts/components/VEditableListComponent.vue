@@ -7,7 +7,7 @@
                     </i>
                 </div>
             </div>
-            <div class="card-body" v-show="!list.edit">
+            <div class="card-body" v-show="!list.edit" @click="startEdit()">
                 Τιμές:
                 <ol>
                     <li v-for="item in validListItems" :key="item.id">
@@ -23,10 +23,10 @@
             </div>
             <div class="card-body" v-show="list.edit">
                 <ol>
-                    <li v-for="(item, index) in list_array" :key="item.id">
+                    <li v-for="(item, index) in list_array" :key="item.id" ref="items">
                         <input type="text" v-model="item.value" placeholder="Νέα επιλογή"
                             @paste="checkPaste($event, index)" @keypress="checkKey($event, index)"
-                            @blur="checkList(index)" />
+                            @blur="checkList($event, index)" />
                     </li>
                 </ol>
             </div>
@@ -56,6 +56,7 @@ let list: Ref<List> = ref({
 
 let list_array = ref(props.edittext.length ? JSON.parse(props.edittext) : []);
 
+let items = ref<Array<HTMLInputElement | null> | null>(null);
 
 onMounted(() => {
     nextTick(function () {
@@ -76,7 +77,22 @@ const toggleEdit = (list: List) => {
             value: ""
         })
     }
+
+    if (list.edit) {
+        nextTick(function () {
+            if (items.value) {
+                console.log(items.value[0]?.children[0]);
+                (items.value[0]?.children[0] as HTMLInputElement)?.focus();
+            }
+        });
+    }
 };
+
+const startEdit = () => {
+    if (!list.value.edit) {
+        toggleEdit(list.value);
+    }
+}
 
 const saveEdit = (list: List) => {
     //save your changes
@@ -112,14 +128,39 @@ const checkForNewListItem = (index: number) => {
     }
 }
 
-const checkList = (index: number) => {
+const checkList = (event: FocusEvent, index: number) => {
     // If it isn't the last item and it is empty
-    console.log(list_array.value, index);
     if ((list_array.value.length != (index + 1)) &&
         (list_array.value[index].value.length == 0)) {
         list_array.value.splice(index, 1);
         for (var i = index; i < list_array.value.length; i++) {
             list_array.value[i].id = i;
+        }
+    }
+
+    if (event.target instanceof HTMLElement) {
+        const grandparent = event.target.parentElement?.parentElement;
+
+        const focusedItem = event.relatedTarget;
+
+        if (!(focusedItem instanceof HTMLInputElement)) {
+            saveEdit(list.value);
+            return;
+        }
+
+        let allUnfocused = true;
+        if (grandparent) {
+            grandparent.childNodes.forEach(child => {
+                child.childNodes.forEach(child => {
+                    if (child.isSameNode(focusedItem)) {
+                        allUnfocused = false;
+                    }
+                })
+            })
+        }
+
+        if (allUnfocused) {
+            saveEdit(list.value);
         }
     }
 }
