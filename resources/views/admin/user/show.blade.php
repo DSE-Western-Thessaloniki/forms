@@ -86,7 +86,7 @@
                                 <a class="btn btn-danger" href="{{ route('admin.index') }}">Ακύρωση</a>
                             @endcan
                             </td>
-                            <td class="col-10 d-flex justify-content-end">
+                            <td class="col d-flex justify-content-end">
                                 <a class="btn btn-primary" href="{{ route('admin.user.edit', $user->id)}}">{{ __('Edit') }}</a>
                             </td>
                         </tr>

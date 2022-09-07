@@ -2,7 +2,7 @@
 $data = $data_dict[$field->id] ?? '';
 @endphp
 
-<div class="form-group row">
+<div class="form-group row mb-3">
     <label for="{!!$field->title!!}" class="col-md-3 col-form-label">
         {{ $field->title }}
     </label>

@@ -16,7 +16,7 @@
 
                     <div class="container">
                         <div class="btn-toolbar pb-2" role="toolbar">
-                            <div class="btn-group mr-2">
+                            <div class="btn-group me-2">
                                 <a class="btn btn-primary" href="{{ route('admin.school.schoolcategory.create')}}">
                                 @icon('fas fa-plus') Δημιουργία Κατηγορίας
                                 </a>

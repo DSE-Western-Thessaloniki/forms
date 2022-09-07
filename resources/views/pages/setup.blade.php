@@ -15,7 +15,7 @@
                         <form method="POST" action="{{ route('setup') }}">
                             @csrf
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-right">Όνομα</label>
 
                                 <div class="col-md-6">
@@ -29,7 +29,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">Διεύθυνση e-mail</label>
 
                                 <div class="col-md-6">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="username" class="col-md-4 col-form-label text-md-right">Όνομα χρήστη</label>
 
                                 <div class="col-md-6">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">Κωδικός</label>
 
                                 <div class="col-md-6">
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Επιβεβαίωση κωδικού</label>
 
                                 <div class="col-md-6">

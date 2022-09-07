@@ -54,7 +54,7 @@
                             <td class="col-2">
                                 <a class="btn btn-danger" href="{{ route('admin.school.schoolcategory.index') }}">Επιστροφή</a>
                             </td>
-                            <td class="col-10 d-flex justify-content-end">
+                            <td class="col d-flex justify-content-end">
                                 <a class="btn btn-primary" href="{{ route('admin.school.schoolcategory.edit', $schoolcategory->id)}}">Επεξεργασία</a>
                             </td>
                         </tr>

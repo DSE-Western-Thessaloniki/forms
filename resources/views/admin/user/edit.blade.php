@@ -25,7 +25,7 @@
 
                     <form action="{{ route('admin.user.update', $user->id) }}" method="post">
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="name" class="col-md-4 col-form-label text-md-right">Όνομα</label>
 
                         <div class="col-md-6">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="username" class="col-md-4 col-form-label text-md-right">Όνομα χρήστη</label>
 
                         <div class="col-md-6">
@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <label for="email" class="col-md-4 col-form-label text-md-right">Διεύθυνση E-Mail</label>
 
                         <div class="col-md-6">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-md-4"></div>
                         <div class="col-md-6 offset-sm-2">
                             <div class="form-check">
@@ -89,7 +89,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row justify-content-center">
+                    <div class="form-group row mb-3 justify-content-center">
                         <div class="col-10">
                             @php
                             $roles = array();
@@ -105,7 +105,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-2">
                             @can('viewAny', App\Models\User::class)
                                 <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Ακύρωση</a>
@@ -113,7 +113,7 @@
                                 <a class="btn btn-danger" href="{{ route('admin.index') }}">Ακύρωση</a>
                             @endcan
                         </div>
-                        <div class="col-10 d-flex justify-content-end">
+                        <div class="col d-flex justify-content-end">
                             @method('PUT')
                             <button class="btn btn-primary" type="submit">Αποθήκευση</button>
                         </div>
