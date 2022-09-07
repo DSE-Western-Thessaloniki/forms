@@ -25,7 +25,8 @@
                 <ol>
                     <li v-for="(item, index) in list_array" :key="item.id">
                         <input type="text" v-model="item.value" placeholder="Νέα επιλογή"
-                            @keypress="checkKey($event, index)" @blur="checkList(index)" />
+                            @paste="checkPaste($event, index)" @keypress="checkKey($event, index)"
+                            @blur="checkList(index)" />
                     </li>
                 </ol>
             </div>
@@ -86,27 +87,39 @@ const saveEdit = (list: List) => {
     toggleEdit(list);
 };
 
+const checkPaste = (event: ClipboardEvent, index: number) => {
+    checkForNewListItem(index);
+
+    return true;
+}
+
 const checkKey = (event: KeyboardEvent, index: number) => {
     if (event.which == 13 || event.keyCode == 13) {
         event.preventDefault();
         return false;
     }
-    if (list_array.length == (index + 1)) {
-        list_array.push({
+    checkForNewListItem(index);
+
+    return true;
+}
+
+const checkForNewListItem = (index: number) => {
+    if (list_array.value.length == (index + 1)) {
+        list_array.value.push({
             id: index + 1,
             value: ""
         })
     }
-    return true;
 }
 
 const checkList = (index: number) => {
     // If it isn't the last item and it is empty
-    if ((list_array.length != (index + 1)) &&
-        (list_array[index].length == 0)) {
-        list_array.splice(index, 1);
-        for (var i = index; i < list_array.length; i++) {
-            list_array[i].id = i;
+    console.log(list_array.value, index);
+    if ((list_array.value.length != (index + 1)) &&
+        (list_array.value[index].value.length == 0)) {
+        list_array.value.splice(index, 1);
+        for (var i = index; i < list_array.value.length; i++) {
+            list_array.value[i].id = i;
         }
     }
 }
