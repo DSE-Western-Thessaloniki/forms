@@ -22,12 +22,10 @@ services:
       - ".:/var/www/html"
     networks:
       - sail
-      - x11
     depends_on:
       - mariadb
       - selenium
       - cas
-      - novnc
   mariadb:
     image: "mariadb:10"
     ports:
@@ -75,21 +73,39 @@ services:
     networks:
       - sail
 
+  cypress:
+    build:
+      context: ./docker/cypress
+      args:
+        WWWUSER: "${WWWUSER}"
+        WWWGROUP: "${WWWGROUP}"
+
+    depends_on:
+      - laravel.test
+      - novnc
+    environment:
+      - CYPRESS_baseUrl=http://laravel.test:${APP_PORT:-80}
+      - DISPLAY=novnc:0.0
+    working_dir: /e2e
+    entrypoint: cypress open --project /e2e
+    volumes:
+      - ./:/e2e
+    networks:
+      - sail
+
   novnc:
     build:
       context: ./docker/novnc
       dockerfile: Dockerfile
-    environment:
-      - DISPLAY_WIDTH=1366
-      - DISPLAY_HEIGHT=768
+      args:
+        WWWUSER: "${WWWUSER}"
+        WWWGROUP: "${WWWGROUP}"
     ports:
       - "8080:8080"
     networks:
-      - x11
+      - sail
 networks:
   sail:
-    driver: bridge
-  x11:
     driver: bridge
 volumes:
   sailmariadb:
