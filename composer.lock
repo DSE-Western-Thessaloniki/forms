@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b30133a82797dc8ccdcbc59fda01aaf",
+    "content-hash": "07a7f97144b45cc1b7c1ac2ed3ca299e",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -6730,6 +6730,65 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.0.5"
             },
             "time": "2021-10-08T21:21:46+00:00"
+        },
+        {
+            "name": "laracasts/cypress",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracasts/cypress.git",
+                "reference": "3eccf5a02f4ee2aae7773317f4bc8f10198b2195"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracasts/cypress/zipball/3eccf5a02f4ee2aae7773317f4bc8f10198b2195",
+                "reference": "3eccf5a02f4ee2aae7773317f4bc8f10198b2195",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0",
+                "phpunit/phpunit": "^8.0|^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laracasts\\Cypress\\CypressServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laracasts\\Cypress\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeffrey Way",
+                    "email": "jeffrey@laracasts.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Cypress Boilerplate",
+            "homepage": "https://github.com/laracasts/cypress",
+            "keywords": [
+                "cypress",
+                "laracasts"
+            ],
+            "support": {
+                "issues": "https://github.com/laracasts/cypress/issues",
+                "source": "https://github.com/laracasts/cypress/tree/1.5.0"
+            },
+            "time": "2022-02-11T14:48:26+00:00"
         },
         {
             "name": "laravel/dusk",

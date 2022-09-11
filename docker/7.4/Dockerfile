@@ -54,6 +54,31 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# For cypress
+RUN apt-get update \
+    && apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install extra browsers
+RUN apt-get update \
+    && apt-get install -y firefox \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Chrome dependencies
+RUN apt-get update \
+    && apt-get install -y fonts-liberation wget xdg-utils \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O
+RUN dpkg -i google-chrome-stable_current_amd64.deb
+RUN rm google-chrome-stable_current_amd64.deb
+
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php7.4
 
 RUN groupadd --force -g $WWWGROUP sail

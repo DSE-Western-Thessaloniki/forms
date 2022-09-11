@@ -111,6 +111,10 @@
       "resources/ts/ckeditor4-vue3.d.ts",
       "resources/ts/models.d.ts",
       "resources/ts/**/*.ts",
-      "resources/ts/**/*.vue"
+      "resources/ts/**/*.vue",
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.cy.ts",
     ]
 }
