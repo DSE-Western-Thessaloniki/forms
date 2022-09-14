@@ -45,8 +45,7 @@ class FormsController extends Controller
                     ->orWhere('title', 'like', '%'.$filter.'%');
                 })
                 ->with('user')
-                ->with('schools')
-                ->with('form_fields')
+                ->withCount(['schools'])
                 ->paginate(15);
         }
         else if ($filter) {
@@ -57,8 +56,7 @@ class FormsController extends Controller
                 ->where('id', 'like', '%'.$filter.'%')
                 ->orWhere('title', 'like', '%'.$filter.'%')
                 ->with('user')
-                ->with('schools')
-                ->with('form_fields')
+                ->withCount(['schools'])
                 ->paginate(15);
         }
         else if ($only_active) {
@@ -68,18 +66,18 @@ class FormsController extends Controller
                 }])
                 ->where('active', '1')
                 ->with('user')
-                ->with('schools')
-                ->with('form_fields')
+                ->withCount(['schools'])
                 ->paginate(15);
         }
         else {
             $forms = Form::orderBy('created_at', 'desc')
-                ->withCount(['data' => function($query) {
-                    $query->where('record', 0);
-                }])
+                ->withCount([
+                    'data' => function($query) {
+                        $query->where('record', 0);
+                    },
+                ])
                 ->with('user')
-                ->with('schools')
-                ->with('form_fields')
+                ->withCount(['schools'])
                 ->paginate(15);
         }
 
