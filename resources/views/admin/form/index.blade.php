@@ -63,19 +63,47 @@
                                                     <div class='col-10'>
                                                         <div class="row">
                                                             @php
-                                                            $forms_filled = $form->data_count / $form->form_fields->count();
+                                                            // Πάρε το πλήθος των συμπληρωμένων πεδίων από τα σχολεία
+                                                            $get_counts = DB::table('forms')
+                                                                ->select(DB::raw('count(form_field_data.school_id) as answers'))
+                                                                ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
+                                                                ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
+                                                                ->where('form_field_data.record', 0)
+                                                                ->where('forms.id', '=', $form->id)
+                                                                ->groupBy('form_fields.id')
+                                                                ->get();
+                                                            $field_answers = array_map(
+                                                                function ($item) {
+                                                                    return $item->answers;
+                                                                },
+                                                                $get_counts->unique()->toArray()
+                                                            );
+
+                                                            // Αν έχουμε παραπάνω από 1 αποτέλεσμα τότε
+                                                            // κάποιο σχολείο δεν έχει συμπληρώσει όλα τα πεδία
+                                                            $missing_fields = count($field_answers) > 1;
+                                                            if ($field_answers) {
+                                                                $forms_filled = max($field_answers);
+                                                            } else {
+                                                                $forms_filled = 0;
+                                                            }
+
                                                             $school_categories = $form->school_categories()->withCount('schools')->get();
                                                             $should_have = 0;
                                                             foreach ($school_categories as $school_category) {
                                                                 $should_have += $school_category->schools_count;
                                                             }
-                                                            $should_have += $form->schools->count();
+                                                            $should_have += $form->schools_count;
                                                             $percent = 0;
                                                             if ($should_have > 0) {
                                                                 $percent = round($forms_filled / $should_have * 100, 2);
                                                             }
                                                             @endphp
-                                                            <div class='col-2 small'>Απάντησαν: {{ $forms_filled }}/{{ $should_have }}</div>
+                                                            <div class='col-2 small'>Απάντησαν: {{ $forms_filled }}/{{ $should_have }}
+                                                            @if($missing_fields)
+                                                                <abbr title="Κάποια σχολεία δεν έχουν συμπληρώσει όλα τα πεδία">*</abbr>
+                                                            @endif
+                                                            </div>
                                                             <div class="col-10">
                                                                 <div class="progress">
                                                                     <div class="progress-bar" role="progressbar" style="width: {{ $percent }}%" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100">{{ $percent }}%</div>
