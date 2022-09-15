@@ -188,7 +188,7 @@ class FormsController extends Controller
      */
     public function edit(Form $form) : \Illuminate\Contracts\View\View
     {
-        $schools = School::where('active', 1)->get(['id', 'name']);
+        $schools = School::get(['id', 'name', 'active']);
         $categories = SchoolCategory::all('id', 'name');
 
 

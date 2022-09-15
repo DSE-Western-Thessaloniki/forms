@@ -4,7 +4,7 @@
             <div class="vpillbox__vpills">
                 <span v-for="pill in pills" :key="pill.id" :id="pill.id" class="badge bg-primary m-1 pl-2">
                     {{
-                            pill.value
+                    pill.value
                     }}
                     <button type="button" class="btn btn-primary mx-1" @click="removePill(pill.id)">
                         <i class="fas fa-times"></i>
@@ -15,10 +15,10 @@
             <select class="form-select" @change="optionChanged">
                 <option value="-1" disabled selected>
                     {{
-                            props.placeholder ? props.placeholder : "Επιλέξτε κατηγορία/ες"
+                    props.placeholder ? props.placeholder : "Επιλέξτε κατηγορία/ες"
                     }}
                 </option>
-                <option v-for="option in props.options" :key="option.id" :value="option.id">
+                <option v-for="option in filterOptions(props.options)" :key="option.id" :value="option.id">
                     {{ option.name }}
                 </option>
             </select>
@@ -31,7 +31,7 @@
 import { ref, onMounted, nextTick } from 'vue';
 
 const props = defineProps<{
-    options: Array<App.Models.SchoolCategory>,
+    options: Array<App.Models.SchoolCategory | App.Models.School>,
     value: string | number,
     name: string,
     placeholder?: string,
@@ -81,5 +81,14 @@ const optionChanged = (event: Event) => {
 const removePill = (option: string) => {
     pills.value = pills.value.filter(pill => pill.id != option)
     selectedOptions.value = selectedOptions.value.filter(op => op != option);
+}
+
+const filterOptions = (options: Array<App.Models.School | App.Models.SchoolCategory>) => {
+    // Αν είναι σχολική κατηγορία δεν χρειάζεται φιλτράρισμα
+    if (options && (options.length > 0) && (!("active" in options[0])))
+        return options;
+
+    // Αλλιώς επέστρεψε μόνο τις ενεργές σχολικές μονάδες
+    return (options as Array<App.Models.School>).filter(op => op.active == true);
 }
 </script>
