@@ -68,8 +68,10 @@
                                                                 ->select(DB::raw('count(form_field_data.school_id) as answers'))
                                                                 ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
                                                                 ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
+                                                                ->leftJoin('schools', 'schools.id', '=', 'form_field_data.school_id')
                                                                 ->where('form_field_data.record', 0)
-                                                                ->where('forms.id', '=', $form->id)
+                                                                ->where('forms.id', $form->id)
+                                                                ->where('schools.active', 1)
                                                                 ->groupBy('form_fields.id')
                                                                 ->get();
                                                             $field_answers = array_map(
@@ -88,7 +90,11 @@
                                                                 $forms_filled = 0;
                                                             }
 
-                                                            $school_categories = $form->school_categories()->withCount('schools')->get();
+                                                            $school_categories = $form->school_categories()
+                                                                ->withCount(['schools' => function ($query) {
+                                                                    $query->where('active', 1);
+                                                                }])
+                                                                ->get();
                                                             $should_have = 0;
                                                             foreach ($school_categories as $school_category) {
                                                                 $should_have += $school_category->schools_count;

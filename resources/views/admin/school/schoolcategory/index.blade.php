@@ -34,11 +34,23 @@
                                         <div class="row">
                                             <div class="col-md-2">
                                                 {{$loop->iteration}}. <a href="{{route('admin.school.schoolcategory.show', $category->id)}}">{{$category->name}}</a>
-                                                <span class="badge badge-warning">{{ count($category->schools) }}</span>
+                                                @php
+                                                    $active_schools = array_filter($category->schools->toArray(), function($school) {
+                                                        return $school['active'];
+                                                    });
+                                                @endphp
+                                                <span class="badge bg-success">{{ count($active_schools) }}</span>
+                                                @if (count($active_schools) != count($category->schools))
+                                                    <span class="badge bg-danger">{{ count($category->schools) - count($active_schools) }}</span>
+                                                @endif
                                             </div>
                                             <div class="col-md-8">
                                                 @foreach ($category->schools as $school)
-                                                    <label class="rounded bg-success m-1 p-1">{{ $school->name }}</label>
+                                                    @if ($school->active)
+                                                        <label class="rounded bg-success m-1 p-1">{{ $school->name }}</label>
+                                                    @else
+                                                        <label class="rounded bg-danger m-1 p-1">{{ $school->name }}</label>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                             <div class="col-md-2">
