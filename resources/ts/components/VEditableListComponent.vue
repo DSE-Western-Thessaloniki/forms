@@ -63,7 +63,7 @@ onMounted(() => {
         if (list_array.value.length &&
             (list_array.value[list_array.value.length - 1] != ''))
             list_array.value.push({
-                id: list_array.length,
+                id: list_array.value.length,
                 value: ''
             });
     });
