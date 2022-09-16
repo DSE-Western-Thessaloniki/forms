@@ -81,7 +81,6 @@ const toggleEdit = (list: List) => {
     if (list.edit) {
         nextTick(function () {
             if (items.value) {
-                console.log(items.value[0]?.children[0]);
                 (items.value[0]?.children[0] as HTMLInputElement)?.focus();
             }
         });
@@ -103,18 +102,26 @@ const saveEdit = (list: List) => {
     toggleEdit(list);
 };
 
-const checkPaste = (event: ClipboardEvent, index: number) => {
-    checkForNewListItem(index);
+const checkPaste = (event: ClipboardEvent, index: number | string | symbol) => {
+    if (typeof index === "number") {
+        checkForNewListItem(index);
+    } else {
+        console.error('Το index δεν είναι αριθμός!');
+    }
 
     return true;
 }
 
-const checkKey = (event: KeyboardEvent, index: number) => {
+const checkKey = (event: KeyboardEvent, index: number | string | symbol) => {
     if (event.which == 13 || event.keyCode == 13) {
         event.preventDefault();
         return false;
     }
-    checkForNewListItem(index);
+    if (typeof index === "number") {
+        checkForNewListItem(index);
+    } else {
+        console.error('Το index δεν είναι αριθμός!');
+    }
 
     return true;
 }
@@ -128,7 +135,12 @@ const checkForNewListItem = (index: number) => {
     }
 }
 
-const checkList = (event: FocusEvent, index: number) => {
+const checkList = (event: FocusEvent, index: number | string | symbol) => {
+    if (typeof index !== "number") {
+        console.error('Το index δεν είναι αριθμός!');
+        return;
+    }
+
     // If it isn't the last item and it is empty
     if ((list_array.value.length != (index + 1)) &&
         (list_array.value[index].value.length == 0)) {
