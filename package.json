@@ -29,8 +29,6 @@
         "eslint-plugin-promise": "^6.0.0",
         "eslint-plugin-vue": "^9.4.0",
         "jquery": "^3.5.1",
-        "laravel-mix": "^6.0",
-        "laravel-mix-purgecss": "^6.0.0",
         "lodash": "^4.17.19",
         "popper.js": "^1.16.1",
         "postcss": "^8.2.13",
@@ -41,7 +39,10 @@
         "ts-loader": "^9.3.1",
         "vue": "^3.2.0",
         "vue-loader": "^17.0.0",
-        "websocket-extensions": "^0.1.4"
+        "websocket-extensions": "^0.1.4",
+        "vite": "^3.0.2",
+        "laravel-vite-plugin": "^0.6.0",
+        "@vitejs/plugin-vue": "^3.0.1"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.1.0",
