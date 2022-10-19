@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a39d202b9d64c6f3bc224846913d171",
+    "content-hash": "83cd31cb94d443548279ac36b107e584",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -6425,26 +6425,26 @@
         },
         {
             "name": "laracasts/cypress",
-            "version": "1.5.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laracasts/cypress.git",
-                "reference": "3eccf5a02f4ee2aae7773317f4bc8f10198b2195"
+                "reference": "9a9e5d25a51d2cbb410393e6a0d9883aa3304bf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laracasts/cypress/zipball/3eccf5a02f4ee2aae7773317f4bc8f10198b2195",
-                "reference": "3eccf5a02f4ee2aae7773317f4bc8f10198b2195",
+                "url": "https://api.github.com/repos/laracasts/cypress/zipball/9a9e5d25a51d2cbb410393e6a0d9883aa3304bf5",
+                "reference": "9a9e5d25a51d2cbb410393e6a0d9883aa3304bf5",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
-                "php": "^7.3|^8.0"
+                "php": "^8.0"
             },
             "require-dev": {
-                "laravel/legacy-factories": "^1.0",
                 "orchestra/testbench": "^6.0|^7.0",
-                "phpunit/phpunit": "^8.0|^9.5.10"
+                "phpunit/phpunit": "^8.0|^9.5.10",
+                "spatie/laravel-ray": "^1.29"
             },
             "type": "library",
             "extra": {
@@ -6478,9 +6478,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laracasts/cypress/issues",
-                "source": "https://github.com/laracasts/cypress/tree/1.5.0"
+                "source": "https://github.com/laracasts/cypress/tree/3.0.0"
             },
-            "time": "2022-02-11T14:48:26+00:00"
+            "time": "2022-06-27T13:49:35+00:00"
         },
         {
             "name": "laravel/dusk",
