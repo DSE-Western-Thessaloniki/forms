@@ -105,7 +105,7 @@ Route::prefix('admin')
                 ->name('school.')
                 ->group(
                 function() {
-                    Route::get('/import', [SchoolsController::class, 'showImport'])->name('import');
+                    Route::get('/import', [SchoolsController::class, 'showImport'])->name('show_import');
                     Route::post('/import', [SchoolsController::class, 'import'])->name('import');
                 }
             );

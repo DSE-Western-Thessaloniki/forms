@@ -344,7 +344,7 @@ it('can change it\'s own password as user', function() {
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
-    $response->assertRedirect(route('admin.user.index'))
+    $response->assertRedirect(route('admin.index'))
         ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
 });
 
@@ -355,7 +355,7 @@ it('can change it\'s own password as author', function() {
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
-    $response->assertRedirect(route('admin.user.index'))
+    $response->assertRedirect(route('admin.index'))
         ->assertSessionHas('status', 'Ο κωδικός άλλαξε!');
 });
 

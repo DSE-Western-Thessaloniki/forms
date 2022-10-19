@@ -204,7 +204,7 @@ class SchoolsController extends Controller
      */
     public function showImport()
     {
-        return view('admin.school.import');
+        return view('admin.school.show_import');
     }
 
     /**

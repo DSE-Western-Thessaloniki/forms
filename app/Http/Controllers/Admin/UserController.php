@@ -153,19 +153,31 @@ class UserController extends Controller
 
     public function password(User $user)
     {
-        return view('admin.user.password')->with('user', $user);
+        if (Auth::user()->isAdministrator() || Auth::user()->id == $user->id) {
+            return view('admin.user.password')->with('user', $user);
+        } else {
+            abort(403);
+        }
     }
 
     public function changePassword(Request $request, User $user)
     {
-        $request->validate([
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        if (Auth::user()->isAdministrator() || Auth::user()->id == $user->id) {
+            $request->validate([
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
 
-        $user->password = Hash::make($request->get('password'));
-        $user->save();
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
 
-        return redirect()->route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
+            if (Auth::user()->isAdministrator()) {
+                return redirect()->route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
+            } else {
+                return redirect()->route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
+            }
+        } else {
+            abort(403);
+        }
     }
 
     public function confirmDelete(User $user)
