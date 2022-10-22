@@ -51,18 +51,18 @@
 import { onMounted, ref } from "vue";
 
 
-let cur_roles = ref('');
+let cur_roles = ref(new Array<string>);
 let administrator = ref(false);
 let author = ref(false);
 let user = ref(false);
 
 const props = defineProps<{
-    current_roles: string,
-    disabled: string,
+    current_roles?: string,
+    disabled?: string,
 }>();
 
 onMounted(() => {
-    cur_roles.value = JSON.parse(props.current_roles);
+    cur_roles.value = JSON.parse(props.current_roles ?? "[]");
     administrator.value = cur_roles.value.includes('Administrator');
     author.value = cur_roles.value.includes('Author');
     user.value = cur_roles.value.includes('User');
