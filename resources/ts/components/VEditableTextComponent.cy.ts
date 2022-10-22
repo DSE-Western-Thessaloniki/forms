@@ -23,6 +23,18 @@ describe("<VEditableTextComponent />", () => {
         cy.get("[name='test']").should("be.visible");
     });
 
+    it("doesn't show input field when clicked if restricted", () => {
+        cy.mount(VEditableTextComponent, {
+            props: {
+                edittext: "This is a test",
+                fid: "test",
+                restricted: true,
+            },
+        });
+        cy.get(".editable-text-group > span").click();
+        cy.get("[name='test']").should("not.be.visible");
+    });
+
     it("changes span text after typing new value and pressing Enter", () => {
         const updateEdittextSpy = cy.spy().as("updateEdittextSpy");
         cy.mount(VEditableTextComponent, {
