@@ -86,6 +86,7 @@ services:
     environment:
       - CYPRESS_baseUrl=http://laravel.test:${APP_PORT:-80}
       - DISPLAY=novnc:0.0
+      # - DEBUG=cypress:*
     working_dir: /e2e
     entrypoint: cypress open --project /e2e
     volumes:

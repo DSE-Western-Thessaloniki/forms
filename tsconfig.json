@@ -110,11 +110,12 @@
       "resources/ts/vue-context.d.ts",
       "resources/ts/ckeditor4-vue3.d.ts",
       "resources/ts/models.d.ts",
+      "resources/ts/cypress.d.ts",
+      "cypress/**/*.ts",
       "resources/ts/**/*.ts",
       "resources/ts/**/*.vue",
     ],
     "exclude": [
         "node_modules",
-        "**/*.cy.ts",
     ]
 }

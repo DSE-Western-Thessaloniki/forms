@@ -9,7 +9,9 @@ RUN useradd -r --no-log-init -o -u ${WWWUSER} -g sail sail
 RUN install -d -m 0755 -o sail -g sail /home/sail
 
 # move test runner binary folder to the non-root's user home directory
-RUN mv /root/.cache /home/sail/.cache
+# RUN mv /root/.cache /home/sail/.cache
+
+# RUN chown -R ${WWWUSER}:${WWWGROUP} /home/sail/.cache
 
 USER sail
 
@@ -17,4 +19,5 @@ USER sail
 # meaning the current user "node" is not root
 RUN id
 
-ENV CYPRESS_CACHE_FOLDER=/home/sail/.cache/Cypress
+# ENV CYPRESS_CACHE_FOLDER=/home/sail/.cache/Cypress
+ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress

@@ -10,6 +10,8 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@cypress/vue": "^3.1.0",
+        "@cypress/webpack-dev-server": "^2.4.1",
         "@types/bootstrap": "^5.2.3",
         "@types/jquery": "^3.5.14",
         "@types/lodash": "^4.14.184",
