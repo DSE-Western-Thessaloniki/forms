@@ -41,7 +41,6 @@ import type { Ref } from 'vue';
 const emit = defineEmits(['update:edittext']);
 
 const props = defineProps<{
-    cbselected: number,
     edittext: string,
     restricted: boolean,
 }>();
