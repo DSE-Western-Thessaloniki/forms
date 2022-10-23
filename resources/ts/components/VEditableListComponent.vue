@@ -1,13 +1,14 @@
 <template>
     <div class="editable-list-group row justify-content-center">
         <div class="card col-8">
-            <div class="card-header" v-if="!restricted" @click="toggleEdit(list)" v-show="!list.edit">
+            <div test-data-id="preview" class="card-header" v-if="!restricted" @click="toggleEdit(list)"
+                v-show="!list.edit">
                 <div class="d-flex justify-content-end">
                     <i class="fas fa-edit">
                     </i>
                 </div>
             </div>
-            <div class="card-body" v-show="!list.edit" @click="startEdit()">
+            <div test-data-id="preview-body" class="card-body" v-show="!list.edit" @click="startEdit()">
                 Τιμές:
                 <ol>
                     <li v-for="item in validListItems" :key="item.id">
@@ -15,13 +16,13 @@
                     </li>
                 </ol>
             </div>
-            <div class="card-header" @click="saveEdit(list)" v-show="list.edit">
+            <div test-data-id="edit" class="card-header" @click="saveEdit(list)" v-show="list.edit">
                 <div class="d-flex justify-content-end">
                     <i class="fas fa-save">
                     </i>
                 </div>
             </div>
-            <div class="card-body" v-show="list.edit">
+            <div test-data-id="edit-body" class="card-body" v-show="list.edit">
                 <ol>
                     <li v-for="(item, index) in list_array" :key="item.id" ref="items">
                         <input type="text" v-model="item.value" placeholder="Νέα επιλογή"
@@ -41,7 +42,6 @@ import type { Ref } from 'vue';
 const emit = defineEmits(['update:edittext']);
 
 const props = defineProps<{
-    cbselected: number,
     edittext: string,
     restricted: boolean,
 }>();
@@ -88,6 +88,9 @@ const toggleEdit = (list: List) => {
 };
 
 const startEdit = () => {
+    if (props.restricted)
+        return;
+
     if (!list.value.edit) {
         toggleEdit(list.value);
     }

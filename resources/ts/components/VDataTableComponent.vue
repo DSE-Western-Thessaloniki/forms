@@ -16,20 +16,20 @@
                     <td>{{ line.code }}</td>
                     <td v-for="column in columnsObj" :key="column.id">
                         {{
-                                ((typeof (data[line.code]) !== "undefined") &&
-                                    (typeof ((data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined")
-                                    &&
-                                    (typeof (((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
-                                        App.Types.AssociativeArray<string>)[line.record]) !== "undefined") &&
-                                    (typeof ((((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
-                                        App.Types.AssociativeArray<string>)[line.record] as
-                                        App.Types.AssociativeArray<string>)['value'])
-                                        !== "undefined")) ?
-                                    (((data[line.code] as
-                                        App.Types.AssociativeArray<string>)[column.title] as
-                                        App.Types.AssociativeArray<string>)[line.record] as
-                                        App.Types.AssociativeArray<string>)['value'] as string :
-                                    ''
+                                                ((typeof (data[line.code]) !== "undefined") &&
+                                                (typeof ((data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined")
+                                                    &&
+                                                    (typeof (((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                                        App.Types.AssociativeArray<string>)[line.record]) !== "undefined") &&
+                                                            (typeof ((((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                                                App.Types.AssociativeArray<string>)[line.record] as
+                                                                    App.Types.AssociativeArray<string>)['value'])
+                                                                        !== "undefined")) ?
+                                                                        (((data[line.code] as
+                                                                        App.Types.AssociativeArray<string>)[column.title] as
+                                                                            App.Types.AssociativeArray<string>)[line.record] as
+                                                                                App.Types.AssociativeArray<string>)['value'] as string :
+                        ''
                         }}
                     </td>
                     <td>{{ created(line) }}</td>
@@ -52,6 +52,14 @@ const props = defineProps<{
     schools: Array<App.Models.School>,
 }>();
 
+/**
+ * Συνάρτηση για τον υπολογισμό της ημερομηνίας δημιουργίας της εγγραφής.
+ * Η συνάρτηση είναι απαραίτητη γιατί υπάρχει πιθανότητα τροποποίησης της φόρμας
+ * μετά την αρχική δημιουργία της οπότε πρέπει να ελέγξουμε κάθε πεδίο για την
+ * δημιουργία του.
+ *
+ * @param line Ένα αντικείμενο τύπου LineObject
+ */
 const created = (line: LineObject) => {
     let created_date: Date | undefined;
 
@@ -75,6 +83,14 @@ const created = (line: LineObject) => {
     return typeof (created_date) === "undefined" ? '' : created_date.toLocaleString();
 }
 
+/**
+ * Συνάρτηση για τον υπολογισμό της ημερομηνίας ενημέρωσης της εγγραφής.
+ * Η συνάρτηση είναι απαραίτητη γιατί υπάρχει πιθανότητα τροποποίησης της φόρμας
+ * μετά την αρχική δημιουργία της οπότε πρέπει να ελέγξουμε κάθε πεδίο για την
+ * ενημέρωσή του.
+ *
+ * @param line Ένα αντικείμενο τύπου LineObject
+ */
 const updated = (line: LineObject) => {
     let updated_date: Date | undefined;
 
@@ -85,9 +101,9 @@ const updated = (line: LineObject) => {
 
             const dataLine = ((props.data[line.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[line.record] as App.Types.AssociativeArray<string>
             if (typeof (updated_date) === "undefined") {
-                updated_date = new Date(dataLine['created'] as string);
+                updated_date = new Date(dataLine['updated'] as string);
             } else {
-                var temp_date = new Date(dataLine['created'] as string)
+                var temp_date = new Date(dataLine['updated'] as string)
                 if (updated_date < temp_date) {
                     updated_date = temp_date;
                 }
@@ -98,6 +114,10 @@ const updated = (line: LineObject) => {
     return typeof (updated_date) === "undefined" ? '' : updated_date.toLocaleString();
 };
 
+/**
+ * Computed property που δημιουργεί ένα αντικείμενο από την λίστα των στηλών που
+ * μας έδωσαν μέσω του property columns.
+ */
 const columnsObj = computed(() => {
     let columnsObj: Array<ColumnObject> = new Array();
     let i = 0;
@@ -110,6 +130,10 @@ const columnsObj = computed(() => {
     return columnsObj;
 })
 
+/**
+ * Computed property για την μετατροπή των αρχικών δεδομένων που μας περάστηκαν
+ * σε γραμμές του πίνακα.
+ */
 const lines = computed(() => {
     var i = 0;
     var lines: Array<LineObject> = Array();

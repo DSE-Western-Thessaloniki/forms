@@ -23,6 +23,7 @@
         "beyondcode/laravel-query-detector": "^1.5",
         "brianium/paratest": "^6.3",
         "fakerphp/faker": "^1.13",
+        "laracasts/cypress": "^3.0",
         "laravel/dusk": "^6.19",
         "laravel/pint": "^1.2",
         "laravel/sail": "^1.10",

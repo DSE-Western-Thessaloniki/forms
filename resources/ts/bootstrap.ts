@@ -1,5 +1,4 @@
-import _ from "lodash";
-window._ = _;
+import "lodash";
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11,7 +10,7 @@ import "@popperjs/core";
 import $ from "jquery";
 
 window.$ = $;
-window.bootstrap = require("bootstrap");
+import "bootstrap";
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
