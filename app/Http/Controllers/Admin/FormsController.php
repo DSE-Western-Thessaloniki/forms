@@ -226,7 +226,6 @@ class FormsController extends Controller
         // Update form
         $form->title = $request->input('title');
         $form->notes = $request->input('notes');
-        $form->user_id = Auth::id();
         $form->multiple = $request->input('multiple_input') ? true : false;
         $form->save();
 
