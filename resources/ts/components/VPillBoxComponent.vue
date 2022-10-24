@@ -4,7 +4,7 @@
             <div class="vpillbox__vpills">
                 <span v-for="pill in pills" :key="pill.id" :id="pill.id" class="badge bg-primary m-1 pl-2">
                     {{
-                    pill.value
+                            pill.value
                     }}
                     <button type="button" class="btn btn-primary mx-1" @click="removePill(pill.id)">
                         <i class="fas fa-times"></i>
@@ -15,7 +15,7 @@
             <select class="form-select" @change="optionChanged">
                 <option value="-1" disabled selected>
                     {{
-                    props.placeholder ? props.placeholder : "Επιλέξτε κατηγορία/ες"
+                            props.placeholder ? props.placeholder : "Επιλέξτε κατηγορία/ες"
                     }}
                 </option>
                 <option v-for="option in filterOptions(props.options)" :key="option.id" :value="option.id">
@@ -32,7 +32,7 @@ import { ref, onMounted, nextTick } from 'vue';
 
 const props = defineProps<{
     options: Array<App.Models.SchoolCategory | App.Models.School>,
-    value: string | number,
+    value?: string | number,
     name: string,
     placeholder?: string,
 }>();
