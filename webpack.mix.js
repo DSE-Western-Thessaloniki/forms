@@ -1,5 +1,6 @@
 const mix = require("laravel-mix");
 require("laravel-mix-purgecss");
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
@@ -34,6 +35,12 @@ mix.webpackConfig({
     output: {
         chunkFilename: "js/vuejs_code_split/[name].js",
         publicPath: resources_dir,
+    },
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "resources/ts"),
+            "@components": path.resolve(__dirname, "resources/ts/components"),
+        },
     },
 });
 
