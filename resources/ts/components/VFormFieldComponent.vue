@@ -5,14 +5,14 @@
                 data-placement="top" title="Μετακίνηση"></i>
             <i v-if="no_drag" class="mb-2"></i>
             <i v-if="!restricted" class="fas fa-times" data-toggle="tooltip" data-placement="top"
-                title="Διαγραφή πεδίου" @click="emitDelete"></i>
+                test-data-id="closeButton" title="Διαγραφή πεδίου" @click="emitDelete"></i>
         </div>
         <div>
             <div class="row">
                 <label for="fieldtitleid" class="col-auto col-form-label">Τίτλος πεδίου:</label>
                 <div class="col align-self-center">
                     <editable-text :edittext.sync="title" :fid="'field[' + field_id + '][title]'"
-                        :restricted="restricted">
+                        :restricted="restricted" test-data-id="editableText">
                     </editable-text>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div v-if="cbselected > 1 && cbselected < 5">
-                <editable-list :edittext.sync="dataListValues" :restricted="restricted">
+                <editable-list :edittext.sync="dataListValues" :restricted="restricted" test-data-id="editableList">
                 </editable-list>
 
                 <input type="hidden" :name="'field[' + field_id + '][values]'" :value="dataListValues" />
