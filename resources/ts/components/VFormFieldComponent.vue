@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, withDefaults } from "vue";
 
 export default defineComponent({
     name: "vformfieldcomponent"
@@ -50,40 +50,45 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
+import { FieldType } from "@/fieldtype";
 
 const emit = defineEmits(['update:value', 'deleteField']);
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: number,
-    value: string,
-    type: number,
-    listvalues: string,
-    restricted: boolean,
+    value?: string,
+    type: FieldType,
+    listvalues?: string,
+    restricted?: boolean,
     no_drag?: boolean,
     sort_id: number,
-}>();
+}>(), {
+    value: "Νέο πεδίο",
+    listvalues: ""
+}
+);
 
-let title = ref(props.value ? props.value : "Νέο πεδίο");
+let title = ref(props.value);
 let cbselected = ref(props.type);
 let options = [
     {
-        id: 0,
+        id: FieldType.Text,
         value: "Πεδίο κειμένου"
     },
     {
-        id: 1,
+        id: FieldType.TextArea,
         value: "Περιοχή κειμένου"
     },
     {
-        id: 2,
+        id: FieldType.RadioButtons,
         value: "Επιλογή ενός από πολλά"
     },
     {
-        id: 3,
+        id: FieldType.CheckBoxes,
         value: "Πολλαπλή επιλογή"
     },
     {
-        id: 4,
+        id: FieldType.SelectionList,
         value: "Λίστα επιλογών"
     },
     /*{
@@ -91,23 +96,23 @@ let options = [
         value: "Ανέβασμα αρχείου"
     },*/
     {
-        id: 6,
+        id: FieldType.Date,
         value: "Ημερομηνία"
     },
     {
-        id: 7,
+        id: FieldType.Number,
         value: "Αριθμός"
     },
     {
-        id: 8,
+        id: FieldType.Telephone,
         value: "Τηλέφωνο"
     },
     {
-        id: 9,
+        id: FieldType.Email,
         value: "E-mail"
     },
     {
-        id: 10,
+        id: FieldType.WebPage,
         value: "Διεύθυνση ιστοσελίδας"
     },
 ];
