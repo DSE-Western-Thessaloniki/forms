@@ -45,8 +45,7 @@ describe("<VFormFieldComponent />", () => {
         }
     });
 
-    // Μήπως δεν χρησιμοποιείται πλέον;
-    it.skip("emits update:value when changing the title", () => {
+    it("emits update:value when changing the title", () => {
         const updateValueSpy = cy.spy().as("updateValueSpy");
         const newTitle = "New Title";
         cy.mount(VFormFieldComponent, {

@@ -11,7 +11,7 @@
             <div class="row">
                 <label for="fieldtitleid" class="col-auto col-form-label">Τίτλος πεδίου:</label>
                 <div class="col align-self-center">
-                    <editable-text :edittext.sync="title" :fid="'field[' + field_id + '][title]'"
+                    <editable-text v-model:edittext="title" :fid="'field[' + field_id + '][title]'"
                         :restricted="restricted" test-data-id="editableText">
                     </editable-text>
                 </div>
