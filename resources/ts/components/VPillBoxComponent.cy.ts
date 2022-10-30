@@ -98,4 +98,17 @@ describe("<VPillBoxComponent />", () => {
         });
         cy.get("span").should("have.length", 0);
     });
+
+    it("creates a hidden list of selected items", () => {
+        cy.mount(VPillBoxComponent, {
+            props: {
+                options: dataSchools,
+                name: "test",
+            },
+        });
+        cy.get(".form-select").select("1");
+        cy.get("input").should("have.value", "1");
+        cy.get(".form-select").select("2");
+        cy.get("input").should("have.value", "1,2");
+    });
 });
