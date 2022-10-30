@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div v-if="cbselected > 1 && cbselected < 5">
-                <editable-list :edittext.sync="dataListValues" :restricted="restricted" test-data-id="editableList">
+                <editable-list v-model:edittext="dataListValues" :restricted="restricted" test-data-id="editableList">
                 </editable-list>
 
                 <input type="hidden" :name="'field[' + field_id + '][values]'" :value="dataListValues" />
