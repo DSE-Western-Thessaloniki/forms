@@ -20,8 +20,10 @@ import "./commands";
 // require('./commands')
 
 import { mount } from "cypress/vue";
-import VEditableTextComponent from "../../resources/ts/components/VEditableTextComponent.vue";
-import VEditableListComponent from "../../resources/ts/components/VEditableListComponent.vue";
+import VEditableTextComponent from "@components/VEditableTextComponent.vue";
+import VEditableListComponent from "@components/VEditableListComponent.vue";
+import VFormFieldComponent from "@components/VFormFieldComponent.vue";
+import VPillBoxComponent from "@components/VPillBoxComponent.vue";
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -44,6 +46,8 @@ Cypress.Commands.add("mount", (component, options = {}) => {
     // Register global components
     options.global.components["editable-text"] = VEditableTextComponent;
     options.global.components["editable-list"] = VEditableListComponent;
+    options.global.components["vform-field-component"] = VFormFieldComponent;
+    options.global.components["pillbox"] = VPillBoxComponent;
 
     return mount(component, options);
 });

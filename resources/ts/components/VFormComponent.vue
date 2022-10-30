@@ -34,7 +34,7 @@
                                 <template
                                     #item="{ element }: { element: App.Models.FormField & { new_field: boolean } }">
                                     <li class="list-group-item">
-                                        <vform-field-component :value.sync="element.title" :id="element.id"
+                                        <vform-field-component v-model:value="element.title" :id="element.id"
                                             :type="element.type" :listvalues="element.listvalues"
                                             v-on:deleteField="delField" ref='vform_fields'
                                             :restricted="restricted && !element.new_field" :no_drag="restricted"
@@ -44,7 +44,7 @@
                                 </template>
                             </draggable>
                             <li class="list-group-item">
-                                <button type="button" class="btn btn-primary" @click="addField">
+                                <button type="button" class="btn btn-primary" @click="addField" test-data-id="addField">
                                     <i class="fas fa-plus-circle"></i> Προσθήκη πεδίου
                                 </button>
                             </li>
