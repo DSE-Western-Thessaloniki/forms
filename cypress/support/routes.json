@@ -1,0 +1,816 @@
+{
+  "debugbar.openhandler": {
+    "name": "debugbar.openhandler",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\OpenHandlerController@handle",
+    "uri": "_debugbar/open",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.clockwork": {
+    "name": "debugbar.clockwork",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\OpenHandlerController@clockwork",
+    "uri": "_debugbar/clockwork/{id}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.assets.css": {
+    "name": "debugbar.assets.css",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\AssetController@css",
+    "uri": "_debugbar/assets/stylesheets",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.assets.js": {
+    "name": "debugbar.assets.js",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\AssetController@js",
+    "uri": "_debugbar/assets/javascript",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.cache.delete": {
+    "name": "debugbar.cache.delete",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\CacheController@delete",
+    "uri": "_debugbar/cache/{key}/{tags?}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "cypress.factory": {
+    "name": "cypress.factory",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@factory",
+    "uri": "__cypress__/factory",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.login": {
+    "name": "cypress.login",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@login",
+    "uri": "__cypress__/login",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.logout": {
+    "name": "cypress.logout",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@logout",
+    "uri": "__cypress__/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.artisan": {
+    "name": "cypress.artisan",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@artisan",
+    "uri": "__cypress__/artisan",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.run-php": {
+    "name": "cypress.run-php",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@runPhp",
+    "uri": "__cypress__/run-php",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.csrf-token": {
+    "name": "cypress.csrf-token",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@csrfToken",
+    "uri": "__cypress__/csrf_token",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cypress.routes": {
+    "name": "cypress.routes",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@routes",
+    "uri": "__cypress__/routes",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.current-user": {
+    "name": "cypress.current-user",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@currentUser",
+    "uri": "__cypress__/current-user",
+    "method": [
+      "POST"
+    ]
+  },
+  "dusk.login": {
+    "name": "dusk.login",
+    "domain": null,
+    "action": "Laravel\\Dusk\\Http\\Controllers\\UserController@login",
+    "uri": "_dusk/login/{userId}/{guard?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "dusk.logout": {
+    "name": "dusk.logout",
+    "domain": null,
+    "action": "Laravel\\Dusk\\Http\\Controllers\\UserController@logout",
+    "uri": "_dusk/logout/{guard?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "dusk.user": {
+    "name": "dusk.user",
+    "domain": null,
+    "action": "Laravel\\Dusk\\Http\\Controllers\\UserController@user",
+    "uri": "_dusk/user/{guard?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.healthCheck": {
+    "name": "ignition.healthCheck",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\HealthCheckController",
+    "uri": "_ignition/health-check",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.executeSolution": {
+    "name": "ignition.executeSolution",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\ExecuteSolutionController",
+    "uri": "_ignition/execute-solution",
+    "method": [
+      "POST"
+    ]
+  },
+  "ignition.updateConfig": {
+    "name": "ignition.updateConfig",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\UpdateConfigController",
+    "uri": "_ignition/update-config",
+    "method": [
+      "POST"
+    ]
+  },
+  "index": {
+    "name": "index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PagesController@index",
+    "uri": "/",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "": {
+    "name": null,
+    "domain": null,
+    "action": "App\\Http\\Controllers\\SetupController@setupPage",
+    "uri": "setup",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "setup": {
+    "name": "setup",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\SetupController@saveSetup",
+    "uri": "setup",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.index": {
+    "name": "admin.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DashboardController@index",
+    "uri": "admin",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.missing.csv": {
+    "name": "admin.form.missing.csv",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@missingCSV",
+    "uri": "admin/form/{form}/missing/csv",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.missing.xlsx": {
+    "name": "admin.form.missing.xlsx",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@missingXLSX",
+    "uri": "admin/form/{form}/missing/xlsx",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.missing": {
+    "name": "admin.form.missing",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@missing",
+    "uri": "admin/form/{form}/missing",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.data.csv": {
+    "name": "admin.form.data.csv",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@formDataCSV",
+    "uri": "admin/form/{form}/data/csv",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.data.xlsx": {
+    "name": "admin.form.data.xlsx",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@formDataXLSX",
+    "uri": "admin/form/{form}/data/xlsx",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.data": {
+    "name": "admin.form.data",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@formData",
+    "uri": "admin/form/{form}/data",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.copy": {
+    "name": "admin.form.copy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@copyForm",
+    "uri": "admin/form/{form}/copy",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.confirmDelete": {
+    "name": "admin.form.confirmDelete",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@confirmDelete",
+    "uri": "admin/form/{form}/confirmDelete",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.active.set": {
+    "name": "admin.form.active.set",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@setActive",
+    "uri": "admin/form/{form}/active/set/{state}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.active.toggle": {
+    "name": "admin.form.active.toggle",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@toggleActive",
+    "uri": "admin/form/{form}/active/toggle",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.index": {
+    "name": "admin.form.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@index",
+    "uri": "admin/form",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.create": {
+    "name": "admin.form.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@create",
+    "uri": "admin/form/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.store": {
+    "name": "admin.form.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@store",
+    "uri": "admin/form",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.form.show": {
+    "name": "admin.form.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@show",
+    "uri": "admin/form/{form}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.edit": {
+    "name": "admin.form.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@edit",
+    "uri": "admin/form/{form}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.form.update": {
+    "name": "admin.form.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@update",
+    "uri": "admin/form/{form}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "admin.form.destroy": {
+    "name": "admin.form.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\FormsController@destroy",
+    "uri": "admin/form/{form}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "admin.login": {
+    "name": "admin.login",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@showLoginForm",
+    "uri": "admin/login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.": {
+    "name": "admin.",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ConfirmPasswordController@confirm",
+    "uri": "admin/password/confirm",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.logout": {
+    "name": "admin.logout",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@logout",
+    "uri": "admin/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.password.confirm": {
+    "name": "admin.password.confirm",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ConfirmPasswordController@showConfirmForm",
+    "uri": "admin/password/confirm",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.confirmDelete": {
+    "name": "admin.user.confirmDelete",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@confirmDelete",
+    "uri": "admin/user/{user}/confirmDelete",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.password": {
+    "name": "admin.user.password",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@password",
+    "uri": "admin/user/{user}/password",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.change_password": {
+    "name": "admin.user.change_password",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@changePassword",
+    "uri": "admin/user/{user}/password",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.user.index": {
+    "name": "admin.user.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@index",
+    "uri": "admin/user",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.create": {
+    "name": "admin.user.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@create",
+    "uri": "admin/user/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.store": {
+    "name": "admin.user.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@store",
+    "uri": "admin/user",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.user.show": {
+    "name": "admin.user.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@show",
+    "uri": "admin/user/{user}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.edit": {
+    "name": "admin.user.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@edit",
+    "uri": "admin/user/{user}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.user.update": {
+    "name": "admin.user.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@update",
+    "uri": "admin/user/{user}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "admin.user.destroy": {
+    "name": "admin.user.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\UserController@destroy",
+    "uri": "admin/user/{user}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "admin.school.confirmDelete": {
+    "name": "admin.school.confirmDelete",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@confirmDelete",
+    "uri": "admin/school/{school}/confirmDelete",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.show_import": {
+    "name": "admin.school.show_import",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@showImport",
+    "uri": "admin/school/import",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.import": {
+    "name": "admin.school.import",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@import",
+    "uri": "admin/school/import",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.school.schoolcategory.index": {
+    "name": "admin.school.schoolcategory.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@index",
+    "uri": "admin/school/schoolcategory",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.schoolcategory.create": {
+    "name": "admin.school.schoolcategory.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@create",
+    "uri": "admin/school/schoolcategory/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.schoolcategory.store": {
+    "name": "admin.school.schoolcategory.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@store",
+    "uri": "admin/school/schoolcategory",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.school.schoolcategory.show": {
+    "name": "admin.school.schoolcategory.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@show",
+    "uri": "admin/school/schoolcategory/{schoolcategory}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.schoolcategory.edit": {
+    "name": "admin.school.schoolcategory.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@edit",
+    "uri": "admin/school/schoolcategory/{schoolcategory}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.schoolcategory.update": {
+    "name": "admin.school.schoolcategory.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@update",
+    "uri": "admin/school/schoolcategory/{schoolcategory}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "admin.school.schoolcategory.destroy": {
+    "name": "admin.school.schoolcategory.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolCategoriesController@destroy",
+    "uri": "admin/school/schoolcategory/{schoolcategory}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "admin.school.index": {
+    "name": "admin.school.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@index",
+    "uri": "admin/school",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.create": {
+    "name": "admin.school.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@create",
+    "uri": "admin/school/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.store": {
+    "name": "admin.school.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@store",
+    "uri": "admin/school",
+    "method": [
+      "POST"
+    ]
+  },
+  "admin.school.show": {
+    "name": "admin.school.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@show",
+    "uri": "admin/school/{school}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.edit": {
+    "name": "admin.school.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@edit",
+    "uri": "admin/school/{school}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.school.update": {
+    "name": "admin.school.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@update",
+    "uri": "admin/school/{school}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "admin.school.destroy": {
+    "name": "admin.school.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\SchoolsController@destroy",
+    "uri": "admin/school/{school}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "login": {
+    "name": "login",
+    "domain": null,
+    "action": "Closure",
+    "uri": "login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "logout": {
+    "name": "logout",
+    "domain": null,
+    "action": "Closure",
+    "uri": "logout",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.edit.record.update": {
+    "name": "report.edit.record.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@updateRecord",
+    "uri": "report/{report}/edit/{record}/update/{next}",
+    "method": [
+      "PUT"
+    ]
+  },
+  "report.edit.record": {
+    "name": "report.edit.record",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@editRecord",
+    "uri": "report/{report}/edit/{record}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.show.record": {
+    "name": "report.show.record",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@showRecord",
+    "uri": "report/{report}/record/{record}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.index": {
+    "name": "report.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@index",
+    "uri": "report",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.create": {
+    "name": "report.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@create",
+    "uri": "report/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.store": {
+    "name": "report.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@store",
+    "uri": "report",
+    "method": [
+      "POST"
+    ]
+  },
+  "report.show": {
+    "name": "report.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@show",
+    "uri": "report/{report}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.edit": {
+    "name": "report.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@edit",
+    "uri": "report/{report}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "report.update": {
+    "name": "report.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@update",
+    "uri": "report/{report}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "report.destroy": {
+    "name": "report.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ReportsController@destroy",
+    "uri": "report/{report}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "home": {
+    "name": "home",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DashboardController@index",
+    "uri": "home",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  }
+}
