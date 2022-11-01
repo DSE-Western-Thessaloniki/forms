@@ -4,7 +4,7 @@
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-header">
-                        <editable-text :edittext="title" fid="title">
+                        <editable-text :edittext="title" fid="title" test-data-id="form-title">
                         </editable-text>
                     </div>
 
