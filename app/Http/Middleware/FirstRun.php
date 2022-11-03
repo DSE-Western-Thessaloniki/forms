@@ -16,6 +16,12 @@ class FirstRun
      */
     public function handle($request, Closure $next)
     {
+        if (!app()->environment(['production']) &&
+            (str_starts_with($request->path(), "__cypress__") ||
+             str_starts_with($request->path(), "_debugbar"))) {
+            return $next($request);
+        }
+
         $check = Option::where('name', 'first_run')->first();
         $first_run = 0;
         if ($check) {
