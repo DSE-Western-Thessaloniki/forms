@@ -33,7 +33,7 @@
                             <draggable v-model="fields" handle=".handle" item-key="id" @end="dragEnded">
                                 <template
                                     #item="{ element }: { element: App.Models.FormField & { new_field: boolean } }">
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" test-data-id="field-item">
                                         <vform-field-component v-model:value="element.title" :id="element.id"
                                             :type="element.type" :listvalues="element.listvalues"
                                             v-on:deleteField="delField" ref='vform_fields'
@@ -62,7 +62,7 @@
                                 <div class="row">
                                     <label for="categories" class="m-2">Κατηγορίες:</label>
                                     <pillbox class="flex-fill" :value="category_selected_values"
-                                        :options="props.categories" name="categories">
+                                        :options="props.categories" name="categories" test-data-id="category-pillbox">
                                     </pillbox>
                                 </div>
                             </li>
@@ -70,7 +70,8 @@
                                 <div class="row">
                                     <label for="schools" class="m-2">Σχολικές μονάδες:</label>
                                     <pillbox class="flex-fill" :value="school_selected_values" :options="props.schools"
-                                        placeholder="Επιλέξτε σχολική μονάδα" name="schools">
+                                        placeholder="Επιλέξτε σχολική μονάδα" name="schools"
+                                        test-data-id="school-pillbox">
                                     </pillbox>
                                 </div>
                             </li>
