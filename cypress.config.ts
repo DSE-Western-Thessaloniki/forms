@@ -19,5 +19,6 @@ export default defineConfig({
         supportFile: "cypress/support/index.js",
         chromeWebSecurity: false,
         experimentalSessionAndOrigin: true,
+        responseTimeout: 100000,
     },
 });

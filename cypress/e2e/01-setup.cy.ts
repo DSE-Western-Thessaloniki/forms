@@ -2,6 +2,7 @@ describe("First setup", () => {
     it("loads the front page properly", () => {
         cy.refreshDatabase();
         cy.seed();
+        cy.seed("TestDataSeeder");
         cy.visit("/");
         cy.contains("Σύνδεση");
     });
@@ -10,6 +11,10 @@ describe("First setup", () => {
         cy.seed();
         cy.visit("/");
         cy.contains("Ρύθμιση διαχειριστή συστήματος");
+    });
+
+    it("can register", () => {
+        cy.visit("/");
         cy.get("#name").type("Administrator");
         cy.get("#email").type("admin@example.com");
         cy.get("#username").type("Administrator");
