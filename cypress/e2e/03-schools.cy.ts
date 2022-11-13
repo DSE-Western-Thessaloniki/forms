@@ -37,7 +37,7 @@ describe("School creation", () => {
         );
     });
 
-    it("can login as school", () => {
+    it.only("can login as school", () => {
         const login = {
             username: "tstsch",
             password: "password",
@@ -47,7 +47,7 @@ describe("School creation", () => {
         cy.get("[test-data-id='nav-item-login'").click();
         cy.get("input[name='username']").type(login.username);
         cy.get("input[name='password']").type(login.password);
-        cy.get("button[name='submit']").click();
+        cy.get("button[type='submit']").click();
         cy.contains("Δεν βρέθηκαν φόρμες");
         cy.contains("Test School");
     });

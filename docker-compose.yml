@@ -67,7 +67,7 @@ services:
   cas:
     build:
       context: ./cas_image
-    image: apereo/cas-sail:v6.3.2
+    image: apereo/cas-sail:6.6.2
     ports:
       - 8443:8443
     networks:
