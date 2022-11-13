@@ -7,7 +7,7 @@ describe("First setup", () => {
     });
 
     it("shows setup page after seeding", () => {
-        cy.seed("DataSeeder");
+        cy.seed();
         cy.visit("/");
         cy.contains("Ρύθμιση διαχειριστή συστήματος");
         cy.get("#name").type("Administrator");
