@@ -17,5 +17,7 @@ export default defineConfig({
         },
         baseUrl: "http://localhost/",
         supportFile: "cypress/support/index.js",
+        chromeWebSecurity: false,
+        experimentalSessionAndOrigin: true,
     },
 });
