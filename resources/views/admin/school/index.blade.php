@@ -17,10 +17,12 @@
                         <div class="container-fluid">
                             <div class="btn-toolbar pb-2 justify-content-between" role="toolbar">
                                 <div class="btn-group me-2">
-                                    <a class="btn btn-primary" href="{{ route('admin.school.create') }}">
+                                    <a class="btn btn-primary" href="{{ route('admin.school.create') }}"
+                                        test-data-id="btn-school-create">
                                         @icon('fas fa-plus') Δημιουργία σχολικής μονάδας
                                     </a>
-                                    <a class="btn btn-success" href="{{ route('admin.school.schoolcategory.index') }}">
+                                    <a class="btn btn-success" href="{{ route('admin.school.schoolcategory.index') }}"
+                                        test-data-id='btn-school-category-index'>
                                         @icon('fas fa-list') Διαχείριση κατηγοριών
                                     </a>
                                     <a class="btn btn-secondary" href="{{ route('admin.school.show_import') }}">

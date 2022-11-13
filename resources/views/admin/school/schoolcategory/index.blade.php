@@ -17,7 +17,8 @@
                         <div class="container">
                             <div class="btn-toolbar pb-2" role="toolbar">
                                 <div class="btn-group me-2">
-                                    <a class="btn btn-primary" href="{{ route('admin.school.schoolcategory.create') }}">
+                                    <a class="btn btn-primary" href="{{ route('admin.school.schoolcategory.create') }}"
+                                        test-data-id='btn-school-category-create'>
                                         @icon('fas fa-plus') Δημιουργία Κατηγορίας
                                     </a>
                                 </div>
@@ -32,7 +33,7 @@
                                         @forelse($categories as $category)
                                             <li class="list-group-item">
                                                 <div class="row">
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2" test-data-id="category-{{ $category->id }}">
                                                         {{ $loop->iteration }}. <a
                                                             href="{{ route('admin.school.schoolcategory.show', $category->id) }}">{{ $category->name }}</a>
                                                         @php

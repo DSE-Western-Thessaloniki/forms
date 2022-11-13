@@ -1,17 +1,14 @@
 import { FieldType } from "@/fieldtype";
+import { cy_bypass_register } from "./utils/utils";
 
 describe("Form creation", () => {
-    it.only("can create a new form as admin", () => {
+    it("can create a new form as admin", () => {
         cy.refreshDatabase();
-        cy.seed();
-        cy.visit("/");
-        cy.contains("Ρύθμιση διαχειριστή συστήματος");
-        cy.get("#name").type("Administrator");
-        cy.get("#email").type("admin@example.com");
-        cy.get("#username").type("Administrator");
-        cy.get("#password").type("password");
-        cy.get("#password-confirm").type("password");
-        cy.get("button.btn[type='submit']").click();
+        cy.seed().then(() => {
+            cy_bypass_register();
+        });
+        cy.login({ name: "Administrator" });
+        cy.visit("/admin");
         cy.get("[test-data-id='nav-item-forms']").click();
         cy.get("[test-data-id='btn-create-form']").click();
         cy.get("[test-data-id='form-title'] > span").click();
@@ -36,9 +33,5 @@ describe("Form creation", () => {
         cy.get("[test-data-id='btn-save']").click();
         cy.contains("Η φόρμα δημιουργήθηκε");
         cy.contains("Test form");
-    });
-
-    it("shows setup page after seeding", () => {
-        cy.contains("Πίνακας ελέγχου");
     });
 });

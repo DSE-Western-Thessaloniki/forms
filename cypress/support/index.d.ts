@@ -52,7 +52,13 @@ declare namespace Cypress {
          * cy.create('App\\User', 2, { active: false });
          * cy.create({ model: 'App\\User', state: ['guest'], relations: ['profile'], count: 2 }
          */
-        create(): Chainable<any>;
+        create(
+            model: any,
+            count?: number,
+            attributes?: any,
+            load?: any[],
+            state?: any[]
+        ): Chainable<any>;
 
         /**
          * Refresh the database state using Laravel's migrate:fresh command.
@@ -78,7 +84,11 @@ declare namespace Cypress {
          * @example
          * cy.artisan()
          */
-        artisan(command: string, parameters?: object, options?: object): Chainable<any>;
+        artisan(
+            command: string,
+            parameters?: object,
+            options?: object
+        ): Chainable<any>;
 
         /**
          * Execute arbitrary PHP on the server.
@@ -88,5 +98,7 @@ declare namespace Cypress {
          * cy.php('App\\User::count()')
          */
         php(command: string): Chainable<any>;
+
+        rewriteHeaders(): Chainable<any>;
     }
 }
