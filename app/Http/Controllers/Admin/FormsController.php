@@ -8,6 +8,7 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\FormField;
 use App\Models\FormFieldData;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -128,6 +129,7 @@ class FormsController extends Controller
         $form->user_id = Auth::id();
         $form->active = true;
         $form->multiple = $request->input('multiple_input') ? true : false;
+        $form->for_teachers = intval($request->input('for_teachers'));
         $form->save();
 
         $formfield = $request->input('field');
@@ -227,6 +229,7 @@ class FormsController extends Controller
         $form->title = $request->input('title');
         $form->notes = $request->input('notes');
         $form->multiple = $request->input('multiple_input') ? true : false;
+        $form->for_teachers = intval($request->input('for_teachers'));
         $form->save();
 
         // Check if we should delete fields
@@ -697,35 +700,57 @@ class FormsController extends Controller
     }
 
     /**
-     * Εμφάνιση σχολικών μονάδων που δεν απάντησαν.
+     * Εμφάνιση σχολικών μονάδων/εκπαιδευτικών που δεν απάντησαν.
      *
      * @param  \App\Models\Form  $form
      * @return \Illuminate\Contracts\View\View
      */
     public function missing(Form $form) : \Illuminate\Contracts\View\View
     {
-        $schools = $form->schools()->where('active', 1)->get();
-        foreach($form->school_categories()->get() as $category) {
-            $schools = $schools->merge($category->schools()->where('active', 1)->get());
-        }
-        $schools = $schools->unique('id');
-        $data = $form->data()->get();
-        $answer = [];
-        $data->each(function($item, $key) use (&$answer) {
-            $answer[$item->school_id] = true;
-        });
-        $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
-            if (in_array($school, $seen) || isset($answer[$school->id])) {
-                return false;
+        $filtered_schools = null;
+        $filtered_teachers = null;
+        if (!$form->for_teachers) {
+            $schools = $form->schools()->where('active', 1)->get();
+            foreach($form->school_categories()->get() as $category) {
+                $schools = $schools->merge($category->schools()->where('active', 1)->get());
             }
+            $schools = $schools->unique('id');
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->school_id] = true;
+            });
+            $seen = [];
+            $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
+                if (in_array($school, $seen) || isset($answer[$school->id])) {
+                    return false;
+                }
 
-            array_push($seen, $school);
-            return true;
-        });
+                array_push($seen, $school);
+                return true;
+            });
+        } else {
+            $teachers = Teacher::where('active', 1)->get();
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->teacher_id] = true;
+            });
+            $seen = [];
+            $filtered_teachers = $teachers->filter(function($teacher, $key) use ($answer, &$seen) {
+                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
+                    return false;
+                }
+
+                array_push($seen, $teacher);
+                return true;
+            });
+
+        }
         return view('admin.form.missing')
             ->with('form', $form)
-            ->with('schools', $filtered_schools);
+            ->with('schools', $filtered_schools)
+            ->with('teachers', $filtered_teachers);
     }
 
     /**

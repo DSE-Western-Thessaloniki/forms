@@ -14,6 +14,7 @@ class TestDataSeeder extends Seeder
     public function run()
     {
         $this->call(UserSeeder::class);
+        $this->call(TeacherSeeder::class);
         $this->call(SchoolSeeder::class);
         $this->call(FormSeeder::class);
         $this->call(FormFieldDataSeeder::class);

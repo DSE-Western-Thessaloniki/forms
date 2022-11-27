@@ -41,8 +41,15 @@
                             @forelse ($forms as $form)
                                 <div class="card my-2 shadow-sm">
                                     <div class="card-header">
-                                        <div class="container">
+                                        <div class="container p-0">
                                             <div class="d-flex align-items-center">
+                                                <div class='me-3 mb-0 h4'>
+                                                    @if ($form->for_teachers)
+                                                        @icon('chalkboard-user')
+                                                    @else
+                                                        @icon('school')
+                                                    @endif
+                                                </div>
                                                 <div class="flex-grow-1">
                                                     <a href="{{ route('admin.form.show', $form->id) }}">{{ $loop->iteration + $forms->firstItem() - 1 }}.
                                                         {{ $form->title }}</a>
@@ -76,46 +83,78 @@
                                                         <div class='col-10'>
                                                             <div class="row">
                                                                 @php
-                                                                    // Πάρε το πλήθος των συμπληρωμένων πεδίων από τα σχολεία
-                                                                    $get_counts = DB::table('forms')
-                                                                        ->select(DB::raw('count(form_field_data.school_id) as answers'))
-                                                                        ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
-                                                                        ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
-                                                                        ->leftJoin('schools', 'schools.id', '=', 'form_field_data.school_id')
-                                                                        ->where('form_field_data.record', 0)
-                                                                        ->where('forms.id', $form->id)
-                                                                        ->where('schools.active', 1)
-                                                                        ->groupBy('form_fields.id')
-                                                                        ->get();
-                                                                    $field_answers = array_map(function ($item) {
-                                                                        return $item->answers;
-                                                                    }, $get_counts->unique()->toArray());
+                                                                    if (!$form->for_teachers) {
+                                                                        // Πάρε το πλήθος των συμπληρωμένων πεδίων από τα σχολεία
+                                                                        $get_counts = DB::table('forms')
+                                                                            ->select(DB::raw('count(form_field_data.school_id) as answers'))
+                                                                            ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
+                                                                            ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
+                                                                            ->leftJoin('schools', 'schools.id', '=', 'form_field_data.school_id')
+                                                                            ->where('form_field_data.record', 0)
+                                                                            ->where('forms.id', $form->id)
+                                                                            ->where('schools.active', 1)
+                                                                            ->groupBy('form_fields.id')
+                                                                            ->get();
+                                                                        $field_answers = array_map(function ($item) {
+                                                                            return $item->answers;
+                                                                        }, $get_counts->unique()->toArray());
 
-                                                                    // Αν έχουμε παραπάνω από 1 αποτέλεσμα τότε
-                                                                    // κάποιο σχολείο δεν έχει συμπληρώσει όλα τα πεδία
-                                                                    $missing_fields = count($field_answers) > 1;
-                                                                    if ($field_answers) {
-                                                                        $forms_filled = max($field_answers);
+                                                                        // Αν έχουμε παραπάνω από 1 αποτέλεσμα τότε
+                                                                        // κάποιο σχολείο δεν έχει συμπληρώσει όλα τα πεδία
+                                                                        $missing_fields = count($field_answers) > 1;
+                                                                        if ($field_answers) {
+                                                                            $forms_filled = max($field_answers);
+                                                                        } else {
+                                                                            $forms_filled = 0;
+                                                                        }
+
+                                                                        $school_categories = $form
+                                                                            ->school_categories()
+                                                                            ->withCount([
+                                                                                'schools' => function ($query) {
+                                                                                    $query->where('active', 1);
+                                                                                },
+                                                                            ])
+                                                                            ->get();
+                                                                        $should_have = 0;
+                                                                        foreach ($school_categories as $school_category) {
+                                                                            $should_have += $school_category->schools_count;
+                                                                        }
+                                                                        $should_have += $form->schools_count;
+                                                                        $percent = 0;
+                                                                        if ($should_have > 0) {
+                                                                            $percent = round(($forms_filled / $should_have) * 100, 2);
+                                                                        }
                                                                     } else {
-                                                                        $forms_filled = 0;
-                                                                    }
+                                                                        // Πάρε το πλήθος των συμπληρωμένων πεδίων από τους εκπαιδευτικούς
+                                                                        $get_counts = DB::table('forms')
+                                                                            ->select(DB::raw('count(form_field_data.teacher_id) as answers'))
+                                                                            ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
+                                                                            ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
+                                                                            ->leftJoin('teachers', 'teachers.id', '=', 'form_field_data.teacher_id')
+                                                                            ->where('form_field_data.record', 0)
+                                                                            ->where('forms.id', $form->id)
+                                                                            ->where('teachers.active', 1)
+                                                                            ->groupBy('form_fields.id')
+                                                                            ->get();
+                                                                        $field_answers = array_map(function ($item) {
+                                                                            return $item->answers;
+                                                                        }, $get_counts->unique()->toArray());
 
-                                                                    $school_categories = $form
-                                                                        ->school_categories()
-                                                                        ->withCount([
-                                                                            'schools' => function ($query) {
-                                                                                $query->where('active', 1);
-                                                                            },
-                                                                        ])
-                                                                        ->get();
-                                                                    $should_have = 0;
-                                                                    foreach ($school_categories as $school_category) {
-                                                                        $should_have += $school_category->schools_count;
-                                                                    }
-                                                                    $should_have += $form->schools_count;
-                                                                    $percent = 0;
-                                                                    if ($should_have > 0) {
-                                                                        $percent = round(($forms_filled / $should_have) * 100, 2);
+                                                                        // Αν έχουμε παραπάνω από 1 αποτέλεσμα τότε
+                                                                        // κάποιος εκπαιδευτικός δεν έχει συμπληρώσει όλα τα πεδία
+                                                                        $missing_fields = count($field_answers) > 1;
+                                                                        if ($field_answers) {
+                                                                            $forms_filled = max($field_answers);
+                                                                        } else {
+                                                                            $forms_filled = 0;
+                                                                        }
+
+                                                                        $should_have = App\Models\Teacher::count('id');
+                                                                        $percent = 0;
+                                                                        if ($should_have > 0) {
+                                                                            $percent = round(($forms_filled / $should_have) * 100, 2);
+                                                                        }
                                                                     }
                                                                 @endphp
                                                                 <div class='col-2 small'>Απάντησαν:

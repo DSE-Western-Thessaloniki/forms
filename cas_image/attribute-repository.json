@@ -8,5 +8,11 @@
         "uid":["111"],
         "mail":["a@a.net"],
         "cn":["Dokimastikos xrhsths"]
+    },
+    "tstteacher": {
+        "uid": ["112"],
+        "mail": ["a@a.net"],
+        "employeenumber": ["111111"],
+        "cn":["Dokimastikos ekpaideytikos"]
     }
 }

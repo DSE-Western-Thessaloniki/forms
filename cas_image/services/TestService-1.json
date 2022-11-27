@@ -6,7 +6,6 @@
 	"evaluationOrder" : 1,
 	"attributeReleasePolicy" : {
 		"@class" : "org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy",
-		"allowedAttributes": [ "java.util.ArrayList", ["uid","cn","mail"] ]
+		"allowedAttributes": [ "java.util.ArrayList", ["uid","cn","mail","employeenumber"] ]
 	}
 }
-   

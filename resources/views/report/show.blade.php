@@ -2,46 +2,55 @@
 
 @section('content')
     @if (session('status'))
-    <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-    </div>
+        <div class="alert alert-success" role="alert">
+            {{ session('status') }}
+        </div>
     @endif
     @if ($errors->any())
-    <div class="alert alert-danger">
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-    </div><br />
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div><br />
     @endif
 
     @php
         // Απενεργοποίησε όλες τα πεδία της φόρμας για να μην μπορούν
         // να αλλάξουν τις τιμές
-        $disabled = "disabled";
+        $disabled = 'disabled';
         if ($form->multiple) {
             $record = $record ?? 0;
-        }
-        else {
+        } else {
             $record = 0;
         }
     @endphp
 
-    <br/>
-    <a href="{{route('report.index')}}" class="btn btn-secondary" role="button">Πίσω</a>
-    <form action="javascript:void(0);" >
-        <h1>{{$form->title}}</h1>
-        <h3>{{$form->notes}}</h3>
-        <hr/>
+    <br />
+    <a href="{{ route('report.index') }}" class="btn btn-secondary" role="button">Πίσω</a>
+    <form action="javascript:void(0);">
+        <h1>{{ $form->title }}</h1>
+        <h3>{{ $form->notes }}</h3>
+        <hr />
         <div class="card">
             <div class="card-header">
-                Συμπληρωμένη φόρμα - {{ $school->name }}
+                Συμπληρωμένη φόρμα - {{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }}
             </div>
             <div class="card-body">
                 @php
-                $total_records = $form->data()->where('school_id', $school->id)->max('record');
-                $total_records = $total_records ?? 0;
+                    if ($school !== null) {
+                        $total_records = $form
+                            ->data()
+                            ->where('school_id', $school->id)
+                            ->max('record');
+                    } else {
+                        $total_records = $form
+                            ->data()
+                            ->where('teacher_id', $teacher->id)
+                            ->max('record');
+                    }
+                    $total_records = $total_records ?? 0;
                 @endphp
 
                 @if ($record > $total_records)
@@ -53,56 +62,47 @@
                     @foreach ($form->form_fields as $field)
                         @include('inc.formfields')
                     @endforeach
-                    @if($form->multiple) {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
+                    @if ($form->multiple)
+                        {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
 
                         <nav>
                             <ul class="pagination justify-content-center">
                                 <li class="page-item {{ $record > 0 ? '' : 'disabled' }}">
-                                    <button
-                                        class="page-link"
-                                        type="submit"
-                                        formaction="{{ route('report.show.record', [$form->id, $record > 0 ? ($record - 1) : 0]) }}"
-                                        formmethod="get"
-                                        {{ $record > 0 ? "tabindex='-1' aria-disabled='true'" : '' }}
-                                    >
+                                    <button class="page-link" type="submit"
+                                        formaction="{{ route('report.show.record', [$form->id, $record > 0 ? $record - 1 : 0]) }}"
+                                        formmethod="get" {{ $record > 0 ? "tabindex='-1' aria-disabled='true'" : '' }}>
                                         @icon('fas fa-chevron-left')
                                     </button>
                                 </li>
-                                @for($i = 0; $i < ($total_records + 1); $i++)
-                                <li class="page-item {{ $i == $record ? 'active' : '' }}" >
-                                    @if($i == $record)
-                                        <button type="button" class="page-link">{{ $i + 1 }}</a>
-                                    @else
-                                        <button
-                                            class="page-link"
-                                            type="submit"
-                                            formaction="{{ route('report.show.record', [$form->id, $i]) }}"
-                                            formmethod="get"
-                                        >
-                                            {{ $i + 1 }}
-                                        </button>
-                                    @endif
-                                </li>
+                                @for ($i = 0; $i < $total_records + 1; $i++)
+                                    <li class="page-item {{ $i == $record ? 'active' : '' }}">
+                                        @if ($i == $record)
+                                            <button type="button" class="page-link">{{ $i + 1 }}</a>
+                                            @else
+                                                <button class="page-link" type="submit"
+                                                    formaction="{{ route('report.show.record', [$form->id, $i]) }}"
+                                                    formmethod="get">
+                                                    {{ $i + 1 }}
+                                                </button>
+                                        @endif
+                                    </li>
                                 @endfor
                                 <li class="page-item {{ $record < $total_records ? '' : 'disabled' }}">
-                                    <button
-                                        class="page-link"
-                                        type="submit"
+                                    <button class="page-link" type="submit"
                                         formaction="{{ route('report.show.record', [$form->id, $record < $total_records ? $record + 1 : $total_records]) }}"
                                         formmethod="get"
-                                        {{ $record >= $total_records ? "tabindex='-1' aria-disabled='true'" : '' }}
-                                    >
+                                        {{ $record >= $total_records ? "tabindex='-1' aria-disabled='true'" : '' }}>
                                         @icon('fas fa-chevron-right')
-                                </button>
+                                    </button>
                                 </li>
                             </ul>
                         </nav>
-                        <hr/>
+                        <hr />
                     @endif
                 @endif
             </div>
         </div>
-        <hr/>
+        <hr />
         <a href="{{ route('report.edit', $form->id) }}" class="btn btn-primary">Επεξεργασία</a>
     </form>
 @endsection

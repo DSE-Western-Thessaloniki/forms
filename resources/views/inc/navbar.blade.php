@@ -16,16 +16,28 @@
                 <!-- Authentication Links -->
                 @php
                     if (cas()->isAuthenticated()) {
-                        $school = App\Models\School::where('username', cas()->getAttribute('uid'))
-                            ->orWhere('email', cas()->getAttribute('mail'))
-                            ->first();
+                        $teacher_uid = cas()->getAttribute('employeenumber');
+                        if ($teacher_uid === null) {
+                            // Σχολείο
+                            $school = App\Models\School::where('username', cas()->getAttribute('uid'))
+                                ->orWhere('email', cas()->getAttribute('mail'))
+                                ->first();
+                            $teacher = null;
+                        } else {
+                            // Εκπαιδευτικός
+                            $school = null;
+                            $teacher = App\Models\Teacher::where('am', $teacher_uid)
+                                ->orWhere('afm', $teacher_uid)
+                                ->first();
+                        }
                     }
                 @endphp
-                @if (cas()->isAuthenticated() && $school)
+                @if (cas()->isAuthenticated() && ($school || $teacher))
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ $school->name }} <span class="caret"></span>
+                            {{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }}
+                            <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ route('logout') }}"

@@ -57,7 +57,22 @@
                         Διαθέσιμη σε
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="for_teachers" id="radio_for_teachers1"
+                                value="1" v-model="for_teachers">
+                            <label class="form-check-label" for="radio_for_teachers1">
+                                Εκπαιδευτικούς
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="for_teachers" id="radio_for_teachers2"
+                                value="0" v-model="for_teachers">
+                            <label class="form-check-label" for="radio_for_teachers2">
+                                Σχολικές μονάδες
+                            </label>
+                        </div>
+                        <ul class="list-group list-group-flush" v-if="for_teachers === '0'"
+                            test-data-id="ul_for_schools">
                             <li class="list-group-item">
                                 <div class="row">
                                     <label for="categories" class="m-2">Κατηγορίες:</label>
@@ -99,9 +114,11 @@ const props = withDefaults(defineProps<{
     restricted?: boolean,
     category_selected_values?: string,
     school_selected_values?: string,
+    for_teachers?: "0" | "1",
 }>(), {
     parse: false,
     parsetitle: "Νέα φόρμα",
+    for_teachers: "0",
 });
 
 let vform_fields = ref(null);
@@ -122,6 +139,7 @@ let fields: Ref<Array<App.Models.FormField>> = ref([JSON.parse(JSON.stringify(fi
 let cur_id = 0;
 let cur_sort_id = 0;
 let allow_multiple = ref(props.multiple);
+let for_teachers = ref(props.for_teachers);
 
 if (props.parse) {
     let max_id = 0
