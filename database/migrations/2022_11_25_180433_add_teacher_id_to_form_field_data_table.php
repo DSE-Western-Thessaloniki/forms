@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table('form_field_data', function (Blueprint $table) {
             $table->after('school_id', function(Blueprint $table) {
                 $table->unsignedBigInteger('teacher_id')
-                    ->default(null);
+                    ->nullable();
                 $table->foreign('teacher_id')
                     ->references('id')
                     ->on('teachers');
