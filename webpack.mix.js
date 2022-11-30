@@ -47,8 +47,7 @@ mix.webpackConfig({
 mix.ts("resources/ts/app.ts", "public/js")
     .sass("resources/sass/app.scss", "public/css")
     .vue({ version: 3 })
-    .extract()
-    .purgeCss();
+    .extract();
 
 if (process.env.VERSIONING === "true") {
     mix.version("js/vuejs_code_split/*.js");
