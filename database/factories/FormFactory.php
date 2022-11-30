@@ -26,6 +26,7 @@ class FormFactory extends Factory
             'notes' => $this->faker->text(),
             'active' => $this->faker->boolean(),
             'multiple' => $this->faker->boolean(),
+            'for_teachers' => 0,
         ];
     }
 }

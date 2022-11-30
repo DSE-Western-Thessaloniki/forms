@@ -83,6 +83,9 @@ function test_cas_logged_in() {
     Cas::shouldReceive('getAttribute')
         ->with('cn')
         ->andReturn('Dokimastiki monada');
+    Cas::shouldReceive('getAttribute')
+        ->with('employeenumber')
+        ->andReturnNull();
 }
 
 function test_create_one_form_for_user(User $user): Form {
