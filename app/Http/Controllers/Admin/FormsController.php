@@ -469,68 +469,135 @@ class FormsController extends Controller
         $form->load(
                 'form_fields',
                 'form_fields.field_data',
-                'form_fields.field_data.school'
+                'form_fields.field_data.school',
+                'form_fields.field_data.teacher'
         );
 
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
-        foreach ($form->form_fields as $field) {
-            array_push($dataTableColumns, $field->title);
-            foreach ($field->field_data as $field_data) {
-                if ($field_data->school->active == 1) {
-                    if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
-                        $selections = json_decode($field->listvalues);
-                        foreach($selections as $selection) {
-                            if ($selection->id == $field_data->data) {
-                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                    'value' => $selection->value,
+        if ($form->for_teachers) {
+            $dataTableColumns = array('Εκπαιδευτικός', 'ΑΜ/ΑΦΜ');
+            foreach ($form->form_fields as $field) {
+                array_push($dataTableColumns, $field->title);
+                foreach ($field->field_data as $field_data) {
+                    if ($field_data->teacher->active == 1) {
+                        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+                            $selections = json_decode($field->listvalues);
+                            foreach($selections as $selection) {
+                                if ($selection->id == $field_data->data) {
+                                    $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
+                                }
+                            }
+                        } elseif ($field->type == FormField::TYPE_CHECKBOX) {
+                            $selections = json_decode($field->listvalues);
+                            if ($field_data->data === null) {
+                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                    'value' => "",
                                     'created' => $field_data->created_at,
                                     'updated' => $field_data->updated_at
                                 ];
+                            } else {
+                                $data = json_decode($field_data->data);
+                                $i = 0;
+                                foreach($data as $item) {
+                                    foreach($selections as $selection) {
+                                        if ($selection->id == $item) {
+                                            if ($i == 0 || $dataTable[$field_data->teacher->am][$field->title][$field_data->record] == "") {
+                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                                    'value' => $selection->value,
+                                                    'created' => $field_data->created_at,
+                                                    'updated' => $field_data->updated_at
+                                                ];
+                                            }
+                                            else {
+                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                                            }
+                                        }
+                                    }
+                                    $i++;
+                                }
                             }
-                        }
-                    } elseif ($field->type == FormField::TYPE_CHECKBOX) {
-                        $selections = json_decode($field->listvalues);
-                        if ($field_data->data === null) {
-                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                'value' => "",
+
+                        } elseif ($field->type == FormField::TYPE_NUMBER) {
+                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                'value' => intval($field_data->data),
                                 'created' => $field_data->created_at,
                                 'updated' => $field_data->updated_at
                             ];
-                        } else {
-                            $data = json_decode($field_data->data);
-                            $i = 0;
-                            foreach($data as $item) {
-                                foreach($selections as $selection) {
-                                    if ($selection->id == $item) {
-                                        if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
-                                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                                'value' => $selection->value,
-                                                'created' => $field_data->created_at,
-                                                'updated' => $field_data->updated_at
-                                            ];
-                                        }
-                                        else {
-                                            $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                        }
+                        else {
+                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                'value' => $field_data->data,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
+                    }
+                }
+            }
+        } else {
+            $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+            foreach ($form->form_fields as $field) {
+                array_push($dataTableColumns, $field->title);
+                foreach ($field->field_data as $field_data) {
+                    if ($field_data->school->active == 1) {
+                        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+                            $selections = json_decode($field->listvalues);
+                            foreach($selections as $selection) {
+                                if ($selection->id == $field_data->data) {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
+                                }
+                            }
+                        } elseif ($field->type == FormField::TYPE_CHECKBOX) {
+                            $selections = json_decode($field->listvalues);
+                            if ($field_data->data === null) {
+                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                    'value' => "",
+                                    'created' => $field_data->created_at,
+                                    'updated' => $field_data->updated_at
+                                ];
+                            } else {
+                                $data = json_decode($field_data->data);
+                                $i = 0;
+                                foreach($data as $item) {
+                                    foreach($selections as $selection) {
+                                        if ($selection->id == $item) {
+                                            if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
+                                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                                    'value' => $selection->value,
+                                                    'created' => $field_data->created_at,
+                                                    'updated' => $field_data->updated_at
+                                                ];
+                                            }
+                                            else {
+                                                $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                                            }
                                         }
                                     }
+                                    $i++;
                                 }
-                                $i++;
                             }
-                        }
 
-                    } elseif ($field->type == FormField::TYPE_NUMBER) {
-                        $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                            'value' => intval($field_data->data),
-                            'created' => $field_data->created_at,
-                            'updated' => $field_data->updated_at
-                        ];
-                    }
-                    else {
-                        $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                            'value' => $field_data->data,
-                            'created' => $field_data->created_at,
-                            'updated' => $field_data->updated_at
-                        ];
+                        } elseif ($field->type == FormField::TYPE_NUMBER) {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => intval($field_data->data),
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
+                        else {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $field_data->data,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
                     }
                 }
             }
@@ -538,13 +605,18 @@ class FormsController extends Controller
 
         array_push($dataTableColumns, 'Δημιουργήθηκε', 'Ενημερώθηκε');
 
-        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-        $schools = $form->schools->where('active', 1);
-        $categories = $form->school_categories;
-        foreach($categories as $category) {
-            $schools = $schools->concat($category->schools->where('active', 1));
+        if ($form->for_teachers) {
+            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
+            $teachers = Teacher::where('active', 1)->get();
+        } else {
+            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+            $schools = $form->schools->where('active', 1);
+            $categories = $form->school_categories;
+            foreach($categories as $category) {
+                $schools = $schools->concat($category->schools->where('active', 1));
+            }
+            $schools = $schools->unique('id');
         }
-        $schools = $schools->unique('id');
 
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".csv";
         $fd = fopen($fname, 'w');
@@ -554,45 +626,89 @@ class FormsController extends Controller
 
         fputcsv($fd, $dataTableColumns);
         $row = array();
-        foreach($schools as $school) {
-            // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-            $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
+        if ($form->for_teachers) {
+            foreach($teachers as $teacher) {
+                // Βρες τον μέγιστο αριθμό των εγγραφών για τον εκπαιδευτικό
+                $records = count($dataTable[$teacher->am][$dataTableColumns[3]] ?? ['']);
 
-            $school = School::where('code', $school->code)->first();
-            for ($i = 0; $i < $records; $i++) {
-                array_push($row, $school->name, $school->code);
-                $created_at = "";
-                $updated_at = "";
-                foreach(array_slice($dataTableColumns, 2, -2) as $column) {
-                    array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
-                    if (isset($dataTable[$school->code][$column][$i]['created'])) {
-                        $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
-                        if ($created_at == "") {
-                            $created_at = $temp_created_at;
-                        }
-                        else {
-                            if ($created_at > $temp_created_at) {
+                $teacher = Teacher::where('am', $teacher->am)->first();
+                for ($i = 0; $i < $records; $i++) {
+                    array_push($row, $teacher->surname.' '.$teacher->name, $teacher->am);
+                    $created_at = "";
+                    $updated_at = "";
+                    foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                        array_push($row, $dataTable[$teacher->am][$column][$i]['value'] ?? '');
+                        if (isset($dataTable[$teacher->am][$column][$i]['created'])) {
+                            $temp_created_at = new \DateTime($dataTable[$teacher->am][$column][$i]['created']);
+                            if ($created_at == "") {
                                 $created_at = $temp_created_at;
                             }
+                            else {
+                                if ($created_at > $temp_created_at) {
+                                    $created_at = $temp_created_at;
+                                }
+                            }
                         }
-                    }
-                    if (isset($dataTable[$school->code][$column][$i]['updated'])) {
-                        $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
-                        if ($updated_at == "") {
-                            $updated_at = $temp_updated_at;
-                        }
-                        else {
-                            if ($updated_at < $temp_updated_at) {
+                        if (isset($dataTable[$teacher->am][$column][$i]['updated'])) {
+                            $temp_updated_at = new \DateTime($dataTable[$teacher->am][$column][$i]['updated']);
+                            if ($updated_at == "") {
                                 $updated_at = $temp_updated_at;
+                            }
+                            else {
+                                if ($updated_at < $temp_updated_at) {
+                                    $updated_at = $temp_updated_at;
+                                }
                             }
                         }
                     }
+                    $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                    $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                    array_push($row, $created_string, $updated_string);
+                    fputcsv($fd, $row);
+                    $row = array();
                 }
-                $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
-                $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
-                array_push($row, $created_string, $updated_string);
-                fputcsv($fd, $row);
-                $row = array();
+            }
+        } else {
+            foreach($schools as $school) {
+                // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
+                $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
+
+                $school = School::where('code', $school->code)->first();
+                for ($i = 0; $i < $records; $i++) {
+                    array_push($row, $school->name, $school->code);
+                    $created_at = "";
+                    $updated_at = "";
+                    foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                        array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
+                        if (isset($dataTable[$school->code][$column][$i]['created'])) {
+                            $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
+                            if ($created_at == "") {
+                                $created_at = $temp_created_at;
+                            }
+                            else {
+                                if ($created_at > $temp_created_at) {
+                                    $created_at = $temp_created_at;
+                                }
+                            }
+                        }
+                        if (isset($dataTable[$school->code][$column][$i]['updated'])) {
+                            $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
+                            if ($updated_at == "") {
+                                $updated_at = $temp_updated_at;
+                            }
+                            else {
+                                if ($updated_at < $temp_updated_at) {
+                                    $updated_at = $temp_updated_at;
+                                }
+                            }
+                        }
+                    }
+                    $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                    $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                    array_push($row, $created_string, $updated_string);
+                    fputcsv($fd, $row);
+                    $row = array();
+                }
             }
         }
 
@@ -612,68 +728,135 @@ class FormsController extends Controller
         $form->load(
                 'form_fields',
                 'form_fields.field_data',
-                'form_fields.field_data.school'
+                'form_fields.field_data.school',
+                'form_fields.field_data.teacher'
         );
 
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
-        foreach ($form->form_fields as $field) {
-            array_push($dataTableColumns, $field->title);
-            foreach ($field->field_data as $field_data) {
-                if ($field_data->school->active == 1) {
-                    if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
-                        $selections = json_decode($field->listvalues);
-                        foreach($selections as $selection) {
-                            if ($selection->id == $field_data->data) {
-                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                    'value' => $selection->value,
+        if ($form->for_teachers) {
+            $dataTableColumns = array('Εκπαιδευτικός', 'ΑΜ/ΑΦΜ');
+            foreach ($form->form_fields as $field) {
+                array_push($dataTableColumns, $field->title);
+                foreach ($field->field_data as $field_data) {
+                    if ($field_data->teacher->active == 1) {
+                        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+                            $selections = json_decode($field->listvalues);
+                            foreach($selections as $selection) {
+                                if ($selection->id == $field_data->data) {
+                                    $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
+                                }
+                            }
+                        } elseif ($field->type == FormField::TYPE_CHECKBOX) {
+                            $selections = json_decode($field->listvalues);
+                            if ($field_data->data === null) {
+                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                    'value' => "",
                                     'created' => $field_data->created_at,
                                     'updated' => $field_data->updated_at
                                 ];
+                            } else {
+                                $data = json_decode($field_data->data);
+                                $i = 0;
+                                foreach($data as $item) {
+                                    foreach($selections as $selection) {
+                                        if ($selection->id == $item) {
+                                            if ($i == 0 || $dataTable[$field_data->teacher->am][$field->title][$field_data->record] == "") {
+                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                                    'value' => $selection->value,
+                                                    'created' => $field_data->created_at,
+                                                    'updated' => $field_data->updated_at
+                                                ];
+                                            }
+                                            else {
+                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                                            }
+                                        }
+                                    }
+                                    $i++;
+                                }
                             }
-                        }
-                    } elseif ($field->type == FormField::TYPE_CHECKBOX) {
-                        $selections = json_decode($field->listvalues);
-                        if ($field_data->data === null) {
-                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                'value' => "",
+
+                        } elseif ($field->type == FormField::TYPE_NUMBER) {
+                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                'value' => intval($field_data->data),
                                 'created' => $field_data->created_at,
                                 'updated' => $field_data->updated_at
                             ];
-                        } else {
-                            $data = json_decode($field_data->data);
-                            $i = 0;
-                            foreach($data as $item) {
-                                foreach($selections as $selection) {
-                                    if ($selection->id == $item) {
-                                        if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
-                                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                                                'value' => $selection->value,
-                                                'created' => $field_data->created_at,
-                                                'updated' => $field_data->updated_at
-                                            ];
-                                        }
-                                        else {
-                                            $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                        }
+                        else {
+                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                'value' => $field_data->data,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
+                    }
+                }
+            }
+        } else {
+            $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας');
+            foreach ($form->form_fields as $field) {
+                array_push($dataTableColumns, $field->title);
+                foreach ($field->field_data as $field_data) {
+                    if ($field_data->school->active == 1) {
+                        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+                            $selections = json_decode($field->listvalues);
+                            foreach($selections as $selection) {
+                                if ($selection->id == $field_data->data) {
+                                    $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                        'value' => $selection->value,
+                                        'created' => $field_data->created_at,
+                                        'updated' => $field_data->updated_at
+                                    ];
+                                }
+                            }
+                        } elseif ($field->type == FormField::TYPE_CHECKBOX) {
+                            $selections = json_decode($field->listvalues);
+                            if ($field_data->data === null) {
+                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                    'value' => "",
+                                    'created' => $field_data->created_at,
+                                    'updated' => $field_data->updated_at
+                                ];
+                            } else {
+                                $data = json_decode($field_data->data);
+                                $i = 0;
+                                foreach($data as $item) {
+                                    foreach($selections as $selection) {
+                                        if ($selection->id == $item) {
+                                            if ($i == 0 || $dataTable[$field_data->school->code][$field->title][$field_data->record] == "") {
+                                                $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                                    'value' => $selection->value,
+                                                    'created' => $field_data->created_at,
+                                                    'updated' => $field_data->updated_at
+                                                ];
+                                            }
+                                            else {
+                                                $dataTable[$field_data->school->code][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                                            }
                                         }
                                     }
+                                    $i++;
                                 }
-                                $i++;
                             }
-                        }
 
-                    } elseif ($field->type == FormField::TYPE_NUMBER) {
-                        $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                            'value' => intval($field_data->data),
-                            'created' => $field_data->created_at,
-                            'updated' => $field_data->updated_at
-                        ];
-                    }
-                    else {
-                        $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
-                            'value' => $field_data->data,
-                            'created' => $field_data->created_at,
-                            'updated' => $field_data->updated_at
-                        ];
+                        } elseif ($field->type == FormField::TYPE_NUMBER) {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => intval($field_data->data),
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
+                        else {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $field_data->data,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at
+                            ];
+                        }
                     }
                 }
             }
@@ -681,13 +864,18 @@ class FormsController extends Controller
 
         array_push($dataTableColumns, 'Δημιουργήθηκε', 'Ενημερώθηκε');
 
-        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-        $schools = $form->schools->where('active', 1);
-        $categories = $form->school_categories;
-        foreach($categories as $category) {
-            $schools = $schools->concat($category->schools->where('active', 1));
+        if ($form->for_teachers) {
+            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
+            $teachers = Teacher::where('active', 1)->get();
+        } else {
+            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+            $schools = $form->schools->where('active', 1);
+            $categories = $form->school_categories;
+            foreach($categories as $category) {
+                $schools = $schools->concat($category->schools->where('active', 1));
+            }
+            $schools = $schools->unique('id');
         }
-        $schools = $schools->unique('id');
 
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp.".xlsx";
         $writer = new XLSXWriter();
@@ -695,45 +883,90 @@ class FormsController extends Controller
         $data = array();
         array_push($data, $dataTableColumns);
         $row = array();
-        foreach($schools as $school) {
-            // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-            $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
 
-            $school = School::where('code', $school->code)->first();
-            for ($i = 0; $i < $records; $i++) {
-                array_push($row, $school->name, $school->code);
-                $created_at = "";
-                $updated_at = "";
-                foreach(array_slice($dataTableColumns, 2, -2) as $column) {
-                    array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
-                    if (isset($dataTable[$school->code][$column][$i]['created'])) {
-                        $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
-                        if ($created_at == "") {
-                            $created_at = $temp_created_at;
-                        }
-                        else {
-                            if ($created_at > $temp_created_at) {
+        if ($form->for_teachers) {
+            foreach($teachers as $teacher) {
+                // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
+                $records = count($dataTable[$teacher->am][$dataTableColumns[3]] ?? ['']);
+
+                $teacher = Teacher::where('am', $teacher->am)->first();
+                for ($i = 0; $i < $records; $i++) {
+                    array_push($row, $teacher->surname.' '.$teacher->name, $teacher->am);
+                    $created_at = "";
+                    $updated_at = "";
+                    foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                        array_push($row, $dataTable[$teacher->am][$column][$i]['value'] ?? '');
+                        if (isset($dataTable[$teacher->am][$column][$i]['created'])) {
+                            $temp_created_at = new \DateTime($dataTable[$teacher->am][$column][$i]['created']);
+                            if ($created_at == "") {
                                 $created_at = $temp_created_at;
                             }
+                            else {
+                                if ($created_at > $temp_created_at) {
+                                    $created_at = $temp_created_at;
+                                }
+                            }
                         }
-                    }
-                    if (isset($dataTable[$school->code][$column][$i]['updated'])) {
-                        $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
-                        if ($updated_at == "") {
-                            $updated_at = $temp_updated_at;
-                        }
-                        else {
-                            if ($updated_at < $temp_updated_at) {
+                        if (isset($dataTable[$teacher->am][$column][$i]['updated'])) {
+                            $temp_updated_at = new \DateTime($dataTable[$teacher->am][$column][$i]['updated']);
+                            if ($updated_at == "") {
                                 $updated_at = $temp_updated_at;
+                            }
+                            else {
+                                if ($updated_at < $temp_updated_at) {
+                                    $updated_at = $temp_updated_at;
+                                }
                             }
                         }
                     }
+                    $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                    $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                    array_push($row, $created_string, $updated_string);
+                    array_push($data, $row);
+                    $row = array();
                 }
-                $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
-                $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
-                array_push($row, $created_string, $updated_string);
-                array_push($data, $row);
-                $row = array();
+            }
+        } else {
+            foreach($schools as $school) {
+                // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
+                $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
+
+                $school = School::where('code', $school->code)->first();
+                for ($i = 0; $i < $records; $i++) {
+                    array_push($row, $school->name, $school->code);
+                    $created_at = "";
+                    $updated_at = "";
+                    foreach(array_slice($dataTableColumns, 2, -2) as $column) {
+                        array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
+                        if (isset($dataTable[$school->code][$column][$i]['created'])) {
+                            $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
+                            if ($created_at == "") {
+                                $created_at = $temp_created_at;
+                            }
+                            else {
+                                if ($created_at > $temp_created_at) {
+                                    $created_at = $temp_created_at;
+                                }
+                            }
+                        }
+                        if (isset($dataTable[$school->code][$column][$i]['updated'])) {
+                            $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
+                            if ($updated_at == "") {
+                                $updated_at = $temp_updated_at;
+                            }
+                            else {
+                                if ($updated_at < $temp_updated_at) {
+                                    $updated_at = $temp_updated_at;
+                                }
+                            }
+                        }
+                    }
+                    $created_string = $created_at == "" ? '' : $created_at->format('Y-m-d H:i');
+                    $updated_string = $updated_at == "" ? '' : $updated_at->format('Y-m-d H:i');
+                    array_push($row, $created_string, $updated_string);
+                    array_push($data, $row);
+                    $row = array();
+                }
             }
         }
 
@@ -836,39 +1069,64 @@ class FormsController extends Controller
      */
     public function missingCSV(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
-
-        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-        $schools = $form->schools()->where('active', 1)->get();
-        foreach($form->school_categories()->get() as $category) {
-            $schools = $schools->merge($category->schools()->where('active', 1)->get());
-        }
-        $schools = $schools->unique('id');
-        $data = $form->data()->get();
-        $answer = [];
-        $data->each(function($item, $key) use (&$answer) {
-            $answer[$item->school_id] = true;
-        });
-        $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
-            if (in_array($school, $seen) || isset($answer[$school->id])) {
-                return false;
-            }
-
-            array_push($seen, $school);
-            return true;
-        });
-
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp."-missing.csv";
         $fd = fopen($fname, 'w');
         if ($fd === false) {
             die('Failed to open temporary file');
         }
 
-        fputcsv($fd, $dataTableColumns);
-        foreach($filtered_schools as $school) {
-            fputcsv($fd, [$school->name, $school->code, $school->telephone]);
+        if ($form->for_teachers) {
+            $dataTableColumns = array('Εκπαιδευτικός', 'ΑΜ/ΑΦΜ', 'Τηλέφωνο');
+
+            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
+            $teachers = Teacher::where('active', 1)->get();
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->teacher_id] = true;
+            });
+            $seen = [];
+            $filtered_teachers = $teachers->filter(function($teacher, $key) use ($answer, &$seen) {
+                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
+                    return false;
+                }
+
+                array_push($seen, $teacher);
+                return true;
+            });
+
+            fputcsv($fd, $dataTableColumns);
+            foreach($filtered_teachers as $teacher) {
+                fputcsv($fd, [$teacher->name, $teacher->code, '']);
+            }
+        } else {
+            $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
+
+            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+            $schools = $form->schools()->where('active', 1)->get();
+            foreach($form->school_categories()->get() as $category) {
+                $schools = $schools->merge($category->schools()->where('active', 1)->get());
+            }
+            $schools = $schools->unique('id');
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->school_id] = true;
+            });
+            $seen = [];
+            $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
+                if (in_array($school, $seen) || isset($answer[$school->id])) {
+                    return false;
+                }
+
+                array_push($seen, $school);
+                return true;
+            });
+
+            fputcsv($fd, $dataTableColumns);
+            foreach($filtered_schools as $school) {
+                fputcsv($fd, [$school->name, $school->code, $school->telephone]);
+            }
         }
 
         fclose($fd);
@@ -884,36 +1142,63 @@ class FormsController extends Controller
      */
     public function missingXLSX(Form $form) : \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
-
-        // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-        $schools = $form->schools()->where('active', 1)->get();
-        foreach($form->school_categories()->get() as $category) {
-            $schools = $schools->merge($category->schools()->where('active', 1)->get());
-        }
-        $schools = $schools->unique('id');
-        $data = $form->data()->get();
-        $answer = [];
-        $data->each(function($item, $key) use (&$answer) {
-            $answer[$item->school_id] = true;
-        });
-        $seen = [];
-        $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
-            if (in_array($school, $seen) || isset($answer[$school->id])) {
-                return false;
-            }
-
-            array_push($seen, $school);
-            return true;
-        });
-
         $fname = "/tmp/".Str::limit(Str::slug($form->title, '_'), 15)."-".now()->timestamp."-missing.xlsx";
         $writer = new XLSXWriter();
 
-        $data = array();
-        array_push($data, $dataTableColumns);
-        foreach($filtered_schools as $school) {
-            array_push($data, [$school->name, $school->code, $school->telephone]);
+        if ($form->for_teachers) {
+            $dataTableColumns = array('Εκπαιδευτικός', 'ΑΜ/ΑΦΜ', 'Τηλέφωνο');
+
+            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
+            $teachers = Teacher::where('active', 1)->get();
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->teacher_id] = true;
+            });
+            $seen = [];
+            $filtered_teachers = $teachers->filter(function($teacher, $key) use ($answer, &$seen) {
+                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
+                    return false;
+                }
+
+                array_push($seen, $teacher);
+                return true;
+            });
+
+            $data = array();
+            array_push($data, $dataTableColumns);
+            foreach($filtered_teachers as $teacher) {
+                array_push($data, [$teacher->name, $teacher->code, '']);
+            }
+        } else {
+            $dataTableColumns = array('Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο');
+
+            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+            $schools = $form->schools()->where('active', 1)->get();
+            foreach($form->school_categories()->get() as $category) {
+                $schools = $schools->merge($category->schools()->where('active', 1)->get());
+            }
+            $schools = $schools->unique('id');
+            $data = $form->data()->get();
+            $answer = [];
+            $data->each(function($item, $key) use (&$answer) {
+                $answer[$item->school_id] = true;
+            });
+            $seen = [];
+            $filtered_schools = $schools->filter(function($school, $key) use ($answer, &$seen) {
+                if (in_array($school, $seen) || isset($answer[$school->id])) {
+                    return false;
+                }
+
+                array_push($seen, $school);
+                return true;
+            });
+
+            $data = array();
+            array_push($data, $dataTableColumns);
+            foreach($filtered_schools as $school) {
+                array_push($data, [$school->name, $school->code, $school->telephone]);
+            }
         }
 
         $writer->writeSheet($data);
