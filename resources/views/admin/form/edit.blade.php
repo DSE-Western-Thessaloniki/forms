@@ -5,7 +5,6 @@
     <div class="container">
         <form action="{{ route('admin.form.update', $form->id) }}" method="post">
 
-
             <vform-component
                 :parse=true
                 :parseobj="{{ $form->form_fields->toJson() }}"
@@ -17,7 +16,7 @@
                 :category_selected_values="{{ json_encode($category_selected_values) }}"
                 :multiple="{{ $form->multiple ? "true" : "false" }}"
                 :restricted="{{ $form->active ? "true" : "false" }}"
-            >
+                :for_teachers="{{ $form->for_teachers ? 1 : 0 }}"
             >
             </vform-component>
 

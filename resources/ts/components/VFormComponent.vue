@@ -71,8 +71,7 @@
                                 Σχολικές μονάδες
                             </label>
                         </div>
-                        <ul class="list-group list-group-flush" v-if="for_teachers === '0'"
-                            test-data-id="ul_for_schools">
+                        <ul class="list-group list-group-flush" v-if="for_teachers == 0" test-data-id="ul_for_schools">
                             <li class="list-group-item">
                                 <div class="row">
                                     <label for="categories" class="m-2">Κατηγορίες:</label>
@@ -114,7 +113,7 @@ const props = withDefaults(defineProps<{
     restricted?: boolean,
     category_selected_values?: string,
     school_selected_values?: string,
-    for_teachers?: "0" | "1",
+    for_teachers?: 0 | 1 | "0" | "1",
 }>(), {
     parse: false,
     parsetitle: "Νέα φόρμα",

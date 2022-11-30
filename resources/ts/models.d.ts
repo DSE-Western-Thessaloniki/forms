@@ -88,4 +88,15 @@ declare namespace App.Models {
         updated_at: string | null;
         record: number;
     }
+
+    export interface Teacher {
+        id: number;
+        name: string;
+        surname: string;
+        am: string;
+        afm: string | null;
+        created_at: string | null;
+        updated_at: string | null;
+        active: boolean;
+    }
 }

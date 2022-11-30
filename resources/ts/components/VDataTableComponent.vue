@@ -3,8 +3,8 @@
         <table class="table table-striped table-bordered table-hover">
             <thead class="fixed-header">
                 <tr>
-                    <th>Σχολική Μονάδα</th>
-                    <th>Κωδικός</th>
+                    <th>{{ props.for_teachers ? "Καθηγητής" : "Σχολική Μονάδα" }}</th>
+                    <th>{{ props.for_teachers ? "ΑΜ/ΑΦΜ" : "Κωδικός" }}</th>
                     <th v-for="column in columnsObj" :key="column.id">{{ column.title }}</th>
                     <th>Δημιουργήθηκε</th>
                     <th>Ενημερώθηκε</th>
@@ -16,20 +16,20 @@
                     <td>{{ line.code }}</td>
                     <td v-for="column in columnsObj" :key="column.id">
                         {{
-                                                ((typeof (data[line.code]) !== "undefined") &&
-                                                (typeof ((data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined")
-                                                    &&
-                                                    (typeof (((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
-                                                        App.Types.AssociativeArray<string>)[line.record]) !== "undefined") &&
-                                                            (typeof ((((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
-                                                                App.Types.AssociativeArray<string>)[line.record] as
-                                                                    App.Types.AssociativeArray<string>)['value'])
-                                                                        !== "undefined")) ?
-                                                                        (((data[line.code] as
-                                                                        App.Types.AssociativeArray<string>)[column.title] as
-                                                                            App.Types.AssociativeArray<string>)[line.record] as
-                                                                                App.Types.AssociativeArray<string>)['value'] as string :
-                        ''
+                                ((typeof (data[line.code]) !== "undefined") &&
+                                    (typeof ((data[line.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined")
+                                    &&
+                                    (typeof (((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record]) !== "undefined") &&
+                                    (typeof ((((data[line.code] as App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record] as
+                                        App.Types.AssociativeArray<string>)['value'])
+                                        !== "undefined")) ?
+                                    (((data[line.code] as
+                                        App.Types.AssociativeArray<string>)[column.title] as
+                                        App.Types.AssociativeArray<string>)[line.record] as
+                                        App.Types.AssociativeArray<string>)['value'] as string :
+                                    ''
                         }}
                     </td>
                     <td>{{ created(line) }}</td>
@@ -50,6 +50,8 @@ const props = defineProps<{
     columns: Array<string>,
     data: App.Types.AssociativeArray<string>,
     schools: Array<App.Models.School>,
+    teachers: Array<App.Models.Teacher>,
+    for_teachers: number,
 }>();
 
 /**
@@ -137,26 +139,47 @@ const columnsObj = computed(() => {
 const lines = computed(() => {
     var i = 0;
     var lines: Array<LineObject> = Array();
-    props.schools.forEach(school => {
-        var record = 0;
-        do {
-            var ok = false;
-            columnsObj.value.forEach(column => {
-                if ((typeof (props.data[school.code]) !== "undefined") &&
-                    (typeof ((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
-                    (typeof (((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
-                    ok = true;
+    if (props.for_teachers) {
+        props.teachers.forEach(teacher => {
+            var record = 0;
+            do {
+                var ok = false;
+                columnsObj.value.forEach(column => {
+                    if ((typeof (props.data[teacher.am]) !== "undefined") &&
+                        (typeof ((props.data[teacher.am] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+                        (typeof (((props.data[teacher.am] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
+                        ok = true;
+                    }
+                });
+
+                if (ok || record == 0) {
+                    lines.push({ id: i, code: teacher.am, name: teacher.surname + " " + teacher.name, record: record });
+                    i += 1;
                 }
-            });
+                record += 1;
+            } while (ok);
+        });
+    } else {
+        props.schools.forEach(school => {
+            var record = 0;
+            do {
+                var ok = false;
+                columnsObj.value.forEach(column => {
+                    if ((typeof (props.data[school.code]) !== "undefined") &&
+                        (typeof ((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+                        (typeof (((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
+                        ok = true;
+                    }
+                });
 
-            if (ok || record == 0) {
-                lines.push({ id: i, code: school.code, name: school.name, record: record });
-                i += 1;
-            }
-            record += 1;
-        } while (ok);
-    });
-
+                if (ok || record == 0) {
+                    lines.push({ id: i, code: school.code, name: school.name, record: record });
+                    i += 1;
+                }
+                record += 1;
+            } while (ok);
+        });
+    }
     return lines;
 });
 </script>
