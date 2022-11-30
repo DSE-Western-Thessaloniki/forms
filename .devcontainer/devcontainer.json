@@ -53,7 +53,8 @@
 		"GitHub.vscode-pull-request-github",
 		"Vue.volar",
 		"Vue.vscode-typescript-vue-plugin",
-		"onecentlin.laravel-blade"
+		"onecentlin.laravel-blade",
+		"Cardinal90.multi-cursor-case-preserve"
 	],
     "remoteUser": "sail",
     // "forwardPorts": [],
