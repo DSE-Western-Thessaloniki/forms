@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\SchoolsController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
 
@@ -119,6 +120,16 @@ Route::prefix('admin')
                 );
             Route::resource('school', SchoolsController::class)
             ->middleware('auth');
+
+            Route::prefix('options')
+                ->name('options.')
+                ->middleware('auth')
+                ->group(
+                    function () {
+                        Route::get('/', [OptionsController::class, 'index'])->name('index');
+                        Route::post('/', [OptionsController::class, 'store'])->name('store');
+                    }
+                );
         }
     );
 

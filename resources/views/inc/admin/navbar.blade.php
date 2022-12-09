@@ -21,11 +21,18 @@
                             Σχολεία
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.user.index') }}" test-data-id="nav-item-users">
-                            Χρήστες
-                        </a>
-                    </li>
+                    @if(Auth::user()->roles->where('name', 'Administrator')->count())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.user.index') }}" test-data-id="nav-item-users">
+                                Χρήστες
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.options.index') }}" test-data-id="nav-item-users">
+                                Επιλογές
+                            </a>
+                        </li>
+                    @endif
                 @endauth
             </ul>
             <!-- Right Side Of Navbar -->

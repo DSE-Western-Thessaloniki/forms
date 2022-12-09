@@ -17,7 +17,13 @@ class OptionSeeder extends Seeder
         // Ο πρώτος πίνακας είναι το κλειδί για την επιλογή και ο δεύτερος η προεπιλεγμένη τιμή
         $options = [
             [
-                ['name' => 'first_run'], ['value' => '1']
+                ['name' => 'first_run'], ['value' => '1'],
+            ],
+            [
+                ['name' => 'allow_teacher_login'], ['value' => '1'],
+            ],
+            [
+                ['name' => 'allow_all_teachers'], ['value' => '1'],
             ],
         ];
 

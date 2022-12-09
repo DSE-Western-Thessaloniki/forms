@@ -17,26 +17,25 @@
                 @php
                     if (cas()->isAuthenticated()) {
                         $teacher_uid = cas()->getAttribute('employeenumber');
-                        if ($teacher_uid === null) {
+                        $login_category = cas()->getAttribute('businesscategory');
+                        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ') { // Εκπαιδευτικός
+                            // Εκπαιδευτικός
+                            $school = null;
+                            $teacher_name = cas()->getAttribute('cn');
+                        } else {
                             // Σχολείο
                             $school = App\Models\School::where('username', cas()->getAttribute('uid'))
                                 ->orWhere('email', cas()->getAttribute('mail'))
                                 ->first();
-                            $teacher = null;
-                        } else {
-                            // Εκπαιδευτικός
-                            $school = null;
-                            $teacher = App\Models\Teacher::where('am', $teacher_uid)
-                                ->orWhere('afm', $teacher_uid)
-                                ->first();
+                            $teacher_name = null;
                         }
                     }
                 @endphp
-                @if (cas()->isAuthenticated() && ($school || $teacher))
+                @if (cas()->isAuthenticated() && ($school || $teacher_name))
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }}
+                            {{ $school?->name }} {{ $teacher_name ?? ''}}
                             <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

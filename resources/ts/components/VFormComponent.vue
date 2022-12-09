@@ -64,6 +64,13 @@
                                 Εκπαιδευτικούς
                             </label>
                         </div>
+                        <div class="form-check ms-4" v-if="for_teachers == 1" test-data-id="ul_for_teachers">
+                            <input class=" form-check-input" type="checkbox" name="for_all_teachers"
+                                id="for_all_teachers" value="1" v-model="for_all_teachers">
+                            <label class="form-check-label" for="for_all_teachers">
+                                Επέτρεψε είσοδο από όλες τις Διευθύνσεις
+                            </label>
+                        </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="for_teachers" id="radio_for_teachers2"
                                 value="0" v-model="for_teachers">
@@ -114,10 +121,12 @@ const props = withDefaults(defineProps<{
     category_selected_values?: string,
     school_selected_values?: string,
     for_teachers?: 0 | 1 | "0" | "1",
+    for_all_teachers?: 0 | 1 | "0" | "1",
 }>(), {
     parse: false,
     parsetitle: "Νέα φόρμα",
     for_teachers: "0",
+    for_all_teachers: "0",
 });
 
 let vform_fields = ref(null);
@@ -139,6 +148,7 @@ let cur_id = 0;
 let cur_sort_id = 0;
 let allow_multiple = ref(props.multiple);
 let for_teachers = ref(props.for_teachers);
+let for_all_teachers = ref(props.for_all_teachers);
 
 if (props.parse) {
     let max_id = 0

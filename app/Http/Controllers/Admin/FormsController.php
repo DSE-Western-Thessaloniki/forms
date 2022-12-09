@@ -130,6 +130,7 @@ class FormsController extends Controller
         $form->active = true;
         $form->multiple = $request->input('multiple_input') ? true : false;
         $form->for_teachers = intval($request->input('for_teachers'));
+        $form->for_all_teachers = intval($request->input('for_all_teachers'));
         $form->save();
 
         $formfield = $request->input('field');
@@ -230,6 +231,7 @@ class FormsController extends Controller
         $form->notes = $request->input('notes');
         $form->multiple = $request->input('multiple_input') ? true : false;
         $form->for_teachers = intval($request->input('for_teachers'));
+        $form->for_all_teachers = intval($request->input('for_all_teachers'));
         $form->save();
 
         // Check if we should delete fields
