@@ -35,7 +35,7 @@
         <hr />
         <div class="card">
             <div class="card-header">
-                Συμπληρωμένη φόρμα - {{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }}
+                Συμπληρωμένη φόρμα - {{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }}
             </div>
             <div class="card-body">
                 @php
@@ -44,10 +44,15 @@
                             ->data()
                             ->where('school_id', $school->id)
                             ->max('record');
-                    } else {
+                    } else if ($teacher !== null) {
                         $total_records = $form
                             ->data()
                             ->where('teacher_id', $teacher->id)
+                            ->max('record');
+                    } else {
+                        $total_records = $form
+                            ->data()
+                            ->where('other_teacher_id', $other_teacher->id)
                             ->max('record');
                     }
                     $total_records = $total_records ?? 0;

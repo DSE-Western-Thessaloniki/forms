@@ -220,8 +220,10 @@ class ReportsController extends Controller
                 if ($access) {
                     if ($this->school_model_cache !== null) { // Σχολείο
                         $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', 0)->get();
-                    } else { // Εκπαιδευτικός
+                    } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                         $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', 0)->get();
+                    } else {
+                        $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', 0)->get();
                     }
 
                     $data_dict = array();
@@ -233,7 +235,8 @@ class ReportsController extends Controller
                         ->with('form', $form)
                         ->with('data_dict', $data_dict)
                         ->with('school', $this->school_model_cache)
-                        ->with('teacher', $this->teacher_model_cache);
+                        ->with('teacher', $this->teacher_model_cache)
+                        ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -263,8 +266,10 @@ class ReportsController extends Controller
                 if ($access) {
                     if ($this->school_model_cache !== null) { // Σχολείο
                         $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
-                    } else { // Εκπαιδευτικός
+                    } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                         $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', $record)->get();
+                    } else {
+                        $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', $record)->get();
                     }
 
                     $data_dict = array();
@@ -277,7 +282,8 @@ class ReportsController extends Controller
                         ->with('record', $record)
                         ->with('data_dict', $data_dict)
                         ->with('school', $this->school_model_cache)
-                        ->with('teacher', $this->teacher_model_cache);
+                        ->with('teacher', $this->teacher_model_cache)
+                        ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -321,7 +327,8 @@ class ReportsController extends Controller
                         ->with('form', $form)
                         ->with('data_dict', $data_dict)
                         ->with('school', $this->school_model_cache)
-                        ->with('teacher', $this->teacher_model_cache);
+                        ->with('teacher', $this->teacher_model_cache)
+                        ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -351,8 +358,10 @@ class ReportsController extends Controller
                     if ($form->multiple) {
                         if ($this->school_model_cache !== null) { // Σχολείο
                             $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
-                        } else { // Εκπαιδευτικός
+                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', $record)->get();
+                        } else {
+                            $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', $record)->get();
                         }
 
                         $data_dict = array();
@@ -365,7 +374,8 @@ class ReportsController extends Controller
                             ->with('record', $record)
                             ->with('data_dict', $data_dict)
                             ->with('school', $this->school_model_cache)
-                            ->with('teacher', $this->teacher_model_cache);
+                            ->with('teacher', $this->teacher_model_cache)
+                            ->with('other_teacher', $this->other_teacher_model_cache);
                     }
 
                     return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
@@ -408,10 +418,16 @@ class ReportsController extends Controller
                                     ['school_id' => $this->school_model_cache->id],
                                     ['data' => $data]
                                 );
-                        } else {
+                        } else if ($this->teacher_model_cache!== null) {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id],
+                                    ['data' => $data]
+                                );
+                        } else {
+                            $field->field_data()
+                                ->updateOrCreate(
+                                    ['other_teacher_id' => $this->other_teacher_model_cache->id],
                                     ['data' => $data]
                                 );
                         }
@@ -459,10 +475,16 @@ class ReportsController extends Controller
                                     ['school_id' => $this->school_model_cache->id, 'record' => $record],
                                     ['data' => $data]
                                 );
-                        } else { // Εκπαιδευτικός
+                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id, 'record' => $record],
+                                    ['data' => $data]
+                                );
+                        } else {
+                            $field->field_data()
+                                ->updateOrCreate(
+                                    ['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $record],
                                     ['data' => $data]
                                 );
                         }
@@ -484,7 +506,7 @@ class ReportsController extends Controller
                                 $data = null;
                                 $field->field_data()->updateOrCreate(['school_id' => $this->school_model_cache->id, 'record' => $last_record], ['data' => $data]);
                             }
-                        } else { // Εκπαιδευτικός
+                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             foreach ($fields as $field) {
                                 if ($last_record < $field->field_data->where('teacher_id', $this->teacher_model_cache->id)->count()) {
                                     $last_record = $field->field_data->where('teacher_id', $this->teacher_model_cache->id)->count();
@@ -494,6 +516,17 @@ class ReportsController extends Controller
                             foreach ($fields as $field) {
                                 $data = null;
                                 $field->field_data()->updateOrCreate(['teacher_id' => $this->teacher_model_cache->id, 'record' => $last_record], ['data' => $data]);
+                            }
+                        } else {
+                            foreach ($fields as $field) {
+                                if ($last_record < $field->field_data->where('other_teacher_id', $this->other_teacher_model_cache->id)->count()) {
+                                    $last_record = $field->field_data->where('other_teacher_id', $this->other_teacher_model_cache->id)->count();
+                                }
+                            }
+                            // Ετοίμασε τις εγγραφές στον πίνακα
+                            foreach ($fields as $field) {
+                                $data = null;
+                                $field->field_data()->updateOrCreate(['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $last_record], ['data' => $data]);
                             }
                         }
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
