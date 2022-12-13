@@ -237,9 +237,12 @@
                                                 @endif
                                                 <a href="{{ route('admin.form.data', $form) }}"
                                                     class="btn btn-success m-1 float-right">@icon('fas fa-table') Δεδομένα</a>
-                                                <a href="{{ route('admin.form.missing', $form) }}"
-                                                    class="btn btn-secondary m-1 float-right">@icon('fas fa-exclamation')
-                                                    Απομένουν</a>
+
+                                                @if(!$form->for_all_teachers)
+                                                    <a href="{{ route('admin.form.missing', $form) }}"
+                                                        class="btn btn-secondary m-1 float-right">@icon('fas fa-exclamation')
+                                                        Απομένουν</a>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
