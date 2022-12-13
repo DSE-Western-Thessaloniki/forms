@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Form;
 use App\Models\Option;
-use App\Models\OtherTeachers;
+use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\Teacher;
 use App\Models\User;
@@ -66,7 +66,7 @@ class ReportsController extends Controller
 
             if (!$teacher && $allow_all_teachers->value === "1") { // Για εκπαιδευτικούς από παντού
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
-                $other_teacher = OtherTeachers::firstOrNew([
+                $other_teacher = OtherTeacher::firstOrNew([
                     'employeenumber' => cas()->getAttribute('employeenumber')
                 ]);
 
@@ -155,7 +155,7 @@ class ReportsController extends Controller
 
             if ($allow_all_teachers->value === "1") { // Για εκπαιδευτικούς από παντού
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
-                $other_teacher = OtherTeachers::firstOrNew([
+                $other_teacher = OtherTeacher::firstOrNew([
                     'employeenumber' => cas()->getAttribute('employeenumber')
                 ]);
 

@@ -8,7 +8,7 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\FormField;
 use App\Models\FormFieldData;
-use App\Models\OtherTeachers;
+use App\Models\OtherTeacher;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -305,7 +305,8 @@ class FormsController extends Controller
                 'form_fields',
                 'form_fields.field_data',
                 'form_fields.field_data.school',
-                'form_fields.field_data.teacher'
+                'form_fields.field_data.teacher',
+                'form_fields.field_data.other_teacher'
         );
 
         $dataTable = array();
@@ -314,12 +315,17 @@ class FormsController extends Controller
             foreach ($form->form_fields as $field) {
                 array_push($dataTableColumns, $field->title);
                 foreach ($field->field_data as $field_data) {
-                    if ($field_data->teacher->active == 1) {
+                    if ($field_data->teacher?->active == 1 || $field_data->other_teacher) {
+                        if ($field_data->teacher) {
+                            $teacher_am = $field_data->teacher->am;
+                        } else {
+                            $teacher_am = $field_data->other_teacher->employeenumber;
+                        }
                         if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                             $selections = json_decode($field->listvalues);
                             foreach($selections as $selection) {
                                 if ($selection->id == $field_data->data) {
-                                    $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                    $dataTable[$teacher_am][$field->title][$field_data->record] = [
                                         'value' => $selection->value,
                                         'created' => $field_data->created_at,
                                         'updated' => $field_data->updated_at
@@ -329,7 +335,7 @@ class FormsController extends Controller
                         } elseif ($field->type == FormField::TYPE_CHECKBOX) {
                             $selections = json_decode($field->listvalues);
                             if ($field_data->data === null) {
-                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                $dataTable[$teacher_am][$field->title][$field_data->record] = [
                                     'value' => "",
                                     'created' => $field_data->created_at,
                                     'updated' => $field_data->updated_at
@@ -340,15 +346,15 @@ class FormsController extends Controller
                                 foreach($data as $item) {
                                     foreach($selections as $selection) {
                                         if ($selection->id == $item) {
-                                            if ($i == 0 || $dataTable[$field_data->teacher->am][$field->title][$field_data->record] == "") {
-                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                                            if ($i == 0 || $dataTable[$teacher_am][$field->title][$field_data->record] == "") {
+                                                $dataTable[$teacher_am][$field->title][$field_data->record] = [
                                                     'value' => $selection->value,
                                                     'created' => $field_data->created_at,
                                                     'updated' => $field_data->updated_at
                                                 ];
                                             }
                                             else {
-                                                $dataTable[$field_data->teacher->am][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
+                                                $dataTable[$teacher_am][$field->title][$field_data->record]['value'] .= ", ".$selection->value;
                                             }
                                         }
                                     }
@@ -357,14 +363,14 @@ class FormsController extends Controller
                             }
 
                         } elseif ($field->type == FormField::TYPE_NUMBER) {
-                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                            $dataTable[$teacher_am][$field->title][$field_data->record] = [
                                 'value' => intval($field_data->data),
                                 'created' => $field_data->created_at,
                                 'updated' => $field_data->updated_at
                             ];
                         }
                         else {
-                            $dataTable[$field_data->teacher->am][$field->title][$field_data->record] = [
+                            $dataTable[$teacher_am][$field->title][$field_data->record] = [
                                 'value' => $field_data->data,
                                 'created' => $field_data->created_at,
                                 'updated' => $field_data->updated_at
@@ -444,7 +450,7 @@ class FormsController extends Controller
             // Βρες όλους τους καθηγητές που θα έπρεπε να απαντήσουν
             $teachers = Teacher::where('active', 1)->get()->toArray();
             if ($form->for_all_teachers) {
-                $other_teachers = OtherTeachers::all()->toArray();
+                $other_teachers = OtherTeacher::all()->toArray();
             }
         } else {
             // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν

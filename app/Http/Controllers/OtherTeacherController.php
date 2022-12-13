@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreOtherTeachersRequest;
-use App\Http\Requests\UpdateOtherTeachersRequest;
-use App\Models\OtherTeachers;
+use App\Http\Requests\StoreOtherTeacherRequest;
+use App\Http\Requests\UpdateOtherTeacherRequest;
+use App\Models\OtherTeacher;
 
-class OtherTeachersController extends Controller
+class OtherTeacherController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,10 @@ class OtherTeachersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreOtherTeachersRequest  $request
+     * @param  \App\Http\Requests\StoreOtherTeacherRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreOtherTeachersRequest $request)
+    public function store(StoreOtherTeacherRequest $request)
     {
         //
     }
@@ -42,10 +42,10 @@ class OtherTeachersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\OtherTeachers  $otherTeachers
+     * @param  \App\Models\OtherTeacher  $otherTeachers
      * @return \Illuminate\Http\Response
      */
-    public function show(OtherTeachers $otherTeachers)
+    public function show(OtherTeacher $otherTeachers)
     {
         //
     }
@@ -53,10 +53,10 @@ class OtherTeachersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\OtherTeachers  $otherTeachers
+     * @param  \App\Models\OtherTeacher  $otherTeachers
      * @return \Illuminate\Http\Response
      */
-    public function edit(OtherTeachers $otherTeachers)
+    public function edit(OtherTeacher $otherTeachers)
     {
         //
     }
@@ -64,11 +64,11 @@ class OtherTeachersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateOtherTeachersRequest  $request
-     * @param  \App\Models\OtherTeachers  $otherTeachers
+     * @param  \App\Http\Requests\UpdateOtherTeacherRequest  $request
+     * @param  \App\Models\OtherTeacher  $otherTeachers
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOtherTeachersRequest $request, OtherTeachers $otherTeachers)
+    public function update(UpdateOtherTeacherRequest $request, OtherTeacher $otherTeachers)
     {
         //
     }
@@ -76,10 +76,10 @@ class OtherTeachersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\OtherTeachers  $otherTeachers
+     * @param  \App\Models\OtherTeacher  $otherTeachers
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OtherTeachers $otherTeachers)
+    public function destroy(OtherTeacher $otherTeachers)
     {
         //
     }

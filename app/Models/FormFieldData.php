@@ -25,4 +25,8 @@ class FormFieldData extends Model
     public function teacher() {
         return $this->belongsTo(Teacher::class, 'teacher_id');
     }
+
+    public function other_teacher() {
+        return $this->belongsTo(OtherTeacher::class, 'other_teacher_id');
+    }
 }
