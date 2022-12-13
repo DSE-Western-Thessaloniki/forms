@@ -8,6 +8,7 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\FormField;
 use App\Models\FormFieldData;
+use App\Models\OtherTeachers;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -442,6 +443,9 @@ class FormsController extends Controller
         if ($form->for_teachers) {
             // Βρες όλους τους καθηγητές που θα έπρεπε να απαντήσουν
             $teachers = Teacher::where('active', 1)->get()->toArray();
+            if ($form->for_all_teachers) {
+                $other_teachers = OtherTeachers::all()->toArray();
+            }
         } else {
             // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
             $schools = $form->schools->where('active', 1);
@@ -457,6 +461,7 @@ class FormsController extends Controller
             ->with('dataTableColumns', $dataTableColumns)
             ->with('schools', array_values($schools))
             ->with('teachers', array_values($teachers))
+            ->with('other_teachers', array_values($other_teachers ?? []))
             ->with('form', $form);
     }
 

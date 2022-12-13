@@ -31,7 +31,9 @@
                         :data="{{ json_encode($dataTable) }}"
                         :schools="{{ json_encode($schools) }}"
                         :teachers="{{ json_encode($teachers) }}"
+                        :other_teachers="{{ json_encode($other_teachers) }}"
                         :for_teachers="{{ $form->for_teachers }}"
+                        :for_all_teachers="{{ $form->for_all_teachers }}"
                     >
                     </vdatatable-component>
                 </div>

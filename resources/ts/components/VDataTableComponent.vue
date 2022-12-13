@@ -51,7 +51,9 @@ const props = defineProps<{
     data: App.Types.AssociativeArray<string>,
     schools: Array<App.Models.School>,
     teachers: Array<App.Models.Teacher>,
+    other_teachers: Array<App.Models.OtherTeacher>,
     for_teachers: number,
+    for_all_teachers: number,
 }>();
 
 /**
@@ -137,23 +139,48 @@ const columnsObj = computed(() => {
  * σε γραμμές του πίνακα.
  */
 const lines = computed(() => {
-    var i = 0;
-    var lines: Array<LineObject> = Array();
+    let i = 0;
+    let lines: Array<LineObject> = Array();
     if (props.for_teachers) {
         props.teachers.forEach(teacher => {
-            var record = 0;
+            let record = 0;
+            let ok = false;
+            let columns_filled = 0;
             do {
-                var ok = false;
+                ok = false;
                 columnsObj.value.forEach(column => {
                     if ((typeof (props.data[teacher.am]) !== "undefined") &&
                         (typeof ((props.data[teacher.am] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
                         (typeof (((props.data[teacher.am] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
                         ok = true;
+                        columns_filled++;
                     }
                 });
 
-                if (ok || record == 0) {
+                if (ok) {
                     lines.push({ id: i, code: teacher.am, name: teacher.surname + " " + teacher.name, record: record });
+                    i += 1;
+                }
+                record += 1;
+            } while (ok);
+        });
+        props.other_teachers.forEach(other_teacher => {
+            let record = 0;
+            let ok = false;
+            let columns_filled = 0;
+            do {
+                ok = false;
+                columnsObj.value.forEach(column => {
+                    if ((typeof (props.data[other_teacher.employeenumber]) !== "undefined") &&
+                        (typeof ((props.data[other_teacher.employeenumber] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&
+                        (typeof (((props.data[other_teacher.employeenumber] as App.Types.AssociativeArray<string>)[column.title] as App.Types.AssociativeArray<string>)[record]) !== "undefined")) {
+                        ok = true;
+                        columns_filled++;
+                    }
+                });
+
+                if (ok) {
+                    lines.push({ id: i, code: other_teacher.employeenumber, name: other_teacher.name, record: record });
                     i += 1;
                 }
                 record += 1;
@@ -161,9 +188,10 @@ const lines = computed(() => {
         });
     } else {
         props.schools.forEach(school => {
-            var record = 0;
+            let record = 0;
+            let ok = false;
             do {
-                var ok = false;
+                ok = false;
                 columnsObj.value.forEach(column => {
                     if ((typeof (props.data[school.code]) !== "undefined") &&
                         (typeof ((props.data[school.code] as App.Types.AssociativeArray<string>)[column.title]) !== "undefined") &&

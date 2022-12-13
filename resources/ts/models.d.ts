@@ -99,4 +99,11 @@ declare namespace App.Models {
         updated_at: string | null;
         active: boolean;
     }
+
+    export interface OtherTeacher {
+        id: number;
+        employeenumber: string;
+        name: string;
+        email: string;
+    }
 }

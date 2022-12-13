@@ -128,10 +128,11 @@
                                                                     } else {
                                                                         // Πάρε το πλήθος των συμπληρωμένων πεδίων από τους εκπαιδευτικούς
                                                                         $get_counts = DB::table('forms')
-                                                                            ->select(DB::raw('count(form_field_data.teacher_id) as answers'))
+                                                                            ->select(DB::raw('count(form_field_data.teacher_id)+count(form_field_data.other_teacher_id) as answers'))
                                                                             ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
                                                                             ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
                                                                             ->leftJoin('teachers', 'teachers.id', '=', 'form_field_data.teacher_id')
+                                                                            ->leftJoin('other_teachers', 'other_teachers.id', '=', 'form_field_data.other_teacher_id')
                                                                             ->where('form_field_data.record', 0)
                                                                             ->where('forms.id', $form->id)
                                                                             ->where('teachers.active', 1)
@@ -150,10 +151,15 @@
                                                                             $forms_filled = 0;
                                                                         }
 
-                                                                        $should_have = App\Models\Teacher::count('id');
-                                                                        $percent = 0;
-                                                                        if ($should_have > 0) {
-                                                                            $percent = round(($forms_filled / $should_have) * 100, 2);
+                                                                        if ($form->for_all_teachers) {
+                                                                            $should_have = "∞";
+                                                                            $percent = 0;
+                                                                        } else {
+                                                                            $should_have = App\Models\Teacher::count('id');
+                                                                            $percent = 0;
+                                                                            if ($should_have > 0) {
+                                                                                $percent = round(($forms_filled / $should_have) * 100, 2);
+                                                                            }
                                                                         }
                                                                     }
                                                                 @endphp
