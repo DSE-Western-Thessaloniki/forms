@@ -36,7 +36,7 @@
     <hr />
     <div class="card">
         <div class="card-header">
-            {{ $form->title }}
+            Συμπλήρωση φόρμας ως <span class="h5 fw-bold">{{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }}</span>
         </div>
         <div class="card-body">
             @php
