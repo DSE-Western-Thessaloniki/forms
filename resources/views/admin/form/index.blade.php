@@ -128,27 +128,42 @@
                                                                     } else {
                                                                         // Πάρε το πλήθος των συμπληρωμένων πεδίων από τους εκπαιδευτικούς
                                                                         $get_counts = DB::table('forms')
-                                                                            ->select(DB::raw('count(form_field_data.teacher_id)+count(form_field_data.other_teacher_id) as answers'))
+                                                                            ->select(DB::raw('count(form_field_data.teacher_id) as answers'))
                                                                             ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
                                                                             ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
                                                                             ->leftJoin('teachers', 'teachers.id', '=', 'form_field_data.teacher_id')
-                                                                            ->leftJoin('other_teachers', 'other_teachers.id', '=', 'form_field_data.other_teacher_id')
                                                                             ->where('form_field_data.record', 0)
                                                                             ->where('forms.id', $form->id)
                                                                             ->where('teachers.active', 1)
                                                                             ->groupBy('form_fields.id')
                                                                             ->get();
+                                                                        $get_other_counts = DB::table('forms')
+                                                                            ->select(DB::raw('count(form_field_data.other_teacher_id) as answers'))
+                                                                            ->leftJoin('form_fields', 'form_fields.form_id', '=', 'forms.id')
+                                                                            ->leftJoin('form_field_data', 'form_field_data.form_field_id', '=', 'form_fields.id')
+                                                                            ->leftJoin('other_teachers', 'other_teachers.id', '=', 'form_field_data.other_teacher_id')
+                                                                            ->where('form_field_data.record', 0)
+                                                                            ->where('forms.id', $form->id)
+                                                                            ->groupBy('form_fields.id')
+                                                                            ->get();
+
                                                                         $field_answers = array_map(function ($item) {
                                                                             return $item->answers;
                                                                         }, $get_counts->unique()->toArray());
 
+                                                                        $other_field_answers = array_map(function ($item) {
+                                                                            return $item->answers;
+                                                                        }, $get_other_counts->unique()->toArray());
+
                                                                         // Αν έχουμε παραπάνω από 1 αποτέλεσμα τότε
                                                                         // κάποιος εκπαιδευτικός δεν έχει συμπληρώσει όλα τα πεδία
-                                                                        $missing_fields = count($field_answers) > 1;
+                                                                        $missing_fields = (count($field_answers) > 1 || count($other_field_answers) > 1);
+                                                                        $forms_filled = 0;
                                                                         if ($field_answers) {
-                                                                            $forms_filled = max($field_answers);
-                                                                        } else {
-                                                                            $forms_filled = 0;
+                                                                            $forms_filled += max($field_answers);
+                                                                        }
+                                                                        if ($other_field_answers) {
+                                                                            $forms_filled += max($other_field_answers);
                                                                         }
 
                                                                         if ($form->for_all_teachers) {
@@ -165,9 +180,13 @@
                                                                 @endphp
                                                                 <div class='col-2 small'>Απάντησαν:
                                                                     {{ $forms_filled }}/{{ $should_have }}
-                                                                    @if ($missing_fields)
+                                                                    @if ($missing_fields && !$form->for_teachers)
                                                                         <abbr
                                                                             title="Κάποια σχολεία δεν έχουν συμπληρώσει όλα τα πεδία">*</abbr>
+                                                                    @endif
+                                                                    @if ($missing_fields && $form->for_teachers)
+                                                                        <abbr
+                                                                            title="Κάποιοι εκπαιδευτικοί δεν έχουν συμπληρώσει όλα τα πεδία">*</abbr>
                                                                     @endif
                                                                 </div>
                                                                 <div class="col-10">
