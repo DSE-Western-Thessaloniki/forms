@@ -17,6 +17,7 @@
                 :multiple="{{ $form->multiple ? "true" : "false" }}"
                 :restricted="{{ $form->active ? "true" : "false" }}"
                 :for_teachers="{{ $form->for_teachers ? 1 : 0 }}"
+                :for_all_teachers="{{ $form->for_all_teachers ? "true" : "false" }}"
             >
             </vform-component>
 

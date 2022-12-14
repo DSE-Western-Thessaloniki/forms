@@ -121,12 +121,12 @@ const props = withDefaults(defineProps<{
     category_selected_values?: string,
     school_selected_values?: string,
     for_teachers?: 0 | 1 | "0" | "1",
-    for_all_teachers?: 0 | 1 | "0" | "1",
+    for_all_teachers?: boolean,
 }>(), {
     parse: false,
     parsetitle: "Νέα φόρμα",
     for_teachers: "0",
-    for_all_teachers: "0",
+    for_all_teachers: false,
 });
 
 let vform_fields = ref(null);
