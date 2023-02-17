@@ -1338,7 +1338,7 @@ it('can update a report as user logged in through cas (direct relation) (no mult
     $this->put('/report/'.$form->id, $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $post_data = array();
     foreach ($fields as $field) {
@@ -1348,7 +1348,7 @@ it('can update a report as user logged in through cas (direct relation) (no mult
     $this->put('/report/'.$form->id, $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
     $this->assertDatabaseHas('form_field_data', [
             'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
@@ -1443,7 +1443,7 @@ it('can update a report as user logged in through cas (indirect relation) (no mu
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 });
 
 it('cannot update an inactive report as user logged in through cas (indirect relation) (no multiple)', function() {
@@ -1679,7 +1679,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $post_data = array();
     foreach ($fields as $field) {
@@ -1699,7 +1699,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
             'school_id' => $school->id,
@@ -1872,7 +1872,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $post_data = array();
     foreach ($fields as $field) {
@@ -1892,7 +1892,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertDontSee('Σφάλμα')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
             'school_id' => $school->id,

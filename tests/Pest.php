@@ -60,6 +60,8 @@ function test_cas_null()
         ->andReturnNull();
     Cas::shouldReceive('client')
         ->andReturnNull();
+    Cas::shouldReceive('businesscategory')
+        ->andReturnNull();
 }
 
 function test_cas_not_logged_in() {
@@ -86,6 +88,9 @@ function test_cas_logged_in() {
     Cas::shouldReceive('getAttribute')
         ->with('employeenumber')
         ->andReturnNull();
+    Cas::shouldReceive('getAttribute')
+        ->with('businesscategory')
+        ->andReturn('');
 }
 
 function test_create_one_form_for_user(User $user): Form {
