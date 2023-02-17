@@ -4,7 +4,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data !!}"
+    value="{{ $data }}"
     {!! $disabled ?? '' !!}
 >
 @endif
@@ -77,7 +77,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data !!}"
+    value="{{ $data }}"
     {!! $disabled ?? '' !!}
 >
 @endif
@@ -87,7 +87,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data == '' ? 0 : $data !!}"
+    value="{{ $data == '' ? 0 : $data }}"
     {!! $disabled ?? '' !!}
 >
 @endif
@@ -98,7 +98,7 @@
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
     pattern="[0-9]{10}"
-    value="{!! $data !!}"
+    value="{{ $data }}"
     {!! $disabled ?? '' !!}
 >
 <small>Μορφή: 1234567890</small>
@@ -109,7 +109,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data !!}"
+    value="{{ $data }}"
     {!! $disabled ?? '' !!}
 >
 @endif
@@ -119,7 +119,7 @@
     class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
-    value="{!! $data !!}"
+    value="{{ $data }}"
     {!! $disabled ?? '' !!}
 >
 @endif
