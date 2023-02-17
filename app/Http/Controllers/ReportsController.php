@@ -433,7 +433,7 @@ class ReportsController extends Controller
                         }
                     }
 
-                    return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στην φόρμα επιτυχώς');
+                    return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -533,7 +533,7 @@ class ReportsController extends Controller
                     }
 
                     if ($next === 'exit') {
-                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στην φόρμα επιτυχώς');
+                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                     }
 
                     if ($next === 'next') {
@@ -548,7 +548,7 @@ class ReportsController extends Controller
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
                     }
                     else {
-                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στην φόρμα επιτυχώς');
+                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                     }
                 }
 
