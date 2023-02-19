@@ -12,16 +12,11 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset(mix('js/manifest.js')) }}" defer></script>
-    <script src="{{ asset(mix('js/vendor.js')) }}" defer></script>
-    <script src="{{ asset(mix('js/app.js')) }}" defer></script>
-
+    @vite(['resources/sass/app.scss', 'resources/ts/app.ts'])
+    
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet" type="text/css">
-
-    <!-- Styles -->
-    <link href="{{ asset(mix('css/app.css')) }}" rel="stylesheet">
 </head>
 
 <body class="d-flex flex-column h-100">
