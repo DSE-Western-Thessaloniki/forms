@@ -189,8 +189,8 @@
       "HEAD"
     ]
   },
-  "": {
-    "name": null,
+  "generated::fuo93AcF6pgwueyu": {
+    "name": "generated::fuo93AcF6pgwueyu",
     "domain": null,
     "action": "App\\Http\\Controllers\\SetupController@setupPage",
     "uri": "setup",
@@ -399,8 +399,8 @@
   "admin.": {
     "name": "admin.",
     "domain": null,
-    "action": "App\\Http\\Controllers\\Auth\\ConfirmPasswordController@confirm",
-    "uri": "admin/password/confirm",
+    "action": "App\\Http\\Controllers\\Auth\\LoginController@login",
+    "uri": "admin/login",
     "method": [
       "POST"
     ]
@@ -422,6 +422,15 @@
     "method": [
       "GET",
       "HEAD"
+    ]
+  },
+  "admin.generated::DHYN9U8cdgudBJcs": {
+    "name": "admin.generated::DHYN9U8cdgudBJcs",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Auth\\ConfirmPasswordController@confirm",
+    "uri": "admin/password/confirm",
+    "method": [
+      "POST"
     ]
   },
   "admin.user.confirmDelete": {
@@ -684,6 +693,25 @@
     "uri": "admin/school/{school}",
     "method": [
       "DELETE"
+    ]
+  },
+  "admin.options.index": {
+    "name": "admin.options.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\OptionsController@index",
+    "uri": "admin/options",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "admin.options.store": {
+    "name": "admin.options.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\Admin\\OptionsController@store",
+    "uri": "admin/options",
+    "method": [
+      "POST"
     ]
   },
   "login": {

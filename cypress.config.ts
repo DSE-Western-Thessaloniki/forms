@@ -1,19 +1,17 @@
 import { defineConfig } from "cypress";
-import webpackConfig from "laravel-mix/setup/webpack.config";
 
 export default defineConfig({
     experimentalWebKitSupport: true,
     component: {
         devServer: {
             framework: "vue",
-            bundler: "webpack",
-            webpackConfig,
+            bundler: "vite",
         },
     },
 
     e2e: {
         setupNodeEvents(on, config) {
-            return require("./cypress/plugins/index.js")(on, config);
+            return require("./cypress/plugins/index.ts")(on, config);
         },
         baseUrl: "http://localhost/",
         supportFile: "cypress/support/index.js",
