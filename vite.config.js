@@ -43,6 +43,7 @@ export default defineConfig(({ mode }) => {
     }
 
     console.log("==", resources_dir);
+    process.env.ASSET_URL = resources_dir;
 
     return {
         plugins: [
@@ -84,5 +85,5 @@ export default defineConfig(({ mode }) => {
                 ),
             },
         },
-    }
+    };
 });
