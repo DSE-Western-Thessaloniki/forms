@@ -31,7 +31,7 @@
     <a href="{{ route('report.index') }}" class="btn btn-secondary" role="button">Πίσω</a>
     <form action="javascript:void(0);">
         <h1>{{ $form->title }}</h1>
-        <h3>{{ $form->notes }}</h3>
+        <h3>{!! nl2br(strip_tags($form->notes)) !!}</h3>
         <hr />
         <div class="card">
             <div class="card-header">
