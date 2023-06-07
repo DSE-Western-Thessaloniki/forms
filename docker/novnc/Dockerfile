@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:3.18
 
 ARG WWWGROUP
 ARG WWWUSER
@@ -18,9 +18,10 @@ RUN apk update && \
     terminus-font \
     supervisor \
     tigervnc \
-    py-pip && \
-    pip install websockify && \
+    py3-pip && \
     rm /var/cache/apk/*
+
+RUN pip3 install websockify
 
 RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
