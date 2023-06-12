@@ -6,7 +6,7 @@
     @if(count($forms) > 0)
         @foreach($forms as $form)
             <div class="card card-body bg-light">
-                    <h3><a href="{{ route('report.show', $form->id) }}">{{$form->title}}</a></h3>
+                    <h3><a href="{{ route('report.edit', $form->id) }}">{{$form->title}}</a></h3>
                     <p class="pre-wrap">{{ $form->notes }}</p>
                     <small>Δημιουργήθηκε στις {{$form->created_at}}</small>
 
