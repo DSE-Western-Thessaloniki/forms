@@ -1350,6 +1350,7 @@ class FormsController extends Controller
     {
         // Δημιουργία αντιγράφου
         $form_clone = $form->replicate();
+        $form_clone->user_id = Auth::user()->id;
         $form_clone->save();
 
         foreach($form->form_fields()->get() as $item) {
