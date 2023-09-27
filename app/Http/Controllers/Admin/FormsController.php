@@ -35,7 +35,8 @@ class FormsController extends Controller
     public function index(Request $request) : \Illuminate\Contracts\View\View
     {
         $filter = $request->get('filter');
-        $only_active = $request->get('only_active') ?? 0;
+        $only_active = $request->get('only_active') ?? $request->session()->get('only_active', 0);
+        $request->session()->put('only_active', $only_active);
         if ($filter && $only_active) {
             $forms = Form::orderBy('created_at', 'desc')
                 ->withCount(['data' => function($query) {

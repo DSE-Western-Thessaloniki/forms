@@ -24,6 +24,7 @@
                             <form id="search" method="GET" action="{{ route('admin.form.index') }}">
                                 <div class="input-group align-items-center" role="group">
                                     <div class="form-check me-2">
+                                        <input type="hidden" name="only_active" value="0" />
                                         <input class="form-check-input" type="checkbox" id="only_active" name="only_active"
                                             value="1" {{ $only_active ?? 0 ? 'checked' : '' }} />
                                         <label class="form-check-label" for="only_active">
