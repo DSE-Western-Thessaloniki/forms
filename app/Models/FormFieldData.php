@@ -12,7 +12,7 @@ class FormFieldData extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record'];
+    protected $fillable = ['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'];
 
     public function form_field() {
         return $this->belongsTo(FormField::class);

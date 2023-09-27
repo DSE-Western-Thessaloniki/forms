@@ -416,19 +416,28 @@ class ReportsController extends Controller
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['school_id' => $this->school_model_cache->id],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         } else if ($this->teacher_model_cache!== null) {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         } else {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         }
                     }
@@ -473,19 +482,28 @@ class ReportsController extends Controller
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['school_id' => $this->school_model_cache->id, 'record' => $record],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id, 'record' => $record],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         } else {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $record],
-                                    ['data' => $data]
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
                                 );
                         }
                     }
@@ -504,7 +522,16 @@ class ReportsController extends Controller
                             // Ετοίμασε τις εγγραφές στον πίνακα
                             foreach ($fields as $field) {
                                 $data = null;
-                                $field->field_data()->updateOrCreate(['school_id' => $this->school_model_cache->id, 'record' => $last_record], ['data' => $data]);
+                                $field->field_data()->updateOrCreate(
+                                    [
+                                        'school_id' => $this->school_model_cache->id,
+                                        'record' => $last_record
+                                    ],
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
+                                );
                             }
                         } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             foreach ($fields as $field) {
@@ -515,7 +542,16 @@ class ReportsController extends Controller
                             // Ετοίμασε τις εγγραφές στον πίνακα
                             foreach ($fields as $field) {
                                 $data = null;
-                                $field->field_data()->updateOrCreate(['teacher_id' => $this->teacher_model_cache->id, 'record' => $last_record], ['data' => $data]);
+                                $field->field_data()->updateOrCreate(
+                                    [
+                                        'teacher_id' => $this->teacher_model_cache->id,
+                                        'record' => $last_record
+                                    ],
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
+                                );
                             }
                         } else {
                             foreach ($fields as $field) {
@@ -526,7 +562,16 @@ class ReportsController extends Controller
                             // Ετοίμασε τις εγγραφές στον πίνακα
                             foreach ($fields as $field) {
                                 $data = null;
-                                $field->field_data()->updateOrCreate(['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $last_record], ['data' => $data]);
+                                $field->field_data()->updateOrCreate(
+                                    [
+                                        'other_teacher_id' => $this->other_teacher_model_cache->id,
+                                        'record' => $last_record
+                                    ],
+                                    [
+                                        'data' => $data,
+                                        'updated_at' => now()
+                                    ]
+                                );
                             }
                         }
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
