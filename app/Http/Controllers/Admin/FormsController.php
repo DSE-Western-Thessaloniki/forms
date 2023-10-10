@@ -141,6 +141,7 @@ class FormsController extends Controller
             $field->sort_id = $formfield[$key]['sort_id'];
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
+            $field->required = $formfield[$key]['required'] === "true" ? true : false;
             $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->form_fields()->save($field);
         }
@@ -251,6 +252,7 @@ class FormsController extends Controller
             $field->sort_id = $formfield[$key]['sort_id'] ?? $key;
             $field->title = $formfield[$key]['title'];
             $field->type = $formfield[$key]['type'];
+            $field->required = $formfield[$key]['required'] === "true" ? true : false;
             $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->form_fields()->save($field);
         }
