@@ -11,7 +11,7 @@ class FormField extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sort_id'];
+    protected $fillable = ['sort_id', 'required'];
 
     // Primary key
     public $primaryKey = 'id';

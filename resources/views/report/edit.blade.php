@@ -36,9 +36,10 @@
     <hr />
     <div class="card">
         <div class="card-header">
-            Συμπλήρωση φόρμας ως <span class="h5 fw-bold">{{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }}</span>
+            Συμπλήρωση φόρμας ως <span class="h5 fw-bold">{{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }} {{ $school?->name }}</span>
         </div>
         <div class="card-body">
+            <div class="mb-4">To <span class="text-danger">*</span> σηματοδοτεί υποχρεωτικά πεδία.</div>
             @php
                 if ($school !== null) {
                     $total_records = DB::table('form_fields')

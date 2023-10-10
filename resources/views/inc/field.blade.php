@@ -6,6 +6,7 @@
     name="f{!!$field->id!!}"
     value="{{ $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_TEXTAREA) <!-- Περιοχή κειμένου -->
@@ -15,6 +16,7 @@
     name="f{!!$field->id!!}"
     rows="4"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >{{ $data }}</textarea>
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_RADIO_BUTTON) <!-- Επιλογή ενός από πολλά -->
@@ -69,7 +71,14 @@
 </select>
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_FILE) <!-- Αρχείο -->
-<input type="file" class="form-control-file" id="f{!!$field->id!!}" name="f{!!$field->id!!}" {!! $disabled ?? '' !!}>
+<input
+    type="file"
+    class="form-control-file"
+    id="f{!!$field->id!!}"
+    name="f{!!$field->id!!}"
+    {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
+>
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_DATE) <!-- Ημερομηνία -->
 <input
@@ -79,6 +88,7 @@
     name="f{!!$field->id!!}"
     value="{{ $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_NUMBER) <!-- Αριθμός -->
@@ -89,6 +99,7 @@
     name="f{!!$field->id!!}"
     value="{{ $data == '' ? 0 : $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_TELEPHONE) <!-- Τηλέφωνο -->
@@ -100,6 +111,7 @@
     pattern="[0-9]{10}"
     value="{{ $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 <small>Μορφή: 1234567890</small>
 @endif
@@ -111,6 +123,7 @@
     name="f{!!$field->id!!}"
     value="{{ $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_URL) <!-- Url -->
@@ -121,5 +134,6 @@
     name="f{!!$field->id!!}"
     value="{{ $data }}"
     {!! $disabled ?? '' !!}
+    {{ $field->required ? 'required' : '' }}
 >
 @endif

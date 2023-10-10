@@ -75,6 +75,7 @@ declare namespace App.Models {
         positive: boolean;
         appear_when: string;
         width: string;
+        required: boolean;
         created_at: string | null;
         updated_at: string | null;
     }
