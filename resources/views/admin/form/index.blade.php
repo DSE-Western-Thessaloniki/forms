@@ -44,6 +44,13 @@
                                     <div class="card-header">
                                         <div class="container p-0">
                                             <div class="d-flex align-items-center">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-primary me-2"
+                                                    onclick="navigator.clipboard.writeText('{!! route('report.edit', $form->id) !!}')"
+                                                >
+                                                    @icon('fas fa-link')
+                                                </button>
                                                 <div class='me-3 mb-0 h4'>
                                                     @if ($form->for_teachers)
                                                         @icon('chalkboard-user')
