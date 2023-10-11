@@ -48,6 +48,9 @@
                                                     type="button"
                                                     class="btn btn-sm btn-primary me-2"
                                                     onclick="navigator.clipboard.writeText('{!! route('report.edit', $form->id) !!}')"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-title="Αντιγραφή συνδέσμου φόρμας προς συμπλήρωση"
                                                 >
                                                     @icon('fas fa-link')
                                                 </button>

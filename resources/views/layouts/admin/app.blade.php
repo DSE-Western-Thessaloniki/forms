@@ -29,6 +29,11 @@
         </main>
     </div>
     @include('inc.footer')
+
+    <script type="module">
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new window.bootstrap.Tooltip(tooltipTriggerEl));
+    </script>
 </body>
 
 </html>
