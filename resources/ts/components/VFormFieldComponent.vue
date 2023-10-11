@@ -39,6 +39,11 @@
                     Υποχρεωτικό πεδίο:
                 </label>
                 <div class="col align-self-center">
+                    <input
+                        type="hidden"
+                        :name="'field[' + field_id + '][required]'"
+                        v-model="is_required"
+                    />
                     <div
                         v-if="restricted"
                         v-text="is_required ? 'Ναι' : 'Όχι'"
@@ -47,11 +52,6 @@
                         <input
                             type="checkbox"
                             value="1"
-                            v-model="is_required"
-                        />
-                        <input
-                            type="hidden"
-                            :name="'field[' + field_id + '][required]'"
                             v-model="is_required"
                         />
                     </div>
