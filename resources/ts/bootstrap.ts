@@ -13,13 +13,6 @@ window.$ = $;
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
 
-const tooltipTriggerList = document.querySelectorAll(
-    '[data-bs-toggle="tooltip"]'
-);
-const tooltipList = [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
-);
-
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
