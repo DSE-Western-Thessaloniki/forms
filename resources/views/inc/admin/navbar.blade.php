@@ -21,6 +21,11 @@
                             Σχολεία
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.list.index') }}" test-data-id="nav-item-lists">
+                            Λίστες
+                        </a>
+                    </li>
                     @if(Auth::user()->roles->where('name', 'Administrator')->count())
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin.user.index') }}" test-data-id="nav-item-users">
