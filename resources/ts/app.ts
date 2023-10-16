@@ -82,4 +82,9 @@ app.component(
     defineAsyncComponent(() => import("./components/VDataTableComponent.vue"))
 );
 
+app.component(
+    "selectionlistdata",
+    defineAsyncComponent(() => import("./components/SelectionListData.vue"))
+);
+
 app.mount("#app");

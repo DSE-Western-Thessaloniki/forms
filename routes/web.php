@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\SchoolsController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
+use App\Http\Controllers\SelectionListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +131,17 @@ Route::prefix('admin')
                         Route::post('/', [OptionsController::class, 'store'])->name('store');
                     }
                 );
+            Route::prefix('list')
+                ->name('list.')
+                ->middleware('auth')
+                ->group(
+                    function () {
+                        Route::get('/import', [SelectionListController::class, 'showImport'])->name('show_import');
+                        Route::post('/import', [SelectionListController::class, 'import'])->name('import');
+                    }
+                );
+            Route::resource('list', SelectionListController::class)
+                ->middleware('auth');
         }
     );
 
