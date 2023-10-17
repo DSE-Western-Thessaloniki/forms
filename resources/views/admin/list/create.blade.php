@@ -45,7 +45,7 @@
 
                             <div class="form-group row mb-3">
                                 <div class="col-2">
-                                    <a class="btn btn-danger" href="{{ route('admin.school.index') }}">Ακύρωση</a>
+                                    <a class="btn btn-danger" href="{{ route('admin.list.index') }}">Ακύρωση</a>
                                 </div>
                                 <div class="col d-flex justify-content-end">
                                     <button class='btn btn-primary' type='submit'>Αποθήκευση</a>

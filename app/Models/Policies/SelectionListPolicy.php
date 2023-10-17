@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\SelectionList;
 use App\Models\User;
@@ -10,6 +10,14 @@ class SelectionListPolicy
 {
     use HandlesAuthorization;
 
+    public function before(User $current_user, $ability)
+    {
+        return (
+            $current_user->isAdministrator() ||
+            $current_user->roles()->where("name", "Author")->exists()
+        ) ? true : null;
+    }
+
     /**
      * Determine whether the user can view any models.
      *
@@ -18,7 +26,7 @@ class SelectionListPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +38,7 @@ class SelectionListPolicy
      */
     public function view(User $user, SelectionList $selectionList)
     {
-        //
+        return true;
     }
 
     /**

@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\SchoolsController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
-use App\Http\Controllers\SelectionListController;
+use App\Http\Controllers\Admin\SelectionListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,11 +133,12 @@ Route::prefix('admin')
                 );
             Route::prefix('list')
                 ->name('list.')
-                ->middleware('auth')
+                ->middleware('auth', 'can:create,App\Models\SelectionList')
                 ->group(
                     function () {
                         Route::get('/import', [SelectionListController::class, 'showImport'])->name('show_import');
                         Route::post('/import', [SelectionListController::class, 'import'])->name('import');
+                        Route::get('/{list}/confirmDelete', [SelectionListController::class, 'confirmDelete'])->name('confirmDelete');
                     }
                 );
             Route::resource('list', SelectionListController::class)

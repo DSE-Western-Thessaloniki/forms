@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSelectionListRequest;
 use App\Http\Requests\UpdateSelectionListRequest;
 use App\Models\SelectionList;
@@ -9,6 +10,16 @@ use Illuminate\Http\Request;
 
 class SelectionListController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(SelectionList::class, 'selection_list');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -53,7 +64,23 @@ class SelectionListController extends Controller
      */
     public function store(StoreSelectionListRequest $request)
     {
-        //
+        $request_data = $request->validated();
+        $selection_list_data = [];
+        for ($i = 0; $i < count($request_data['id']); $i++) {
+            $selection_list_data[] = [
+                'id' => $request_data['id'][$i],
+                'value' => $request_data['value'][$i]
+            ];
+        }
+
+        $selection_list = new SelectionList();
+        $selection_list->name = $request_data['name'];
+        $selection_list->data = json_encode($selection_list_data);
+        $selection_list->active = true;
+        $selection_list->created_by = $request->user()->id;
+        $selection_list->save();
+
+        return redirect(route('admin.list.index'));
     }
 
     /**

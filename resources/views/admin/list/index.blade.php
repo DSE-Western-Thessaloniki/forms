@@ -40,28 +40,26 @@
                                 @forelse($lists as $list)
                                     <div class="col-xl-4">
                                         <div class="card my-2 shadow">
-                                            <strong>{{ $loop->iteration + $list->firstItem() - 1 }}.
-                                                {{ $list->name }}</strong>
-                                            @if (!$list->active)
-                                                <em>(Ανενεργή)</em>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-lg-auto d-flex flex-column flex-grow-1">
-                                                    <div>@icon('fas fa-user') Δεδομένα: {{ $list->data }}</div>
-                                                </div>
-                                                <div class="col-lg-auto">
-                                                    @if (Auth::user()->roles->where('name', 'Administrator')->count() > 0)
+                                            <div class="card-header">
+                                                <strong>{{ $loop->iteration + $lists->firstItem() - 1 }}.
+                                                    {{ $list->name }}</strong>
+                                                @if (!$list->active)
+                                                    <em>(Ανενεργή)</em>
+                                                @endif
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-auto d-flex flex-column flex-grow-1">
+                                                        <div>@icon('fas fa-hashtag') {{ substr_count($list->data, '"id"') }} στοιχεία</div>
+                                                    </div>
+                                                    <div class="col-lg-auto">
                                                         <a href="{{ route('admin.list.edit', $list) }}"
                                                             class="btn btn-primary m-1">@icon('fas fa-edit')
                                                             Επεξεργασία</a><br />
-                                                    @endif
-                                                    @if (Auth::user()->roles->where('name', 'Administrator')->count() > 0)
                                                         <a class="btn btn-danger m-1"
                                                             href="{{ route('admin.list.confirmDelete', $list) }}">@icon('fas fa-trash-alt')
                                                             Διαγραφή</a>
-                                                    @endif
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
