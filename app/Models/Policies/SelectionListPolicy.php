@@ -49,7 +49,7 @@ class SelectionListPolicy
      */
     public function create(User $user)
     {
-        //
+        return false;
     }
 
     /**
@@ -61,7 +61,7 @@ class SelectionListPolicy
      */
     public function update(User $user, SelectionList $selectionList)
     {
-        //
+        return true;
     }
 
     /**
@@ -73,7 +73,7 @@ class SelectionListPolicy
      */
     public function delete(User $user, SelectionList $selectionList)
     {
-        //
+        return false;
     }
 
     /**
@@ -85,7 +85,7 @@ class SelectionListPolicy
      */
     public function restore(User $user, SelectionList $selectionList)
     {
-        //
+        return false;
     }
 
     /**
@@ -97,6 +97,6 @@ class SelectionListPolicy
      */
     public function forceDelete(User $user, SelectionList $selectionList)
     {
-        //
+        return false;
     }
 }
