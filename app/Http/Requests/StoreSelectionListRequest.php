@@ -13,7 +13,7 @@ class StoreSelectionListRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class StoreSelectionListRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255', 'unique:selection_lists'],
+            'id' => ['array'],
+            'id.*' => ['string', 'max:255'],
+            'value' => ['array'],
+            'value.*' => ['string', 'max:255']
         ];
     }
 }
