@@ -7,8 +7,9 @@ use App\Http\Requests\StoreSelectionListRequest;
 use App\Http\Requests\UpdateSelectionListRequest;
 use App\Models\SelectionList;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
-class SelectionListController extends Controller
+class SelectionListsController extends Controller
 {
     /**
      * Create the controller instance.
@@ -17,7 +18,7 @@ class SelectionListController extends Controller
      */
     public function __construct()
     {
-        $this->authorizeResource(SelectionList::class, 'selection_list');
+        $this->authorizeResource(SelectionList::class);
     }
 
     /**
@@ -64,23 +65,23 @@ class SelectionListController extends Controller
      */
     public function store(StoreSelectionListRequest $request)
     {
-        $request_data = $request->validated();
-        $selection_list_data = [];
-        for ($i = 0; $i < count($request_data['id']); $i++) {
-            $selection_list_data[] = [
-                'id' => $request_data['id'][$i],
-                'value' => $request_data['value'][$i]
+        $validatedData = $request->validated();
+        $selectionListData = [];
+        for ($i = 0; $i < count($validatedData['id']); $i++) {
+            $selectionListData[] = [
+                'id' => $validatedData['id'][$i],
+                'value' => $validatedData['value'][$i]
             ];
         }
 
-        $selection_list = new SelectionList();
-        $selection_list->name = $request_data['name'];
-        $selection_list->data = json_encode($selection_list_data);
-        $selection_list->active = true;
-        $selection_list->created_by = $request->user()->id;
-        $selection_list->save();
+        $selectionList = new SelectionList();
+        $selectionList->name = $validatedData['name'];
+        $selectionList->data = json_encode($selectionListData);
+        $selectionList->active = true;
+        $selectionList->created_by = $request->user()->id;
+        $selectionList->save();
 
-        return redirect(route('admin.list.index'));
+        return redirect(route('admin.list.index'))->with('status', 'Η λίστα αποθηκεύτηκε!');
     }
 
     /**
@@ -102,7 +103,7 @@ class SelectionListController extends Controller
      */
     public function edit(SelectionList $selectionList)
     {
-        //
+        return view('admin.list.edit', compact('selectionList'));
     }
 
     /**
@@ -114,7 +115,29 @@ class SelectionListController extends Controller
      */
     public function update(UpdateSelectionListRequest $request, SelectionList $selectionList)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('selection_lists')->ignore($selectionList->id)],
+            'id' => ['array'],
+            'id.*' => ['string', 'max:255'],
+            'value' => ['array'],
+            'value.*' => ['string', 'max:255']
+        ]);
+
+        $selectionListData = [];
+        for ($i = 0; $i < count($validatedData['id']); $i++) {
+            $selectionListData[] = [
+                'id' => $validatedData['id'][$i],
+                'value' => $validatedData['value'][$i]
+            ];
+        }
+
+        $selectionList->update([
+            'name' => $validatedData['name'],
+            'data' => json_encode($selectionListData),
+            'updated_by' => $request->user()->id,
+        ]);
+
+        return redirect(route('admin.list.index'))->with('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
     }
 
     /**
