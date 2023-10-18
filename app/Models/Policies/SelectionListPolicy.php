@@ -61,7 +61,7 @@ class SelectionListPolicy
      */
     public function update(User $user, SelectionList $selectionList)
     {
-        return true;
+        return false;
     }
 
     /**
