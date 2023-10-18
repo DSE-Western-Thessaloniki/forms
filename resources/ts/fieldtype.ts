@@ -9,4 +9,5 @@ export enum FieldType {
     Telephone,
     Email,
     WebPage,
+    List,
 }

@@ -30,6 +30,7 @@ class FormField extends Model
     const TYPE_TELEPHONE = 8;
     const TYPE_EMAIL = 9;
     const TYPE_URL = 10;
+    const TYPE_LIST = 11;
 
     public function form() {
         return $this->belongsTo(Form::class);

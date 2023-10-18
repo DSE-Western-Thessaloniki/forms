@@ -101,6 +101,7 @@
                                                 element.required ? true : false
                                             "
                                             :sort_id="element.sort_id"
+                                            :selection_lists="selection_lists"
                                         >
                                         </vform-field-component>
                                     </li>
@@ -239,6 +240,7 @@ const props = withDefaults(
         school_selected_values?: string;
         for_teachers?: 0 | 1 | "0" | "1";
         for_all_teachers?: boolean;
+        selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
     }>(),
     {
         parse: false,

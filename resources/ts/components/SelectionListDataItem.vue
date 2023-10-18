@@ -39,10 +39,10 @@ onMounted(() => {
 
 <template>
     <div class="row justify-content-center mt-2">
-        <div class="col-auto">
+        <div class="col-auto my-auto">
             <button
                 v-if="numItems > 1"
-                class="btn btn-danger"
+                class="btn btn-primary btn-sm"
                 @click="$emit('delRow', id)"
                 type="button"
                 data-bs-toggle="tooltip"
