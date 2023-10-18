@@ -87,116 +87,80 @@ it('cannot access a list\'s info as admin', function() {
     $this->actingAs($admin)->get('/admin/selection_list/'.$testList->id)->assertStatus(405);
 });
 
-it('cannot create a school as user', function() {
+it('cannot create a list as user', function() {
     $user = User::factory()->user()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
-    $this->actingAs($user)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => strval($category->id),
+    $this->actingAs($user)->post('/admin/selection_list', [
+        'name' => "Test List",
+        'id' => ["0"],
+        'value' => ["Test"],
+        'active' => true,
+        'created_by' => $user->id,
     ])->assertForbidden();
 });
 
-it('cannot create a school as author', function() {
+it('can create a list as author', function() {
     $author = User::factory()->author()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
-    $this->actingAs($author)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => strval($category->id),
-    ])->assertForbidden();
+    $response = $this->actingAs($author)->post('/admin/selection_list', [
+        'name' => "Test List",
+        'id' => ["0"],
+        'value' => ["Test"],
+        'active' => true,
+        'created_by' => $author->id,
+    ])->assertRedirect("/admin/selection_list");
+
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
 });
 
 it('can create a school as admin', function() {
     $admin = User::factory()->admin()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
-    $response = $this->actingAs($admin)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => strval($category->id),
-    ]);
-    $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα αποθηκεύτηκε!');
+    $response = $this->actingAs($admin)->post('/admin/selection_list', [
+        'name' => "Test List",
+        'id' => ["0"],
+        'value' => ["Test"],
+        'active' => true,
+        'created_by' => $admin->id,
+    ])->assertRedirect("/admin/selection_list");
+
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
 });
 
-it('cannot create a school as user with invalid categories', function() {
+it('cannot edit a list as user', function() {
     $user = User::factory()->user()->create();
-
-    $this->actingAs($user)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => "0,1",
-    ])->assertForbidden();
-});
-
-it('cannot create a school as author with invalid categories', function() {
-    $author = User::factory()->author()->create();
-
-    $this->actingAs($author)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => "0,1",
-    ])->assertForbidden();
-});
-
-it('cannot create a school as admin with invalid categories', function() {
-    $admin = User::factory()->admin()->create();
-
-    $response = $this->actingAs($admin)->post('/admin/school', [
-        'name' => "Test School",
-        'email' => "test@example.com",
-        'telephone' => "123-456-7890",
-        'username' => "testSchool",
-        'code' => "9999999",
-        'category' => "0,1",
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $user->id
     ]);
-    $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
+
+    $this->actingAs($user)->get('/admin/selection_list/'.$testList->id.'/edit')->assertForbidden();
 });
 
-it('cannot edit a school as user', function() {
-    $user = User::factory()->user()->create();
-    $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 2']));
-
-    $this->actingAs($user)->get('/admin/school/'.$testSchool->id.'/edit')->assertForbidden();
-});
-
-it('cannot edit a school as author', function() {
+it('can edit a list as author', function() {
     $author = User::factory()->author()->create();
-    $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 2']));
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $author->id
+    ]);
 
-    $this->actingAs($author)->get('/admin/school/'.$testSchool->id.'/edit')->assertForbidden();
+    $this->actingAs($author)->get('/admin/selection_list/'.$testList->id.'/edit')->assertOk();
 });
 
-it('can edit a school as admin', function() {
+it('can edit a list as admin', function() {
     $admin = User::factory()->admin()->create();
-    $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
-    $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 2']));
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $admin->id
+    ]);
 
-    $this->actingAs($admin)->get('/admin/school/'.$testSchool->id.'/edit')->assertOk();
+    $this->actingAs($admin)->get('/admin/selection_list/'.$testList->id.'/edit')->assertOk();
 });
 
 it('cannot delete a school as user', function() {

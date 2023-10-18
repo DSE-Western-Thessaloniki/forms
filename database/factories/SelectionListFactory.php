@@ -19,8 +19,8 @@ class SelectionListFactory extends Factory
         $data = [];
         for ($i = 0; $i < $this->faker->randomDigitNotZero(); $i++) {
             $data[] = [
-                'value' => $i + 1,
-                'title' => $this->faker->word()
+                'id' => $i,
+                'value' => $this->faker->word()
             ];
         }
 
