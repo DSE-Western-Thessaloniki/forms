@@ -142,6 +142,7 @@ Route::prefix('admin')
                     }
                 );
             Route::resource('selection_list', SelectionListsController::class)
+                ->except('show')
                 ->names('list')
                 ->middleware('auth');
         }
