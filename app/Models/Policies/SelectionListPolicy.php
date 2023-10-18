@@ -26,7 +26,7 @@ class SelectionListPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -38,7 +38,7 @@ class SelectionListPolicy
      */
     public function view(User $user, SelectionList $selectionList)
     {
-        return true;
+        return false;
     }
 
     /**
