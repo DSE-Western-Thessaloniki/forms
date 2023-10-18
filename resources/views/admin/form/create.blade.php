@@ -3,7 +3,10 @@
 @section('content')
     <h1 class="text-center">Δημιουργίας φόρμας</h1>
     <form action="{{ route('admin.form.store') }}" method="post">
-        <vform-component :schools="{{ json_encode($schools) }}" :categories="{{ json_encode($categories) }}">
+        <vform-component
+            :schools="{{ json_encode($schools) }}"
+            :categories="{{ json_encode($categories) }}"
+            :selection_lists="{{ $selection_lists->toJson() }}">
         </vform-component>
 
         <div class="form-group row mt-5">

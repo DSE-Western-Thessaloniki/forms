@@ -26,7 +26,7 @@
                                     </a>
                                 </div>
                                 <form class="form-horizontal" id="search" method="GET"
-                                    action="{{ route('admin.school.index') }}">
+                                    action="{{ route('admin.list.index') }}">
                                     <div class="input-group" role="group">
                                         <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..."
                                             name="filter" value="{{ $filter }}">
@@ -64,10 +64,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
+                                @empty
                                 Δεν βρέθηκαν λίστες
-                            @endforelse
+                                @endforelse
+                            </div>
                         </div>
                         <div class="row justify-content-md-center">
                             {{ $lists->links() }}

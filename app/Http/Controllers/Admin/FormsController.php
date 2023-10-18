@@ -9,9 +9,11 @@ use App\Models\SchoolCategory;
 use App\Models\FormField;
 use App\Models\FormFieldData;
 use App\Models\OtherTeacher;
+use App\Models\SelectionList;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use XLSXWriter;
 
@@ -107,9 +109,11 @@ class FormsController extends Controller
     {
         $schools = School::where('active', 1)->get(['id', 'name']);
         $categories = SchoolCategory::all('id', 'name');
+        $selection_lists = SelectionList::where('active', true)->get(['id', 'name']);
         return view('admin.form.create')
             ->with('schools', $schools)
-            ->with('categories', $categories);
+            ->with('categories', $categories)
+            ->with('selection_lists', $selection_lists);
     }
 
     /**
@@ -123,6 +127,8 @@ class FormsController extends Controller
         $this->validate($request, [
             'title' => 'required',
         ]);
+
+        DB::beginTransaction();
 
         // Create form
         $form =  new Form;
@@ -140,9 +146,17 @@ class FormsController extends Controller
             $field = new FormField;
             $field->sort_id = $formfield[$key]['sort_id'];
             $field->title = $formfield[$key]['title'];
-            $field->type = $formfield[$key]['type'];
+
+            if ($formfield[$key]['type'] === FormField::TYPE_LIST) {
+                $selection_list = SelectionList::find($formfield[$key]['selection_list']);
+
+                $field->type = FormField::TYPE_SELECT;
+                $field->listvalues = $selection_list->data;
+            } else {
+                $field->type = $formfield[$key]['type'];
+                $field->listvalues = $formfield[$key]['values'] ?? '';
+            }
             $field->required = $formfield[$key]['required'] === "true" ? true : false;
-            $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->form_fields()->save($field);
         }
 
@@ -171,6 +185,8 @@ class FormsController extends Controller
         foreach ($schools as $school) {
             $form->schools()->attach($school);
         }
+
+        DB::commit();
 
         return redirect(route('admin.form.index'))->with('status', 'Η φόρμα δημιουργήθηκε');
     }
@@ -208,12 +224,15 @@ class FormsController extends Controller
             array_push($category_selected_values, $category->id);
         }
 
+        $selection_lists = SelectionList::where('active', true)->get(['id', 'name']);
+
         return view('admin.form.edit')
             ->with('schools', $schools)
             ->with('categories', $categories)
             ->with('school_selected_values', implode(",", $school_selected_values))
             ->with('category_selected_values', implode(",", $category_selected_values))
-            ->with('form', $form);
+            ->with('form', $form)
+            ->with('selection_lists', $selection_lists);
     }
 
     /**
@@ -228,6 +247,8 @@ class FormsController extends Controller
         $this->validate($request, [
             'title' => 'required',
         ]);
+
+        DB::beginTransaction();
 
         // Update form
         $form->title = $request->input('title');
@@ -251,9 +272,18 @@ class FormsController extends Controller
             $field = $form->form_fields()->firstOrNew(['id' => $key]);
             $field->sort_id = $formfield[$key]['sort_id'] ?? $key;
             $field->title = $formfield[$key]['title'];
-            $field->type = $formfield[$key]['type'];
+
+            if ($formfield[$key]['type'] == FormField::TYPE_LIST) {
+                $selection_list = SelectionList::find($formfield[$key]['selection_list']);
+
+                $field->type = FormField::TYPE_SELECT;
+                $field->listvalues = $selection_list->data;
+            } else {
+                $field->type = $formfield[$key]['type'];
+                $field->listvalues = $formfield[$key]['values'] ?? '';
+            }
+
             $field->required = $formfield[$key]['required'] === "true" ? true : false;
-            $field->listvalues = $formfield[$key]['values'] ?? '';
             $form->form_fields()->save($field);
         }
 
@@ -278,6 +308,8 @@ class FormsController extends Controller
         }
 
         $form->schools()->sync($schools);
+
+        DB::commit();
 
         return redirect(route('admin.form.index'))->with('status', 'Η φόρμα ενημερώθηκε');
     }

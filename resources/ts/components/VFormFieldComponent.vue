@@ -99,6 +99,24 @@
                     :value="dataListValues"
                 />
             </div>
+            <div v-if="cbselected === FieldType.List" class="row">
+                <label class="col-auto col-form-label">Όνομα λίστας:</label>
+                <div class="col align-self-center">
+                    <select
+                        :name="'field[' + field_id + '][selection_list]'"
+                        v-model="selection_list_selected"
+                        v-if="!restricted"
+                    >
+                        <option
+                            v-for="selection_list in selection_lists"
+                            :value="selection_list.id"
+                            :key="selection_list.id"
+                        >
+                            {{ selection_list.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
             <input
                 type="hidden"
                 :name="'field[' + field_id + '][sort_id]'"
@@ -132,6 +150,7 @@ const props = withDefaults(
         no_drag?: boolean;
         sort_id: number;
         required?: boolean;
+        selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
     }>(),
     {
         value: "Νέο πεδίο",
@@ -142,6 +161,7 @@ const props = withDefaults(
 
 let title = ref(props.value);
 let cbselected = ref(props.type);
+let selection_list_selected = ref(0);
 let options = [
     {
         id: FieldType.Text,
@@ -186,6 +206,10 @@ let options = [
     {
         id: FieldType.WebPage,
         value: "Διεύθυνση ιστοσελίδας",
+    },
+    {
+        id: FieldType.List,
+        value: "Έτοιμη λίστα δεδομένων",
     },
 ];
 let dataListValues = ref(props.listvalues);

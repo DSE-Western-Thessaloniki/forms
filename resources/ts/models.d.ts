@@ -107,4 +107,15 @@ declare namespace App.Models {
         name: string;
         email: string;
     }
+
+    export interface SelectionList {
+        id: number;
+        active: boolean;
+        name: string;
+        data: string;
+        created_by: string;
+        updated_by: string | null;
+        created_at: string | null;
+        updated_at: string | null;
+    }
 }
