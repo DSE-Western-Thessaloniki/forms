@@ -17,7 +17,7 @@ const props = withDefaults(
 
 type SelectionListRow = {
     value: string;
-    id: string;
+    id: number;
 };
 
 let selectionListData: Ref<SelectionListRow[]>;
@@ -32,23 +32,23 @@ try {
 if (selectionListData.value.length === 0) {
     selectionListData.value.push({
         value: "",
-        id: "1",
+        id: 0,
     });
 }
 
 let lastIndex = computed(() =>
-    Math.max(0, ...selectionListData.value.map((item) => parseInt(item.id)))
+    Math.max(0, ...selectionListData.value.map((item) => item.id))
 );
 
 const addRow = () => {
     let nextIndex = lastIndex.value + 1;
     selectionListData.value.push({
         value: "",
-        id: `${nextIndex}`,
+        id: nextIndex,
     });
 };
 
-const delRow = (id: string) => {
+const delRow = (id: number) => {
     if (selectionListData.value.length > 1) {
         selectionListData.value = selectionListData.value.filter(
             (item) => item.id !== id
