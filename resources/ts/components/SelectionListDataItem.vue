@@ -4,7 +4,7 @@ import { nextTick, onMounted, ref } from "vue";
 const props = withDefaults(
     defineProps<{
         value?: string;
-        id: string;
+        id: number;
         numItems: number;
         lastIndex: number;
     }>(),
@@ -22,7 +22,7 @@ function onKeyDown(e: KeyboardEvent) {
     if (
         e.shiftKey === false &&
         e.key == "Tab" &&
-        `${props.lastIndex}` === props.id
+        props.lastIndex === props.id
     ) {
         e.preventDefault();
         emit("addRow");
@@ -53,7 +53,7 @@ onMounted(() => {
             </button>
         </div>
         <div class="col-auto justify-content-center d-flex">
-            <div class="my-auto">{{ id }}.</div>
+            <div class="my-auto">{{ id + 1 }}.</div>
             <input
                 class="form-control"
                 name="id[]"
