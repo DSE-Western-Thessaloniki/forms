@@ -170,20 +170,10 @@ class SelectionListsController extends Controller
         $uploadedFile = $request->file('csvfile');
         $data = [];
         if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-            while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
                 array_push($data, $row_data);
             }
             fclose($handle);
-        }
-
-        if (!empty($data) && count($data[0]) != 6) { // Δοκίμασε το ';' ως διαχωριστικό
-            $data = [];
-            if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-                while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                    array_push($data, $row_data);
-                }
-                fclose($handle);
-            }
         }
 
         if (empty($data)) {
@@ -194,10 +184,6 @@ class SelectionListsController extends Controller
         $listData = [];
 
         foreach ($data as $index => $row) {
-            if (count($row) != 1) {
-                return redirect(route('admin.list.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
-            }
-
             if ($index === 0) {
                 $name = $row[0];
             } else {
@@ -215,7 +201,7 @@ class SelectionListsController extends Controller
         $selectionList->created_by = $request->user()->id;
         $selectionList->save();
 
-        return redirect(route('admin.list.index'))->with('success', 'Έγινε εισαγωγή νέας λίστας');
+        return redirect(route('admin.list.index'))->with('status', 'Έγινε εισαγωγή νέας λίστας');
     }
 
     public function confirmDelete(SelectionList $selectionList)
