@@ -121,7 +121,8 @@ class SelectionListsController extends Controller
             'id' => ['array'],
             'id.*' => ['string', 'max:255'],
             'value' => ['array'],
-            'value.*' => ['string', 'max:255']
+            'value.*' => ['string', 'max:255'],
+            'active' => [Rule::in('0', '1', true, false), 'nullable']
         ]);
 
         $selectionListData = [];
@@ -135,6 +136,7 @@ class SelectionListsController extends Controller
         $selectionList->update([
             'name' => $validatedData['name'],
             'data' => json_encode($selectionListData),
+            'active' => $validatedData['active'] ?? false,
             'updated_by' => $request->user()->id,
         ]);
 
@@ -230,6 +232,6 @@ class SelectionListsController extends Controller
         $selectionListClone->created_by = Auth::user()->id;
         $selectionListClone->save();
 
-        return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
+        return redirect(route('admin.list.index'))->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
     }
 }
