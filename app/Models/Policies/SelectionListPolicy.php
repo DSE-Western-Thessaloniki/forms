@@ -12,10 +12,7 @@ class SelectionListPolicy
 
     public function before(User $current_user, $ability)
     {
-        return (
-            $current_user->isAdministrator() ||
-            $current_user->roles()->where("name", "Author")->exists()
-        ) ? true : null;
+        return $current_user->isAdministrator() ? true : null;
     }
 
     /**
@@ -26,7 +23,7 @@ class SelectionListPolicy
      */
     public function viewAny(User $user)
     {
-        return false;
+        return $user->roles()->where("name", "Author")->exists();
     }
 
     /**
@@ -38,7 +35,7 @@ class SelectionListPolicy
      */
     public function view(User $user, SelectionList $selectionList)
     {
-        return false;
+        return $user->roles()->where("name", "Author")->exists();
     }
 
     /**
@@ -49,7 +46,7 @@ class SelectionListPolicy
      */
     public function create(User $user)
     {
-        return false;
+        return $user->roles()->where("name", "Author")->exists();
     }
 
     /**
@@ -61,7 +58,13 @@ class SelectionListPolicy
      */
     public function update(User $user, SelectionList $selectionList)
     {
-        return false;
+        if (!$user->roles()->where("name", "Author")->exists())
+            return false;
+
+        if ($selectionList->created_by !== $user->id)
+            return false;
+
+        return true;
     }
 
     /**
@@ -73,7 +76,13 @@ class SelectionListPolicy
      */
     public function delete(User $user, SelectionList $selectionList)
     {
-        return false;
+        if (!$user->roles()->where("name", "Author")->exists())
+            return false;
+
+        if ($selectionList->created_by != $user->id)
+            return false;
+
+        return true;
     }
 
     /**

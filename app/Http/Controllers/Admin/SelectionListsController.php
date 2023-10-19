@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSelectionListRequest;
 use App\Http\Requests\UpdateSelectionListRequest;
 use App\Models\SelectionList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class SelectionListsController extends Controller
@@ -219,5 +220,16 @@ class SelectionListsController extends Controller
     {
         return view('admin.list.confirm_delete')
             ->with('list', $selectionList);
+    }
+
+    public function copyList(SelectionList $selectionList): \Illuminate\Http\RedirectResponse
+    {
+        // Δημιουργία αντιγράφου
+        $selectionListClone = $selectionList->replicate();
+        $selectionListClone->name = $selectionList->name . " (Αντίγραφο)";
+        $selectionListClone->created_by = Auth::user()->id;
+        $selectionListClone->save();
+
+        return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
     }
 }
