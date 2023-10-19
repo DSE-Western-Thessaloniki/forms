@@ -139,6 +139,7 @@ Route::prefix('admin')
                         Route::get('/import', [SelectionListsController::class, 'showImport'])->name('show_import');
                         Route::post('/import', [SelectionListsController::class, 'import'])->name('import');
                         Route::get('/{selection_list}/confirmDelete', [SelectionListsController::class, 'confirmDelete'])->name('confirmDelete');
+                        Route::post('/{selection_list}/copy', [SelectionListsController::class, 'copyList'])->name('copy');
                     }
                 );
             Route::resource('selection_list', SelectionListsController::class)

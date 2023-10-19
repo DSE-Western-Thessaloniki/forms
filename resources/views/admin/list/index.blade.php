@@ -38,7 +38,7 @@
 
                             <div class="row justify-content-md-center">
                                 @forelse($lists as $list)
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-6">
                                         <div class="card my-2 shadow">
                                             <div class="card-header">
                                                 <strong>{{ $loop->iteration + $lists->firstItem() - 1 }}.
@@ -49,16 +49,34 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <div class="col-lg-auto d-flex flex-column flex-grow-1">
+                                                    <div class="col-lg-8 d-flex flex-column justify-content-between">
                                                         <div>@icon('fas fa-hashtag') {{ substr_count($list->data, '"id"') }} στοιχεία</div>
+                                                        <div class="flex-wrap fst-italic">
+                                                            <small class="text-black-50">Δημιουργήθηκε από: {{$list->created_by()->first()->name}}</small>
+                                                        </div>
+                                                        @php
+                                                            $updated_by = $list->updated_by()->first();
+                                                        @endphp
+                                                        @if($updated_by)
+                                                        <div class="flex-wrap">
+                                                            <small class="text-black-50">Τροποποιήθηκε από: {{$updated_by->name}}</small>
+                                                        </div>
+                                                        @endif
                                                     </div>
-                                                    <div class="col-lg-auto">
+                                                    <div class="col-lg-4">
+                                                        <a href="{{ route('admin.list.copy', $list) }}"
+                                                            class="btn btn-success m-1 w-100">@icon('fas fa-copy')
+                                                            Αντιγραφή</a><br />
+                                                        @can('update', $list)
                                                         <a href="{{ route('admin.list.edit', $list) }}"
-                                                            class="btn btn-primary m-1">@icon('fas fa-edit')
+                                                            class="btn btn-primary m-1 w-100">@icon('fas fa-edit')
                                                             Επεξεργασία</a><br />
-                                                        <a class="btn btn-danger m-1"
+                                                        @endcan
+                                                        @can('delete', $list)
+                                                        <a class="btn btn-danger m-1 w-100"
                                                             href="{{ route('admin.list.confirmDelete', $list) }}">@icon('fas fa-trash-alt')
                                                             Διαγραφή</a>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </div>
