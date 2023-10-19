@@ -7,6 +7,9 @@ use Database\Seeders\OptionSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseHas;
+
 beforeEach(function() {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
@@ -111,9 +114,17 @@ it('can create a list as author', function() {
     ])->assertRedirect("/admin/selection_list");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
+
+    assertDatabaseCount('selection_lists', 1);
+    assertDatabaseHas('selection_lists', [
+        'name' => "Test List",
+        'data' => '[{"id":0,"value":"Test"}]',
+        'active' => true,
+        'created_by' => $author->id,
+    ]);
 });
 
-it('can create a school as admin', function() {
+it('can create a list as admin', function() {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/selection_list', [
@@ -125,6 +136,14 @@ it('can create a school as admin', function() {
     ])->assertRedirect("/admin/selection_list");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
+
+    assertDatabaseCount('selection_lists', 1);
+    assertDatabaseHas('selection_lists', [
+        'name' => "Test List",
+        'data' => '[{"id":0,"value":"Test"}]',
+        'active' => true,
+        'created_by' => $admin->id,
+    ]);
 });
 
 it('cannot edit a list as user', function() {
@@ -163,247 +182,223 @@ it('can edit a list as admin', function() {
     $this->actingAs($admin)->get('/admin/selection_list/'.$testList->id.'/edit')->assertOk();
 });
 
-it('cannot delete a school as user', function() {
+it('cannot delete a list as user', function() {
     $user = User::factory()->user()->create();
-    $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $user->id
+    ]);
 
-    $this->actingAs($user)->delete('/admin/school/'.$testSchool->id)->assertForbidden();
+    $this->actingAs($user)->delete('/admin/selection_list/'.$testList->id)->assertForbidden();
+
+    assertDatabaseCount('selection_lists', 1);
 });
 
-it('cannot delete a school as author', function() {
-    $author = User::factory()->author()->create();
-    $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
-
-    $this->actingAs($author)->delete('/admin/school/'.$testSchool->id)->assertForbidden();
-});
-
-it('can delete a school as admin', function() {
+it('cannot delete a list as author with no ownership', function() {
     $admin = User::factory()->admin()->create();
-    $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
+    $author = User::factory()->author()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $admin->id
+    ]);
 
-    $response = $this->actingAs($admin)->delete('/admin/school/'.$testSchool->id);
-    $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα διαγράφηκε!');
+    $this->actingAs($author)->delete('/admin/selection_list/'.$testList->id)->assertForbidden();
+
+    assertDatabaseCount('selection_lists', 1);
 });
 
-it('cannot update a school as user', function() {
+it('can delete a list as author with ownership', function() {
+    $author = User::factory()->author()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $author->id
+    ]);
+
+    $response = $this
+        ->actingAs($author)->delete('/admin/selection_list/'.$testList->id)
+        ->assertRedirect("/admin/selection_list");
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα διαγράφηκε!');
+
+    assertDatabaseCount('selection_lists', 0);
+});
+
+it('can delete a list as admin', function() {
+    $admin = User::factory()->admin()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $admin->id
+    ]);
+
+    $response = $this
+        ->actingAs($admin)->delete('/admin/selection_list/'.$testList->id)
+        ->assertRedirect("/admin/selection_list");
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα διαγράφηκε!');
+});
+
+it('cannot update a list as user', function() {
     $user = User::factory()->user()->create();
-    $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    $response = $this->actingAs($user)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => strval($category->id),
-    ])->assertForbidden();
-    $response->assertForbidden();
-});
-
-it('cannot update a school as author', function() {
-    $author = User::factory()->author()->create();
-    $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    $response = $this->actingAs($author)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => strval($category->id),
-    ])->assertForbidden();
-    $response->assertForbidden();
-});
-
-it('can update a school as admin', function() {
-    $admin = User::factory()->admin()->create();
-    $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    $response = $this->actingAs($admin)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => strval($category->id),
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $user->id
     ]);
-    $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα ενημερώθηκε!');
+
+    $response = $this->actingAs($user)->put('/admin/selection_list/'.$testList->id, [
+        'name' => 'Test List2',
+        'active' => false,
+        'data' => '["id":0,"value":"Test"]',
+    ])->assertForbidden();
 });
 
-it('cannot update a school as user with invalid categories', function() {
+it('cannot update a list as author with no ownership', function() {
+    $author = User::factory()->author()->create();
+    $author2 = User::factory()->author()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $author2->id
+    ]);
+
+    $response = $this->actingAs($author)->put('/admin/selection_list/'.$testList->id, [
+        'name' => 'Test List2',
+        'active' => false,
+        'data' => '["id":0,"value":"Test"]',
+    ])->assertForbidden();
+});
+
+it('can update a list as author with ownership', function() {
+    $author = User::factory()->author()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $author->id
+    ]);
+
+    $response = $this->actingAs($author)->put('/admin/selection_list/'.$testList->id, [
+        'name' => 'Test List2',
+        'active' => false,
+        'id' => ["0"],
+        'value' => ["Test"]
+    ])->assertRedirect("/admin/selection_list");
+    assertDatabaseHas('selection_lists', [
+        'name' => 'Test List2',
+        'active' => false,
+        'data' => '[{"id":0,"value":"Test"}]',
+        'created_by' => $author->id
+    ]);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+});
+
+it('can update a list as admin without ownership', function() {
+    $admin = User::factory()->admin()->create();
+    $author = User::factory()->author()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $author->id
+    ]);
+
+    $response = $this->actingAs($admin)->put('/admin/selection_list/'.$testList->id, [
+        'name' => 'Test List2',
+        'active' => false,
+        'id' => ["0"],
+        'value' => ["Test"]
+    ])->assertRedirect("/admin/selection_list");
+    assertDatabaseHas('selection_lists', [
+        'name' => 'Test List2',
+        'active' => false,
+        'data' => '[{"id":0,"value":"Test"}]',
+        'created_by' => $author->id
+    ]);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+});
+
+it('can update a list as admin with ownership', function() {
+    $admin = User::factory()->admin()->create();
+    $testList = SelectionList::factory()->create([
+        'name' => 'Test List',
+        'active' => true,
+        'data' => '[]',
+        'created_by' => $admin->id
+    ]);
+
+    $response = $this->actingAs($admin)->put('/admin/selection_list/'.$testList->id, [
+        'name' => 'Test List2',
+        'active' => false,
+        'id' => ["0"],
+        'value' => ["Test"]
+    ])->assertRedirect("/admin/selection_list");
+    assertDatabaseHas('selection_lists', [
+        'name' => 'Test List2',
+        'active' => false,
+        'data' => '[{"id":0,"value":"Test"}]',
+        'created_by' => $admin->id
+    ]);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+});
+
+it('cannot import a list as user', function() {
     $user = User::factory()->user()->create();
-    $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
 
-    $response = $this->actingAs($user)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => "0,1",
-    ])->assertForbidden();
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    "Test List\ntestUser\n9999999");
+
+    $response = $this->actingAs($user)->post('/admin/selection_list/import', [
+        'csvfile' => $file,
+    ]);
     $response->assertForbidden();
 });
 
-it('cannot update a school as author with invalid categories', function() {
+it('can import a list as author', function() {
     $author = User::factory()->author()->create();
-    $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
 
-    $response = $this->actingAs($author)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => "0,1",
-    ])->assertForbidden();
-    $response->assertForbidden();
+    Storage::fake('uploads');
+
+    $file = UploadedFile::fake()->createWithContent('import_test.csv',
+    "Test List\ntestUser\n9999999");
+
+    $response = $this->actingAs($author)->post('/admin/selection_list/import', [
+        'csvfile' => $file,
+    ]);
+    $response->assertRedirect("/admin/selection_list");
+    expect($response->getSession()->only(['status'])['status'])->toBe('Έγινε εισαγωγή νέας λίστας');
+    assertDatabaseCount('selection_lists', 1);
+    assertDatabaseHas('selection_lists', [
+        'name' => 'Test List',
+        'data' => '[{"id":0,"value":"testUser"},{"id":1,"value":"9999999"}]'
+    ]);
 });
 
-it('cannot update a school as admin with invalid categories', function() {
+it('can import a list as admin (with ; as delimiter)', function() {
     $admin = User::factory()->admin()->create();
-    $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
-
-    $response = $this->actingAs($admin)->put('/admin/school/'.$testSchool->id, [
-        'name' => 'Test School2',
-        'email' => 'test@example.com',
-        'telephone' => "123-456-7890",
-        'username' => 'testUser',
-        'code' => '9999999',
-        'category' => "0,1",
-    ]);
-    $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
-});
-
-it('cannot import a school as user', function() {
-    $user = User::factory()->user()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
     Storage::fake('uploads');
 
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
-    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
+    "\"Test List\";\"indiff\"\n\"testUser\";\"indiff\"\n\"9999999\";\"indiff\"");
 
-    $response = $this->actingAs($user)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->post('/admin/selection_list/import', [
         'csvfile' => $file,
     ]);
-    $response->assertForbidden();
-});
-
-it('cannot import a school as author', function() {
-    $author = User::factory()->author()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    Storage::fake('uploads');
-
-    $file = UploadedFile::fake()->createWithContent('import_test.csv',
-    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
-
-    $response = $this->actingAs($author)->post('/admin/school/import', [
-        'csvfile' => $file,
+    $response->assertRedirect(route('admin.list.index'));
+    expect($response->getSession()->only(['status'])['status'])->toBe('Έγινε εισαγωγή νέας λίστας');
+    assertDatabaseCount('selection_lists', 1);
+    assertDatabaseHas('selection_lists', [
+        'name' => 'Test List',
+        'data' => '[{"id":0,"value":"testUser"},{"id":1,"value":"9999999"}]'
     ]);
-    $response->assertForbidden();
-});
-
-it('can import a school as admin', function() {
-    $admin = User::factory()->admin()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    Storage::fake('uploads');
-
-    $file = UploadedFile::fake()->createWithContent('import_test.csv',
-    'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
-
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
-        'csvfile' => $file,
-    ]);
-    $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
-    $this->assertDatabaseHas('schools', [
-        'name' => 'Test School2',
-        'username' => 'testUser',
-        'code' => '9999999',
-        'email' => 'test@example.com',
-        'telephone' => '123-456-7890'
-    ]);
-    $this->assertDatabaseCount('school_category_school', 1);
-    $this->assertDatabaseHas('school_category_school', [
-        'school_category_id' => $category->id
-    ]);
-});
-
-it('can import a school as admin (with ; as delimiter)', function() {
-    $admin = User::factory()->admin()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    Storage::fake('uploads');
-
-    $file = UploadedFile::fake()->createWithContent('import_test.csv',
-    'Test School2;testUser;9999999;test@example.com;123-456-7890;testCategory');
-
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
-        'csvfile' => $file,
-    ]);
-    $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
-    $this->assertDatabaseHas('schools', [
-        'name' => 'Test School2',
-        'username' => 'testUser',
-        'code' => '9999999',
-        'email' => 'test@example.com',
-        'telephone' => '123-456-7890'
-    ]);
-    $this->assertDatabaseCount('school_category_school', 1);
-    $this->assertDatabaseHas('school_category_school', [
-        'school_category_id' => $category->id
-    ]);
-});
-
-it('can import multiple schools as admin', function() {
-    $admin = User::factory()->admin()->create();
-    $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
-
-    Storage::fake('uploads');
-
-    $file = UploadedFile::fake()->createWithContent('import_test.csv',
-    "Test School1,testUser,9999999,test@example.com,123-456-7890,testCategory
-Test School2,testUser2,9999991,test2@example.com,123-456-7891,testCategory
-Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory2");
-
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
-        'csvfile' => $file,
-    ]);
-    $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 3 σχολικών μονάδων');
-    $this->assertDatabaseCount('schools', 3);
-    $this->assertDatabaseHas('schools', [
-        'name' => 'Test School1',
-        'username' => 'testUser',
-        'code' => '9999999',
-        'email' => 'test@example.com',
-        'telephone' => '123-456-7890'
-    ]);
-    $this->assertDatabaseHas('schools', [
-        'name' => 'Test School2',
-        'username' => 'testUser2',
-        'code' => '9999991',
-        'email' => 'test2@example.com',
-        'telephone' => '123-456-7891'
-    ]);
-    $this->assertDatabaseHas('schools', [
-        'name' => 'Test School3',
-        'username' => 'testUser3',
-        'code' => '9999992',
-        'email' => 'test3@example.com',
-        'telephone' => '123-456-7892'
-    ]);
-
-    expect(SchoolCategory::where('name', 'testCategory')->first()->schools()->count())->toBe(2);
-    expect(SchoolCategory::where('name', 'testCategory2')->first()->schools()->count())->toBe(1);
 });
