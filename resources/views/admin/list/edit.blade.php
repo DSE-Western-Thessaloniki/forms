@@ -26,9 +26,9 @@
                         <form action={{ route('admin.list.update', $selectionList->id) }} method='post'>
 
                             <div class="form-group row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-right">Όνομα</label>
+                                <label for="name" class="col-md-2 col-form-label text-md-right">Όνομα</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <input id="name" type="text"
                                         class="form-control @error('name') is-invalid @enderror" name="name"
                                         value="{{ $selectionList->name }}" required autocomplete="name" autofocus>
@@ -38,6 +38,14 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <label for="active" class="col-md-2 col-form-label text-md-right">Ενεργή</label>
+                                <div class="col-md-10">
+                                    <input id="active" type="checkbox"
+                                        class="form-check-input @error('active') is-invalid @enderror" name="active"
+                                        value="1" {{ $selectionList->active ? 'checked' : '' }}>
                                 </div>
                             </div>
 

@@ -11,7 +11,8 @@ class SelectionList extends Model
 
     protected $fillable = [
         'name',
-        'data'
+        'data',
+        'active'
     ];
 
     public function created_by() {

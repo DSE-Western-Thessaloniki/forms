@@ -40,11 +40,11 @@
                                 @forelse($lists as $list)
                                     <div class="col-xl-6">
                                         <div class="card my-2 shadow">
-                                            <div class="card-header">
+                                            <div class="card-header {{ $list->active ?: 'bg-danger text-white' }}">
                                                 <strong>{{ $loop->iteration + $lists->firstItem() - 1 }}.
                                                     {{ $list->name }}</strong>
                                                 @if (!$list->active)
-                                                    <em>(Ανενεργή)</em>
+                                                    <em> (Ανενεργή)</em>
                                                 @endif
                                             </div>
                                             <div class="card-body">
@@ -64,9 +64,13 @@
                                                         @endif
                                                     </div>
                                                     <div class="col-lg-4">
-                                                        <a href="{{ route('admin.list.copy', $list) }}"
-                                                            class="btn btn-success m-1 w-100">@icon('fas fa-copy')
-                                                            Αντιγραφή</a><br />
+                                                        <form method="POST" action="{{ route('admin.list.copy', $list) }}">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                class="btn btn-success m-1 w-100">@icon('fas fa-copy')
+                                                                Αντιγραφή</button>
+                                                            <br />
+                                                        </form>
                                                         @can('update', $list)
                                                         <a href="{{ route('admin.list.edit', $list) }}"
                                                             class="btn btn-primary m-1 w-100">@icon('fas fa-edit')
