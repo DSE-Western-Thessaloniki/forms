@@ -161,7 +161,9 @@ const props = withDefaults(
 
 let title = ref(props.value);
 let cbselected = ref(props.type);
-let selection_list_selected = ref(0);
+let selection_list_selected = ref(
+    props.selection_lists.length ? props.selection_lists[0].id : 0
+);
 let options = [
     {
         id: FieldType.Text,
