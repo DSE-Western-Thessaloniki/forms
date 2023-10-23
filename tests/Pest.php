@@ -93,6 +93,28 @@ function test_cas_logged_in() {
         ->andReturn('');
 }
 
+function test_cas_logged_in_as_teacher() {
+    Cas::shouldReceive('isAuthenticated')
+        ->andReturnTrue();
+    Cas::shouldReceive('checkAuthentication')
+        ->andReturnTrue();
+    Cas::shouldReceive('getAttribute')
+        ->with('uid')
+        ->andReturn('888');
+    Cas::shouldReceive('getAttribute')
+        ->with('mail')
+        ->andReturn('tstteacher@sch.gr');
+    Cas::shouldReceive('getAttribute')
+        ->with('cn')
+        ->andReturn('Dokimastikos ekpaideytikos');
+    Cas::shouldReceive('getAttribute')
+        ->with('employeenumber')
+        ->andReturn('123456');
+    Cas::shouldReceive('getAttribute')
+        ->with('businesscategory')
+        ->andReturn('ΕΚΠΑΙΔΕΥΤΙΚΟΣ');
+}
+
 function test_create_one_form_for_user(User $user): Form {
     $form = Form::factory()
     ->for($user)
