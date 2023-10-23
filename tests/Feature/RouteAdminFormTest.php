@@ -109,7 +109,7 @@ it('can create a form as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -125,6 +125,7 @@ it('can create a form as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 });
 
@@ -136,7 +137,7 @@ it('can create a form as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']]
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -152,6 +153,7 @@ it('can create a form as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 });
 
@@ -166,7 +168,7 @@ it('can create a form with school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
@@ -183,6 +185,7 @@ it('can create a form with school categories as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -207,7 +210,7 @@ it('can create a form with school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
@@ -224,6 +227,7 @@ it('can create a form with school categories as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -245,7 +249,7 @@ it('can create a form with fake school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -262,6 +266,7 @@ it('can create a form with fake school categories as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
@@ -283,7 +288,7 @@ it('can create a form with fake school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -300,6 +305,7 @@ it('can create a form with fake school categories as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
@@ -324,7 +330,7 @@ it('can create a form with schools as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
@@ -341,6 +347,7 @@ it('can create a form with schools as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school', [
@@ -365,7 +372,7 @@ it('can create a form with schools as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
@@ -382,6 +389,7 @@ it('can create a form with schools as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school', [
@@ -403,7 +411,7 @@ it('can create a form with fake schools as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'schools' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -420,6 +428,7 @@ it('can create a form with fake schools as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseMissing('form_school', [
@@ -441,7 +450,7 @@ it('can create a form with fake schools as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'schools' => "0,1",
     ]);
     $response->assertStatus(302);
@@ -458,6 +467,7 @@ it('can create a form with fake schools as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1,
     ]);
 
     $this->assertDatabaseMissing('form_school', [
@@ -485,7 +495,7 @@ it('can create a form with schools and school categories as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => strval($category1->id).','.strval($category2->id),
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
@@ -503,6 +513,7 @@ it('can create a form with schools and school categories as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -540,7 +551,7 @@ it('can create a form with schools and school categories as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1]],
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
         'categories' => strval($category1->id).','.strval($category2->id),
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
@@ -558,6 +569,7 @@ it('can create a form with schools and school categories as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
+        'required' => 1
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -690,7 +702,8 @@ it('can update a form as author', function(){
             [
                 'title' => 'Test field',
                 'type' => 0,
-                'values' => ''
+                'values' => '',
+                'required' => 'true',
             ],
         ],
         'schools' => strval(School::factory()->for($author)->create(['name' => 'Test School'])->id).','.
@@ -702,7 +715,8 @@ it('can update a form as author', function(){
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 1,
     ]);
     expect(Form::find($testForm->id)->first()->schools()->count())->toBe(2);
 
@@ -712,12 +726,14 @@ it('can update a form as author', function(){
             [
                 'title' => 'Test field2',
                 'type' => 0,
-                'values' => ''
+                'values' => '',
+                'required' => 'true',
             ],
             [
                 'title' => 'Test field3',
                 'type' => 1,
-                'values' => ''
+                'values' => '',
+                'required' => 'false',
             ],
         ],
         'categories' => strval(SchoolCategory::factory()->create(['name' => 'Test Category'])->id).','.
@@ -730,17 +746,20 @@ it('can update a form as author', function(){
     $this->assertDatabaseMissing('form_fields', [
         'title' => 'Test field',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 1,
     ]);
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field2',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 1,
     ]);
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field3',
         'type' => 1,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 0,
     ]);
 });
 
@@ -754,7 +773,8 @@ it('can update a form as admin', function(){
             [
                 'title' => 'Test field',
                 'type' => 0,
-                'values' => ''
+                'values' => '',
+                'required' => "true",
             ]
         ],
         'schools' => strval(School::factory()->for($admin)->create(['name' => 'Test School'])->id).','.
@@ -766,7 +786,8 @@ it('can update a form as admin', function(){
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 1,
     ]);
     expect(Form::find($testForm->id)->first()->schools()->count())->toBe(2);
 
@@ -776,12 +797,14 @@ it('can update a form as admin', function(){
             [
                 'title' => 'Test field2',
                 'type' => 0,
-                'values' => ''
+                'values' => '',
+                'required' => "true",
             ],
             [
                 'title' => 'Test field3',
                 'type' => 1,
-                'values' => ''
+                'values' => '',
+                'required' => "false",
             ]
         ],
         'categories' => strval(SchoolCategory::factory()->create(['name' => 'Test Category'])->id).','.
@@ -800,12 +823,14 @@ it('can update a form as admin', function(){
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field2',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 1,
     ]);
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field3',
         'type' => 1,
-        'listvalues' => ''
+        'listvalues' => '',
+        'required' => 0,
     ]);
 });
 

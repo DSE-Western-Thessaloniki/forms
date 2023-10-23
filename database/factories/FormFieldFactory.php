@@ -25,7 +25,8 @@ class FormFieldFactory extends Factory
             'title' => $this->faker->sentence(),
             'type' => 0,
             'sort_id' => 0,
-            'listvalues' => ''
+            'listvalues' => '',
+            'required' => $this->faker->boolean()
         ];
     }
 }
