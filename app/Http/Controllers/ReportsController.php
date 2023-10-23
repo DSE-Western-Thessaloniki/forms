@@ -44,12 +44,6 @@ class ReportsController extends Controller
             $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
             $allow_all_teachers = Option::where('name', 'allow_all_teachers')->first();
 
-            if ($allow_teachers->value === "1") {
-                $teacher = Teacher::where('am', $teacher_uid)
-                ->orWhere('afm', $teacher_uid)
-                ->first();
-            }
-
             if ($allow_teachers->value !== "1") { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
                 $this->teacher_model_cache = null;
                 $this->other_teacher_model_cache = null;
@@ -57,14 +51,33 @@ class ReportsController extends Controller
                 return view('pages.deny_access');
             }
 
+            if (!$form->for_teachers) { // Η φόρμα δεν είναι για συμπλήρωση από εκπαιδευτικούς
+                $this->teacher_model_cache = null;
+                $this->other_teacher_model_cache = null;
+                Log::warning("Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
+            }
+
+            $teacher = Teacher::where('am', $teacher_uid)
+            ->orWhere('afm', $teacher_uid)
+            ->first();
+
             if (!$teacher && $allow_all_teachers->value !== "1") { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
                 $this->teacher_model_cache = null;
                 $this->other_teacher_model_cache = null;
-                Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
+                Log::warning("Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη τη χώρα. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
                 return view('pages.deny_access');
             }
 
             if (!$teacher && $allow_all_teachers->value === "1") { // Για εκπαιδευτικούς από παντού
+                if (!$form->for_all_teachers) {
+                    $this->teacher_model_cache = null;
+                    $this->other_teacher_model_cache = null;
+                    Log::warning("Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς εκτός της Διεύθυνσης. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                    return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
+                }
+
+
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
                 $other_teacher = OtherTeacher::firstOrNew([
                     'employeenumber' => cas()->getAttribute('employeenumber')
