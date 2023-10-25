@@ -102,6 +102,7 @@
                                             "
                                             :sort_id="element.sort_id"
                                             :selection_lists="selection_lists"
+                                            :single_item="fields.length === 1"
                                         >
                                         </vform-field-component>
                                     </li>
