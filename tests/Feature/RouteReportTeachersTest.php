@@ -2,6 +2,7 @@
 
 use App\Models\Form;
 use App\Models\FormField;
+use App\Models\FormFieldData;
 use App\Models\Option;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -1426,20 +1427,9 @@ it('can update a report as teacher (in teachers table) (form accepts teachers an
 
 });
 
-it('cannot update an inactive report as user logged in through cas (indirect relation) (no multiple)', function() {
+it('cannot update an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers) (no multiple)', function() {
 
-    test_cas_logged_in();
-
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
-    ]);
-
-    $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
-    ]);
-
-    $school->categories()->attach($school_category);
+    test_cas_logged_in_as_teacher();
 
     $form = Form::factory()
         ->for(User::factory()->admin())
@@ -1458,6 +1448,8 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ->create([
             'multiple' => false,
             'active' => false,
+            'for_teachers' => false,
+            'for_all_teachers' => false,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -1465,22 +1457,248 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
-
-    $form->school_categories()->attach($school_category);
-    $form->save();
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-})->skip();
+});
 
-it('cannot update a report that doesn\'t exist as user logged in through cas (no multiple)', function() {
+it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers) (no multiple)', function() {
 
-    test_cas_logged_in();
+    test_cas_logged_in_as_teacher();
 
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => false,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update an inactive report as teacher (in teachers table) (form doesn\'t accept teachers) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => false,
+            'for_teachers' => false,
+            'for_all_teachers' => false,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => false,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update a report that doesn\'t exist as teacher (not in teachers table) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/0', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+});
+
+it('cannot update a report that doesn\'t exist as teacher (in teachers table) (no multiple)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
     ]);
 
     $form = Form::factory()
@@ -1508,56 +1726,14 @@ it('cannot update a report that doesn\'t exist as user logged in through cas (no
         $post_data['f'.$field->id] = 'Test data';
     }
 
-    $form->schools()->attach($school);
-    $form->save();
-
     $this->put('/report/0', $post_data)
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-})->skip();
+});
 
-it('cannot update a report as user logged in through cas (no permission - user not in schools)', function() {
+it('cannot update a report record as teacher (not in teachers table) (form doesn\'t accept teachers)', function() {
 
-    test_cas_logged_in();
-
-    $form = Form::factory()
-        ->for(User::factory()->admin())
-        ->has(
-            FormField::factory()
-                ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => ''
-                    ];
-                })),
-            'form_fields'
-        )
-        ->create([
-            'multiple' => true,
-            'active' => true,
-        ]);
-
-    $fields = $form->form_fields()->get();
-    $post_data = array();
-    foreach ($fields as $field) {
-        $post_data['f'.$field->id] = 'Test data';
-    }
-
-    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
-        ->assertOk()
-        ->assertSee('Σφάλμα');
-})->skip();
-
-it('cannot update a report as user logged in through cas (no permission - user has no rights)', function() {
-
-    test_cas_logged_in();
-
-    School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
-    ]);
+    test_cas_logged_in_as_teacher();
 
     $form = Form::factory()
         ->for(User::factory()->admin())
@@ -1576,6 +1752,8 @@ it('cannot update a report as user logged in through cas (no permission - user h
         ->create([
             'multiple' => true,
             'active' => true,
+            'for_teachers' => false,
+            'for_all_teachers' => false,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -1586,16 +1764,99 @@ it('cannot update a report as user logged in through cas (no permission - user h
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
-})->skip();
+        ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
+});
 
-it('can update a report as user logged in through cas (direct relation)', function() {
+it('cannot update a report record as teacher (not in teachers table) (form accepts teachers)', function() {
 
-    test_cas_logged_in();
+    test_cas_logged_in_as_teacher();
 
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => false,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
+
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
+});
+
+it('can update a report record as teacher (not in teachers table) (form accepts teachers and all teachers)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data ' . $field->id;
+    }
+
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertRedirect('/report/'.$form->id.'/edit/1')
+        ->assertDontSee('Σφάλμα');
+
+    // Θα έχουμε 10 εγγραφές γιατί κατά την ενημέρωση εγγραφών με /new
+    // προετοιμάζουμε και την επόμενη καταχώρηση με null στα data
+    $this->assertDatabaseCount('form_field_data', 10);
+    foreach ($fields as $field) {
+        $this->assertDatabaseHas('form_field_data', [
+            'form_field_id' => $field->id,
+            'data' => 'Test data ' . $field->id,
+        ]);
+    }
+
+});
+
+it('cannot update a report record as teacher (in teachers table) (form doesn\'t accept teachers)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
     ]);
 
     $form = Form::factory()
@@ -1615,6 +1876,8 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->create([
             'multiple' => true,
             'active' => true,
+            'for_teachers' => false,
+            'for_all_teachers' => false,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -1623,8 +1886,144 @@ it('can update a report as user logged in through cas (direct relation)', functi
         $post_data['f'.$field->id] = 'Test data';
     }
 
-    $form->schools()->attach($school);
-    $form->save();
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
+});
+
+it('can update a report record as teacher (in teachers table) (form accepts teachers)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => false,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data ' . $field->id;
+    }
+
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertRedirect('/report/'.$form->id.'/edit/1')
+        ->assertDontSee('Σφάλμα');
+
+    // Θα έχουμε 10 εγγραφές γιατί κατά την ενημέρωση εγγραφών με /new
+    // προετοιμάζουμε και την επόμενη καταχώρηση με null στα data
+    $this->assertDatabaseCount('form_field_data', 10);
+    foreach ($fields as $field) {
+        $this->assertDatabaseHas('form_field_data', [
+            'form_field_id' => $field->id,
+            'data' => 'Test data ' . $field->id,
+        ]);
+    }
+});
+
+it('can update a report record as teacher (in teachers table) (form accepts teachers and all teachers)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data ' . $field->id;
+    }
+
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertRedirect('/report/'.$form->id.'/edit/1')
+        ->assertDontSee('Σφάλμα');
+
+    // Θα έχουμε 10 εγγραφές γιατί κατά την ενημέρωση εγγραφών με /new
+    // προετοιμάζουμε και την επόμενη καταχώρηση με null στα data
+    $this->assertDatabaseCount('form_field_data', 10);
+    foreach ($fields as $field) {
+        $this->assertDatabaseHas('form_field_data', [
+            'form_field_id' => $field->id,
+            'data' => 'Test data ' . $field->id,
+        ]);
+    }
+
+});
+
+it('can traverse a report (with multiple) as teacher (not in teachers table)', function() {
+
+    test_cas_logged_in_as_teacher();
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => ''
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $fields = $form->form_fields()->get();
+    $post_data = array();
+    foreach ($fields as $field) {
+        $post_data['f'.$field->id] = 'Test data';
+    }
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertDontSee('Σφάλμα')
@@ -1682,114 +2081,40 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data',
             'record' => 0,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data2',
             'record' => 1,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data3',
             'record' => 2,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data4',
             'record' => 3,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data5',
             'record' => 4,
         ]);
-})->skip();
+});
 
-it('cannot update an inactive report as user logged in through cas (direct relation)', function() {
+it('can traverse a report (with multiple) as teacher (in teachers table)', function() {
 
-    test_cas_logged_in();
+    test_cas_logged_in_as_teacher();
 
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
     ]);
-
-    $form = Form::factory()
-        ->for(User::factory()->admin())
-        ->has(
-            FormField::factory()
-                ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => ''
-                    ];
-                })),
-            'form_fields'
-        )
-        ->create([
-            'multiple' => true,
-            'active' => false,
-        ]);
-
-    $fields = $form->form_fields()->get();
-    $post_data = array();
-    foreach ($fields as $field) {
-        $post_data['f'.$field->id] = 'Test data';
-    }
-
-    $form->schools()->attach($school);
-    $form->save();
-
-    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-    $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-    $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-    $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-    $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-    $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-
-})->skip();
-
-it('can update a report as user logged in through cas (indirect relation)', function() {
-
-    test_cas_logged_in();
-
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
-    ]);
-
-    $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
-    ]);
-
-    $school->categories()->attach($school_category);
 
     $form = Form::factory()
         ->for(User::factory()->admin())
@@ -1808,6 +2133,8 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->create([
             'multiple' => true,
             'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -1815,9 +2142,6 @@ it('can update a report as user logged in through cas (indirect relation)', func
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
-
-    $form->school_categories()->attach($school_category);
-    $form->save();
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertDontSee('Σφάλμα')
@@ -1875,51 +2199,40 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
+            'teacher_id' => $teacher->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data',
             'record' => 0,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
+            'teacher_id' => $teacher->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data2',
             'record' => 1,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
+            'teacher_id' => $teacher->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data3',
             'record' => 2,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
+            'teacher_id' => $teacher->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data4',
             'record' => 3,
         ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
+            'teacher_id' => $teacher->id,
             'form_field_id' => $fields[0]->id,
             'data' => 'Test data5',
             'record' => 4,
         ]);
-})->skip();
+});
 
-it('cannot update an inactive report as user logged in through cas (indirect relation)', function() {
+it('cannot traverse an inactive report (with multiple) as teacher (not in teachers table)', function() {
 
-    test_cas_logged_in();
-
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
-    ]);
-
-    $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
-    ]);
-
-    $school->categories()->attach($school_category);
+    test_cas_logged_in_as_teacher();
 
     $form = Form::factory()
         ->for(User::factory()->admin())
@@ -1938,6 +2251,8 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ->create([
             'multiple' => true,
             'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -1945,9 +2260,6 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
-
-    $form->school_categories()->attach($school_category);
-    $form->save();
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
@@ -1972,15 +2284,16 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-})->skip();
 
-it('cannot update a report that doesn\'t exist as user logged in through cas', function() {
+});
 
-    test_cas_logged_in();
+it('cannot traverse an inactive report (with multiple) as teacher (in teachers table)', function() {
 
-    $school = School::factory()->for(User::factory())->create([
-        'name' => 'Test School',
-        'username' => '999',
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true
     ]);
 
     $form = Form::factory()
@@ -1999,7 +2312,9 @@ it('cannot update a report that doesn\'t exist as user logged in through cas', f
         )
         ->create([
             'multiple' => true,
-            'active' => true,
+            'active' => false,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
         ]);
 
     $fields = $form->form_fields()->get();
@@ -2008,10 +2323,28 @@ it('cannot update a report that doesn\'t exist as user logged in through cas', f
         $post_data['f'.$field->id] = 'Test data';
     }
 
-    $form->schools()->attach($school);
-    $form->save();
-
-    $this->put('/report/0/edit/0/update/new', $post_data)
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
-})->skip();
+
+    $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+    $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+    $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+    $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+    $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+});
