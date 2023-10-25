@@ -22,7 +22,7 @@
                                 <p class="h3 text-danger">Είστε σίγουροι ότι θέλετε να διαγράψετε τη λίστα "{{ $list->name }}";</p>
                                 <div class="d-flex justify-content-between">
                                     <a href="{{ route('admin.list.index') }}" class="btn btn-secondary">Άκυρο</a>
-                                    @if(Auth::user()->roles->where('name', 'Administrator')->count() > 0)
+                                    @if(Auth::user()->roles->where('name', 'Administrator')->count() > 0 || Auth::user()->roles->where('name', 'Author')->count() > 0)
                                     <form action="{{ route('admin.list.destroy', $list->id)}}" method="post" class="float-right">
                                         @csrf
                                         @method('DELETE')
