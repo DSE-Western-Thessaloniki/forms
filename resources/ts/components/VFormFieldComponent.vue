@@ -10,7 +10,7 @@
             ></i>
             <i v-if="no_drag" class="mb-2"></i>
             <i
-                v-if="!restricted"
+                v-if="!restricted && !single_item"
                 class="fas fa-times"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -151,6 +151,7 @@ const props = withDefaults(
         sort_id: number;
         required?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
+        single_item: boolean;
     }>(),
     {
         value: "Νέο πεδίο",
