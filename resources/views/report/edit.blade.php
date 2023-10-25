@@ -32,7 +32,7 @@
     @endif
 
     <h1>{{ $form->title }}</h1>
-    <h3 class="pre-wrap">{{ $form->notes }}</h3>
+    <h3>{!! nl2br(strip_tags($form->notes)) !!}</h3>
     <hr />
     <div class="card">
         <div class="card-header">
