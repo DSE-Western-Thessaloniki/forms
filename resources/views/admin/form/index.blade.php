@@ -31,7 +31,7 @@
                                             Εμφάνιση μόνο ενεργών φορμών
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Κριτήρια αναζήτησης..."
+                                    <input type="search" class="form-control" placeholder="Κριτήρια αναζήτησης..."
                                         name="filter" value="{{ $filter }}">
                                     <button type="submit" class="btn btn-primary ms-2" form="search">Αναζήτηση</button>
                                 </div>
