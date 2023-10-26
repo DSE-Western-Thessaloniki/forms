@@ -7,7 +7,6 @@ use App\Models\Form;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\FormField;
-use App\Models\FormFieldData;
 use App\Models\OtherTeacher;
 use App\Models\SelectionList;
 use App\Models\Teacher;
@@ -36,16 +35,23 @@ class FormsController extends Controller
      */
     public function index(Request $request) : \Illuminate\Contracts\View\View
     {
-        $filter = $request->get('filter');
+        // Κράτησε τις ρυθμίσεις για το φίλτρο και τις ενεργές φόρμες
         $only_active = $request->get('only_active') ?? $request->session()->get('only_active', 0);
         $request->session()->put('only_active', $only_active);
+        if ($request->exists('filter')) {
+            $filter = $request->get('filter');
+        } else {
+            $filter = $request->session()->get('filter', '');
+        }
+        $request->session()->put('filter', $filter);
+
         if ($filter && $only_active) {
             $forms = Form::orderBy('created_at', 'desc')
                 ->withCount(['data' => function($query) {
                     $query->where('record', 0);
                 }])
                 ->where('active', '1')
-                ->query(function($query) use ($filter) {
+                ->where(function($query) use ($filter) {
                     $query->where('id', 'like', '%'.$filter.'%')
                     ->orWhere('title', 'like', '%'.$filter.'%');
                 })
