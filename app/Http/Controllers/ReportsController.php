@@ -352,6 +352,11 @@ class ReportsController extends Controller
             return $access;
         }
 
+        $form = Form::where('active', false)->find($id);
+        if ($form) {
+            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+        }
+
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
@@ -400,6 +405,11 @@ class ReportsController extends Controller
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
             // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
             return $access;
+        }
+
+        $form = Form::where('active', false)->find($id);
+        if ($form) {
+            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -464,6 +474,11 @@ class ReportsController extends Controller
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
             // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
             return $access;
+        }
+
+        $form = Form::where('active', false)->find($id);
+        if ($form) {
+            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
@@ -616,6 +631,11 @@ class ReportsController extends Controller
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο ή εκπαιδευτικό
             // Επέστρεψε το view που μας επέστρεψε η συνάρτηση.
             return $access;
+        }
+
+        $form = Form::where('active', false)->find($id);
+        if ($form) {
+            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
