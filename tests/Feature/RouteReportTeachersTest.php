@@ -454,7 +454,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form does
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers)', function() {
@@ -483,7 +483,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function() {
@@ -512,7 +512,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function() {
@@ -546,7 +546,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers)', function() {
@@ -580,7 +580,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function() {
@@ -614,7 +614,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of a report that doesn\'t exist as teacher', function() {
@@ -804,7 +804,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers)', function() {
@@ -834,7 +834,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function() {
@@ -864,7 +864,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function() {
@@ -899,7 +899,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers)', function() {
@@ -934,7 +934,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function() {
@@ -969,7 +969,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a report record as teacher (not in teachers) (form doesn\'t accept teachers) (no multiple)', function() {
@@ -1460,7 +1460,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form do
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers) (no multiple)', function() {
@@ -1496,7 +1496,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function() {
@@ -1532,7 +1532,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update an inactive report as teacher (in teachers table) (form doesn\'t accept teachers) (no multiple)', function() {
@@ -1573,7 +1573,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form doesn\
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers) (no multiple)', function() {
@@ -1614,7 +1614,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function() {
@@ -1655,7 +1655,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update a report that doesn\'t exist as teacher (not in teachers table) (no multiple)', function() {
@@ -2263,27 +2263,27 @@ it('cannot traverse an inactive report (with multiple) as teacher (not in teache
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
 });
 
@@ -2325,26 +2325,26 @@ it('cannot traverse an inactive report (with multiple) as teacher (in teachers t
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
 });

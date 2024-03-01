@@ -740,7 +740,7 @@ it('cannot edit an inactive report as user logged in through cas (direct relatio
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('can edit a report as user logged in through cas (indirect relation)', function() {
@@ -826,7 +826,7 @@ it('cannot edit an inactive report as user logged in through cas (indirect relat
 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a record of a report that doesn\'t exist as user logged in through cas', function() {
@@ -997,7 +997,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (di
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('can edit a report record as user logged in through cas (indirect relation)', function() {
@@ -1083,7 +1083,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (in
 
     $this->get('/report/'.$form->id.'/edit/0')
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot edit a report record as user logged in through cas (no permission - user not in schools) (no multiple)', function() {
@@ -1395,7 +1395,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('can update a report as user logged in through cas (indirect relation) (no multiple)', function() {
@@ -1491,7 +1491,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
 
     $this->put('/report/'.$form->id, $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update a report that doesn\'t exist as user logged in through cas (no multiple)', function() {
@@ -1772,27 +1772,27 @@ it('cannot update an inactive report as user logged in through cas (direct relat
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
 });
 
@@ -1971,27 +1971,27 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
 
     $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/next', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/2/update/prev', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/1/update/exit', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/3/update/4', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 
     $this->put('/report/'.$form->id.'/edit/4/update/whatever', $post_data)
         ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
 it('cannot update a report that doesn\'t exist as user logged in through cas', function() {
