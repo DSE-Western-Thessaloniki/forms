@@ -90,6 +90,14 @@
                     </div>
 
                     <div class="form-group row mb-3">
+                        <label for="password-reset" class="col-md-4 form-check-label text-md-right">Αλλαγή του κωδικού μετά την πρώτη είσοδο</label>
+
+                        <div class="col-md-6">
+                            <input id="password-reset" type="checkbox" class="form-check-input" name="password_reset" value="1" checked>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
                         <div class="col-2">
                             <a class="btn btn-danger" href="{{ route('admin.user.index') }}">Άκυρο</a>
                         </div>

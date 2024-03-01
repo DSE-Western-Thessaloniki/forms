@@ -443,3 +443,17 @@ test('logout from admin redirects to admin login', function() {
     $response = $this->post('/admin/logout');
     $response->assertStatus(302)->assertRedirect(route('admin.login'));
 });
+
+it('redirects user to password reset if set', function() {
+    $this->seed(RoleSeeder::class);
+    $user = User::factory()->user()->create(['password_reset' => 1]);
+
+    $response = $this->actingAs($user)->get(route('admin.index'));
+    $response->assertStatus(302)->assertRedirect(route('admin.user.change_password', $user));
+
+    $response = $this->actingAs($user)->post('/admin/user/'.$user->id.'/password', [
+        'password' => 'test_password',
+        'password_confirmation' => 'test_password',
+    ]);
+    $response->assertRedirect(route('admin.index'));
+});
