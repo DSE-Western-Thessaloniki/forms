@@ -69,7 +69,7 @@
 
                     <div class="form-group row mb-3">
                         <div class="col-md-4"></div>
-                        <div class="col-md-6 offset-sm-2">
+                        <div class="col-md-6 offset-sm-1">
                             <div class="form-check">
                             @php
                                 if (Auth::user()->isAdministrator()) {
@@ -85,6 +85,16 @@
                                 <input type="checkbox" class="form-check-input" name="active" id="active" value="1" {{ $disabled }}>
                             @endif
                             <label for="active" class="form-check-label">Ενεργός</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-6 offset-sm-1">
+                            <div class="form-check">
+                                <input id="password-reset" type="checkbox" class="form-check-input" name="password_reset" value="1" @checked(old('password_reset', $user->password_reset))>
+                                <label for="password-reset" class="form-check-label">Αλλαγή του κωδικού μετά την πρώτη είσοδο</label>
                             </div>
                         </div>
                     </div>

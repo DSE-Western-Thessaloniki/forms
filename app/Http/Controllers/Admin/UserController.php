@@ -57,6 +57,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password_reset' => ['nullable', 'integer'],
         ]);
 
         $user = new User([
@@ -64,6 +65,7 @@ class UserController extends Controller
             'email' => $request->get('email'),
             'username' => $request->get('username'),
             'password' => Hash::make($request->get('password')),
+            'password_reset' => $request->get('password_reset') ? 1 : 0,
             'active' => 1,
             'updated_by' => Auth::user()->id,
         ]);
@@ -112,11 +114,13 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
             'username' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($user)],
+            'password_reset' => ['nullable', 'integer'],
         ]);
 
         $user->username = $request->get('username');
         $user->name = $request->get('name');
         $user->email = $request->get('email');
+        $user->password_reset = $request->get('password_reset') ? 1 : 0;
 
         // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
         if (Auth::user()->isAdministrator()) {
@@ -168,6 +172,7 @@ class UserController extends Controller
             ]);
 
             $user->password = Hash::make($request->get('password'));
+            $user->password_reset = 0;
             $user->save();
 
             if (Auth::user()->isAdministrator()) {
