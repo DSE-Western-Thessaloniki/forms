@@ -39,4 +39,11 @@ class FormField extends Model
     public function field_data() {
         return $this->hasMany(FormFieldData::class);
     }
+
+    /**
+     * @return array{multiple:bool}
+     */
+    public function field_options() {
+        return json_decode($this->options);
+    }
 }
