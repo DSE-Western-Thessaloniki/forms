@@ -12,6 +12,7 @@
 /vendor
 /.idea
 /.vscode
+!/.vscode/extensions.json
 /nbproject
 /.vagrant
 Homestead.json
