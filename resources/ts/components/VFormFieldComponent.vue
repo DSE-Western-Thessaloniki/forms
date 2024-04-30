@@ -49,6 +49,7 @@
                     <div v-if="!restricted">
                         <input
                             type="checkbox"
+                            class="form-check-input"
                             value="1"
                             v-model="is_required"
                         />
@@ -61,6 +62,7 @@
                     <select
                         :name="'field[' + field_id + '][type]'"
                         v-model="cbselected"
+                        class="form-select"
                         v-if="!restricted"
                     >
                         <option
@@ -82,24 +84,20 @@
                 </div>
             </div>
             <div v-if="cbselected === FieldType.File">
-                <div class="row">
-                    <label class="col-auto col-form-label">
-                        Πολλαπλά αρχεία:
-                    </label>
-                    <div class="col align-self-center">
-                        <input
-                            type="checkbox"
-                            :name="'field[' + field_id + '][options][multiple]'"
-                            value="1"
-                            v-model="multiple_files"
-                        />
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="col-auto col-form-label">
+                <div class="row my-2">
+                    <label
+                        class="col-auto col-form-label"
+                        :for="'field[' + field_id + '][filetype]'"
+                    >
                         Αποδεκτά αρχεία:
                     </label>
-                    <div class="col align-self-center"></div>
+                    <div class="col align-self-center">
+                        <AcceptedFiletypeSelect
+                            :name="'field[' + field_id + '][options][filetype]'"
+                            :accepted_filetypes="accepted_filetypes"
+                            :selected="field_options?.filetype?.value"
+                        />
+                    </div>
                 </div>
             </div>
             <div v-if="cbselected > 1 && cbselected < 5">
@@ -145,6 +143,7 @@
 
 <script lang="ts">
 import { defineComponent, withDefaults } from "vue";
+import AcceptedFiletypeSelect from "./AcceptedFiletypeSelect.vue";
 
 export default defineComponent({
     name: "vformfieldcomponent",
@@ -153,7 +152,7 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { FieldType, FieldTypeOptions, type FieldOptions } from "@/fieldtype";
+import { FieldType, FieldTypeOptions } from "@/fieldtype";
 
 const emit = defineEmits(["update:value", "deleteField"]);
 
@@ -169,7 +168,8 @@ const props = withDefaults(
         required?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
         single_item: boolean;
-        field_options?: FieldOptions;
+        field_options?: App.Models.FormFieldOptions;
+        accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
     }>(),
     {
         value: "Νέο πεδίο",
@@ -187,7 +187,6 @@ const options = FieldTypeOptions;
 const dataListValues = ref(props.listvalues);
 const field_id = props.id;
 const is_required = ref(props.required);
-const multiple_files = ref(props.field_options?.multiple ?? false);
 
 watch(title, (value) => {
     emit("update:value", value);

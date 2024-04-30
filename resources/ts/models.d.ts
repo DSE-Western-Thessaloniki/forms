@@ -70,14 +70,23 @@ declare namespace App.Models {
         title: string;
         type: number;
         listvalues: string;
-        regex: string;
-        capitals: boolean;
-        positive: boolean;
-        appear_when: string;
-        width: string;
         required: boolean;
+        options: string;
         created_at: string | null;
         updated_at: string | null;
+    }
+
+    export interface FormFieldOptions {
+        regex?: string;
+        capitals?: boolean;
+        positive?: boolean;
+        appear_when?: string;
+        width?: string;
+        filetype?: {
+            value: string;
+            field_for_filename?: string | null;
+            custom_value?: string | null;
+        };
     }
 
     export interface FormFieldData {
@@ -115,6 +124,14 @@ declare namespace App.Models {
         data: string;
         created_by: string;
         updated_by: string | null;
+        created_at: string | null;
+        updated_at: string | null;
+    }
+
+    export interface AcceptedFiletype {
+        id: number;
+        extension: string;
+        description: string;
         created_at: string | null;
         updated_at: string | null;
     }

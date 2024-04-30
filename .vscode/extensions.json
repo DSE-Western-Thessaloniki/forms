@@ -43,10 +43,10 @@
         "RobertOstermann.inline-parameters-extended",
         "esbenp.prettier-vscode",
         "GitHub.vscode-pull-request-github",
-        "Vue.volar",
         "onecentlin.laravel-blade",
         "Cardinal90.multi-cursor-case-preserve",
         "georgykurian.laravel-ide-helper",
-        "open-southeners.laravel-pint"
+        "open-southeners.laravel-pint",
+        "xdebug.php-debug"
     ]
 }

@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="row">
+                                <div class="row mb-2">
                                     <label
                                         for="notes"
                                         class="col-auto col-form-label"
@@ -25,7 +25,7 @@
                                         <textarea
                                             id="notes"
                                             name="notes"
-                                            class="col-12"
+                                            class="col-12 form-control"
                                             v-model="notes"
                                         >
                                         </textarea>
@@ -103,6 +103,12 @@
                                             :sort_id="element.sort_id"
                                             :selection_lists="selection_lists"
                                             :single_item="fields.length === 1"
+                                            :accepted_filetypes="
+                                                accepted_filetypes
+                                            "
+                                            :field_options="
+                                                JSON.parse(element.options)
+                                            "
                                         >
                                         </vform-field-component>
                                     </li>
@@ -242,6 +248,7 @@ const props = withDefaults(
         for_teachers?: 0 | 1 | "0" | "1";
         for_all_teachers?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
+        accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
     }>(),
     {
         parse: false,
