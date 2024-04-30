@@ -77,6 +77,12 @@
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
     {!! $disabled ?? '' !!}
+    {{ $field->field_options["multiple"] ? 'multiple' : ''}}
+    {{ $field->field_options["accepted_filetypes"] ?
+        "accept=${array_reduce($field->field_options["accepted_filetypes"]}, function ($previous, $current) {
+            return "$previous, $current"
+        }, "")" :
+        ''}}
     {{ $field->required ? 'required' : '' }}
 >
 @endif

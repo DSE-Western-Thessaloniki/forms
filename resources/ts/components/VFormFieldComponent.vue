@@ -21,9 +21,7 @@
         </div>
         <div>
             <div class="row">
-                <label for="fieldtitleid" class="col-auto col-form-label"
-                    >Τίτλος πεδίου:</label
-                >
+                <label class="col-auto col-form-label">Τίτλος πεδίου:</label>
                 <div class="col align-self-center">
                     <editable-text
                         v-model:edittext="title"
@@ -58,9 +56,7 @@
                 </div>
             </div>
             <div class="row">
-                <label for="fieldtitleid" class="col-auto col-form-label"
-                    >Τύπος πεδίου:</label
-                >
+                <label class="col-auto col-form-label">Τύπος πεδίου:</label>
                 <div class="col align-self-center">
                     <select
                         :name="'field[' + field_id + '][type]'"
@@ -83,6 +79,27 @@
                         :name="'field[' + field_id + '][type]'"
                         v-model="cbselected"
                     />
+                </div>
+            </div>
+            <div v-if="cbselected === FieldType.File">
+                <div class="row">
+                    <label class="col-auto col-form-label">
+                        Πολλαπλά αρχεία:
+                    </label>
+                    <div class="col align-self-center">
+                        <input
+                            type="checkbox"
+                            :name="'field[' + field_id + '][options][multiple]'"
+                            value="1"
+                            v-model="multiple_files"
+                        />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-auto col-form-label">
+                        Αποδεκτά αρχεία:
+                    </label>
+                    <div class="col align-self-center"></div>
                 </div>
             </div>
             <div v-if="cbselected > 1 && cbselected < 5">
@@ -136,7 +153,7 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { FieldType } from "@/fieldtype";
+import { FieldType, FieldTypeOptions, type FieldOptions } from "@/fieldtype";
 
 const emit = defineEmits(["update:value", "deleteField"]);
 
@@ -152,6 +169,7 @@ const props = withDefaults(
         required?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
         single_item: boolean;
+        field_options?: FieldOptions;
     }>(),
     {
         value: "Νέο πεδίο",
@@ -160,64 +178,16 @@ const props = withDefaults(
     }
 );
 
-let title = ref(props.value);
-let cbselected = ref(props.type);
-let selection_list_selected = ref(
+const title = ref(props.value);
+const cbselected = ref(props.type);
+const selection_list_selected = ref(
     props.selection_lists.length ? props.selection_lists[0].id : 0
 );
-let options = [
-    {
-        id: FieldType.Text,
-        value: "Πεδίο κειμένου",
-    },
-    {
-        id: FieldType.TextArea,
-        value: "Περιοχή κειμένου",
-    },
-    {
-        id: FieldType.RadioButtons,
-        value: "Επιλογή ενός από πολλά",
-    },
-    {
-        id: FieldType.CheckBoxes,
-        value: "Πολλαπλή επιλογή",
-    },
-    {
-        id: FieldType.SelectionList,
-        value: "Λίστα επιλογών",
-    },
-    /*{
-        id: 5,
-        value: "Ανέβασμα αρχείου"
-    },*/
-    {
-        id: FieldType.Date,
-        value: "Ημερομηνία",
-    },
-    {
-        id: FieldType.Number,
-        value: "Αριθμός",
-    },
-    {
-        id: FieldType.Telephone,
-        value: "Τηλέφωνο",
-    },
-    {
-        id: FieldType.Email,
-        value: "E-mail",
-    },
-    {
-        id: FieldType.WebPage,
-        value: "Διεύθυνση ιστοσελίδας",
-    },
-    {
-        id: FieldType.List,
-        value: "Έτοιμη λίστα δεδομένων",
-    },
-];
-let dataListValues = ref(props.listvalues);
-let field_id = props.id;
-let is_required = ref(props.required);
+const options = FieldTypeOptions;
+const dataListValues = ref(props.listvalues);
+const field_id = props.id;
+const is_required = ref(props.required);
+const multiple_files = ref(props.field_options?.multiple ?? false);
 
 watch(title, (value) => {
     emit("update:value", value);
