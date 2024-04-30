@@ -63,7 +63,3 @@ export const FieldTypeOptions: { id: FieldType; value: string }[] = [
         value: "Έτοιμη λίστα δεδομένων",
     },
 ];
-
-export type FieldOptions = {
-    multiple?: boolean;
-};

@@ -1,33 +1,46 @@
 <template>
     <div class="editable-text-group">
-        <span v-if="!restricted" v-show="!text.edit" @click="toggleEdit(text)" class="editable-text-label"><a>{{
-                text.val
-        }}</a><i class="fas fa-pencil-alt editable-text-icon"></i></span>
+        <span
+            v-if="!restricted"
+            v-show="!text.edit"
+            @click="toggleEdit(text)"
+            class="editable-text-label"
+            ><a>{{ text.val }}</a
+            ><i class="fas fa-pencil-alt editable-text-icon"></i
+        ></span>
         <span v-if="restricted">{{ text.val }}</span>
 
-        <input type="text" ref="input" class="editable-text-input col-12" :name="fid" v-model="text.val"
-            v-show="text.edit" @keypress="checkKey($event, text)" @blur="saveEdit(text)" />
+        <input
+            type="text"
+            ref="input"
+            class="editable-text-input col-12"
+            :name="fid"
+            v-model="text.val"
+            v-show="text.edit"
+            @keypress="checkKey($event, text)"
+            @blur="saveEdit(text)"
+        />
         <br />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
-import type { Ref } from 'vue';
+import type { Ref } from "vue";
 
-const emit = defineEmits(['update:edittext']);
+const emit = defineEmits(["update:edittext"]);
 
 const props = defineProps<{
-    edittext: string,
-    fid: string,
-    restricted?: boolean,
+    edittext: string;
+    fid: string;
+    restricted?: boolean;
 }>();
 
-type TextObject = { val: string, edit: boolean };
+type TextObject = { val: string; edit: boolean };
 
 let text: Ref<TextObject> = ref({
     val: props.edittext,
-    edit: false
+    edit: false,
 });
 
 const input: Ref<HTMLElement | null> = ref(null);
@@ -41,16 +54,16 @@ const toggleEdit = (text: TextObject) => {
             if (input.value) {
                 input.value.focus();
             }
-        })
+        });
     }
 };
 
 const saveEdit = (text: TextObject) => {
     //save your changes
-    if (text.val == '') {
-        text.val = props.edittext
+    if (text.val == "") {
+        text.val = props.edittext;
     }
-    emit('update:edittext', text.val);
+    emit("update:edittext", text.val);
     toggleEdit(text);
 };
 
