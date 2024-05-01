@@ -14,6 +14,7 @@ use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use XLSXWriter;
 
@@ -452,6 +453,20 @@ class FormsController extends Controller
                                 'value' => intval($field_data->data),
                                 'created' => $field_data->created_at,
                                 'updated' => $field_data->updated_at,
+                            ];
+                        } elseif ($field->type == FormField::TYPE_FILE) {
+                            $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
+                                'value' => $field_data->data,
+                                'created' => $field_data->created_at,
+                                'updated' => $field_data->updated_at,
+                                'file' => true,
+                                'link' => route('admin.report.download', [
+                                    $form->id,
+                                    'school',
+                                    $field_data->school->id,
+                                    $field_data->record,
+                                    $field->id,
+                                ]),
                             ];
                         } else {
                             $dataTable[$field_data->school->code][$field->title][$field_data->record] = [
@@ -1362,5 +1377,62 @@ class FormsController extends Controller
     public function confirmDelete(Form $form): \Illuminate\Contracts\View\View
     {
         return view('admin.form.confirm_delete')->with('form', $form);
+    }
+
+    public function downloadFile(Form $form, $category, $categoryId, $record, $fieldId)
+    {
+        // Κάνε έναν απλό έλεγχο για ασφάλεια
+        if (! in_array($category, ['school', 'teacher', 'other_teacher']) ||
+            ! is_numeric($categoryId) ||
+            ! is_numeric($record) ||
+            ! is_numeric($fieldId)) {
+            abort(404);
+        }
+
+        if ($category === 'school') {
+            $school = School::find($categoryId);
+            if (! $school) {
+                abort(404);
+            }
+
+            $record_data = $form->data()
+                ->where('school_id', $school->id)
+                ->where('record', $record)
+                ->where('form_field_id', $fieldId)
+                ->first();
+        }
+
+        if ($category === 'teacher') {
+            $teacher = Teacher::find($categoryId);
+            if (! $teacher) {
+                abort(404);
+            }
+
+            $record_data = $form->data()
+                ->where('teacher_id', $teacher->id)
+                ->where('record', $record)
+                ->where('form_field_id', $fieldId)
+                ->first();
+        }
+
+        if ($category === 'other_teacher') {
+            $other_teacher = OtherTeacher::find($categoryId);
+            if (! $other_teacher) {
+                abort(404);
+            }
+
+            $record_data = $form->data()
+                ->where('other_teacher_id', $other_teacher->id)
+                ->where('record', $record)
+                ->where('form_field_id', $fieldId)
+                ->first();
+        }
+
+        $filename = $record_data->data;
+        if (Storage::exists("report/$form->id/$category/$categoryId/$record/$fieldId")) {
+            return Storage::download("report/$form->id/$category/$categoryId/$record/$fieldId", $filename);
+        } else {
+            return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
+        }
     }
 }
