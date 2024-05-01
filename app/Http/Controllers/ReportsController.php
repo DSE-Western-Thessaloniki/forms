@@ -699,6 +699,10 @@ class ReportsController extends Controller
 
     public function downloadFile($report, $fieldId, $record)
     {
+        if (! is_numeric($fieldId) || ! is_numeric($record)) {
+            abort(404);
+        }
+
         $form = Form::where('active', true)->find($report);
         if ($form) {
             $access = $this->school_or_teacher_has_access($form);
