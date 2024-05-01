@@ -96,6 +96,13 @@
                             :name="'field[' + field_id + '][options][filetype]'"
                             :accepted_filetypes="accepted_filetypes"
                             :selected="field_options?.filetype?.value"
+                            :field_for_filename="
+                                field_options?.filetype?.field_for_filename ??
+                                ''
+                            "
+                            :custom_value="
+                                field_options?.filetype?.custom_value ?? ''
+                            "
                         />
                     </div>
                 </div>
@@ -152,7 +159,7 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { FieldType, FieldTypeOptions } from "@/fieldtype";
+import { FieldType, FieldTypeOptions, FormFieldOptions } from "@/fieldtype";
 
 const emit = defineEmits(["update:value", "deleteField"]);
 
@@ -168,7 +175,7 @@ const props = withDefaults(
         required?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
         single_item: boolean;
-        field_options?: App.Models.FormFieldOptions;
+        field_options?: FormFieldOptions;
         accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
     }>(),
     {

@@ -6,6 +6,8 @@ const props = defineProps<{
     name: string;
     accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
     selected?: string;
+    field_for_filename?: string;
+    custom_value?: string;
 }>();
 
 const selected = ref(
@@ -20,7 +22,11 @@ const fieldName = ref("");
 
 <template>
     <div>
-        <SelectWithCustom :name="name" v-model="selected">
+        <SelectWithCustom
+            :name="name"
+            v-model="selected"
+            :customValue="custom_value"
+        >
             <option
                 v-for="filetype in accepted_filetypes"
                 :value="`${filetype.id}`"
@@ -40,6 +46,7 @@ const fieldName = ref("");
                     :name="name + '[field_for_filename]'"
                     class="form-control"
                     placeholder="Πεδίο από το οποίο θα δοθεί το όνομα στο αρχείο κατά τη λήψη"
+                    :value="field_for_filename ?? ''"
                 />
             </div>
         </div>

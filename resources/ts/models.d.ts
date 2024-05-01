@@ -76,19 +76,6 @@ declare namespace App.Models {
         updated_at: string | null;
     }
 
-    export interface FormFieldOptions {
-        regex?: string;
-        capitals?: boolean;
-        positive?: boolean;
-        appear_when?: string;
-        width?: string;
-        filetype?: {
-            value: string;
-            field_for_filename?: string | null;
-            custom_value?: string | null;
-        };
-    }
-
     export interface FormFieldData {
         id: number;
         school_id: number;
