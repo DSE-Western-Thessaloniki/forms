@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Form;
+use App\Models\FormField;
 use App\Models\Option;
 use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\Teacher;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ReportsController extends Controller
 {
     // Κρατάει το μοντέλο της σχολικής μονάδας μετά τον έλεγχο από την συνάρτηση school_or_teacher_has_access
     private $school_model_cache = null;
+
     private $teacher_model_cache = null;
+
     private $other_teacher_model_cache = null;
 
     /**
@@ -31,7 +32,7 @@ class ReportsController extends Controller
 
     /**
      * Create a new controller instance.
-     * @param Form $form
+     *
      * @return bool|Illuminate\Support\Facades\View
      */
     private function school_or_teacher_has_access(Form $form)
@@ -44,43 +45,46 @@ class ReportsController extends Controller
             $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
             $allow_all_teachers = Option::where('name', 'allow_all_teachers')->first();
 
-            if ($allow_teachers->value !== "1") { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
+            if ($allow_teachers->value !== '1') { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
                 $this->teacher_model_cache = null;
                 $this->other_teacher_model_cache = null;
-                Log::warning("Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                Log::warning('Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
+
                 return view('pages.deny_access');
             }
 
-            if (!$form->for_teachers) { // Η φόρμα δεν είναι για συμπλήρωση από εκπαιδευτικούς
+            if (! $form->for_teachers) { // Η φόρμα δεν είναι για συμπλήρωση από εκπαιδευτικούς
                 $this->teacher_model_cache = null;
                 $this->other_teacher_model_cache = null;
-                Log::warning("Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                Log::warning('Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
+
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
             }
 
             $teacher = Teacher::where('am', $teacher_uid)
-            ->orWhere('afm', $teacher_uid)
-            ->first();
+                ->orWhere('afm', $teacher_uid)
+                ->first();
 
-            if (!$teacher && $allow_all_teachers->value !== "1") { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
+            if (! $teacher && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
                 $this->teacher_model_cache = null;
                 $this->other_teacher_model_cache = null;
-                Log::warning("Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη τη χώρα. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                Log::warning('Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη τη χώρα. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
+
                 return view('pages.deny_access');
             }
 
-            if (!$teacher && $allow_all_teachers->value === "1") { // Για εκπαιδευτικούς από παντού
-                if (!$form->for_all_teachers) {
+            if (! $teacher && $allow_all_teachers->value === '1') { // Για εκπαιδευτικούς από παντού
+                if (! $form->for_all_teachers) {
                     $this->teacher_model_cache = null;
                     $this->other_teacher_model_cache = null;
-                    Log::warning("Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς εκτός της Διεύθυνσης. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                    Log::warning('Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς εκτός της Διεύθυνσης. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
+
                     return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
                 }
 
-
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
                 $other_teacher = OtherTeacher::firstOrNew([
-                    'employeenumber' => cas()->getAttribute('employeenumber')
+                    'employeenumber' => cas()->getAttribute('employeenumber'),
                 ]);
 
                 if ($other_teacher->name != cas()->getAttribute('cn') ||
@@ -97,6 +101,7 @@ class ReportsController extends Controller
             }
 
             $this->teacher_model_cache = $teacher;
+
             return true;
         } else {
             $this->teacher_model_cache = null;
@@ -105,9 +110,10 @@ class ReportsController extends Controller
                 ->orWhere('email', cas()->getAttribute('mail'))
                 ->first();
 
-            if (!$school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
+            if (! $school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
                 $this->school_model_cache = null;
-                Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
+                Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+
                 return view('pages.deny_access');
             }
 
@@ -115,12 +121,14 @@ class ReportsController extends Controller
             $form_categories = $form->school_categories;
             $in_category = false;
             foreach ($categories as $category) {
-                if ($form_categories->contains($category))
+                if ($form_categories->contains($category)) {
                     $in_category = true;
+                }
             }
 
             $this->school_model_cache = $school;
-            return ($form->schools()->where('school_id', $school->id)->count() > 0 || $in_category);
+
+            return $form->schools()->where('school_id', $school->id)->count() > 0 || $in_category;
         }
 
     }
@@ -139,21 +147,23 @@ class ReportsController extends Controller
 
             $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
             $allow_all_teachers = Option::where('name', 'allow_all_teachers')->first();
-            if ($allow_teachers->value === "1") {
+            if ($allow_teachers->value === '1') {
                 $teacher = Teacher::where('am', $teacher_uid)
                     ->orWhere('afm', $teacher_uid)
                     ->first();
             }
 
-            if ($allow_teachers->value !== "1") { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
+            if ($allow_teachers->value !== '1') { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
                 $this->teacher_model_cache = null;
-                Log::warning("Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς. Ο χρήστης με uid:".cas()->getAttribute('uid')." και email:".cas()->getAttribute('mail')." προσπάθησε να αποκτήσει πρόσβαση.");
+                Log::warning('Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
+
                 return view('pages.deny_access');
             }
 
-            if (!$teacher && $allow_all_teachers->value !== "1") { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
+            if (! $teacher && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
                 $this->teacher_model_cache = null;
-                Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
+                Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+
                 return view('pages.deny_access');
             }
 
@@ -163,13 +173,14 @@ class ReportsController extends Controller
                     ->where('for_teachers', 1)
                     ->with('user')
                     ->orderBy('created_at', 'desc')->paginate(15);
+
                 return view('report.index')->with('forms', $forms);
             }
 
-            if ($allow_all_teachers->value === "1") { // Για εκπαιδευτικούς από παντού
+            if ($allow_all_teachers->value === '1') { // Για εκπαιδευτικούς από παντού
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
                 $other_teacher = OtherTeacher::firstOrNew([
-                    'employeenumber' => cas()->getAttribute('employeenumber')
+                    'employeenumber' => cas()->getAttribute('employeenumber'),
                 ]);
 
                 if ($other_teacher->name != cas()->getAttribute('cn') ||
@@ -185,10 +196,12 @@ class ReportsController extends Controller
                     ->where('for_all_teachers', 1)
                     ->with('user')
                     ->orderBy('created_at', 'desc')->paginate(15);
+
                 return view('report.index')->with('forms', $forms);
             }
 
             Log::warning("Το employeenumber: $teacher_uid δεν αντιστοιχεί σε λογαριασμό εκπαιδευτικού.");
+
             return view('pages.deny_access');
         } else { // Τότε μάλλον σχολείο
             $school = School::where('username', cas()->getAttribute('uid'))
@@ -197,22 +210,24 @@ class ReportsController extends Controller
             if ($school) {
                 $categories = $school->categories->pluck('id');
                 $forms = Form::where('active', true)
-                    ->where(function($query) use ($school, $categories) { // Προσθήκη παρένθεσης
+                    ->where(function ($query) use ($school, $categories) { // Προσθήκη παρένθεσης
                         $query->whereHas('schools', function ($q) use ($school) {
                             $q->where('school_id', $school->id);
                         })
-                        ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
-                            $q->orWhereHas('school_categories', function ($q) use ($categories) {
-                                $q->whereIn('school_category_id', $categories);
+                            ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                                $q->orWhereHas('school_categories', function ($q) use ($categories) {
+                                    $q->whereIn('school_category_id', $categories);
+                                });
                             });
-                        });
                     })
                     ->with('user')
                     ->orderBy('created_at', 'desc')->paginate(15);
+
                 return view('report.index')->with('forms', $forms);
             }
 
-            Log::warning("Το uid:".cas()->getAttribute('uid')." και το email:".cas()->getAttribute('mail')." δεν αντιστοιχούν σε λογαριασμό.");
+            Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+
             return view('pages.deny_access');
         }
 
@@ -233,13 +248,13 @@ class ReportsController extends Controller
                 if ($access) {
                     if ($this->school_model_cache !== null) { // Σχολείο
                         $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', 0)->get();
-                    } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
+                    } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                         $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', 0)->get();
                     } else {
                         $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', 0)->get();
                     }
 
-                    $data_dict = array();
+                    $data_dict = [];
                     foreach ($record_data as $item) {
                         $data_dict[$item->form_field_id] = $item->data;
                     }
@@ -279,13 +294,13 @@ class ReportsController extends Controller
                 if ($access) {
                     if ($this->school_model_cache !== null) { // Σχολείο
                         $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
-                    } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
+                    } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                         $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', $record)->get();
                     } else {
                         $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', $record)->get();
                     }
 
-                    $data_dict = array();
+                    $data_dict = [];
                     foreach ($record_data as $item) {
                         $data_dict[$item->form_field_id] = $item->data;
                     }
@@ -325,13 +340,13 @@ class ReportsController extends Controller
                 if ($access) {
                     if ($this->school_model_cache !== null) { // Σχολείο
                         $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', 0)->get();
-                    } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός της Διεύθυνσης
+                    } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός της Διεύθυνσης
                         $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', 0)->get();
                     } else {
                         $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', 0)->get();
                     }
 
-                    $data_dict = array();
+                    $data_dict = [];
                     foreach ($record_data as $item) {
                         $data_dict[$item->form_field_id] = $item->data;
                     }
@@ -376,13 +391,13 @@ class ReportsController extends Controller
                     if ($form->multiple) {
                         if ($this->school_model_cache !== null) { // Σχολείο
                             $record_data = $form->data()->where('school_id', $this->school_model_cache->id)->where('record', $record)->get();
-                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
+                        } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $record_data = $form->data()->where('teacher_id', $this->teacher_model_cache->id)->where('record', $record)->get();
                         } else {
                             $record_data = $form->data()->where('other_teacher_id', $this->other_teacher_model_cache->id)->where('record', $record)->get();
                         }
 
-                        $data_dict = array();
+                        $data_dict = [];
                         foreach ($record_data as $item) {
                             $data_dict[$item->form_field_id] = $item->data;
                         }
@@ -418,7 +433,6 @@ class ReportsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -431,7 +445,25 @@ class ReportsController extends Controller
                 if ($access) {
                     $fields = $form->form_fields;
                     foreach ($fields as $field) {
-                        $data = $request->input("f".$field->id);
+                        if ($field->type === FormField::TYPE_FILE) {
+                            $file = $request->file('f'.$field->id);
+                            if ($this->school_model_cache !== null) {
+                                $subfolder = 'school';
+                                $subfolderId = $this->school_model_cache->id;
+                            } elseif ($this->teacher_model_cache !== null) {
+                                $subfolder = 'teacher';
+                                $subfolderId = $this->teacher_model_cache->id;
+                            } else {
+                                $subfolder = 'other_teacher';
+                                $subfolderId = $this->other_teacher_model_cache->id;
+                            }
+
+                            $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/0", "{$field->id}");
+                            $data = $file->getClientOriginalName();
+                        } else {
+                            $data = $request->input('f'.$field->id);
+                        }
+
                         if (is_array($data)) {
                             $data = json_encode($data);
                         }
@@ -441,16 +473,16 @@ class ReportsController extends Controller
                                     ['school_id' => $this->school_model_cache->id],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
-                        } else if ($this->teacher_model_cache!== null) {
+                        } elseif ($this->teacher_model_cache !== null) {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                         } else {
@@ -459,7 +491,7 @@ class ReportsController extends Controller
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                         }
@@ -487,10 +519,9 @@ class ReportsController extends Controller
     /**
      * Update the specified resource in storage and move to the "next" record.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int $id The form id
-     * @param  int $record The record to be saved
-     * @param  int|String $next The next record to go to
+     * @param  int  $id  The form id
+     * @param  int  $record  The record to be saved
+     * @param  int|string  $next  The next record to go to
      * @return \Illuminate\Http\Response
      */
     public function updateRecord(Request $request, $id, int $record, $next)
@@ -502,7 +533,30 @@ class ReportsController extends Controller
                 if ($access) {
                     $fields = $form->form_fields;
                     foreach ($fields as $field) {
-                        $data = $request->input("f".$field->id);
+                        if ($field->type === FormField::TYPE_FILE) {
+                            $file = $request->file('f'.$field->id);
+                            if ($this->school_model_cache !== null) {
+                                $subfolder = 'school';
+                                $subfolderId = $this->school_model_cache->id;
+                            } elseif ($this->teacher_model_cache !== null) {
+                                $subfolder = 'teacher';
+                                $subfolderId = $this->teacher_model_cache->id;
+                            } else {
+                                $subfolder = 'other_teacher';
+                                $subfolderId = $this->other_teacher_model_cache->id;
+                            }
+
+                            if ($file) {
+                                $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/$record", "{$field->id}");
+                                $data = $file->getClientOriginalName();
+                            } else {
+                                $field_data = $field->field_data()->where('record', $record)->first();
+                                $data = $field_data?->data;
+                            }
+                        } else {
+                            $data = $request->input('f'.$field->id);
+                        }
+
                         if (is_array($data)) {
                             $data = json_encode($data);
                         }
@@ -512,16 +566,16 @@ class ReportsController extends Controller
                                     ['school_id' => $this->school_model_cache->id, 'record' => $record],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
-                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
+                        } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id, 'record' => $record],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                         } else {
@@ -530,7 +584,7 @@ class ReportsController extends Controller
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $record],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                         }
@@ -553,15 +607,15 @@ class ReportsController extends Controller
                                 $field->field_data()->updateOrCreate(
                                     [
                                         'school_id' => $this->school_model_cache->id,
-                                        'record' => $last_record
+                                        'record' => $last_record,
                                     ],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                             }
-                        } else if ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
+                        } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             foreach ($fields as $field) {
                                 if ($last_record < $field->field_data->where('teacher_id', $this->teacher_model_cache->id)->count()) {
                                     $last_record = $field->field_data->where('teacher_id', $this->teacher_model_cache->id)->count();
@@ -573,11 +627,11 @@ class ReportsController extends Controller
                                 $field->field_data()->updateOrCreate(
                                     [
                                         'teacher_id' => $this->teacher_model_cache->id,
-                                        'record' => $last_record
+                                        'record' => $last_record,
                                     ],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                             }
@@ -593,15 +647,16 @@ class ReportsController extends Controller
                                 $field->field_data()->updateOrCreate(
                                     [
                                         'other_teacher_id' => $this->other_teacher_model_cache->id,
-                                        'record' => $last_record
+                                        'record' => $last_record,
                                     ],
                                     [
                                         'data' => $data,
-                                        'updated_at' => now()
+                                        'updated_at' => now(),
                                     ]
                                 );
                             }
                         }
+
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
@@ -619,8 +674,7 @@ class ReportsController extends Controller
 
                     if (is_numeric($next) && is_int(intval($next))) {
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
-                    }
-                    else {
+                    } else {
                         return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                     }
                 }
@@ -634,6 +688,57 @@ class ReportsController extends Controller
         }
 
         $form = Form::where('active', false)->find($id);
+        if ($form) {
+            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+        }
+
+        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+    }
+
+    public function downloadFile($report, $fieldId, $record)
+    {
+        $form = Form::where('active', true)->find($report);
+        if ($form) {
+            $access = $this->school_or_teacher_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    if ($this->school_model_cache !== null) {
+                        $subfolder = "school/{$this->school_model_cache->id}";
+                        $record_data = $form->data()
+                            ->where('school_id', $this->school_model_cache->id)
+                            ->where('record', $record)
+                            ->where('form_field_id', $fieldId)
+                            ->first();
+                    } elseif ($this->teacher_model_cache !== null) {
+                        $subfolder = "school/{$this->teacher_model_cache->id}";
+                        $record_data = $form->data()
+                            ->where('teacher_id', $this->teacher_model_cache->id)
+                            ->where('record', $record)
+                            ->where('form_field_id', $fieldId)
+                            ->first();
+                    } else {
+                        $subfolder = "school/{$this->other_teacher_model_cache->id}";
+                        $record_data = $form->data()
+                            ->where('other_teacher_id', $this->other_teacher_model_cache->id)
+                            ->where('record', $record)
+                            ->where('form_field_id', $fieldId)
+                            ->first();
+                    }
+
+                    if (Storage::exists("report/$report/$subfolder/$record/$fieldId")) {
+                        return Storage::download("report/$report/$subfolder/$record/$fieldId", $record_data->data);
+                    } else {
+                        return redirect(route('report.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
+                    }
+                }
+
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            }
+
+            return $access;
+        }
+
+        $form = Form::where('active', false)->find($report);
         if ($form) {
             return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
