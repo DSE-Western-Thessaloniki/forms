@@ -550,7 +550,9 @@ class ReportsController extends Controller
                                 $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/$record", "{$field->id}");
                                 $data = $file->getClientOriginalName();
                             } else {
-                                $field_data = $field->field_data()->where('record', $record)->first();
+                                // Αν δεν έχουμε νέα δεδομένα αρχείου έλεγξε μήπως έχουμε
+                                // ήδη ανεβάσει αρχείο και κράτησε τα στοιχεία του
+                                $field_data = $field->field_data->where('record', $record)->first();
                                 $data = $field_data?->data;
                             }
                         } else {
