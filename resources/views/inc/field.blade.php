@@ -71,18 +71,23 @@
 </select>
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_FILE) <!-- Αρχείο -->
+@php
+    $options = json_decode($field->options);
+    $filetype_value = $options->filetype->value;
+
+    if ($filetype_value != 999) {
+        $accepted = \App\Models\AcceptedFiletype::find($filetype_value)->extension;
+    } else {
+        $accepted = $options->filetype->custom_value;
+    }
+@endphp
 <input
     type="file"
-    class="form-control-file"
+    class="form-control"
     id="f{!!$field->id!!}"
     name="f{!!$field->id!!}"
     {!! $disabled ?? '' !!}
-    {{ $field->field_options["multiple"] ? 'multiple' : ''}}
-    {{ $field->field_options["accepted_filetypes"] ?
-        "accept=${array_reduce($field->field_options["accepted_filetypes"]}, function ($previous, $current) {
-            return "$previous, $current"
-        }, "")" :
-        ''}}
+    accept="{{ $accepted }}"
     {{ $field->required ? 'required' : '' }}
 >
 @endif
