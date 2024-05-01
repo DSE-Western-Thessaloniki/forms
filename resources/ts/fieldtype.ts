@@ -63,3 +63,16 @@ export const FieldTypeOptions: { id: FieldType; value: string }[] = [
         value: "Έτοιμη λίστα δεδομένων",
     },
 ];
+
+export interface FormFieldOptions {
+    regex?: string;
+    capitals?: boolean;
+    positive?: boolean;
+    appear_when?: string;
+    width?: string;
+    filetype?: {
+        value: string;
+        field_for_filename?: string | null;
+        custom_value?: string | null;
+    };
+}

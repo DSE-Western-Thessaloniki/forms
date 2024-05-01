@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
 const props = withDefaults(
     defineProps<{
         name: string;
-        customLabel?: string;
+        customOptionLabel?: string;
+        customOptionValue?: string;
         customValue?: string;
     }>(),
     {
-        customValue: "999",
+        customOptionValue: "999",
     }
 );
 
@@ -28,8 +27,8 @@ const update = (value: string) => {
                 class="form-select"
             >
                 <slot />
-                <option :value="customValue">
-                    {{ customLabel ?? "Προσαρμοσμένη τιμή" }}
+                <option :value="customOptionValue">
+                    {{ customOptionLabel ?? "Προσαρμοσμένη τιμή" }}
                 </option>
             </select>
         </div>
@@ -37,7 +36,7 @@ const update = (value: string) => {
             <label
                 :for="name + '[custom_value]'"
                 class="col-form-label col-auto"
-                v-if="modelValue === customValue"
+                v-if="modelValue === customOptionValue"
                 >Προσαρμοσμένη τιμή:
             </label>
             <div class="col-8">
@@ -45,7 +44,8 @@ const update = (value: string) => {
                     :name="name + '[custom_value]'"
                     class="form-control"
                     placeholder="Προσαρμοσμένη τιμή. πχ. *.jpg,*.doc"
-                    v-if="modelValue === customValue"
+                    :value="customValue"
+                    v-if="modelValue === customOptionValue"
                 />
             </div>
         </div>
