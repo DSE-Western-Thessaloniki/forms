@@ -80,16 +80,24 @@
     } else {
         $accepted = $options->filetype->custom_value;
     }
+
+    $route = route('report.download', [$form->id, $field->id, $record]);
 @endphp
-<input
-    type="file"
-    class="form-control"
-    id="f{!!$field->id!!}"
-    name="f{!!$field->id!!}"
-    {!! $disabled ?? '' !!}
-    accept="{{ $accepted }}"
-    {{ $field->required ? 'required' : '' }}
->
+<div class="row">
+    @if ($data)
+        <div class="mb-2">Ήδη ανεβασμένο αρχείο: <a href={{$route}}>{{ $data }}</a>. Αν θέλετε να το αλλάξετε επιλέξτε ένα νέο αρχείο από κάτω.</div>
+    @endif
+    <input
+        type="file"
+        class="form-control mb-2"
+        id="f{!!$field->id!!}"
+        name="f{!!$field->id!!}"
+        {!! $disabled ?? '' !!}
+        accept="{{ $accepted }}"
+        {{ $field->required ? 'required' : '' }}
+    >
+    <div class="">Σημείωση: Μπορείτε να ανεβάσετε μόνο ένα αρχείο</div>
+</div>
 @endif
 @if ($field->type == \App\Models\FormField::TYPE_DATE) <!-- Ημερομηνία -->
 <input

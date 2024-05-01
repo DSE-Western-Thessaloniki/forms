@@ -26,9 +26,9 @@
     @endphp
 
     @if ($form->multiple)
-        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post'>
+        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post' enctype="multipart/form-data">
         @else
-            <form action={{ route('report.update', $form->id) }} method='post'>
+            <form action={{ route('report.update', $form->id) }} method='post' enctype="multipart/form-data">
     @endif
 
     <h1>{{ $form->title }}</h1>
