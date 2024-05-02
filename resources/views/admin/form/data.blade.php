@@ -24,6 +24,16 @@
                             <a class="btn btn-success" href="{{ route('admin.form.data.xlsx', $form)}}">
                                 @icon('fas fa-file-excel') Λήψη αρχείου excel
                             </a>
+
+                            @php
+                                $hasFieldWithFiles = $form->form_fields->where('type', \App\Models\FormField::TYPE_FILE) !== null;
+                            @endphp
+
+                            @if($hasFieldWithFiles)
+                            <a class="btn btn-primary" href="{{ route('admin.report.downloadAllFiles', $form) }}">
+                                @icon('fas fa-file-zipper') Λήψη αρχείων πεδίων
+                            </a>
+                            @endif
                         </div>
                     </div>
                     <vdatatable-component

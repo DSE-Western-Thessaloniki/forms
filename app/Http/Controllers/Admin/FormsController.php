@@ -11,12 +11,14 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\SelectionList;
 use App\Models\Teacher;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use XLSXWriter;
+use ZipArchive;
 
 class FormsController extends Controller
 {
@@ -1434,5 +1436,50 @@ class FormsController extends Controller
         } else {
             return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
         }
+    }
+
+    public function downloadAllFiles(Form $form)
+    {
+        $fields = $form->form_fields->where('type', FormField::TYPE_FILE);
+
+        if (! $fields) {
+            abort(404);
+        }
+
+        $zip_path = '/tmp/'.auth()->user()->id.'/';
+        Storage::makeDirectory($zip_path);
+
+        // Κάνε εκκαθάριση παλιών αρχείων
+        foreach (Storage::files($zip_path) as $file) {
+            Storage::delete($file);
+        }
+
+        $zip = new ZipArchive();
+        $now = DateTime::createFromFormat('U.u', microtime(true));
+        $zip_name = $now->format('YmdHisu').'.zip';
+        $zip->open(storage_path('app').$zip_path.$zip_name, ZipArchive::CREATE);
+
+        foreach ($fields as $field) {
+            $subfolder = mb_strimwidth($field->title, 0, 15, '...');
+            foreach ($field->field_data as $data) {
+                if ($data->school) {
+                    $subfolder2 = "$subfolder/{$data->school->name}/{$data->record}";
+                    $local_file = storage_path('app')."/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
+                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                } elseif ($data->teacher) {
+                    $subfolder2 = "$subfolder/{$data->teacher->name}/{$data->record}";
+                    $local_file = storage_path('app')."/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
+                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                } else {
+                    $subfolder2 = "$subfolder/{$data->other_teacher->name}/{$data->record}";
+                    $local_file = storage_path('app')."/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
+                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                }
+            }
+        }
+
+        $zip->close();
+
+        return Storage::download($zip_path.$zip_name);
     }
 }

@@ -148,6 +148,9 @@ Route::prefix('admin')
             Route::get('/download/{form}/{category}/{categoryId}/{record}/{fieldId}', [FormsController::class, 'downloadFile'])
                 ->name('report.download')
                 ->middleware('auth');
+            Route::get('/download_all/{form}', [FormsController::class, 'downloadAllFiles'])
+                ->name('report.downloadAllFiles')
+                ->middleware('auth');
         }
     );
 
