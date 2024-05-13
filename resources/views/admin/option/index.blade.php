@@ -15,6 +15,7 @@
 
                         <div class="container">
                             @if (Auth::user()->roles->where('name', 'Administrator')->count())
+                                <h3>Γενικές ρυθμίσεις</h3>
                                 <form action="{{ route('admin.options.store') }}" method="post">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="allow_teacher_login" id="allow_teacher_login" value="1"
@@ -31,6 +32,9 @@
                                     <button class="btn btn-primary mt-3" type="submit">Αποθήκευση</button>
                                     @csrf
                                 </form>
+                                <hr>
+                                <h3>Τύποι αρχείων που γίνονται δεκτοί στις φόρμες</h3>
+                                <a class="btn btn-primary" href="{{ route('admin.accepted_filetype.index') }}">Ρυθμίσεις τύπων αρχείων φορμών</a>
                             @endif
                         </div>
                     </div>
