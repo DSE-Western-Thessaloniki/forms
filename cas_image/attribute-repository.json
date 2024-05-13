@@ -4,6 +4,11 @@
         "mail": ["tst@sch.gr"],
         "cn": ["Dokimastiki monada"]
     },
+    "tstsch2": {
+        "uid": ["998"],
+        "mail": ["tst@sch.gr"],
+        "cn": ["Dokimastiki monada"]
+    },
     "tstuser": {
         "uid":["111"],
         "mail":["a@a.net"],

@@ -11,7 +11,7 @@ class StoreAcceptedFiletypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreAcceptedFiletypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'description' => ['string', 'max:255', 'required'],
+            'extension' => ['string', 'max:255', 'required'],
         ];
     }
 }

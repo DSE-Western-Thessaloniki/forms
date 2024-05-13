@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('accepted_filetypes', function (Blueprint $table) {
             $table->id();
-            $table->string('extension')
+            $table->string('description')
                 ->unique();
-            $table->string('description');
+            $table->string('extension');
             $table->timestamps();
         });
     }

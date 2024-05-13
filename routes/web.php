@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcceptedFiletypeController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
@@ -150,6 +151,10 @@ Route::prefix('admin')
                 ->middleware('auth');
             Route::get('/download_all/{form}', [FormsController::class, 'downloadAllFiles'])
                 ->name('report.downloadAllFiles')
+                ->middleware('auth');
+            Route::resource('accepted_filetype', AcceptedFiletypeController::class)
+                ->except('show')
+                ->names('accepted_filetype')
                 ->middleware('auth');
         }
     );

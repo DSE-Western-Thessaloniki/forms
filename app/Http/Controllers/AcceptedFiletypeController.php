@@ -13,7 +13,10 @@ class AcceptedFiletypeController extends Controller
      */
     public function index()
     {
-        //
+        $accepted_filetypes = AcceptedFiletype::all();
+
+        return view('admin.accepted_filetype.index')
+            ->with('accepted_filetypes', $accepted_filetypes);
     }
 
     /**
@@ -21,7 +24,7 @@ class AcceptedFiletypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.accepted_filetype.create');
     }
 
     /**
@@ -29,7 +32,12 @@ class AcceptedFiletypeController extends Controller
      */
     public function store(StoreAcceptedFiletypeRequest $request)
     {
-        //
+        AcceptedFiletype::create(
+            $request->validated()
+        );
+
+        return redirect(route('admin.accepted_filetype.index'))
+            ->with('success', 'Ο τύπος αρχείων δημιουργήθηκε επιτυχώς');
     }
 
     /**
@@ -45,7 +53,8 @@ class AcceptedFiletypeController extends Controller
      */
     public function edit(AcceptedFiletype $acceptedFiletype)
     {
-        //
+        return view('admin.accepted_filetype.edit')
+            ->with('accepted_filetype', $acceptedFiletype);
     }
 
     /**
@@ -53,7 +62,12 @@ class AcceptedFiletypeController extends Controller
      */
     public function update(UpdateAcceptedFiletypeRequest $request, AcceptedFiletype $acceptedFiletype)
     {
-        //
+        $acceptedFiletype->update(
+            $request->validated()
+        );
+
+        return redirect(route('admin.accepted_filetype.index'))
+            ->with('success', 'Ο τύπος αρχείων ενημερώθηκε επιτυχώς');
     }
 
     /**
@@ -61,6 +75,9 @@ class AcceptedFiletypeController extends Controller
      */
     public function destroy(AcceptedFiletype $acceptedFiletype)
     {
-        //
+        $acceptedFiletype->delete();
+
+        return redirect(route('admin.accepted_filetype.index'))
+            ->with('success', 'Επιτυχής διαγραφή τύπου αρχείων');
     }
 }
