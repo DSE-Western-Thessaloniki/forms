@@ -1,13 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAcceptedFiletypeRequest;
 use App\Http\Requests\UpdateAcceptedFiletypeRequest;
 use App\Models\AcceptedFiletype;
 
 class AcceptedFiletypeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(AcceptedFiletype::class, 'accepted_filetype');
+    }
+
     /**
      * Display a listing of the resource.
      */
