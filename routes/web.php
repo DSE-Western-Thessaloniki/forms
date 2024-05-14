@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AcceptedFiletypeController;
+use App\Http\Controllers\Admin\AcceptedFiletypeController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;

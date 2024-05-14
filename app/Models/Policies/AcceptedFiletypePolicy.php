@@ -1,19 +1,23 @@
 <?php
 
-namespace App\Policies;
+namespace App\Models\Policies;
 
 use App\Models\AcceptedFiletype;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class AcceptedFiletypePolicy
 {
+    public function before(User $user, $ability)
+    {
+        return $user->isAdministrator() ? true : null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -21,7 +25,7 @@ class AcceptedFiletypePolicy
      */
     public function view(User $user, AcceptedFiletype $acceptedFiletype): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -29,7 +33,7 @@ class AcceptedFiletypePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -37,7 +41,7 @@ class AcceptedFiletypePolicy
      */
     public function update(User $user, AcceptedFiletype $acceptedFiletype): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -45,7 +49,7 @@ class AcceptedFiletypePolicy
      */
     public function delete(User $user, AcceptedFiletype $acceptedFiletype): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -53,7 +57,7 @@ class AcceptedFiletypePolicy
      */
     public function restore(User $user, AcceptedFiletype $acceptedFiletype): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +65,6 @@ class AcceptedFiletypePolicy
      */
     public function forceDelete(User $user, AcceptedFiletype $acceptedFiletype): bool
     {
-        //
+        return false;
     }
 }
