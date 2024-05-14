@@ -80,7 +80,7 @@ it('can create an accepted filetype as admin', function () {
 it('cannot edit an accepted filetype as user', function () {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $this
         ->actingAs($user)
@@ -91,7 +91,7 @@ it('cannot edit an accepted filetype as user', function () {
 it('cannot edit an accepted filetype as author', function () {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $this
         ->actingAs($author)
@@ -103,7 +103,7 @@ it('can edit an accepted filetype as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $this
         ->actingAs($admin)
@@ -114,7 +114,7 @@ it('can edit an accepted filetype as admin', function () {
 it('cannot delete an accepted filetype as user', function () {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $this->actingAs($user)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype))->assertForbidden();
 });
@@ -122,7 +122,7 @@ it('cannot delete an accepted filetype as user', function () {
 it('cannot delete an accepted filetype as author', function () {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $this->actingAs($author)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype))->assertForbidden();
 });
@@ -130,7 +130,7 @@ it('cannot delete an accepted filetype as author', function () {
 it('can delete an accepted filetype as admin', function () {
     $admin = User::factory()->admin()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $response = $this->actingAs($admin)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype));
     $response->assertStatus(302);
@@ -140,7 +140,7 @@ it('can delete an accepted filetype as admin', function () {
 it('cannot update an accepted filetype as user', function () {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $response = $this->actingAs($user)->put(route('admin.accepted_filetype.update', $accepted_filetype), [
         'description' => 'Test2',
@@ -152,7 +152,7 @@ it('cannot update an accepted filetype as user', function () {
 it('cannot update an accepted filetype as author', function () {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $response = $this->actingAs($author)->put(route('admin.accepted_filetype.update', $accepted_filetype), [
         'description' => 'Test2',
@@ -164,7 +164,7 @@ it('cannot update an accepted filetype as author', function () {
 it('can update an accepted filetype as admin', function () {
     $admin = User::factory()->admin()->create();
     $accepted_filetype = AcceptedFiletype::factory()
-        ->create(['description' => 'Test', 'extension' => '.tst']);
+        ->create();
 
     $response = $this->actingAs($admin)->put(route('admin.accepted_filetype.update', $accepted_filetype), [
         'description' => 'Test2',

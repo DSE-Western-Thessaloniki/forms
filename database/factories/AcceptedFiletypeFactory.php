@@ -17,7 +17,8 @@ class AcceptedFiletypeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'description' => $this->faker->words(3, true),
+            'extension' => '.'.$this->faker->fileExtension(),
         ];
     }
 }
