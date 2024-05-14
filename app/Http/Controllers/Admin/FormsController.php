@@ -155,11 +155,11 @@ class FormsController extends Controller
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options']);
+                $field->options = json_encode($formfield[$key]['options'] ?? new \StdClass());
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options']);
+                $field->options = json_encode($formfield[$key]['options'] ?? new \StdClass());
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
             $field->required = $formfield[$key]['required'] === 'true' ? true : false;
@@ -274,11 +274,11 @@ class FormsController extends Controller
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options']);
+                $field->options = json_encode($formfield[$key]['options'] ?? new \StdClass());
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options']);
+                $field->options = json_encode($formfield[$key]['options'] ?? new \StdClass());
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
 
