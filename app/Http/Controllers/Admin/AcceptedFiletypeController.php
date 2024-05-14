@@ -43,8 +43,17 @@ class AcceptedFiletypeController extends Controller
      */
     public function store(StoreAcceptedFiletypeRequest $request)
     {
+        // Αφαίρεσε το * από την επέκταση αν έχει κατά λάθος δοθεί
+        $extension = $request->validated('extension');
+        $extension = str_replace('*.', '.', $extension);
+
         AcceptedFiletype::create(
-            $request->validated()
+            array_merge(
+                $request->validated(),
+                [
+                    'extension' => $extension,
+                ]
+            )
         );
 
         return redirect(route('admin.accepted_filetype.index'))
@@ -73,8 +82,17 @@ class AcceptedFiletypeController extends Controller
      */
     public function update(UpdateAcceptedFiletypeRequest $request, AcceptedFiletype $acceptedFiletype)
     {
+        // Αφαίρεσε το * από την επέκταση αν έχει κατά λάθος δοθεί
+        $extension = $request->validated('extension');
+        $extension = str_replace('*.', '.', $extension);
+
         $acceptedFiletype->update(
-            $request->validated()
+            array_merge(
+                $request->validated(),
+                [
+                    'extension' => $extension,
+                ]
+            )
         );
 
         return redirect(route('admin.accepted_filetype.index'))
