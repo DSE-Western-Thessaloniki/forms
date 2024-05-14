@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\UsesFileFiltering;
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\Option;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ReportsController extends Controller
 {
+    use UsesFileFiltering;
+
     // Κρατάει το μοντέλο της σχολικής μονάδας μετά τον έλεγχο από την συνάρτηση school_or_teacher_has_access
     private $school_model_cache = null;
 
@@ -459,7 +462,7 @@ class ReportsController extends Controller
                             }
 
                             $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/0", "{$field->id}");
-                            $data = $file->getClientOriginalName();
+                            $data = $this->filterFilename($file->getClientOriginalName());
                         } else {
                             $data = $request->input('f'.$field->id);
                         }
@@ -548,7 +551,7 @@ class ReportsController extends Controller
 
                             if ($file) {
                                 $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/$record", "{$field->id}");
-                                $data = $file->getClientOriginalName();
+                                $data = $this->filterFilename($file->getClientOriginalName());
                             } else {
                                 // Αν δεν έχουμε νέα δεδομένα αρχείου έλεγξε μήπως έχουμε
                                 // ήδη ανεβάσει αρχείο και κράτησε τα στοιχεία του
