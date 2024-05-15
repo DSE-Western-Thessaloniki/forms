@@ -19,7 +19,7 @@ trait UsesFileFiltering
             [#\[\]@!$&\'()+,;=]|     # URI reserved https://www.rfc-editor.org/rfc/rfc3986#section-2.2
             [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
             ~x',
-            '-', $filename);
+            ' ', $filename);
         // avoids ".", ".." or ".hiddenFiles"
         $filename = ltrim($filename, '.-');
         // optional beautification
@@ -36,14 +36,30 @@ trait UsesFileFiltering
     protected function beautifyFilename($filename)
     {
         // reduce consecutive characters
+        // $filename = preg_replace([
+        //     // "file   name.zip" becomes "file-name.zip"
+        //     '/ +/',
+        //     // "file___name.zip" becomes "file-name.zip"
+        //     '/_+/',
+        //     // "file---name.zip" becomes "file-name.zip"
+        //     '/-+/',
+        // ], '-', $filename);
         $filename = preg_replace([
-            // "file   name.zip" becomes "file-name.zip"
+            // "file   name.zip" becomes "file name.zip"
             '/ +/',
-            // "file___name.zip" becomes "file-name.zip"
-            '/_+/',
-            // "file---name.zip" becomes "file-name.zip"
+        ], ' ', $filename);
+        $filename = preg_replace([
+            // "file   name.zip" becomes "file name.zip"
             '/-+/',
         ], '-', $filename);
+        $filename = preg_replace([
+            // "file   name.zip" becomes "file name.zip"
+            '/_+/',
+        ], '_', $filename);
+        $filename = preg_replace([
+            // "filename .zip" becomes "filename.zip"
+            '/ \./',
+        ], '.', $filename);
         $filename = preg_replace([
             // "file--.--.-.--name.zip" becomes "file.name.zip"
             '/-*\.-*/',
@@ -51,9 +67,9 @@ trait UsesFileFiltering
             '/\.{2,}/',
         ], '.', $filename);
         // lowercase for windows/unix interoperability http://support.microsoft.com/kb/100625
-        $filename = mb_strtolower($filename, mb_detect_encoding($filename));
+        // $filename = mb_strtolower($filename, mb_detect_encoding($filename));
         // ".file-name.-" becomes "file-name"
-        $filename = trim($filename, '.-');
+        $filename = trim($filename, '.- ');
 
         return $filename;
     }
