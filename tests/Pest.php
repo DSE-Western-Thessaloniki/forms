@@ -6,8 +6,8 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Subfission\Cas\Facades\Cas;
 
 /*
@@ -64,100 +64,103 @@ function test_cas_null()
         ->andReturnNull();
 }
 
-function test_cas_not_logged_in() {
+function test_cas_not_logged_in()
+{
     Cas::shouldReceive('checkAuthentication')
         ->andReturnFalse();
     Cas::shouldReceive('authenticate')
-        ->andThrow(Exception::class,"Must authenticate with CAS");
+        ->andThrow(Exception::class, 'Must authenticate with CAS');
 }
 
-function test_cas_logged_in() {
+function test_cas_logged_in(int $uid = 999, string $mail = 'tst@sch.gr', string $cn = 'Dokimastiki monada', string $businessCategory = '')
+{
     Cas::shouldReceive('isAuthenticated')
         ->andReturnTrue();
     Cas::shouldReceive('checkAuthentication')
         ->andReturnTrue();
     Cas::shouldReceive('getAttribute')
         ->with('uid')
-        ->andReturn('999');
+        ->andReturn("$uid");
     Cas::shouldReceive('getAttribute')
         ->with('mail')
-        ->andReturn('tst@sch.gr');
+        ->andReturn($mail);
     Cas::shouldReceive('getAttribute')
         ->with('cn')
-        ->andReturn('Dokimastiki monada');
+        ->andReturn($cn);
     Cas::shouldReceive('getAttribute')
         ->with('employeenumber')
         ->andReturnNull();
     Cas::shouldReceive('getAttribute')
         ->with('businesscategory')
-        ->andReturn('');
+        ->andReturn($businessCategory);
 }
 
-function test_cas_logged_in_as_teacher() {
+function test_cas_logged_in_as_teacher(int $uid = 888, string $mail = 'tstteacher@sch.gr', string $cn = 'Dokimastikos ekpaideytikos', string $businessCategory = 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ', string $employeeNumber = '123456')
+{
     Cas::shouldReceive('isAuthenticated')
         ->andReturnTrue();
     Cas::shouldReceive('checkAuthentication')
         ->andReturnTrue();
     Cas::shouldReceive('getAttribute')
         ->with('uid')
-        ->andReturn('888');
+        ->andReturn("$uid");
     Cas::shouldReceive('getAttribute')
         ->with('mail')
-        ->andReturn('tstteacher@sch.gr');
+        ->andReturn($mail);
     Cas::shouldReceive('getAttribute')
         ->with('cn')
-        ->andReturn('Dokimastikos ekpaideytikos');
+        ->andReturn($cn);
     Cas::shouldReceive('getAttribute')
         ->with('employeenumber')
-        ->andReturn('123456');
+        ->andReturn($employeeNumber);
     Cas::shouldReceive('getAttribute')
         ->with('businesscategory')
-        ->andReturn('ΕΚΠΑΙΔΕΥΤΙΚΟΣ');
+        ->andReturn($businessCategory);
 }
 
-function test_create_one_form_for_user(User $user): Form {
+function test_create_one_form_for_user(User $user): Form
+{
     $form = Form::factory()
-    ->for($user)
-    ->has(
-        FormField::factory()
-            ->count(10)
-            ->state(new Sequence(function($sequence) {
-                $type = $sequence->index;
+        ->for($user)
+        ->has(
+            FormField::factory()
+                ->count(10)
+                ->state(new Sequence(function ($sequence) {
+                    $type = $sequence->index;
 
-                // Δεν χρησιμοποιείται ο τύπος για την επιλογή αρχείου
-                if ($type == 5) {
-                    $type = 0;
-                }
-                // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
-                if (in_array($type, [2, 3, 4])) {
-                    $listvalues = array();
-                    for ($i = 0; $i < rand(1, 10); $i++) {
-                        array_push(
-                            $listvalues,
-                            [
-                                "id" => $i,
-                                "value" => 'Test',
-                            ]
-                        );
+                    // Δεν χρησιμοποιείται ο τύπος για την επιλογή αρχείου
+                    if ($type == 5) {
+                        $type = 0;
                     }
+                    // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
+                    if (in_array($type, [2, 3, 4])) {
+                        $listvalues = [];
+                        for ($i = 0; $i < rand(1, 10); $i++) {
+                            array_push(
+                                $listvalues,
+                                [
+                                    'id' => $i,
+                                    'value' => 'Test',
+                                ]
+                            );
+                        }
 
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => $type,
-                        'listvalues' => json_encode($listvalues)
-                    ];
-                }
-                else {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => $type,
-                        'listvalues' => ''
-                    ];
-                }
-            })),
-        'form_fields'
-    )
-    ->create();
+                        return [
+                            'sort_id' => $sequence->index,
+                            'type' => $type,
+                            'listvalues' => json_encode($listvalues),
+                        ];
+                    } else {
+                        return [
+                            'sort_id' => $sequence->index,
+                            'type' => $type,
+                            'listvalues' => '',
+                        ];
+                    }
+                })),
+            'form_fields'
+        )
+        ->create();
 
     // Σύνδεση φόρμας με σχολική μονάδα και κατηγορία σχολείου
     $form->schools()->attach(School::inRandomOrder()->first()->id);
