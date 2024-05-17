@@ -81,7 +81,7 @@
         $accepted = $options->filetype->custom_value;
     }
 
-    $route = route('report.download', [$form->id, $field->id, $record]);
+    $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
 @endphp
 <div class="row">
     @if ($data)
