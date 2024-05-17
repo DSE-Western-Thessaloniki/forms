@@ -268,6 +268,7 @@ let fieldObj = {
     listvalues: "",
     sort_id: 0,
     new_field: false,
+    options: "{}",
 };
 
 let title = ref("Νέα φόρμα");
