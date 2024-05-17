@@ -54,13 +54,9 @@ services:
       - sail
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    links:
-      - mariadb:mariadb
     ports:
       - 8888:80
     environment:
-      MYSQL_USERNAME: "${DB_USERNAME}"
-      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       PMA_HOST: mariadb
     networks:
       - sail
