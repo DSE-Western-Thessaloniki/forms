@@ -3,17 +3,9 @@
         <table class="table table-striped table-bordered table-hover">
             <thead class="fixed-header">
                 <tr>
-                    <th>
-                        {{
-                            props.for_teachers ? "Καθηγητής" : "Σχολική Μονάδα"
-                        }}
-                    </th>
-                    <th>{{ props.for_teachers ? "ΑΜ/ΑΦΜ" : "Κωδικός" }}</th>
                     <th v-for="column in columnsObj" :key="column.id">
                         {{ column.title }}
                     </th>
-                    <th>Δημιουργήθηκε</th>
-                    <th>Ενημερώθηκε</th>
                 </tr>
             </thead>
             <tbody>
