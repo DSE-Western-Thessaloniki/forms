@@ -7,7 +7,7 @@ trait UsesFileFiltering
     // Φιλτράρισμα άκυρων χαρακτήρων από το όνομα αρχείου
     // Υπάρχει πιθανό θέμα με RTL γραφή (πιθανώς κενό filename) αλλά για τις
     // ανάγκες τους συστήματος αρκεί.
-    // https://stackoverflow.com/posts/42058764
+    // https://stackoverflow.com/a/42058764/3389323
     protected function filterFilename($filename, $beautify = true)
     {
         // sanitize filename
@@ -18,7 +18,7 @@ trait UsesFileFiltering
             [\x7F\xA0\xAD]|          # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
             [#\[\]@!$&\'()+,;=]|     # URI reserved https://www.rfc-editor.org/rfc/rfc3986#section-2.2
             [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
-            ~x',
+            ~xu',
             ' ', $filename);
         // avoids ".", ".." or ".hiddenFiles"
         $filename = ltrim($filename, '.-');
