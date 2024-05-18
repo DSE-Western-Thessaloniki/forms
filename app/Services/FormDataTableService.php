@@ -81,8 +81,10 @@ class FormDataTableService
         $query = $this->getTeacherQuery($form);
 
         // Έλεγξε αν θέλουμε σελιδοποίηση
+        $links = null;
         if ($this->withPagination) {
             $result = $query->paginate($this->paginationItems);
+            $links = $result->links();
         } else {
             $result = $query->get();
         }
@@ -173,6 +175,7 @@ class FormDataTableService
         return [
             $dataTableColumns,
             $dataTable,
+            $links,
         ];
     }
 
@@ -281,7 +284,7 @@ class FormDataTableService
         return $this;
     }
 
-    public function usePagination(?int $items): self
+    public function usePagination(?int $items = null): self
     {
         if ($items) {
             $this->paginationItems = $items;

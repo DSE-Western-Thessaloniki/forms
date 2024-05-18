@@ -222,21 +222,15 @@ class FormsController extends Controller
             'form_fields.field_data.other_teacher'
         );
 
-        [$dataTableColumns, $dataTable] = $this
+        [$dataTableColumns, $dataTable, $links] = $this
             ->formDataTableService
             ->useLinks()
+            ->usePagination()
             ->create($form);
-        dd($dataTableColumns, $dataTable);
+        // dd($dataTableColumns, $dataTable, $links);
 
         $schools = [];
-        $teachers = [];
-        if ($form->for_teachers) {
-            // Βρες όλους τους καθηγητές που θα έπρεπε να απαντήσουν
-            $teachers = Teacher::where('active', 1)->get()->toArray();
-            if ($form->for_all_teachers) {
-                $other_teachers = OtherTeacher::all()->toArray();
-            }
-        } else {
+        if (! $form->for_teachers) {
             // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
             $schools = $form->schools->where('active', 1);
             $categories = $form->school_categories;
@@ -250,9 +244,8 @@ class FormsController extends Controller
             ->with('dataTable', $dataTable)
             ->with('dataTableColumns', $dataTableColumns)
             ->with('schools', array_values($schools))
-            ->with('teachers', array_values($teachers))
-            ->with('other_teachers', array_values($other_teachers ?? []))
-            ->with('form', $form);
+            ->with('form', $form)
+            ->with('links', $links);
     }
 
     /**
