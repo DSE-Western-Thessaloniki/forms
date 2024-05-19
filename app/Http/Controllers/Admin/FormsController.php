@@ -216,10 +216,10 @@ class FormsController extends Controller
     {
         $form->load(
             'form_fields',
-            'form_fields.field_data',
-            'form_fields.field_data.school',
-            'form_fields.field_data.teacher',
-            'form_fields.field_data.other_teacher'
+            // 'form_fields.field_data',
+            // 'form_fields.field_data.school',
+            // 'form_fields.field_data.teacher',
+            // 'form_fields.field_data.other_teacher'
         );
 
         [$dataTableColumns, $dataTable, $links] = $this
@@ -229,21 +229,20 @@ class FormsController extends Controller
             ->create($form);
         // dd($dataTableColumns, $dataTable, $links);
 
-        $schools = [];
-        if (! $form->for_teachers) {
-            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-            $schools = $form->schools->where('active', 1);
-            $categories = $form->school_categories;
-            foreach ($categories as $category) {
-                $schools = $schools->concat($category->schools->where('active', 1));
-            }
-            $schools = $schools->unique('id')->toArray();
-        }
+        // $schools = [];
+        // if (! $form->for_teachers) {
+        //     // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
+        //     $schools = $form->schools->where('active', 1);
+        //     $categories = $form->school_categories;
+        //     foreach ($categories as $category) {
+        //         $schools = $schools->concat($category->schools->where('active', 1));
+        //     }
+        //     $schools = $schools->unique('id')->toArray();
+        // }
 
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
             ->with('dataTableColumns', $dataTableColumns)
-            ->with('schools', array_values($schools))
             ->with('form', $form)
             ->with('links', $links);
     }
