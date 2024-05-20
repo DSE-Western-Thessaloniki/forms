@@ -7,7 +7,7 @@ const props = withDefaults(
         customValue?: string;
     }>(),
     {
-        customOptionValue: "999",
+        customOptionValue: "-1",
     }
 );
 

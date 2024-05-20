@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateReportRequest;
 use App\Http\Traits\UsesFileFiltering;
 use App\Models\Form;
 use App\Models\FormField;
@@ -9,7 +10,6 @@ use App\Models\Option;
 use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\Teacher;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -439,7 +439,7 @@ class ReportsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateReportRequest $request, $id)
     {
         $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
@@ -527,7 +527,7 @@ class ReportsController extends Controller
      * @param  int|string  $next  The next record to go to
      * @return \Illuminate\Http\Response
      */
-    public function updateRecord(Request $request, $id, int $record, $next)
+    public function updateRecord(UpdateReportRequest $request, $id, int $record, $next)
     {
         $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
