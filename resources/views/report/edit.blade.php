@@ -6,15 +6,6 @@
             {{ session('status') }}
         </div>
     @endif
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div><br />
-    @endif
 
     @php
         if ($form->multiple) {
@@ -27,8 +18,8 @@
 
     @if ($form->multiple)
         <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post' enctype="multipart/form-data">
-        @else
-            <form action={{ route('report.update', $form->id) }} method='post' enctype="multipart/form-data">
+    @else
+        <form action={{ route('report.update', $form->id) }} method='post' enctype="multipart/form-data">
     @endif
 
     <h1>{{ $form->title }}</h1>
