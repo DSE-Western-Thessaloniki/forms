@@ -5,12 +5,16 @@ use App\Models\Option;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\User;
+use Database\Seeders\FormFieldDataSeeder;
 use Database\Seeders\OptionSeeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\SchoolCategorySeeder;
+use Database\Seeders\SchoolSeeder;
+use Database\Seeders\UserSeeder;
 use Subfission\Cas\Facades\Cas;
 use Tests\TestCasManager;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
@@ -23,33 +27,32 @@ beforeEach(function() {
     Cas::shouldReceive('isAuthenticated')
         ->andReturn(false);
     Cas::shouldReceive('user')
-        ->andReturn(NULL);
+        ->andReturn(null);
     Cas::shouldReceive('logout')
-        ->andReturn(NULL);
+        ->andReturn(null);
     Cas::shouldReceive('client')
-        ->andReturn(NULL);
+        ->andReturn(null);
 });
 
-
-it('can access the forms panel as user', function() {
+it('can access the forms panel as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/form')->assertOk();
 });
 
-it('can access the forms panel as author', function() {
+it('can access the forms panel as author', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/form')->assertOk();
 });
 
-it('can access the forms panel as admin', function() {
+it('can access the forms panel as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/form')->assertOk();
 });
 
-it('can access a form\'s preview as user', function() {
+it('can access a form\'s preview as user', function () {
     $user = User::factory()->user()->create();
     $testForm = Form::factory()->for($user)->create(['active' => true]);
     $this->assertInstanceOf(Form::class, $testForm);
@@ -57,39 +60,39 @@ it('can access a form\'s preview as user', function() {
     $this->actingAs($user)->get('/admin/form/'.$testForm->id)->assertOk();
 });
 
-it('can access a form\'s preview as author', function() {
+it('can access a form\'s preview as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create(['active' => true]);
 
     $this->actingAs($author)->get('/admin/form/'.$testForm->id)->assertOk();
 });
 
-it('can access a form\'s preview as admin', function() {
+it('can access a form\'s preview as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create(['active' => true]);
 
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id)->assertOk();
 });
 
-it('cannot access form creation as user', function() {
+it('cannot access form creation as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/form/create')->assertForbidden();
 });
 
-it('can access form creation as author', function() {
+it('can access form creation as author', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/form/create')->assertOk();
 });
 
-it('can access form creation as admin', function() {
+it('can access form creation as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/form/create')->assertOk();
 });
 
-it('cannot create a form as user', function(){
+it('cannot create a form as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post('/admin/form', [
@@ -97,11 +100,11 @@ it('cannot create a form as user', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '']],
     ])->assertForbidden();
 });
 
-it('can create a form as author', function(){
+it('can create a form as author', function () {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)->post('/admin/form', [
@@ -109,7 +112,7 @@ it('can create a form as author', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -129,7 +132,7 @@ it('can create a form as author', function(){
     ]);
 });
 
-it('can create a form as admin', function(){
+it('can create a form as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/form', [
@@ -137,7 +140,7 @@ it('can create a form as admin', function(){
         'notes' => 'This is a test',
         'active' => true,
         'multiple' => false,
-        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']]
+        'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -157,7 +160,7 @@ it('can create a form as admin', function(){
     ]);
 });
 
-it('can create a form with school categories as author', function(){
+it('can create a form with school categories as author', function () {
     $author = User::factory()->author()->create();
 
     $category1 = SchoolCategory::factory()->create(['name' => 'Test1']);
@@ -199,7 +202,7 @@ it('can create a form with school categories as author', function(){
     ]);
 });
 
-it('can create a form with school categories as admin', function(){
+it('can create a form with school categories as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $category1 = SchoolCategory::factory()->create(['name' => 'Test1']);
@@ -241,7 +244,7 @@ it('can create a form with school categories as admin', function(){
     ]);
 });
 
-it('can create a form with fake school categories as author', function(){
+it('can create a form with fake school categories as author', function () {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)->post('/admin/form', [
@@ -250,7 +253,7 @@ it('can create a form with fake school categories as author', function(){
         'active' => true,
         'multiple' => false,
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
-        'categories' => "0,1",
+        'categories' => '0,1',
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -280,7 +283,7 @@ it('can create a form with fake school categories as author', function(){
     ]);
 });
 
-it('can create a form with fake school categories as admin', function(){
+it('can create a form with fake school categories as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/form', [
@@ -289,7 +292,7 @@ it('can create a form with fake school categories as admin', function(){
         'active' => true,
         'multiple' => false,
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
-        'categories' => "0,1",
+        'categories' => '0,1',
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -319,7 +322,7 @@ it('can create a form with fake school categories as admin', function(){
     ]);
 });
 
-it('can create a form with schools as author', function(){
+it('can create a form with schools as author', function () {
     $author = User::factory()->author()->create();
 
     $school1 = School::factory()->for($author)->create(['name' => 'Test School1']);
@@ -361,7 +364,7 @@ it('can create a form with schools as author', function(){
     ]);
 });
 
-it('can create a form with schools as admin', function(){
+it('can create a form with schools as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $school1 = School::factory()->for($admin)->create(['name' => 'Test School1']);
@@ -403,7 +406,7 @@ it('can create a form with schools as admin', function(){
     ]);
 });
 
-it('can create a form with fake schools as author', function(){
+it('can create a form with fake schools as author', function () {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)->post('/admin/form', [
@@ -412,7 +415,7 @@ it('can create a form with fake schools as author', function(){
         'active' => true,
         'multiple' => false,
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
-        'schools' => "0,1",
+        'schools' => '0,1',
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -442,7 +445,7 @@ it('can create a form with fake schools as author', function(){
     ]);
 });
 
-it('can create a form with fake schools as admin', function(){
+it('can create a form with fake schools as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/form', [
@@ -451,7 +454,7 @@ it('can create a form with fake schools as admin', function(){
         'active' => true,
         'multiple' => false,
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
-        'schools' => "0,1",
+        'schools' => '0,1',
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
@@ -481,7 +484,7 @@ it('can create a form with fake schools as admin', function(){
     ]);
 });
 
-it('can create a form with schools and school categories as author', function(){
+it('can create a form with schools and school categories as author', function () {
     $author = User::factory()->author()->create();
 
     $category1 = SchoolCategory::factory()->create(['name' => 'Test1']);
@@ -513,7 +516,7 @@ it('can create a form with schools and school categories as author', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
-        'required' => 1
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -537,7 +540,7 @@ it('can create a form with schools and school categories as author', function(){
     ]);
 });
 
-it('can create a form with schools and school categories as admin', function(){
+it('can create a form with schools and school categories as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $category1 = SchoolCategory::factory()->create(['name' => 'Test1']);
@@ -569,7 +572,7 @@ it('can create a form with schools and school categories as admin', function(){
         'title' => 'Test field',
         'type' => 0,
         'listvalues' => '',
-        'required' => 1
+        'required' => 1,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
@@ -593,28 +596,28 @@ it('can create a form with schools and school categories as admin', function(){
     ]);
 });
 
-it('cannot edit a form as user', function(){
+it('cannot edit a form as user', function () {
     $user = User::factory()->user()->create();
     $testForm = Form::factory()->for($user)->create();
 
     $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/edit')->assertForbidden();
 });
 
-it('can edit a form as author', function(){
+it('can edit a form as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create();
 
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('can edit a form as admin', function(){
+it('can edit a form as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create();
 
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('can edit a form with associated schools as author', function(){
+it('can edit a form with associated schools as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create();
     $testForm->schools()->attach(School::factory()->for($author)->state(['name' => 'Test School1'])->create());
@@ -623,7 +626,7 @@ it('can edit a form with associated schools as author', function(){
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('can edit a form with associated schools as admin', function(){
+it('can edit a form with associated schools as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create();
     $testForm->schools()->attach(School::factory()->for($admin)->state(['name' => 'Test School1'])->create());
@@ -632,7 +635,7 @@ it('can edit a form with associated schools as admin', function(){
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('can edit a form with associated school categories as author', function(){
+it('can edit a form with associated school categories as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create();
     $testForm->school_categories()->attach(SchoolCategory::factory()->state(['name' => 'Test Category1'])->create());
@@ -641,7 +644,7 @@ it('can edit a form with associated school categories as author', function(){
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('can edit a form with associated school categories as admin', function(){
+it('can edit a form with associated school categories as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create();
     $testForm->school_categories()->attach(SchoolCategory::factory()->state(['name' => 'Test Category1'])->create());
@@ -650,14 +653,14 @@ it('can edit a form with associated school categories as admin', function(){
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/edit')->assertOk();
 });
 
-it('cannot delete a form as user', function(){
+it('cannot delete a form as user', function () {
     $user = User::factory()->user()->create();
     $testForm = Form::factory()->for($user)->create();
 
     $this->actingAs($user)->delete('/admin/form/'.$testForm->id)->assertForbidden();
 });
 
-it('can delete a form as author', function(){
+it('can delete a form as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create();
 
@@ -666,7 +669,7 @@ it('can delete a form as author', function(){
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα διαγράφηκε');
 });
 
-it('can delete a form as admin', function(){
+it('can delete a form as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create();
 
@@ -675,7 +678,7 @@ it('can delete a form as admin', function(){
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα διαγράφηκε');
 });
 
-it('cannot update a form as user', function(){
+it('cannot update a form as user', function () {
     $user = User::factory()->user()->create();
     $testForm = Form::factory()->for($user)->create();
 
@@ -685,14 +688,14 @@ it('cannot update a form as user', function(){
             [
                 'title' => 'Test field',
                 'type' => 0,
-                'values' => ''
-            ]
-        ]
+                'values' => '',
+            ],
+        ],
     ])->assertForbidden();
     $response->assertForbidden();
 });
 
-it('can update a form as author', function(){
+it('can update a form as author', function () {
     $author = User::factory()->author()->create();
     $testForm = Form::factory()->for($author)->create();
 
@@ -763,7 +766,7 @@ it('can update a form as author', function(){
     ]);
 });
 
-it('can update a form as admin', function(){
+it('can update a form as admin', function () {
     $admin = User::factory()->admin()->create();
     $testForm = Form::factory()->for($admin)->create();
 
@@ -774,8 +777,8 @@ it('can update a form as admin', function(){
                 'title' => 'Test field',
                 'type' => 0,
                 'values' => '',
-                'required' => "true",
-            ]
+                'required' => 'true',
+            ],
         ],
         'schools' => strval(School::factory()->for($admin)->create(['name' => 'Test School'])->id).','.
             strval(School::factory()->for($admin)->create(['name' => 'Test School2'])->id),
@@ -798,14 +801,14 @@ it('can update a form as admin', function(){
                 'title' => 'Test field2',
                 'type' => 0,
                 'values' => '',
-                'required' => "true",
+                'required' => 'true',
             ],
             [
                 'title' => 'Test field3',
                 'type' => 1,
                 'values' => '',
-                'required' => "false",
-            ]
+                'required' => 'false',
+            ],
         ],
         'categories' => strval(SchoolCategory::factory()->create(['name' => 'Test Category'])->id).','.
             strval(SchoolCategory::factory()->create(['name' => 'Test Category2'])->id),
@@ -818,7 +821,7 @@ it('can update a form as admin', function(){
     $this->assertDatabaseMissing('form_fields', [
         'title' => 'Test field',
         'type' => 0,
-        'listvalues' => ''
+        'listvalues' => '',
     ]);
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field2',
@@ -834,18 +837,17 @@ it('can update a form as admin', function(){
     ]);
 });
 
-it('can access a form\'s data as user', function() {
+it('can access a form\'s data as user', function () {
     $user = User::factory()->user()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-
     $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
 });
 
-it('can access a form\'s data as author', function() {
+it('can access a form\'s data as author', function () {
     $author = User::factory()->author()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
@@ -855,7 +857,7 @@ it('can access a form\'s data as author', function() {
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
 });
 
-it('can access a form\'s data as admin', function() {
+it('can access a form\'s data as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
@@ -865,7 +867,7 @@ it('can access a form\'s data as admin', function() {
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
 });
 
-it('can access a form\'s data (csv) as user', function() {
+it('can access a form\'s data (csv) as user', function () {
     $user = User::factory()->user()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
@@ -875,7 +877,7 @@ it('can access a form\'s data (csv) as user', function() {
     $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
 });
 
-it('can access a form\'s data (csv) as author', function() {
+it('can access a form\'s data (csv) as author', function () {
     $author = User::factory()->author()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
@@ -885,7 +887,7 @@ it('can access a form\'s data (csv) as author', function() {
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
 });
 
-it('can access a form\'s data (csv) as admin', function() {
+it('can access a form\'s data (csv) as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
@@ -895,7 +897,7 @@ it('can access a form\'s data (csv) as admin', function() {
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
 });
 
-it('can access a form\'s data (xlsx) as user', function() {
+it('can access a form\'s data (xlsx) as user', function () {
     $user = User::factory()->user()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
@@ -905,7 +907,7 @@ it('can access a form\'s data (xlsx) as user', function() {
     $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
 });
 
-it('can access a form\'s data (xlsx) as author', function() {
+it('can access a form\'s data (xlsx) as author', function () {
     $author = User::factory()->author()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
@@ -915,7 +917,7 @@ it('can access a form\'s data (xlsx) as author', function() {
     $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
 });
 
-it('can access a form\'s data (xlsx) as admin', function() {
+it('can access a form\'s data (xlsx) as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
@@ -925,19 +927,18 @@ it('can access a form\'s data (xlsx) as admin', function() {
     $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
 });
 
-it('cannot copy a form as user', function() {
+it('cannot copy a form as user', function () {
     $user = User::factory()->user()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-
     $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/copy');
     $response->assertForbidden();
 });
 
-it('can copy a form as author', function() {
+it('can copy a form as author', function () {
     $author = User::factory()->author()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
@@ -950,7 +951,7 @@ it('can copy a form as author', function() {
     $this->assertModelExists($testForm);
 });
 
-it('can copy a form as admin', function() {
+it('can copy a form as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
@@ -963,7 +964,7 @@ it('can copy a form as admin', function() {
     $this->assertModelExists($testForm);
 });
 
-it('cannot change active state of a form as user', function() {
+it('cannot change active state of a form as user', function () {
     $user = User::factory()->user()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($user);
@@ -985,7 +986,7 @@ it('cannot change active state of a form as user', function() {
     $response->assertForbidden();
 });
 
-it('can change active state of a form as author', function() {
+it('can change active state of a form as author', function () {
     $author = User::factory()->author()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($author);
@@ -1027,7 +1028,7 @@ it('can change active state of a form as author', function() {
     $this->assertDatabaseHas('forms', $tmpForm);
 });
 
-it('can change active state of a form as admin', function() {
+it('can change active state of a form as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);

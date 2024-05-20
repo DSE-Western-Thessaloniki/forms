@@ -42,6 +42,7 @@ it('can upload a file on a report as user logged in through cas (school) (no mul
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc"}}',
                 ]),
             'form_fields'
         )
@@ -91,6 +92,7 @@ it('can upload a file on a report as user logged in through cas (school) (multip
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc,.xls"}}',
                 ]),
             'form_fields'
         )
@@ -154,6 +156,7 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc"}}',
                 ]
                 ),
             'form_fields'
@@ -196,6 +199,7 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc,.xls"}}',
                 ]
                 ),
             'form_fields'
@@ -254,6 +258,7 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc"}}',
                 ]
                 ),
             'form_fields'
@@ -301,6 +306,7 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
                     'sort_id' => 1,
                     'type' => 5,
                     'listvalues' => '',
+                    'options' => '{"filetype":{"value":"-1","custom_value":".doc,.xls"}}',
                 ]
                 ),
             'form_fields'
