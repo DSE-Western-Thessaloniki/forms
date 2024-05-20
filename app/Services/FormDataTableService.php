@@ -84,7 +84,6 @@ class FormDataTableService
                     ->selectRaw("'school' as type")
                     ->leftJoin('form_field_data', 'form_field_data.school_id', '=', 'schools.id')
                     ->leftJoin('form_fields', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                    ->where('active', 1)
                     ->whereIn(
                         'form_field_id',
                         $form

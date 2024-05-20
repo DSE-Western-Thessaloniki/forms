@@ -214,31 +214,13 @@ class FormsController extends Controller
      */
     public function formData(Form $form): \Illuminate\Contracts\View\View
     {
-        $form->load(
-            'form_fields',
-            // 'form_fields.field_data',
-            // 'form_fields.field_data.school',
-            // 'form_fields.field_data.teacher',
-            // 'form_fields.field_data.other_teacher'
-        );
+        $form->load('form_fields');
 
         [$dataTableColumns, $dataTable, $links] = $this
             ->formDataTableService
             ->useLinks()
             ->usePagination()
             ->create($form);
-        // dd($dataTableColumns, $dataTable, $links);
-
-        // $schools = [];
-        // if (! $form->for_teachers) {
-        //     // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-        //     $schools = $form->schools->where('active', 1);
-        //     $categories = $form->school_categories;
-        //     foreach ($categories as $category) {
-        //         $schools = $schools->concat($category->schools->where('active', 1));
-        //     }
-        //     $schools = $schools->unique('id')->toArray();
-        // }
 
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
@@ -252,35 +234,9 @@ class FormsController extends Controller
      */
     public function formDataCSV(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $form->load(
-            'form_fields',
-            'form_fields.field_data',
-            'form_fields.field_data.school',
-            'form_fields.field_data.teacher',
-            'form_fields.field_data.other_teacher'
-        );
+        $form->load('form_fields');
 
-        [$dataTableColumns, $dataTable, $teacher_ids, $other_teacher_ids] = $this->formDataTableService->create($form);
-
-        if ($form->for_teachers) {
-            // Βρες όλους τους εκπαιδευτικούς που απάντησαν
-            $teacher_ids = array_unique($teacher_ids);
-            $other_teacher_ids = array_unique($other_teacher_ids);
-            $teachers = Teacher::where('active', 1)
-                ->whereIn('id', $teacher_ids)
-                ->get();
-            if ($form->for_all_teachers) {
-                $other_teachers = OtherTeacher::whereIn('id', $other_teacher_ids)->get();
-            }
-        } else {
-            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-            $schools = $form->schools->where('active', 1);
-            $categories = $form->school_categories;
-            foreach ($categories as $category) {
-                $schools = $schools->concat($category->schools->where('active', 1));
-            }
-            $schools = $schools->unique('id');
-        }
+        [$dataTableColumns, $dataTable] = $this->formDataTableService->create($form);
 
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv';
         $fd = fopen($fname, 'w');
@@ -289,128 +245,9 @@ class FormsController extends Controller
         }
 
         fputcsv($fd, $dataTableColumns);
-        $row = [];
-        if ($form->for_teachers) {
-            if (isset($teachers)) {
-                foreach ($teachers as $teacher) {
-                    // Βρες τον μέγιστο αριθμό των εγγραφών για τον εκπαιδευτικό
-                    $records = count($dataTable[$teacher->am][$dataTableColumns[3]] ?? ['']);
 
-                    for ($i = 0; $i < $records; $i++) {
-                        array_push($row, $teacher->surname.' '.$teacher->name, $teacher->am);
-                        $created_at = '';
-                        $updated_at = '';
-                        foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                            array_push($row, $dataTable[$teacher->am][$column][$i]['value'] ?? '');
-                            if (isset($dataTable[$teacher->am][$column][$i]['created'])) {
-                                $temp_created_at = new \DateTime($dataTable[$teacher->am][$column][$i]['created']);
-                                if ($created_at == '') {
-                                    $created_at = $temp_created_at;
-                                } else {
-                                    if ($created_at > $temp_created_at) {
-                                        $created_at = $temp_created_at;
-                                    }
-                                }
-                            }
-                            if (isset($dataTable[$teacher->am][$column][$i]['updated'])) {
-                                $temp_updated_at = new \DateTime($dataTable[$teacher->am][$column][$i]['updated']);
-                                if ($updated_at == '') {
-                                    $updated_at = $temp_updated_at;
-                                } else {
-                                    if ($updated_at < $temp_updated_at) {
-                                        $updated_at = $temp_updated_at;
-                                    }
-                                }
-                            }
-                        }
-                        $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                        $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                        array_push($row, $created_string, $updated_string);
-                        fputcsv($fd, $row);
-                        $row = [];
-                    }
-                }
-            }
-            if (isset($other_teachers)) {
-                foreach ($other_teachers as $teacher) {
-                    // Βρες τον μέγιστο αριθμό των εγγραφών για τον εκπαιδευτικό
-                    $records = count($dataTable[$teacher->employeenumber][$dataTableColumns[3]] ?? ['']);
-
-                    for ($i = 0; $i < $records; $i++) {
-                        array_push($row, $teacher->name, $teacher->employeenumber);
-                        $created_at = '';
-                        $updated_at = '';
-                        foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                            array_push($row, $dataTable[$teacher->employeenumber][$column][$i]['value'] ?? '');
-                            if (isset($dataTable[$teacher->employeenumber][$column][$i]['created'])) {
-                                $temp_created_at = new \DateTime($dataTable[$teacher->employeenumber][$column][$i]['created']);
-                                if ($created_at == '') {
-                                    $created_at = $temp_created_at;
-                                } else {
-                                    if ($created_at > $temp_created_at) {
-                                        $created_at = $temp_created_at;
-                                    }
-                                }
-                            }
-                            if (isset($dataTable[$teacher->employeenumber][$column][$i]['updated'])) {
-                                $temp_updated_at = new \DateTime($dataTable[$teacher->employeenumber][$column][$i]['updated']);
-                                if ($updated_at == '') {
-                                    $updated_at = $temp_updated_at;
-                                } else {
-                                    if ($updated_at < $temp_updated_at) {
-                                        $updated_at = $temp_updated_at;
-                                    }
-                                }
-                            }
-                        }
-                        $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                        $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                        array_push($row, $created_string, $updated_string);
-                        fputcsv($fd, $row);
-                        $row = [];
-                    }
-                }
-            }
-        } else {
-            foreach ($schools as $school) {
-                // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-                $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
-
-                $school = School::where('code', $school->code)->first();
-                for ($i = 0; $i < $records; $i++) {
-                    array_push($row, $school->name, $school->code);
-                    $created_at = '';
-                    $updated_at = '';
-                    foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                        array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
-                        if (isset($dataTable[$school->code][$column][$i]['created'])) {
-                            $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
-                            if ($created_at == '') {
-                                $created_at = $temp_created_at;
-                            } else {
-                                if ($created_at > $temp_created_at) {
-                                    $created_at = $temp_created_at;
-                                }
-                            }
-                        }
-                        if (isset($dataTable[$school->code][$column][$i]['updated'])) {
-                            $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
-                            if ($updated_at == '') {
-                                $updated_at = $temp_updated_at;
-                            } else {
-                                if ($updated_at < $temp_updated_at) {
-                                    $updated_at = $temp_updated_at;
-                                }
-                            }
-                        }
-                    }
-                    $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                    $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                    array_push($row, $created_string, $updated_string);
-                    fputcsv($fd, $row);
-                    $row = [];
-                }
-            }
+        foreach ($dataTable->toArray() as $row) {
+            fputcsv($fd, $row);
         }
 
         fclose($fd);
@@ -423,165 +260,14 @@ class FormsController extends Controller
      */
     public function formDataXLSX(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $form->load(
-            'form_fields',
-            'form_fields.field_data',
-            'form_fields.field_data.school',
-            'form_fields.field_data.teacher',
-            'form_fields.field_data.other_teacher'
-        );
+        $form->load('form_fields');
 
-        [$dataTableColumns, $dataTable, $teacher_ids, $other_teacher_ids] = $this->formDataTableService->create($form);
-
-        if ($form->for_teachers) {
-            // Βρες όλους τους εκπαιδευτικούς που απάντησαν
-            $teacher_ids = array_unique($teacher_ids);
-            $other_teacher_ids = array_unique($other_teacher_ids);
-            $teachers = Teacher::where('active', 1)
-                ->whereIn('id', $teacher_ids)
-                ->get();
-            if ($form->for_all_teachers) {
-                $other_teachers = OtherTeacher::whereIn('id', $other_teacher_ids)->get();
-            }
-        } else {
-            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-            $schools = $form->schools->where('active', 1);
-            $categories = $form->school_categories;
-            foreach ($categories as $category) {
-                $schools = $schools->concat($category->schools->where('active', 1));
-            }
-            $schools = $schools->unique('id');
-        }
+        [$dataTableColumns, $dataTable] = $this->formDataTableService->create($form);
 
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx';
         $writer = new XLSXWriter();
 
-        $data = [];
-        array_push($data, $dataTableColumns);
-        $row = [];
-
-        if ($form->for_teachers) {
-            if (isset($teachers)) {
-                foreach ($teachers as $teacher) {
-                    // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-                    $records = count($dataTable[$teacher->am][$dataTableColumns[3]] ?? ['']);
-
-                    for ($i = 0; $i < $records; $i++) {
-                        array_push($row, $teacher->surname.' '.$teacher->name, $teacher->am);
-                        $created_at = '';
-                        $updated_at = '';
-                        foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                            array_push($row, $dataTable[$teacher->am][$column][$i]['value'] ?? '');
-                            if (isset($dataTable[$teacher->am][$column][$i]['created'])) {
-                                $temp_created_at = new \DateTime($dataTable[$teacher->am][$column][$i]['created']);
-                                if ($created_at == '') {
-                                    $created_at = $temp_created_at;
-                                } else {
-                                    if ($created_at > $temp_created_at) {
-                                        $created_at = $temp_created_at;
-                                    }
-                                }
-                            }
-                            if (isset($dataTable[$teacher->am][$column][$i]['updated'])) {
-                                $temp_updated_at = new \DateTime($dataTable[$teacher->am][$column][$i]['updated']);
-                                if ($updated_at == '') {
-                                    $updated_at = $temp_updated_at;
-                                } else {
-                                    if ($updated_at < $temp_updated_at) {
-                                        $updated_at = $temp_updated_at;
-                                    }
-                                }
-                            }
-                        }
-                        $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                        $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                        array_push($row, $created_string, $updated_string);
-                        array_push($data, $row);
-                        $row = [];
-                    }
-                }
-            }
-            if (isset($other_teachers)) {
-                foreach ($other_teachers as $teacher) {
-                    // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-                    $records = count($dataTable[$teacher->employeenumber][$dataTableColumns[3]] ?? ['']);
-
-                    for ($i = 0; $i < $records; $i++) {
-                        array_push($row, $teacher->name, $teacher->employeenumber);
-                        $created_at = '';
-                        $updated_at = '';
-                        foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                            array_push($row, $dataTable[$teacher->employeenumber][$column][$i]['value'] ?? '');
-                            if (isset($dataTable[$teacher->employeenumber][$column][$i]['created'])) {
-                                $temp_created_at = new \DateTime($dataTable[$teacher->employeenumber][$column][$i]['created']);
-                                if ($created_at == '') {
-                                    $created_at = $temp_created_at;
-                                } else {
-                                    if ($created_at > $temp_created_at) {
-                                        $created_at = $temp_created_at;
-                                    }
-                                }
-                            }
-                            if (isset($dataTable[$teacher->employeenumber][$column][$i]['updated'])) {
-                                $temp_updated_at = new \DateTime($dataTable[$teacher->employeenumber][$column][$i]['updated']);
-                                if ($updated_at == '') {
-                                    $updated_at = $temp_updated_at;
-                                } else {
-                                    if ($updated_at < $temp_updated_at) {
-                                        $updated_at = $temp_updated_at;
-                                    }
-                                }
-                            }
-                        }
-                        $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                        $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                        array_push($row, $created_string, $updated_string);
-                        array_push($data, $row);
-                        $row = [];
-                    }
-                }
-            }
-        } else {
-            foreach ($schools as $school) {
-                // Βρες τον μέγιστο αριθμό των εγγραφών για το σχολείο
-                $records = count($dataTable[$school->code][$dataTableColumns[3]] ?? ['']);
-
-                $school = School::where('code', $school->code)->first();
-                for ($i = 0; $i < $records; $i++) {
-                    array_push($row, $school->name, $school->code);
-                    $created_at = '';
-                    $updated_at = '';
-                    foreach (array_slice($dataTableColumns, 2, -2) as $column) {
-                        array_push($row, $dataTable[$school->code][$column][$i]['value'] ?? '');
-                        if (isset($dataTable[$school->code][$column][$i]['created'])) {
-                            $temp_created_at = new \DateTime($dataTable[$school->code][$column][$i]['created']);
-                            if ($created_at == '') {
-                                $created_at = $temp_created_at;
-                            } else {
-                                if ($created_at > $temp_created_at) {
-                                    $created_at = $temp_created_at;
-                                }
-                            }
-                        }
-                        if (isset($dataTable[$school->code][$column][$i]['updated'])) {
-                            $temp_updated_at = new \DateTime($dataTable[$school->code][$column][$i]['updated']);
-                            if ($updated_at == '') {
-                                $updated_at = $temp_updated_at;
-                            } else {
-                                if ($updated_at < $temp_updated_at) {
-                                    $updated_at = $temp_updated_at;
-                                }
-                            }
-                        }
-                    }
-                    $created_string = $created_at == '' ? '' : $created_at->format('Y-m-d H:i');
-                    $updated_string = $updated_at == '' ? '' : $updated_at->format('Y-m-d H:i');
-                    array_push($row, $created_string, $updated_string);
-                    array_push($data, $row);
-                    $row = [];
-                }
-            }
-        }
+        $data = array_merge([$dataTableColumns], $dataTable->toArray());
 
         $writer->writeSheet($data);
         $writer->writeToFile($fname);
