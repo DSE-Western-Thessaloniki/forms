@@ -7,7 +7,7 @@
         @foreach($forms as $form)
             <div class="card card-body bg-light">
                     <h3><a href="{{ route('report.edit', $form->id) }}">{{$form->title}}</a></h3>
-                    <div>{!! Str::of($form->notes)->markdown(['html_input' => 'strip']) !!}</div>
+                    <div>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</div>
                     <small>Δημιουργήθηκε στις {{$form->created_at}}</small>
 
                     <div class="row align-items-center justify-content-start pt-4">

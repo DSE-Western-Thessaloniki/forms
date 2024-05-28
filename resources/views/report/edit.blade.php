@@ -32,7 +32,7 @@
     @endif
 
     <h1>{{ $form->title }}</h1>
-    <h3>{!! Str::of($form->notes)->markdown(['html_input' => 'strip']) !!}</h3>
+    <h3>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</h3>
     <hr />
     <div class="card">
         <div class="card-header">
