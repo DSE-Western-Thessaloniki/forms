@@ -87,7 +87,7 @@
                                         <div class="row">
                                             <div class='col d-flex flex-column'>
                                                 <div class='flex-grow-1'>
-                                                    <span class='pre-wrap'>{!! nl2br(strip_tags($form->notes)) !!}</span>
+                                                    <span class='pre-wrap'>{!! Str::of($form->notes)->markdown(['html_input' => 'strip']) !!}</span>
                                                 </div>
                                                 <div class='pt-4'>
                                                     <div class='row'>
