@@ -2,13 +2,19 @@
 import { ref } from "vue";
 import SelectWithCustom from "./SelectWithCustom.vue";
 
-const props = defineProps<{
-    name: string;
-    accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
-    selected?: string;
-    field_for_filename?: string;
-    custom_value?: string;
-}>();
+const props = withDefaults(
+    defineProps<{
+        name: string;
+        accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
+        selected?: string;
+        field_for_filename?: string;
+        custom_value?: string;
+        fields: Array<App.Models.FormField>;
+    }>(),
+    {
+        field_for_filename: "-1",
+    }
+);
 
 const selected = ref(
     typeof props.accepted_filetypes === "undefined"
@@ -35,19 +41,27 @@ const fieldName = ref("");
                 {{ filetype.description }} ({{ filetype.extension }})
             </option>
         </SelectWithCustom>
-        <div class="row">
+        <div class="row flex-nowrap">
             <label
                 :for="name + '[field_for_filename]'"
                 class="col-form-label col-auto"
                 >Όνομα πεδίου (προαιρετικό):
             </label>
-            <div class="col-8">
-                <input
+            <div class="flex-fill">
+                <select
                     :name="name + '[field_for_filename]'"
-                    class="form-control"
-                    placeholder="Πεδίο από το οποίο θα δοθεί το όνομα στο αρχείο κατά τη λήψη"
-                    :value="field_for_filename ?? ''"
-                />
+                    class="form-select flex-fill"
+                    :v-model="field_for_filename"
+                >
+                    <option value="-1">Παρακαλώ επιλέξτε</option>
+                    <option
+                        v-for="field in fields"
+                        :key="field.id"
+                        :value="field.id"
+                    >
+                        {{ field.title }}
+                    </option>
+                </select>
             </div>
         </div>
     </div>

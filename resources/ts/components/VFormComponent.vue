@@ -109,6 +109,7 @@
                                             :field_options="
                                                 JSON.parse(element.options)
                                             "
+                                            :fields
                                         >
                                         </vform-field-component>
                                     </li>

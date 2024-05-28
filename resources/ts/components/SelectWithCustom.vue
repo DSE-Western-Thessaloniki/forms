@@ -32,14 +32,14 @@ const update = (value: string) => {
                 </option>
             </select>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-2 flex-nowrap">
             <label
                 :for="name + '[custom_value]'"
                 class="col-form-label col-auto"
                 v-if="modelValue === customOptionValue"
                 >Προσαρμοσμένη τιμή:
             </label>
-            <div class="col-8">
+            <div class="flex-fill">
                 <input
                     :name="name + '[custom_value]'"
                     class="form-control"
