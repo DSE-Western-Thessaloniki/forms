@@ -81,7 +81,7 @@ const advancedTarget = computed(function () {
                                     :name="
                                         'field[' +
                                         field_id +
-                                        '][capitals_enabled]'
+                                        '][options][capitals_enabled]'
                                     "
                                 />
                             </div>
@@ -104,7 +104,9 @@ const advancedTarget = computed(function () {
                                     type="checkbox"
                                     id="greek"
                                     :name="
-                                        'field[' + field_id + '][greek_enabled]'
+                                        'field[' +
+                                        field_id +
+                                        '][options][greek_enabled]'
                                     "
                                 />
                             </div>
@@ -125,7 +127,7 @@ const advancedTarget = computed(function () {
                                     :name="
                                         'field[' +
                                         field_id +
-                                        '][positive_enabled]'
+                                        '][options][positive_enabled]'
                                     "
                                 />
                             </div>
@@ -161,7 +163,7 @@ const advancedTarget = computed(function () {
                                         :name="
                                             'field[' +
                                             field_id +
-                                            '][field_width_enabled]'
+                                            '][options][field_width_enabled]'
                                         "
                                     />
                                 </div>
@@ -175,7 +177,9 @@ const advancedTarget = computed(function () {
                                     class="form-control w-auto"
                                     :disabled="!field_width_enabled"
                                     :name="
-                                        'field[' + field_id + '][field_width]'
+                                        'field[' +
+                                        field_id +
+                                        '][options][field_width]'
                                     "
                                 />
                             </div>
@@ -205,7 +209,9 @@ const advancedTarget = computed(function () {
                                     id="regex"
                                     v-model="regex_enabled"
                                     :name="
-                                        'field[' + field_id + '][regex_enabled]'
+                                        'field[' +
+                                        field_id +
+                                        '][options][regex_enabled]'
                                     "
                                 />
                             </div>
@@ -218,7 +224,9 @@ const advancedTarget = computed(function () {
                                 type="text"
                                 class="form-control w-auto"
                                 :disabled="!regex_enabled"
-                                :name="'field[' + field_id + '][regex]'"
+                                :name="
+                                    'field[' + field_id + '][options][regex]'
+                                "
                             />
                         </div>
                     </div>
@@ -239,7 +247,7 @@ const advancedTarget = computed(function () {
                                 :name="
                                     'field[' +
                                     field_id +
-                                    '][' +
+                                    '][options][show_when][' +
                                     option.id +
                                     '][operator]'
                                 "
@@ -253,7 +261,7 @@ const advancedTarget = computed(function () {
                                 :name="
                                     'field[' +
                                     field_id +
-                                    '][' +
+                                    '][options][show_when][' +
                                     option.id +
                                     '][visible]'
                                 "
@@ -275,7 +283,7 @@ const advancedTarget = computed(function () {
                                 :name="
                                     'field[' +
                                     field_id +
-                                    '][' +
+                                    '][options][show_when][' +
                                     option.id +
                                     '][active_field]'
                                 "
@@ -302,7 +310,7 @@ const advancedTarget = computed(function () {
                                     :name="
                                         'field[' +
                                         field_id +
-                                        '][' +
+                                        '][options][show_when][' +
                                         option.id +
                                         '][value_is]'
                                     "
@@ -324,7 +332,7 @@ const advancedTarget = computed(function () {
                                     :name="
                                         'field[' +
                                         field_id +
-                                        '][' +
+                                        '][options][show_when][' +
                                         option.id +
                                         '][value]'
                                     "
