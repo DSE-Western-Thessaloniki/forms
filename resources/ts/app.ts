@@ -87,4 +87,11 @@ app.component(
     defineAsyncComponent(() => import("./components/SelectionListData.vue"))
 );
 
+app.component(
+    "field-group",
+    defineAsyncComponent(
+        () => import("./components/frontend/form/FieldGroup.vue")
+    )
+);
+
 app.mount("#app");

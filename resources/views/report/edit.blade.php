@@ -63,7 +63,25 @@
                 @endphp
             @else
                 @foreach ($form->form_fields as $field)
-                    @include('inc.formfields')
+                    @php
+                        $data = $data_dict[$field->id] ?? '';
+
+                        $options = json_decode($field->options);
+                        $accepted = "";
+                        $route = "";
+                    @endphp
+                    @if ($field->type === \App\Models\FormField::TYPE_FILE)
+                        @php
+                            $filetype_value = $options->filetype->value;
+                            if ($filetype_value != -1) {
+                                $accepted = \App\Models\AcceptedFiletype::find($filetype_value)->extension;
+                            } else {
+                                $accepted = $options->filetype->custom_value;
+                            }
+                            $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
+                        @endphp
+                    @endif
+                    <field-group :field="{{ $field }}" data="{{ $data }}" :disabled="false" error="{{ $errors->first("f{$field->id}") }}" accept="{{ $accepted }}" route="{{ $route }}"></field-group>
                 @endforeach
 
                 @if ($form->multiple)

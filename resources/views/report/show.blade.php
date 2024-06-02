@@ -65,7 +65,12 @@
                     @endphp
                 @else
                     @foreach ($form->form_fields as $field)
-                        @include('inc.formfields')
+                        @php
+                            $data = $data_dict[$field->id] ?? '';
+
+                            $options = json_decode($field->options);
+                        @endphp
+                        <field-group :field="{{ $field }}" :data="{{ $data }}" :disabled="false" error="{{ $errors->first("f{$field->id}") }}"></field-group>
                     @endforeach
                     @if ($form->multiple)
                         {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
