@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FormFieldOptions } from "@/fieldtype";
-import { useOptions } from "./composables/useOptions";
+import { useOptions } from "../../../composables/useOptions";
 import { ref } from "vue";
 
 const props = withDefaults(
@@ -27,7 +27,7 @@ const fieldValue = ref(String(props.old_valid ? props.old : props.data));
 const onKeyPress = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
 
-    if (options.match(target.value + event.key)) {
+    if (options.valueMatch(target.value + event.key)) {
         fieldValue.value = target.value + event.key;
     }
 };
