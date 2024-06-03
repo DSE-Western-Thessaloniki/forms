@@ -4,7 +4,8 @@ const props = withDefaults(
         field: App.Models.FormField;
         data: unknown;
         disabled?: boolean;
-        old?: unknown;
+        old: unknown;
+        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -19,14 +20,14 @@ if (!Array.isArray(listValues)) {
 }
 
 const selected = (data: unknown) =>
-    JSON.parse(typeof data === "string" ? data : "[]");
+    JSON.parse(typeof data === "string" && data !== "" ? data : "[]");
 
 // TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
 const isChecked = (id: number) => {
     const oldSelected = selected(props.old);
-    if (props.old !== undefined) {
+    if (props.old_valid && props.old !== undefined) {
         return id in oldSelected;
-    } else if (props.old === undefined) {
+    } else if (!props.old_valid || props.old === undefined) {
         // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
         if (props.data === undefined) {
             return false;
@@ -35,8 +36,6 @@ const isChecked = (id: number) => {
         const dataSelected = selected(props.data);
         return id in dataSelected;
     }
-    console.log(props.old);
-    console.warn("CheckBox isChecked: old is not a number");
 };
 </script>
 

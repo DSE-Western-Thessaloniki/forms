@@ -4,7 +4,8 @@ const props = withDefaults(
         field: App.Models.FormField;
         data: unknown;
         disabled?: boolean;
-        old?: unknown;
+        old: unknown;
+        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -22,7 +23,7 @@ const props = withDefaults(
         :id="`f${field.id}`"
         :class="error ? 'is-invalid' : ''"
         :name="`f${field.id}`"
-        :value="old ?? data"
+        :value="old_valid ? old : data"
         :disabled="disabled"
         :required="field.required ? 'true' : 'false'"
     />

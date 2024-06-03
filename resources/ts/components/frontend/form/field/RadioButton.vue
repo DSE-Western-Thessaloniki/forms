@@ -4,7 +4,8 @@ const props = withDefaults(
         field: App.Models.FormField;
         data: unknown;
         disabled?: boolean;
-        old?: unknown;
+        old: unknown;
+        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -19,17 +20,17 @@ if (!Array.isArray(listValues)) {
 }
 
 // TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
-const isChecked = (old: unknown, data: unknown) => {
-    if (Number.isInteger(old)) {
-        return old !== 0;
-    } else if (old === undefined) {
+const isChecked = (id: string) => {
+    if (props.old_valid && typeof props.old === "string") {
+        return props.old == id;
+    } else if (!props.old_valid || props.old === undefined) {
         // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
-        if (data === undefined) {
+        if (props.data === undefined) {
             return false;
         }
 
-        if (Number.isInteger(data)) {
-            return data !== 0;
+        if (typeof props.data === "string") {
+            return props.data == id;
         }
 
         console.log(typeof props.data);
@@ -58,7 +59,7 @@ const isChecked = (old: unknown, data: unknown) => {
                 :name="`f${field.id}`"
                 :id="`f${field.id}l${listValue.id}`"
                 :value="listValue.id"
-                :checked="isChecked(old, data)"
+                :checked="isChecked(listValue.id)"
                 :disabled="disabled"
             />
             <label

@@ -4,6 +4,8 @@ import Field from "./Field.vue";
 
 const props = defineProps<{
     field: App.Models.FormField;
+    old: unknown;
+    old_valid: boolean;
     data: unknown;
     disabled: boolean;
     error: string;
@@ -19,17 +21,20 @@ const props = defineProps<{
             <span v-if="field.required" class="text-danger">*</span>
         </label>
         <div v-if="field.type === FieldType.Number" class="col-md-3">
-            <Field :field="field" :data="data" :disabled="disabled" :error />
+            <Field :field :old :old_valid :data :disabled :error />
         </div>
         <div v-else class="col-md-9">
             <Field
-                :field="field"
-                :data="data"
-                :disabled="disabled"
+                :field
+                :old
+                :old_valid
+                :data
+                :disabled
                 :error
                 :accept
                 :route
             />
+            <div v-if="error" class="text-danger small">{{ error }}</div>
         </div>
     </div>
 </template>

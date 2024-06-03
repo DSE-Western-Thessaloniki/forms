@@ -4,7 +4,8 @@ const props = withDefaults(
         field: App.Models.FormField;
         data: unknown;
         disabled?: boolean;
-        old?: unknown;
+        old: unknown;
+        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -20,22 +21,22 @@ if (!Array.isArray(listValues)) {
 
 // TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
 const isChecked = (id: number) => {
-    if (Number.isInteger(props.old)) {
+    if (props.old_valid && typeof props.old === "string") {
         return id === props.old;
-    } else if (props.old === undefined) {
+    } else if (!props.old_valid || props.old === undefined) {
         // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
         if (props.data === undefined) {
             return false;
         }
 
-        if (Number.isInteger(props.data)) {
+        if (typeof props.data === "string") {
             return id === props.data;
         }
 
-        console.warn("Select isChecked: data is not a number");
+        console.warn("Select isChecked: data is not a string");
         return false;
     } else {
-        console.warn("Select isChecked: old is not a number");
+        console.warn("Select isChecked: old is not a string");
         return false;
     }
 };

@@ -65,11 +65,14 @@ export const FieldTypeOptions: { id: FieldType; value: string }[] = [
 ];
 
 export interface FormFieldOptions {
+    regex_enabled?: boolean;
     regex?: string;
-    capitals?: boolean;
+    capitals_enabled?: boolean;
+    greek_enabled?: boolean;
     positive?: boolean;
-    appear_when?: string;
-    width?: string;
+    show_when?: string;
+    field_width_enabled?: boolean;
+    field_width?: string;
     filetype?: {
         value: string;
         field_for_filename?: string | null;

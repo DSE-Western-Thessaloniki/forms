@@ -4,7 +4,8 @@ const props = withDefaults(
         field: App.Models.FormField;
         data: unknown;
         disabled?: boolean;
-        old?: unknown;
+        old: unknown;
+        old_valid: boolean;
         error: string;
         route?: string;
         accept: string;
@@ -16,7 +17,11 @@ const props = withDefaults(
 );
 
 const uploadedFile = () => {
-    if (props.old !== undefined && typeof props.old === "string") {
+    if (
+        props.old_valid &&
+        props.old !== undefined &&
+        typeof props.old === "string"
+    ) {
         return props.old;
     } else if (props.data !== undefined && typeof props.data === "string") {
         return props.data;
