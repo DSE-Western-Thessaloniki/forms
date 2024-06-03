@@ -27,7 +27,16 @@
                         $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
                     @endphp
                 @endif
-                <field-group :field="{{ $field }}" data="" :disabled="false" error="{{ $errors->first("f{$field->id}") }}"></field-group>
+                <field-group
+                    :field="{{ $field }}"
+                    data=""
+                    :disabled="false"
+                    error="{{ $errors->first("f{$field->id}") }}"
+                    route=""
+                    accept=""
+                    old=""
+                    :old_valid="false"
+                ></field-group>
             @endforeach
         </div>
     </div>

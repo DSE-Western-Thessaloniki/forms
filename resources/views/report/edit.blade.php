@@ -17,9 +17,19 @@
     @endphp
 
     @if ($form->multiple)
-        <form action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }} method='post' enctype="multipart/form-data">
+        <form
+            action={{ route('report.edit.record.update', [$form->id, $record, 'exit']) }}
+            method='post'
+            enctype="multipart/form-data"
+            class="container"
+        >
     @else
-        <form action={{ route('report.update', $form->id) }} method='post' enctype="multipart/form-data">
+        <form
+            action={{ route('report.update', $form->id) }}
+            method='post'
+            enctype="multipart/form-data"
+            class="container"
+        >
     @endif
 
     <h1>{{ $form->title }}</h1>
@@ -69,6 +79,7 @@
                         $options = json_decode($field->options);
                         $accepted = "";
                         $route = "";
+                        $old = old("f{$field->id}");
                     @endphp
                     @if ($field->type === \App\Models\FormField::TYPE_FILE)
                         @php
@@ -81,7 +92,16 @@
                             $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
                         @endphp
                     @endif
-                    <field-group :field="{{ $field }}" data="{{ $data }}" :disabled="false" error="{{ $errors->first("f{$field->id}") }}" accept="{{ $accepted }}" route="{{ $route }}"></field-group>
+                    <field-group
+                        :field="{{ $field }}"
+                        old="{{ $old }}"
+                        :old_valid="{{ $old === null ? "false" : "true" }}"
+                        data="{{ $data }}"
+                        :disabled="false"
+                        error="{{ $errors->first("f{$field->id}") }}"
+                        accept="{{ $accepted }}"
+                        route="{{ $route }}"
+                    ></field-group>
                 @endforeach
 
                 @if ($form->multiple)
