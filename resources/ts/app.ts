@@ -88,6 +88,11 @@ app.component(
 );
 
 app.component(
+    "v-form",
+    defineAsyncComponent(() => import("./components/frontend/form/VForm.vue"))
+);
+
+app.component(
     "field-group",
     defineAsyncComponent(
         () => import("./components/frontend/form/FieldGroup.vue")

@@ -14,6 +14,29 @@
             $record = 0;
         }
         $save = true;
+
+        if ($school !== null) {
+            $total_records = DB::table('form_fields')
+                ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
+                ->where('form_id', $form->id)
+                ->where('school_id', $school->id)
+                ->max('record');
+        } else {
+            if ($teacher !== null) {
+                $total_records = DB::table('form_fields')
+                    ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
+                    ->where('form_id', $form->id)
+                    ->where('teacher_id', $teacher->id)
+                    ->max('record');
+            } else {
+                $total_records = DB::table('form_fields')
+                    ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
+                    ->where('form_id', $form->id)
+                    ->where('other_teacher_id', $other_teacher->id)
+                    ->max('record');
+            }
+        }
+        $total_records = $total_records ?? 0;
     @endphp
 
     @if ($form->multiple)
@@ -32,6 +55,16 @@
         >
     @endif
 
+    <v-form
+        :form_fields="{{ $form->form_fields }}"
+        :multiple="{{ $form->multiple }}"
+        :total_records="{{ $total_records }}"
+        acting_as="{{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }} {{ $school?->name }}"
+    >
+        <template #title>{{ $form->title }}</template>
+        <template #description>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</template>
+    </v-form>
+
     <h1>{{ $form->title }}</h1>
     <h3>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</h3>
     <hr />
@@ -41,30 +74,6 @@
         </div>
         <div class="card-body">
             <div class="mb-4">To <span class="text-danger">*</span> σηματοδοτεί υποχρεωτικά πεδία.</div>
-            @php
-                if ($school !== null) {
-                    $total_records = DB::table('form_fields')
-                        ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                        ->where('form_id', $form->id)
-                        ->where('school_id', $school->id)
-                        ->max('record');
-                } else {
-                    if ($teacher !== null) {
-                        $total_records = DB::table('form_fields')
-                            ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                            ->where('form_id', $form->id)
-                            ->where('teacher_id', $teacher->id)
-                            ->max('record');
-                    } else {
-                        $total_records = DB::table('form_fields')
-                            ->join('form_field_data', 'form_fields.id', '=', 'form_field_data.form_field_id')
-                            ->where('form_id', $form->id)
-                            ->where('other_teacher_id', $other_teacher->id)
-                            ->max('record');
-                    }
-                }
-                $total_records = $total_records ?? 0;
-            @endphp
 
             @if ($record > $total_records)
                 Δεν υπάρχει η εγγραφή
@@ -119,7 +128,7 @@
                             @for ($i = 0; $i < $total_records + 1; $i++)
                                 <li class="page-item {{ $i == $record ? 'active' : '' }}">
                                     @if ($i == $record)
-                                        <button type="button" class="page-link">{{ $i + 1 }}</a>
+                                        <button type="button" class="page-link">{{ $i + 1 }}</button>
                                         @else
                                             <button class="page-link" type="submit"
                                                 formaction="{{ route('report.edit.record.update', [$form->id, $record, $i]) }}"
