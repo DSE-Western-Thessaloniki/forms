@@ -290,7 +290,7 @@ const advancedTarget = computed(function () {
                             >
                                 <option
                                     v-for="field in fields"
-                                    :value="field.id"
+                                    :value="`f${field.id}`"
                                     :key="field.id"
                                 >
                                     {{ field.title }}

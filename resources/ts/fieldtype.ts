@@ -64,13 +64,21 @@ export const FieldTypeOptions: { id: FieldType; value: string }[] = [
     },
 ];
 
+export interface FormFieldOptionsShowCriteria {
+    operator?: "and" | "or";
+    visible: "always" | "when_field_is_active" | "when_value";
+    active_field?: string;
+    value_is?: "gt" | "ge" | "lt" | "le" | "eq" | "ne";
+    value?: string;
+}
+
 export interface FormFieldOptions {
     regex_enabled?: boolean;
     regex?: string;
     capitals_enabled?: boolean;
     greek_enabled?: boolean;
     positive?: boolean;
-    show_when?: string;
+    show_when?: Array<FormFieldOptionsShowCriteria>;
     field_width_enabled?: boolean;
     field_width?: string;
     filetype?: {

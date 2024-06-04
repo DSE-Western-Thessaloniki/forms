@@ -1,4 +1,4 @@
-import { FormFieldOptions } from "@/fieldtype";
+import { FormFieldOptions, FormFieldOptionsShowCriteria } from "@/fieldtype";
 import { Ref, ref } from "vue";
 
 function isUppercase(value: string) {
@@ -30,13 +30,22 @@ function matchesRegex(regex: string, value: string) {
 
 class useOptionsObject {
     readonly valueChecks: Array<Function> = [];
-    readonly showWhenCriteria: Array<Function> = [];
+    readonly showWhenCriteria: Array<FormFieldOptionsShowCriteria> = [];
     readonly fieldVisible: Ref<boolean>;
 
-    constructor(valueChecks: Array<Function>, showWhenChecks: Array<Function>) {
+    constructor(
+        valueChecks: Array<Function>,
+        showWhenChecks: Array<FormFieldOptionsShowCriteria>
+    ) {
         this.valueChecks = valueChecks;
         this.showWhenCriteria = showWhenChecks;
-        this.fieldVisible = ref(this.isVisible());
+        this.fieldVisible = ref(false);
+
+        // Πρόσθεσε hooks στα events των πεδίων που απαιτείται να παρακολουθούμε
+        window.addEventListener("load", () => {
+            this.addHooks();
+            this.fieldVisible.value = this.isVisible();
+        });
     }
 
     /**
@@ -59,11 +68,42 @@ class useOptionsObject {
     private isVisible(this: useOptionsObject): boolean {
         return true;
     }
+
+    /**
+     * Πρόσθεσε hooks στα events των πεδίων που απαιτείται να παρακολουθούμε
+     */
+    private addHooks() {
+        this.showWhenCriteria.forEach((criteria) => {
+            if (criteria.visible === "always") {
+                return;
+            }
+
+            if (criteria.active_field === undefined) {
+                console.warn(
+                    "Δεν βρέθηκε τιμή για το ενεργό πεδίο. Το πεδίο δεν θα εμφανιστεί."
+                );
+                return;
+            }
+
+            const input = document.querySelector(
+                `[name='${criteria.active_field}']`
+            );
+
+            if (input === null) {
+                console.warn(
+                    `Δεν βρέθηκε το πεδίο ${criteria.active_field}. Το πεδίο δεν θα εμφανιστεί.`
+                );
+                return;
+            }
+
+            input.addEventListener("change", (event) => this.isVisible());
+        });
+    }
 }
 
 export function useOptions(options: FormFieldOptions) {
     const valueChecks: Array<Function> = [];
-    const showWhenChecks: Array<Function> = [];
+    let showWhenChecks: Array<FormFieldOptionsShowCriteria> = [];
 
     if (options?.capitals_enabled) {
         valueChecks.push(isUppercase);
@@ -75,6 +115,10 @@ export function useOptions(options: FormFieldOptions) {
 
     if (options?.regex_enabled && options?.regex) {
         valueChecks.push(matchesRegex.bind(null, options.regex));
+    }
+
+    if (options?.show_when && options?.show_when.length > 0) {
+        showWhenChecks = options.show_when;
     }
 
     return new useOptionsObject(valueChecks, showWhenChecks);
