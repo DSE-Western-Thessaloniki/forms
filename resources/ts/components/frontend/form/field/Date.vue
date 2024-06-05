@@ -25,6 +25,6 @@ const props = withDefaults(
         :name="`f${field.id}`"
         :value="old_valid ? old : data"
         :disabled="disabled"
-        :required="field.required ? 'true' : 'false'"
+        :required="field.required ? 'true' : undefined"
     />
 </template>

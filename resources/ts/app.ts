@@ -13,6 +13,7 @@ import "@fortawesome/fontawesome-free/scss/solid.scss";
 import "@fortawesome/fontawesome-free/scss/brands.scss";
 import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
 import "@fortawesome/fontawesome-free/scss/v4-shims.scss";
+import { ZiggyVue } from "ziggy-js";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -20,7 +21,7 @@ import "@fortawesome/fontawesome-free/scss/v4-shims.scss";
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = createApp({});
+const app = createApp({}).use(ZiggyVue);
 
 // Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
 var inputTypeNumbers = document.querySelectorAll("input[type=number]");

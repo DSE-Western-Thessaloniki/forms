@@ -45,7 +45,7 @@ const onKeyPress = (event: KeyboardEvent) => {
             :name="`f${field.id}`"
             :value="fieldValue"
             :disabled="disabled"
-            :required="field.required ? 'true' : 'false'"
+            :required="field.required ? 'true' : undefined"
             @keypress.prevent="onKeyPress"
         />
         <small>Μορφή: 1234567890</small>

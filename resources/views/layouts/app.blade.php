@@ -13,7 +13,8 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/ts/app.ts'])
-    
+    @routes(['report'])
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet" type="text/css">

@@ -18,6 +18,10 @@ const props = withDefaults(
     }
 );
 
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
 const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
 
 const options = useOptions(fieldOptions);
@@ -31,6 +35,11 @@ const onKeyPress = (event: KeyboardEvent) => {
         fieldValue.value = target.value + event.key;
     }
 };
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -43,7 +52,7 @@ const onKeyPress = (event: KeyboardEvent) => {
         :name="`f${field.id}`"
         :value="fieldValue"
         :disabled="disabled"
-        :required="field.required ? 'true' : 'false'"
+        :required="field.required ? 'true' : undefined"
         @keypress.prevent="onKeyPress"
     />
 </template>
