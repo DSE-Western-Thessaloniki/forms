@@ -336,7 +336,9 @@ class ReportsController extends Controller
      */
     public function edit($id)
     {
-        $form = Form::where('active', true)->find($id);
+        $form = Form::with('form_fields')
+            ->where('active', true)
+            ->find($id);
         if ($form) {
             $access = $this->school_or_teacher_has_access($form);
             if (is_bool($access)) {
@@ -386,7 +388,9 @@ class ReportsController extends Controller
      */
     public function editRecord($id, $record)
     {
-        $form = Form::where('active', true)->find($id);
+        $form = Form::with('form_fields')
+            ->where('active', true)
+            ->find($id);
         if ($form) {
             $access = $this->school_or_teacher_has_access($form);
             if (is_bool($access)) {
