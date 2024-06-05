@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.2",
         "mk-j/php_xlsxwriter": "^0.38.0",
-        "subfission/cas": "^4.2"
+        "subfission/cas": "^4.2",
+        "tightenco/ziggy": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
