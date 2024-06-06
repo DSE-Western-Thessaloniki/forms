@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFormStore } from "@/stores/formStore";
+
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
@@ -19,37 +21,39 @@ if (!Array.isArray(listValues)) {
     listValues = [];
 }
 
-// TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
-const isChecked = (id: string) => {
+const initialValue = () => {
     if (props.old_valid && typeof props.old === "string") {
-        return props.old == id;
+        return props.old;
     } else if (!props.old_valid || props.old === undefined) {
         // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
         if (props.data === undefined) {
-            return false;
+            return "";
         }
 
         if (typeof props.data === "string") {
-            return props.data == id;
+            return props.data;
         }
 
         console.log(typeof props.data);
-        console.warn("RadioButton isChecked: data is not a number");
-        return false;
+        console.warn("RadioButton initialValue: data is not a number");
+        return "";
     } else {
         console.log(typeof props.old);
-        console.warn("RadioButton isChecked: old is not a number");
-        return false;
+        console.warn("RadioButton initialValue: old is not a number");
+        return "";
     }
 };
 
-const emit = defineEmits<{
-    change: [value: string];
-}>();
+const formStore = useFormStore();
+formStore.field[props.field.id] = initialValue();
+
+const isChecked = (id: string) => {
+    return formStore.field[props.field.id] === id;
+};
 
 const emitValueChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    emit("change", target.value);
+    formStore.field[props.field.id] = target.value;
 };
 </script>
 

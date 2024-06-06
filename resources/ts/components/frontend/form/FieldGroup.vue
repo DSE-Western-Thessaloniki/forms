@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { FieldType } from "@/fieldtype";
 import Field from "./Field.vue";
-import { Ref } from "vue";
 
 const props = defineProps<{
     field: App.Models.FormField;
@@ -12,12 +11,7 @@ const props = defineProps<{
     error: string;
     accept: string;
     route: string;
-    field_values: Record<number, Ref<String>>;
 }>();
-
-const updateValue = (value: string) => {
-    props.field_values[props.field.id].value = value;
-};
 </script>
 
 <template>
@@ -39,7 +33,6 @@ const updateValue = (value: string) => {
                 :error
                 :accept
                 :route
-                @change="updateValue"
             />
             <div v-if="error" class="text-danger small">{{ error }}</div>
         </div>

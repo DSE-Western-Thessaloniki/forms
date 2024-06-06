@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFormStore } from "@/stores/formStore";
+
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
@@ -14,14 +16,10 @@ const props = withDefaults(
     }
 );
 
-const emit = defineEmits<{
-    change: [value: string];
-}>();
-
-const emitValueChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    emit("change", target.value);
-};
+const formStore = useFormStore();
+formStore.field[props.field.id] = String(
+    props.old_valid ? props.old : props.data
+);
 </script>
 
 <template>
@@ -32,10 +30,8 @@ const emitValueChange = (event: Event) => {
         :id="`f${field.id}`"
         :class="error ? 'is-invalid' : ''"
         :name="`f${field.id}`"
-        :value="old_valid ? old : data"
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
-        @input="emitValueChange"
-        @change="emitValueChange"
+        v-model="formStore.field[props.field.id]"
     />
 </template>

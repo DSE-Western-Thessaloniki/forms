@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFormStore } from "@/stores/formStore";
+
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
@@ -19,35 +21,32 @@ if (!Array.isArray(listValues)) {
     listValues = [];
 }
 
-// TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
-const isChecked = (id: string) => {
+const initialValue = () => {
     if (props.old_valid && typeof props.old === "string") {
-        return id === props.old;
+        return props.old;
     } else if (!props.old_valid || props.old === undefined) {
         // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
         if (props.data === undefined) {
-            return false;
+            return "";
         }
 
         if (typeof props.data === "string") {
-            return id === props.data;
+            return props.data;
         }
 
-        console.warn("Select isChecked: data is not a string");
-        return false;
+        console.warn("Select initialValue: data is not a string");
+        return "";
     } else {
-        console.warn("Select isChecked: old is not a string");
-        return false;
+        console.warn("Select initialValue: old is not a string");
+        return "";
     }
 };
 
-const emit = defineEmits<{
-    change: [value: string];
-}>();
+const formStore = useFormStore();
+formStore.field[props.field.id] = initialValue();
 
-const emitValueChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    emit("change", target.value);
+const isChecked = (id: string) => {
+    return formStore.field[props.field.id] === id;
 };
 </script>
 
@@ -60,7 +59,7 @@ const emitValueChange = (event: Event) => {
             :id="`f${field.id}`"
             name="`f${field.id}`"
             :disabled="disabled"
-            @change="emitValueChange"
+            v-model="formStore.field[props.field.id]"
         >
             <option
                 v-for="listValue in listValues"

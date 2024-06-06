@@ -18,10 +18,6 @@ const props = withDefaults(
     }
 );
 
-const emit = defineEmits<{
-    change: [value: string];
-}>();
-
 const f = new Map<FieldType, any>([
     [
         FieldType.Text,
@@ -90,8 +86,6 @@ const f = new Map<FieldType, any>([
         ),
     ],
 ]);
-
-const passthroughValue = (value: string) => emit("change", value);
 </script>
 
 <template>
@@ -105,6 +99,5 @@ const passthroughValue = (value: string) => emit("change", value);
         :error
         :accept
         :route
-        @change="passthroughValue"
     />
 </template>

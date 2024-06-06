@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFormStore } from "@/stores/formStore";
+
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
@@ -13,10 +15,6 @@ const props = withDefaults(
         error: "",
     }
 );
-
-const emit = defineEmits<{
-    change: [value: string];
-}>();
 
 let listValues: Array<{ id: number; value: string }> = JSON.parse(
     props.field.listvalues
@@ -54,12 +52,7 @@ const state = listValues
     })
     .reduce((a, b) => ({ ...a, ...b }), {});
 
-const stateChanged = (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    const id = parseInt(input.id.replace(`f${props.field.id}l`, ""));
-    const checked = input.checked;
-    state[id] = checked ? input.value : null;
-
+const getValuesFromState = () => {
     const newValues: Array<string> = [];
     Object.keys(state).forEach((key: string) => {
         const keyValue = state[key];
@@ -68,7 +61,19 @@ const stateChanged = (e: Event) => {
         }
     });
 
-    emit("change", JSON.stringify(newValues));
+    return JSON.stringify(newValues);
+};
+
+const formStore = useFormStore();
+formStore.field[props.field.id] = JSON.stringify(getValuesFromState());
+
+const stateChanged = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    const id = parseInt(input.id.replace(`f${props.field.id}l`, ""));
+    const checked = input.checked;
+    state[id] = checked ? input.value : null;
+
+    formStore.field[props.field.id] = JSON.stringify(getValuesFromState());
 };
 </script>
 

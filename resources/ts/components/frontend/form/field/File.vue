@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFormStore } from "@/stores/formStore";
+
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
@@ -36,13 +38,12 @@ const uploadedFile = () => {
     }
 };
 
-const emit = defineEmits<{
-    change: [value: string];
-}>();
+const formStore = useFormStore();
+formStore.field[props.field.id] = uploadedFile();
 
-const emitValueChange = (event: Event) => {
+const handleValueChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    emit("change", target.value);
+    formStore.field[props.field.id] = target.value;
 };
 </script>
 
@@ -63,7 +64,7 @@ const emitValueChange = (event: Event) => {
                 :disabled
                 :accept
                 :required="field.required"
-                @change="emitValueChange"
+                @change="handleValueChange"
             />
             <div class="">Σημείωση: Μπορείτε να ανεβάσετε μόνο ένα αρχείο</div>
         </div>
