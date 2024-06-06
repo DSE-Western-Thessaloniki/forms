@@ -2,6 +2,7 @@
 import { FormFieldOptions } from "@/fieldtype";
 import { useOptions } from "../../../composables/useOptions";
 import { ref } from "vue";
+import { useFormStore } from "@/stores/formStore";
 
 const props = withDefaults(
     defineProps<{
@@ -28,17 +29,17 @@ const options = useOptions(fieldOptions);
 
 const fieldValue = ref(String(props.old_valid ? props.old : props.data));
 
+const formStore = useFormStore();
+formStore.field[props.field.id] = fieldValue.value;
+
 const onKeyPress = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
 
     if (options.valueMatch(target.value + event.key)) {
-        fieldValue.value = target.value + event.key;
+        formStore.field[props.field.id] = target.value + event.key;
     }
-};
 
-const emitValueChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    emit("change", target.value);
+    // console.log(props.field.id, formStore.field[props.field.id]);
 };
 </script>
 
@@ -53,7 +54,7 @@ const emitValueChange = (event: Event) => {
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
         @keypress.prevent="onKeyPress"
-        @change="emitValueChange"
+        v-model="formStore.field[props.field.id]"
         >{{ fieldValue }}</textarea
     >
 </template>

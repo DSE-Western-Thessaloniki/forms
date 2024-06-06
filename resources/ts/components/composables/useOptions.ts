@@ -2,29 +2,29 @@ import { FormFieldOptions, FormFieldOptionsShowCriteria } from "@/fieldtype";
 import { Ref, ref } from "vue";
 
 function isUppercase(value: string) {
-    // console.log("isUppercase: " + (value.toUpperCase() === value));
+    console.log("isUppercase: " + (value.toUpperCase() === value));
     return value.toUpperCase() === value;
 }
 
 function isInGreek(value: string) {
     // Κάνε δεκτά τα ελληνικά, τα σύμβολα και τους αριθμούς
-    // console.log(
-    //     "isInGreek: " +
-    //         !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
-    //             value
-    //         )
-    // );
+    console.log(
+        "isInGreek: " +
+            !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
+                value
+            )
+    );
     return !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
         value
     );
 }
 
 function matchesRegex(regex: string, value: string) {
-    // console.log(
-    //     "matchesRegex: " +
-    //         new RegExp(regex, "u").test(value) +
-    //         ` regex: ${regex} value: ${value}`
-    // );
+    console.log(
+        "matchesRegex: " +
+            new RegExp(regex, "u").test(value) +
+            ` regex: ${regex} value: ${value}`
+    );
     return new RegExp(regex, "u").test(value);
 }
 

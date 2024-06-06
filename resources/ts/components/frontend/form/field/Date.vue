@@ -13,6 +13,15 @@ const props = withDefaults(
         error: "",
     }
 );
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -26,5 +35,7 @@ const props = withDefaults(
         :value="old_valid ? old : data"
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
+        @input="emitValueChange"
+        @change="emitValueChange"
     />
 </template>

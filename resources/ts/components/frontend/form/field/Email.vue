@@ -31,6 +31,15 @@ const onKeyPress = (event: KeyboardEvent) => {
         fieldValue.value = target.value + event.key;
     }
 };
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -45,5 +54,6 @@ const onKeyPress = (event: KeyboardEvent) => {
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
         @keypress.prevent="onKeyPress"
+        @input="emitValueChange"
     />
 </template>

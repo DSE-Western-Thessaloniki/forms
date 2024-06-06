@@ -3,6 +3,7 @@ import { route } from "ziggy-js";
 import FieldGroup from "./FieldGroup.vue";
 import { FieldType } from "@/fieldtype";
 import { ref } from "vue";
+import { useFormStore } from "@/stores/formStore";
 
 const props = withDefaults(
     defineProps<{
@@ -35,12 +36,15 @@ const real_method = props.method?.toLowerCase() === "get" ? "get" : "post";
 const field_values = props.form.form_fields
     .map((field) => {
         return {
-            [field.id]: ref<string>(
-                props.form_data ? props.form_data[field.id] ?? "" : ""
-            ),
+            [field.id]: props.form_data ? props.form_data[field.id] ?? "" : "",
         };
     })
     .reduce((a, b) => ({ ...a, ...b }), {});
+
+const formStore = useFormStore();
+Object.entries(field_values).forEach(([key, value]) => {
+    formStore.field[key] = value;
+});
 </script>
 
 <template>

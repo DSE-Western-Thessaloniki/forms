@@ -20,7 +20,7 @@ if (!Array.isArray(listValues)) {
 }
 
 // TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
-const isChecked = (id: number) => {
+const isChecked = (id: string) => {
     if (props.old_valid && typeof props.old === "string") {
         return id === props.old;
     } else if (!props.old_valid || props.old === undefined) {
@@ -40,6 +40,15 @@ const isChecked = (id: number) => {
         return false;
     }
 };
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -51,12 +60,13 @@ const isChecked = (id: number) => {
             :id="`f${field.id}`"
             name="`f${field.id}`"
             :disabled="disabled"
+            @change="emitValueChange"
         >
             <option
                 v-for="listValue in listValues"
                 :key="listValue.id"
                 :value="listValue.id"
-                :selected="isChecked(listValue.id)"
+                :selected="isChecked(`${listValue.id}`)"
             >
                 {{ listValue.value }}
             </option>

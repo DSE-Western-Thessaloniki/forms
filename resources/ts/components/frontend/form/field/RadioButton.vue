@@ -42,6 +42,15 @@ const isChecked = (id: string) => {
         return false;
     }
 };
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -61,6 +70,7 @@ const isChecked = (id: string) => {
                 :value="listValue.id"
                 :checked="isChecked(listValue.id)"
                 :disabled="disabled"
+                @change="emitValueChange"
             />
             <label
                 class="form-check-label"

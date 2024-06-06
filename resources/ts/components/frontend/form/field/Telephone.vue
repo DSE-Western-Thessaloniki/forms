@@ -26,10 +26,18 @@ const fieldValue = ref(String(props.old_valid ? props.old : props.data));
 
 const onKeyPress = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
-
     if (options.valueMatch(target.value + event.key)) {
         fieldValue.value = target.value + event.key;
     }
+};
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
 };
 </script>
 
@@ -47,6 +55,7 @@ const onKeyPress = (event: KeyboardEvent) => {
             :disabled="disabled"
             :required="field.required ? 'true' : undefined"
             @keypress.prevent="onKeyPress"
+            @input="emitValueChange"
         />
         <small>Μορφή: 1234567890</small>
     </div>

@@ -35,6 +35,15 @@ const uploadedFile = () => {
         return "";
     }
 };
+
+const emit = defineEmits<{
+    change: [value: string];
+}>();
+
+const emitValueChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("change", target.value);
+};
 </script>
 
 <template>
@@ -54,6 +63,7 @@ const uploadedFile = () => {
                 :disabled
                 :accept
                 :required="field.required"
+                @change="emitValueChange"
             />
             <div class="">Σημείωση: Μπορείτε να ανεβάσετε μόνο ένα αρχείο</div>
         </div>
