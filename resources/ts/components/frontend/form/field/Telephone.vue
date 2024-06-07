@@ -6,10 +6,7 @@ import { useFormStore } from "@/stores/formStore";
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
-        data: unknown;
         disabled?: boolean;
-        old: unknown;
-        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -23,9 +20,6 @@ const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
 const options = useOptions(fieldOptions);
 
 const formStore = useFormStore();
-formStore.field[props.field.id] = String(
-    props.old_valid ? props.old : props.data
-);
 
 const onKeyPress = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;

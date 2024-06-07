@@ -5,9 +5,6 @@ import { defineAsyncComponent } from "vue";
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
-        old: unknown;
-        old_valid: boolean;
-        data: unknown;
         disabled?: boolean;
         error: string;
         accept?: string;
@@ -92,9 +89,6 @@ const f = new Map<FieldType, any>([
     <component
         :is="f.get(field.type)"
         :field="field"
-        :old
-        :old_valid
-        :data="data"
         :disabled="disabled"
         :error
         :accept

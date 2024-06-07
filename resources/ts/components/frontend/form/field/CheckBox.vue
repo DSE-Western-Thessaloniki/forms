@@ -4,10 +4,7 @@ import { useFormStore } from "@/stores/formStore";
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
-        data: unknown;
         disabled?: boolean;
-        old: unknown;
-        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -28,18 +25,8 @@ const selected = (data: unknown): Array<number> =>
 
 // TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
 const isChecked = (id: number) => {
-    const oldSelected = selected(props.old);
-    if (props.old_valid && props.old !== undefined) {
-        return id in oldSelected;
-    } else if (!props.old_valid || props.old === undefined) {
-        // Κάνε έλεγχο την τιμή που ήρθε από τη βάση
-        if (props.data === undefined) {
-            return false;
-        }
-
-        const dataSelected = selected(props.data);
-        return id in dataSelected;
-    }
+    const dataSelected = selected(formStore.field[props.field.id]);
+    return id in dataSelected;
 };
 
 const state = listValues

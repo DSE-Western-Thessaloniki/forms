@@ -4,10 +4,7 @@ import { useFormStore } from "@/stores/formStore";
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
-        data: unknown;
         disabled?: boolean;
-        old: unknown;
-        old_valid: boolean;
         error: string;
     }>(),
     {
@@ -17,9 +14,6 @@ const props = withDefaults(
 );
 
 const formStore = useFormStore();
-formStore.field[props.field.id] = String(
-    props.old_valid ? props.old : props.data
-);
 </script>
 
 <template>

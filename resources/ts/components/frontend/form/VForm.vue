@@ -33,8 +33,6 @@ const real_method = props.method?.toLowerCase() === "get" ? "get" : "post";
 // Δημιούργησε έναν πίνακα που θα χρησιμοποιηθεί για την παρακολούθηση των αλλαγών
 // των τιμών των πεδίων ώστε να μπορέσουμε να εφαρμόσουμε τα κριτήρια εμφάνισης
 // πεδίου στη φόρμα.
-// TODO: Κάνε σωστή αρχικοποίηση τιμών ώστε να μην χρειάζεται διπλή αρχικοποίηση
-// των τιμών και μεταφορά από component στα παιδιά του
 const field_values = props.form.form_fields
     .map((field) => {
         return {
@@ -74,13 +72,8 @@ Object.entries(field_values).forEach(([key, value]) => {
                     v-for="field in form.form_fields"
                     :key="field.id"
                     :field="field"
-                    :data="(form_data ? form_data[field.id] : '') ?? ''"
                     error=""
                     :disabled="disabled"
-                    :old="old[`f${field.id}`] ?? ''"
-                    :old_valid="
-                        old[`f${field.id}`] === undefined ? false : true
-                    "
                     :accept="
                         field.type === FieldType.File
                             ? field.accepted ?? ''
