@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFormStore } from "@/stores/formStore";
+import { ref, watch } from "vue";
 
 const props = withDefaults(
     defineProps<{
@@ -20,21 +21,21 @@ if (!Array.isArray(listValues)) {
     listValues = [];
 }
 
-const selected = (data: unknown): Array<number> =>
-    JSON.parse(typeof data === "string" && data !== "" ? data : "[]");
+const selected = (data: unknown): Array<string> => {
+    return JSON.parse(typeof data === "string" && data !== "" ? data : "[]");
+};
 
-// TODO: Κάνε έλεγχο αν η τιμή είναι πάντα αριθμός ή μπορεί να μας επιστραφεί και κείμενο
+const formStore = useFormStore();
+
 const isChecked = (id: number) => {
     const dataSelected = selected(formStore.field[props.field.id]);
-    return id in dataSelected;
+    return dataSelected.includes(`${id}`);
 };
 
 const state = listValues
     .map((listValue) => {
         return {
-            [`${listValue.id}`]: isChecked(listValue.id)
-                ? listValue.value
-                : null,
+            [`${listValue.id}`]: isChecked(listValue.id),
         };
     })
     .reduce((a, b) => ({ ...a, ...b }), {});
@@ -43,25 +44,19 @@ const getValuesFromState = () => {
     const newValues: Array<string> = [];
     Object.keys(state).forEach((key: string) => {
         const keyValue = state[key];
-        if (keyValue !== null) {
-            newValues.push(keyValue);
+        if (keyValue !== false) {
+            newValues.push(listValues[parseInt(key, 10)].id.toString());
         }
     });
 
     return JSON.stringify(newValues);
 };
 
-const formStore = useFormStore();
-formStore.field[props.field.id] = JSON.stringify(getValuesFromState());
-
-const stateChanged = (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    const id = parseInt(input.id.replace(`f${props.field.id}l`, ""));
-    const checked = input.checked;
-    state[id] = checked ? input.value : null;
-
-    formStore.field[props.field.id] = JSON.stringify(getValuesFromState());
+const stateChanged = () => {
+    formStore.field[props.field.id] = getValuesFromState();
 };
+
+watch(() => state, stateChanged, { deep: true });
 </script>
 
 <template>
@@ -79,9 +74,8 @@ const stateChanged = (e: Event) => {
                 :name="`f${field.id}[]`"
                 :id="`f${field.id}l${listValue.id}`"
                 :value="listValue.id"
-                :checked="isChecked(listValue.id)"
+                v-model="state[listValue.id]"
                 :disabled="disabled"
-                @change="stateChanged"
             />
             <label
                 class="form-check-label"
