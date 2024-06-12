@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFormStore } from "@/stores/formStore";
+import { ref, watch } from "vue";
 
 const props = withDefaults(
     defineProps<{
@@ -20,14 +21,11 @@ if (!Array.isArray(listValues)) {
 
 const formStore = useFormStore();
 
-const isChecked = (id: string) => {
-    return formStore.field[props.field.id] === id;
-};
+const value = ref(formStore.field[props.field.id]);
 
-const emitValueChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    formStore.field[props.field.id] = target.value;
-};
+watch(value, () => {
+    formStore.field[props.field.id] = value.value;
+});
 </script>
 
 <template>
@@ -44,10 +42,9 @@ const emitValueChange = (event: Event) => {
                 :class="error ? 'is-invalid' : ''"
                 :name="`f${field.id}`"
                 :id="`f${field.id}l${listValue.id}`"
-                :value="listValue.id"
-                :checked="isChecked(listValue.id)"
+                :value="`${listValue.id}`"
                 :disabled="disabled"
-                @change="emitValueChange"
+                v-model="value"
             />
             <label
                 class="form-check-label"
