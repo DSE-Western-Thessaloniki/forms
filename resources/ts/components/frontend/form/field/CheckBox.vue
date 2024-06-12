@@ -21,7 +21,7 @@ if (!Array.isArray(listValues)) {
     listValues = [];
 }
 
-const selected = (data: unknown): Array<string> => {
+const selected = (data: unknown): Array<string | number> => {
     return JSON.parse(typeof data === "string" && data !== "" ? data : "[]");
 };
 
@@ -29,7 +29,7 @@ const formStore = useFormStore();
 
 const isChecked = (id: number) => {
     const dataSelected = selected(formStore.field[props.field.id]);
-    return dataSelected.includes(`${id}`);
+    return dataSelected.includes(`${id}`) || dataSelected.includes(id);
 };
 
 const state = listValues
