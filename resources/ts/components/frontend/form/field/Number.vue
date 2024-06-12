@@ -23,9 +23,15 @@ const formStore = useFormStore();
 
 const onKeyPress = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
+    const cursorPos = target.selectionStart ?? 0;
+    const inputText = target.value;
 
-    if (options.valueMatch(target.value + event.key)) {
-        formStore.field[props.field.id] = target.value + event.key;
+    const proposedNewText = `${inputText.slice(0, cursorPos)}${
+        event.key
+    }${inputText.slice(cursorPos, inputText.length)}`;
+
+    if (!options.valueMatch(proposedNewText)) {
+        event.preventDefault();
     }
 };
 </script>
@@ -40,7 +46,7 @@ const onKeyPress = (event: KeyboardEvent) => {
         :name="`f${field.id}`"
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
-        @keypress.prevent="onKeyPress"
+        @keypress="onKeyPress"
         v-model="formStore.field[props.field.id]"
     />
 </template>

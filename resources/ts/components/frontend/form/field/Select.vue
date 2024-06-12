@@ -32,7 +32,7 @@ const isChecked = (id: string) => {
             class="form-select"
             :class="error ? 'is-invalid' : ''"
             :id="`f${field.id}`"
-            name="`f${field.id}`"
+            :name="`f${field.id}`"
             :disabled="disabled"
             v-model="formStore.field[props.field.id]"
         >
