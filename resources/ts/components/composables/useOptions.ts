@@ -1,4 +1,6 @@
 import { FormFieldOptions, FormFieldOptionsShowCriteria } from "@/fieldtype";
+import { useFormStore } from "@/stores/formStore";
+import { Store } from "pinia";
 import { Ref, ref } from "vue";
 
 function isUppercase(value: string) {
@@ -32,20 +34,32 @@ class useOptionsObject {
     readonly valueChecks: Array<Function> = [];
     readonly showWhenCriteria: Array<FormFieldOptionsShowCriteria> = [];
     readonly fieldVisible: Ref<boolean>;
+    readonly formStore: Store<
+        "formStore",
+        {
+            field: Record<string, string | null>;
+        }
+    >;
 
     constructor(
         valueChecks: Array<Function>,
-        showWhenChecks: Array<FormFieldOptionsShowCriteria>
+        showWhenChecks: Array<FormFieldOptionsShowCriteria>,
+        withWatchers: boolean
     ) {
         this.valueChecks = valueChecks;
         this.showWhenCriteria = showWhenChecks;
         this.fieldVisible = ref(false);
+        this.formStore = useFormStore();
+
+        if (withWatchers) {
+            this.addWatchers();
+        }
 
         // Πρόσθεσε hooks στα events των πεδίων που απαιτείται να παρακολουθούμε
-        window.addEventListener("load", () => {
-            this.addHooks();
-            this.fieldVisible.value = this.isVisible();
-        });
+        // window.addEventListener("load", () => {
+        //     this.addHooks();
+        //     this.fieldVisible.value = this.isVisible();
+        // });
     }
 
     /**
@@ -66,8 +80,111 @@ class useOptionsObject {
      * @returns true αν ικανοποιούνται, false αλλιώς
      */
     private isVisible(this: useOptionsObject): boolean {
-        return true;
+        const returnValues = this.showWhenCriteria.map((criteria) => {
+            if (criteria.visible === "always") {
+                return true;
+            }
+
+            if (criteria.visible === "when_field_is_active") {
+                if (criteria.active_field === undefined) {
+                    console.warn(
+                        "Δεν βρέθηκε όνομα για το ενεργό πεδίο. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+
+                const active_field_value =
+                    this.formStore.field[criteria.active_field];
+
+                if (active_field_value === null) {
+                    console.warn(
+                        "Δεν βρέθηκε τιμή για το ενεργό πεδίο. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+                return Boolean(active_field_value);
+            }
+
+            if (criteria.visible === "when_value") {
+                if (criteria.active_field === undefined) {
+                    console.warn(
+                        "Δεν βρέθηκε τιμή για το ενεργό πεδίο. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+
+                if (criteria.value_is === undefined) {
+                    console.warn(
+                        "Δεν βρέθηκε τελεστής για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+
+                const active_field_value =
+                    this.formStore.field[criteria.active_field];
+
+                if (active_field_value === null) {
+                    console.warn(
+                        "Δεν βρέθηκε τιμή για το ενεργό πεδίο. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+
+                if (typeof criteria.value === "undefined") {
+                    console.warn(
+                        "Δεν βρέθηκε τιμή για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+
+                if (criteria.value_is === "eq") {
+                    return active_field_value == criteria.value;
+                } else if (criteria.value_is === "ne") {
+                    return active_field_value != criteria.value;
+                } else if (criteria.value_is === "gt") {
+                    return active_field_value > criteria.value;
+                } else if (criteria.value_is === "ge") {
+                    return active_field_value >= criteria.value;
+                } else if (criteria.value_is === "lt") {
+                    return active_field_value < criteria.value;
+                } else if (criteria.value_is === "le") {
+                    return active_field_value <= criteria.value;
+                } else {
+                    console.warn(
+                        "Άκυρος τελεστής για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+            }
+
+            console.warn(
+                "Άκυρο κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+            );
+            return false;
+        });
+
+        this.fieldVisible.value = returnValues.reduce(
+            (previous, current, index) => {
+                const criteria = this.showWhenCriteria[index];
+
+                if (criteria.operator === "and") {
+                    return previous && current;
+                } else if (criteria.operator === "or") {
+                    return previous || current;
+                } else {
+                    console.warn(
+                        "Άκυρο τελεστής για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+                    );
+                    return false;
+                }
+            },
+            true
+        );
+
+        return this.fieldVisible.value;
     }
+
+    private addWatchers(this: useOptionsObject) {}
 
     /**
      * Πρόσθεσε hooks στα events των πεδίων που απαιτείται να παρακολουθούμε
@@ -101,7 +218,10 @@ class useOptionsObject {
     }
 }
 
-export function useOptions(options: FormFieldOptions) {
+export function useOptions(
+    options: FormFieldOptions,
+    withWatchers: boolean = false
+): useOptionsObject {
     const valueChecks: Array<Function> = [];
     let showWhenChecks: Array<FormFieldOptionsShowCriteria> = [];
 
@@ -121,5 +241,5 @@ export function useOptions(options: FormFieldOptions) {
         showWhenChecks = options.show_when;
     }
 
-    return new useOptionsObject(valueChecks, showWhenChecks);
+    return new useOptionsObject(valueChecks, showWhenChecks, withWatchers);
 }

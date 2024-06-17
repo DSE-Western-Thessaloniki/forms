@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { FieldType } from "@/fieldtype";
+import { FieldType, FormFieldOptions } from "@/fieldtype";
 import Field from "./Field.vue";
+import { useOptions } from "@/components/composables/useOptions";
 
 const props = defineProps<{
     field: App.Models.FormField;
@@ -9,6 +10,10 @@ const props = defineProps<{
     accept: string;
     route: string;
 }>();
+
+const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
+
+const options = useOptions(fieldOptions);
 </script>
 
 <template>
