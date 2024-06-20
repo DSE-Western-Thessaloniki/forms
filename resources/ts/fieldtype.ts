@@ -87,3 +87,24 @@ export interface FormFieldOptions {
         custom_value?: string | null;
     };
 }
+
+export function createFormFieldOptions(
+    options: Partial<FormFieldOptions> = {}
+): Required<FormFieldOptions> {
+    return {
+        regex_enabled: false,
+        regex: "",
+        capitals_enabled: false,
+        greek_enabled: false,
+        positive: false,
+        show_when: [],
+        field_width_enabled: false,
+        field_width: "",
+        filetype: {
+            value: "",
+            field_for_filename: null,
+            custom_value: null,
+        },
+        ...options,
+    };
+}

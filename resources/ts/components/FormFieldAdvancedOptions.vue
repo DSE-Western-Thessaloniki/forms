@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { FieldType } from "@/fieldtype";
+import {
+    FieldType,
+    FormFieldOptions,
+    FormFieldOptionsShowCriteria,
+} from "@/fieldtype";
 import { Ref, computed, ref } from "vue";
 
 const props = defineProps<{
@@ -7,17 +11,64 @@ const props = defineProps<{
     field_id: number;
     cbselected: FieldType;
     fields: Array<App.Models.FormField>;
+    field_options: Required<FormFieldOptions>;
 }>();
 
-const field_width_enabled = ref();
-const regex_enabled = ref();
-const advancedOptionsCriteria: Ref<{ id: number; check: string }[]> = ref([
-    { id: 0, check: "always" },
-]);
+const fieldOptions = ref(props.field_options);
+
+const parseAdvancedOptionsCriteria = () => {
+    if (props.field_options.show_when.length > 0) {
+        return ref(
+            props.field_options.show_when.map((criteria, index) => {
+                return {
+                    id: index,
+                    check: criteria.visible,
+                    active_field: criteria.active_field ?? "",
+                    operator: criteria.operator ?? "and",
+                    value: criteria.value ?? "",
+                };
+            })
+        );
+    } else {
+        return ref<
+            {
+                id: number;
+                check: FormFieldOptionsShowCriteria["visible"];
+                active_field: string;
+                operator: string;
+                value: string;
+            }[]
+        >([
+            {
+                id: 0,
+                check: "always",
+                active_field: "",
+                operator: "",
+                value: "",
+            },
+        ]);
+    }
+};
+
+const advancedOptionsCriteria: Ref<
+    {
+        id: number;
+        check: FormFieldOptionsShowCriteria["visible"];
+        active_field: string;
+        operator: string;
+        value: string;
+    }[]
+> = parseAdvancedOptionsCriteria();
 
 const addAdvancedOptionsCriteria = () => {
     const i = advancedOptionsCriteria.value.at(-1)!.id + 1;
-    advancedOptionsCriteria.value.push({ id: i, check: "always" });
+    advancedOptionsCriteria.value.push({
+        id: i,
+        check: "always",
+        active_field: "",
+        operator: "",
+        value: "",
+    });
 };
 
 const removeAdvancedOptionsCriteria = () => {
@@ -78,11 +129,13 @@ const advancedTarget = computed(function () {
                                     class="form-check-input mt-0"
                                     type="checkbox"
                                     id="uppercase"
+                                    value="true"
                                     :name="
                                         'field[' +
                                         field_id +
                                         '][options][capitals_enabled]'
                                     "
+                                    v-model="fieldOptions.capitals_enabled"
                                 />
                             </div>
                             <label for="uppercase" class="form-control"
@@ -103,11 +156,13 @@ const advancedTarget = computed(function () {
                                     class="form-check-input mt-0"
                                     type="checkbox"
                                     id="greek"
+                                    value="true"
                                     :name="
                                         'field[' +
                                         field_id +
                                         '][options][greek_enabled]'
                                     "
+                                    v-model="fieldOptions.greek_enabled"
                                 />
                             </div>
                             <label for="greek" class="form-control"
@@ -124,11 +179,13 @@ const advancedTarget = computed(function () {
                                     class="form-check-input mt-0"
                                     type="checkbox"
                                     id="positive"
+                                    value="true"
                                     :name="
                                         'field[' +
                                         field_id +
-                                        '][options][positive_enabled]'
+                                        '][options][positive]'
                                     "
+                                    v-model="fieldOptions.positive"
                                 />
                             </div>
                             <label for="positive" class="form-control"
@@ -159,7 +216,10 @@ const advancedTarget = computed(function () {
                                         class="form-check-input"
                                         type="checkbox"
                                         id="field_width"
-                                        v-model="field_width_enabled"
+                                        v-model="
+                                            fieldOptions.field_width_enabled
+                                        "
+                                        value="true"
                                         :name="
                                             'field[' +
                                             field_id +
@@ -175,12 +235,15 @@ const advancedTarget = computed(function () {
                                 <input
                                     type="number"
                                     class="form-control w-auto"
-                                    :disabled="!field_width_enabled"
+                                    :disabled="
+                                        !fieldOptions.field_width_enabled
+                                    "
                                     :name="
                                         'field[' +
                                         field_id +
                                         '][options][field_width]'
                                     "
+                                    v-model="fieldOptions.field_width"
                                 />
                             </div>
                         </div>
@@ -207,7 +270,8 @@ const advancedTarget = computed(function () {
                                     class="form-check-input"
                                     type="checkbox"
                                     id="regex"
-                                    v-model="regex_enabled"
+                                    value="true"
+                                    v-model="fieldOptions.regex_enabled"
                                     :name="
                                         'field[' +
                                         field_id +
@@ -223,10 +287,11 @@ const advancedTarget = computed(function () {
                             <input
                                 type="text"
                                 class="form-control w-auto"
-                                :disabled="!regex_enabled"
+                                :disabled="!fieldOptions.regex_enabled"
                                 :name="
                                     'field[' + field_id + '][options][regex]'
                                 "
+                                v-model="fieldOptions.regex"
                             />
                         </div>
                     </div>
@@ -287,6 +352,7 @@ const advancedTarget = computed(function () {
                                     option.id +
                                     '][active_field]'
                                 "
+                                v-model="option.active_field"
                             >
                                 <option
                                     v-for="field in fields"
@@ -312,8 +378,9 @@ const advancedTarget = computed(function () {
                                         field_id +
                                         '][options][show_when][' +
                                         option.id +
-                                        '][value_is]'
+                                        '][operator]'
                                     "
+                                    v-model="option.operator"
                                 >
                                     <option value="gt">μεγαλύτερη από</option>
                                     <option value="ge">
@@ -336,6 +403,7 @@ const advancedTarget = computed(function () {
                                         option.id +
                                         '][value]'
                                     "
+                                    v-model="option.value"
                                 />
                             </div>
                             <button

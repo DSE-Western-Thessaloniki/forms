@@ -152,6 +152,7 @@
                 :field_id
                 :cbselected
                 :fields
+                :field_options="createFormFieldOptions(field_options)"
                 class="form-row foldable mt-3"
             />
         </div>
@@ -169,7 +170,12 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed, Ref } from "vue";
-import { FieldType, FieldTypeOptions, FormFieldOptions } from "@/fieldtype";
+import {
+    FieldType,
+    FieldTypeOptions,
+    FormFieldOptions,
+    createFormFieldOptions,
+} from "@/fieldtype";
 import FormFieldAdvancedOptions from "@/components/FormFieldAdvancedOptions.vue";
 
 const emit = defineEmits(["update:value", "deleteField"]);
