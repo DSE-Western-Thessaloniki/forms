@@ -1,10 +1,12 @@
-import { FormFieldOptions, FormFieldOptionsShowCriteria } from "@/fieldtype";
+import type {
+    FormFieldOptions,
+    FormFieldOptionsShowCriteria,
+} from "@/fieldtype";
 import { useFormStore } from "@/stores/formStore";
-import { Store } from "pinia";
-import { Ref, ref } from "vue";
+import type { Store } from "pinia";
+import { type Ref, ref } from "vue";
 
 function isUppercase(value: string) {
-    console.log("isUppercase: " + (value.toUpperCase() === value));
     return value.toUpperCase() === value;
 }
 
@@ -30,7 +32,11 @@ function matchesRegex(regex: string, value: string) {
     return new RegExp(regex, "u").test(value);
 }
 
-class useOptionsObject {
+function matchesLength(maxLength: string, value: string): boolean {
+    return value.length <= Number.parseInt(maxLength);
+}
+
+export class useOptionsObject {
     readonly valueChecks: Array<Function> = [];
     readonly showWhenCriteria: Array<FormFieldOptionsShowCriteria> = [];
     readonly fieldVisible: Ref<boolean>;
@@ -235,6 +241,10 @@ export function useOptions(
 
     if (options?.regex_enabled && options?.regex) {
         valueChecks.push(matchesRegex.bind(null, options.regex));
+    }
+
+    if (options?.field_width_enabled && options?.field_width) {
+        valueChecks.push(matchesLength.bind(null, options.field_width));
     }
 
     if (options?.show_when && options?.show_when.length > 0) {
