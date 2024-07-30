@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { FormFieldOptions } from "@/fieldtype";
+import type { FormFieldOptions } from "@/fieldtype";
 import { useOptions } from "../../../composables/useOptions";
 import { useFormStore } from "@/stores/formStore";
+import { useTextInputEventHandlers } from "@/components/composables/useTextInputEventHandlers";
 
 const props = withDefaults(
     defineProps<{
@@ -21,19 +22,7 @@ const options = useOptions(fieldOptions);
 
 const formStore = useFormStore();
 
-const onKeyPress = (event: KeyboardEvent) => {
-    const target = event.target as HTMLInputElement;
-    const cursorPos = target.selectionStart ?? 0;
-    const inputText = target.value;
-
-    const proposedNewText = `${inputText.slice(0, cursorPos)}${
-        event.key
-    }${inputText.slice(cursorPos, inputText.length)}`;
-
-    if (!options.valueMatch(proposedNewText)) {
-        event.preventDefault();
-    }
-};
+const eventHandlers = useTextInputEventHandlers(options);
 </script>
 
 <template>
@@ -47,6 +36,8 @@ const onKeyPress = (event: KeyboardEvent) => {
         :disabled="disabled"
         :required="field.required ? 'true' : undefined"
         v-model="formStore.field[props.field.id]"
-        @keypress="onKeyPress"
+        @keypress="eventHandlers.onKeyPress"
+        @paste="eventHandlers.onPaste"
+        autocomplete="off"
     />
 </template>
