@@ -281,7 +281,7 @@ const advancedTarget = computed(function () {
                             </div>
                             <label
                                 for="regex"
-                                class="form-control flex-shrink-1"
+                                class="form-control flex-shrink-1 align-content-center"
                                 >Regex</label
                             >
                             <input
@@ -292,6 +292,25 @@ const advancedTarget = computed(function () {
                                     'field[' + field_id + '][options][regex]'
                                 "
                                 v-model="fieldOptions.regex"
+                            />
+
+                            <label
+                                for="regex_description"
+                                class="form-control flex-shrink-1 align-content-center"
+                                >Περιγραφή Regex για τους χρήστες</label
+                            >
+                            <input
+                                type="text"
+                                id="regex_description"
+                                class="form-control w-auto"
+                                :disabled="!fieldOptions.regex_enabled"
+                                :name="
+                                    'field[' +
+                                    field_id +
+                                    '][options][regex_description]'
+                                "
+                                placeholder="Επιτρέπονται οι χαρακτήρες..."
+                                v-model="fieldOptions.regex_description"
                             />
                         </div>
                     </div>
