@@ -179,7 +179,7 @@ export class useOptionsObject {
                     return previous || current;
                 } else {
                     console.warn(
-                        "Άκυρο τελεστής για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
+                        "Άκυρος τελεστής για το κριτήριο εμφάνισης. Το πεδίο δεν θα εμφανιστεί."
                     );
                     return false;
                 }
