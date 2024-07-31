@@ -33,3 +33,17 @@ thead.fixed-header th {
 .max-600 {
     max-height: 600px;
 }
+
+.form-tip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    padding: 0.5em;
+    background-color: #c5dcf7;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+    font-size: 0.875rem;
+    list-style-type: none;
+    margin: 0;
+}

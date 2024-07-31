@@ -7,37 +7,64 @@ import type { Store } from "pinia";
 import { type Ref, ref } from "vue";
 
 function isUppercase(value: string) {
-    return value.toUpperCase() === value;
+    const result = value.toUpperCase() === value;
+    let errorMsg = "";
+    if (!result) {
+        errorMsg = "Το πεδίο πρέπει να συμπληρωθεί με κεφαλαίους χαρακτήρες";
+    }
+
+    return { result, errorMsg };
 }
 
 function isInGreek(value: string) {
     // Κάνε δεκτά τα ελληνικά, τα σύμβολα και τους αριθμούς
+    const result =
+        !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
+            value
+        );
+    let errorMsg = "";
+    if (!result) {
+        errorMsg =
+            "Το πεδίο πρέπει να συμπληρωθεί μόνο με ελληνικούς χαρακτήρες";
+    }
     console.log(
         "isInGreek: " +
             !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
                 value
             )
     );
-    return !/[^\u0020-\u0040\u005b-\u0060\u007b-\u007e\u0370-\u03ff]/gu.test(
-        value
-    );
+
+    return { result, errorMsg };
 }
 
-function matchesRegex(regex: string, value: string) {
+function matchesRegex(regex: string, regexDescription: string, value: string) {
+    const result = new RegExp(regex, "u").test(value);
+    let errorMsg = "";
+    if (!result) {
+        errorMsg = regexDescription;
+    }
     console.log(
         "matchesRegex: " +
             new RegExp(regex, "u").test(value) +
             ` regex: ${regex} value: ${value}`
     );
-    return new RegExp(regex, "u").test(value);
+
+    return { result, errorMsg };
 }
 
-function matchesLength(maxLength: string, value: string): boolean {
-    return value.length <= Number.parseInt(maxLength);
+function matchesLength(maxLength: string, value: string) {
+    const result = value.length <= Number.parseInt(maxLength);
+    let errorMsg = "";
+    if (!result) {
+        errorMsg = `Η τιμή του πεδίου πρέπει να είναι μέχρι ${maxLength} χαρακτήρες`;
+    }
+    return { result, errorMsg };
 }
 
 export class useOptionsObject {
-    readonly valueChecks: Array<Function> = [];
+    readonly valueChecks: Array<
+        (value: string) => { result: boolean; errorMsg: string }
+    > = [];
     readonly showWhenCriteria: Array<FormFieldOptionsShowCriteria> = [];
     readonly fieldVisible: Ref<boolean>;
     readonly formStore: Store<
@@ -48,7 +75,9 @@ export class useOptionsObject {
     >;
 
     constructor(
-        valueChecks: Array<Function>,
+        valueChecks: Array<
+            (value: string) => { result: boolean; errorMsg: string }
+        >,
         showWhenChecks: Array<FormFieldOptionsShowCriteria>,
         withWatchers: boolean
     ) {
@@ -73,12 +102,25 @@ export class useOptionsObject {
      * @param value Η τιμή του πεδίου που θα χρησιμοποιηθεί για τους ελέγχους
      * @returns true αν τα κριτήρια ικανοποιούνται, false αλλιώς
      */
-    valueMatch(this: useOptionsObject, value: string): boolean {
+    valueMatch(
+        this: useOptionsObject,
+        value: string
+    ): { result: boolean; errorMessages: Array<string> } {
         if (this.valueChecks.length === 0) {
-            return true;
+            return { result: true, errorMessages: [] };
         }
 
-        return this.valueChecks.every((check) => check(value));
+        let result = true;
+        let errorMessages: Array<string> = [];
+        this.valueChecks.forEach((check) => {
+            const response = check(value);
+            result = result && response.result;
+            if (!response.result) {
+                errorMessages.push(response.errorMsg);
+            }
+        });
+
+        return { result, errorMessages };
     }
 
     /**
@@ -228,7 +270,9 @@ export function useOptions(
     options: FormFieldOptions,
     withWatchers: boolean = false
 ): useOptionsObject {
-    const valueChecks: Array<Function> = [];
+    const valueChecks: Array<
+        (value: string) => { result: boolean; errorMsg: string }
+    > = [];
     let showWhenChecks: Array<FormFieldOptionsShowCriteria> = [];
 
     if (options?.capitals_enabled) {
@@ -239,8 +283,14 @@ export function useOptions(
         valueChecks.push(isInGreek);
     }
 
-    if (options?.regex_enabled && options?.regex) {
-        valueChecks.push(matchesRegex.bind(null, options.regex));
+    if (
+        options?.regex_enabled &&
+        options?.regex &&
+        options?.regex_description
+    ) {
+        valueChecks.push(
+            matchesRegex.bind(null, options.regex, options.regex_description)
+        );
     }
 
     if (options?.field_width_enabled && options?.field_width) {

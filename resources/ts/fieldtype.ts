@@ -75,6 +75,7 @@ export interface FormFieldOptionsShowCriteria {
 export interface FormFieldOptions {
     regex_enabled?: boolean;
     regex?: string;
+    regex_description?: string;
     capitals_enabled?: boolean;
     greek_enabled?: boolean;
     positive?: boolean;
@@ -94,6 +95,7 @@ export function createFormFieldOptions(
     return {
         regex_enabled: false,
         regex: "",
+        regex_description: "",
         capitals_enabled: false,
         greek_enabled: false,
         positive: false,
