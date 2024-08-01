@@ -231,7 +231,7 @@
 
 <script setup lang="ts">
 import draggable from "vuedraggable";
-import { ref, withDefaults } from "vue";
+import { ref } from "vue";
 import type { Ref } from "vue";
 
 const props = withDefaults(

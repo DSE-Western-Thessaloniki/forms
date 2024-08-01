@@ -160,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, withDefaults } from "vue";
+import { defineComponent } from "vue";
 import AcceptedFiletypeSelect from "./AcceptedFiletypeSelect.vue";
 
 export default defineComponent({
@@ -169,11 +169,11 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref, watch, computed, Ref } from "vue";
+import { ref, watch, computed } from "vue";
 import {
     FieldType,
     FieldTypeOptions,
-    FormFieldOptions,
+    type FormFieldOptions,
     createFormFieldOptions,
 } from "@/fieldtype";
 import FormFieldAdvancedOptions from "@/components/FormFieldAdvancedOptions.vue";
