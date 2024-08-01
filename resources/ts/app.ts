@@ -13,6 +13,8 @@ import "@fortawesome/fontawesome-free/scss/solid.scss";
 import "@fortawesome/fontawesome-free/scss/brands.scss";
 import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
 import "@fortawesome/fontawesome-free/scss/v4-shims.scss";
+import { ZiggyVue } from "ziggy-js";
+import { createPinia } from "pinia";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -20,7 +22,9 @@ import "@fortawesome/fontawesome-free/scss/v4-shims.scss";
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = createApp({});
+const pinia = createPinia();
+
+const app = createApp({}).use(ZiggyVue).use(pinia);
 
 // Απενεργοποίησε την αλλαγή αριθμού με χρήση της ροδέλας του ποντικιού
 var inputTypeNumbers = document.querySelectorAll("input[type=number]");
@@ -85,6 +89,18 @@ app.component(
 app.component(
     "selectionlistdata",
     defineAsyncComponent(() => import("./components/SelectionListData.vue"))
+);
+
+app.component(
+    "v-form",
+    defineAsyncComponent(() => import("./components/frontend/form/VForm.vue"))
+);
+
+app.component(
+    "field-group",
+    defineAsyncComponent(
+        () => import("./components/frontend/form/FieldGroup.vue")
+    )
 );
 
 app.mount("#app");

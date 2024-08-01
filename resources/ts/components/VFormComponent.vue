@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="row">
+                                <div class="row mb-2">
                                     <label
                                         for="notes"
                                         class="col-auto col-form-label"
@@ -25,7 +25,7 @@
                                         <textarea
                                             id="notes"
                                             name="notes"
-                                            class="col-12"
+                                            class="col-12 form-control"
                                             v-model="notes"
                                         >
                                         </textarea>
@@ -103,6 +103,13 @@
                                             :sort_id="element.sort_id"
                                             :selection_lists="selection_lists"
                                             :single_item="fields.length === 1"
+                                            :accepted_filetypes="
+                                                accepted_filetypes
+                                            "
+                                            :field_options="
+                                                JSON.parse(element.options)
+                                            "
+                                            :fields
                                         >
                                         </vform-field-component>
                                     </li>
@@ -224,7 +231,7 @@
 
 <script setup lang="ts">
 import draggable from "vuedraggable";
-import { ref, withDefaults } from "vue";
+import { ref } from "vue";
 import type { Ref } from "vue";
 
 const props = withDefaults(
@@ -242,6 +249,7 @@ const props = withDefaults(
         for_teachers?: 0 | 1 | "0" | "1";
         for_all_teachers?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
+        accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
     }>(),
     {
         parse: false,
@@ -261,6 +269,7 @@ let fieldObj = {
     listvalues: "",
     sort_id: 0,
     new_field: false,
+    options: "{}",
 };
 
 let title = ref("Νέα φόρμα");

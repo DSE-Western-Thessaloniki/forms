@@ -15,7 +15,28 @@
         </div>
         <div class="card-body">
             @foreach ($form->form_fields as $field)
-                @include('inc.formfields')
+                @if ($field->type === \App\Models\FormField::TYPE_FILE)
+                    @php
+                        $options = json_decode($field->options);
+                        $filetype_value = $options->filetype->value;
+                        if ($filetype_value != -1) {
+                            $accepted = \App\Models\AcceptedFiletype::find($filetype_value)->extension;
+                        } else {
+                            $accepted = $options->filetype->custom_value;
+                        }
+                        $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
+                    @endphp
+                @endif
+                <field-group
+                    :field="{{ $field }}"
+                    data=""
+                    :disabled="false"
+                    error="{{ $errors->first("f{$field->id}") }}"
+                    route=""
+                    accept=""
+                    old=""
+                    :old_valid="false"
+                ></field-group>
             @endforeach
         </div>
     </div>

@@ -10,7 +10,7 @@ use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Tests\TestCasManager;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
@@ -23,7 +23,7 @@ beforeEach(function() {
     test_cas_null();
 });
 
-it('gets cas/login without logging in', function($url) {
+it('gets cas/login without logging in', function ($url) {
 
     test_cas_not_logged_in();
 
@@ -32,7 +32,7 @@ it('gets cas/login without logging in', function($url) {
     expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
 })->with('sch_routes');
 
-it('gets cas/login logged in as user', function($url) {
+it('gets cas/login logged in as user', function ($url) {
 
     test_cas_not_logged_in();
 
@@ -47,14 +47,14 @@ it('gets cas/login logged in as user', function($url) {
     expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
 })->with('sch_routes');
 
-it('denies access to users not in the schools table', function() {
+it('denies access to users not in the schools table', function () {
 
     test_cas_logged_in();
 
     $this->get('/report')->assertOk()->assertSee('Σφάλμα');
 });
 
-it('can access reports as user logged in through cas', function() {
+it('can access reports as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -68,7 +68,7 @@ it('can access reports as user logged in through cas', function() {
         ->assertDontSee('Σφάλμα')
         ->assertSee('Δεν βρέθηκαν φόρμες');
 
-        $form = Form::factory()
+    $form = Form::factory()
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
@@ -77,7 +77,7 @@ it('can access reports as user logged in through cas', function() {
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -87,7 +87,7 @@ it('can access reports as user logged in through cas', function() {
             'active' => true,
         ]);
 
-        $form2 = Form::factory()
+    $form2 = Form::factory()
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
@@ -96,7 +96,7 @@ it('can access reports as user logged in through cas', function() {
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -106,33 +106,33 @@ it('can access reports as user logged in through cas', function() {
             'active' => true,
         ]);
 
-        $school_category = SchoolCategory::factory()->create([
-            'name' => 'Test Category'
-        ]);
+    $school_category = SchoolCategory::factory()->create([
+        'name' => 'Test Category',
+    ]);
 
-        $school->categories()->attach($school_category);
-        $school->save();
+    $school->categories()->attach($school_category);
+    $school->save();
 
-        $form->schools()->attach($school);
-        $form->save();
+    $form->schools()->attach($school);
+    $form->save();
 
-        $form2->school_categories()->attach($school_category);
-        $form2->save();
+    $form2->school_categories()->attach($school_category);
+    $form2->save();
 
-        $this->get('/report')
-            ->assertOK()
-            ->assertDontSee('Σφάλμα')
-            ->assertSee('Direct')
-            ->assertSee('Indirect');
+    $this->get('/report')
+        ->assertOK()
+        ->assertDontSee('Σφάλμα')
+        ->assertSee('Direct')
+        ->assertSee('Indirect');
 
-        $this->get('/report/'.$form->id)
-            ->assertOK();
+    $this->get('/report/'.$form->id)
+        ->assertOK();
 
-        $this->get('/report/'.$form2->id)
-            ->assertOK();
+    $this->get('/report/'.$form2->id)
+        ->assertOK();
 });
 
-it('cannot access inactive reports as user logged in through cas', function() {
+it('cannot access inactive reports as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -146,7 +146,7 @@ it('cannot access inactive reports as user logged in through cas', function() {
         ->assertDontSee('Σφάλμα')
         ->assertSee('Δεν βρέθηκαν φόρμες');
 
-        $form = Form::factory()
+    $form = Form::factory()
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
@@ -155,7 +155,7 @@ it('cannot access inactive reports as user logged in through cas', function() {
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -165,7 +165,7 @@ it('cannot access inactive reports as user logged in through cas', function() {
             'active' => false,
         ]);
 
-        $form2 = Form::factory()
+    $form2 = Form::factory()
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
@@ -174,7 +174,7 @@ it('cannot access inactive reports as user logged in through cas', function() {
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -184,27 +184,27 @@ it('cannot access inactive reports as user logged in through cas', function() {
             'active' => false,
         ]);
 
-        $school_category = SchoolCategory::factory()->create([
-            'name' => 'Test Category'
-        ]);
+    $school_category = SchoolCategory::factory()->create([
+        'name' => 'Test Category',
+    ]);
 
-        $school->categories()->attach($school_category);
-        $school->save();
+    $school->categories()->attach($school_category);
+    $school->save();
 
-        $form->schools()->attach($school);
-        $form->save();
+    $form->schools()->attach($school);
+    $form->save();
 
-        $form2->school_categories()->attach($school_category);
-        $form2->save();
+    $form2->school_categories()->attach($school_category);
+    $form2->save();
 
-        $this->get('/report')
-            ->assertOK()
-            ->assertDontSee('Σφάλμα')
-            ->assertDontSee('Direct')
-            ->assertDontSee('Indirect');
+    $this->get('/report')
+        ->assertOK()
+        ->assertDontSee('Σφάλμα')
+        ->assertDontSee('Direct')
+        ->assertDontSee('Indirect');
 });
 
-it('cannot show a report that doesn\'t exist as user logged in through cas', function() {
+it('cannot show a report that doesn\'t exist as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -222,7 +222,7 @@ it('cannot show a report that doesn\'t exist as user logged in through cas', fun
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -239,7 +239,7 @@ it('cannot show a report that doesn\'t exist as user logged in through cas', fun
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot show a report as user logged in through cas (no permission - user not in schools)', function() {
+it('cannot show a report as user logged in through cas (no permission - user not in schools)', function () {
 
     test_cas_logged_in();
 
@@ -252,7 +252,7 @@ it('cannot show a report as user logged in through cas (no permission - user not
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -266,7 +266,7 @@ it('cannot show a report as user logged in through cas (no permission - user not
         ->assertSee('Σφάλμα');
 });
 
-it('cannot show a report as user logged in through cas (no permission - user has no rights)', function() {
+it('cannot show a report as user logged in through cas (no permission - user has no rights)', function () {
 
     test_cas_logged_in();
 
@@ -279,7 +279,7 @@ it('cannot show a report as user logged in through cas (no permission - user has
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -298,7 +298,7 @@ it('cannot show a report as user logged in through cas (no permission - user has
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can show a report as user logged in through cas (direct relation)', function() {
+it('can show a report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -316,7 +316,7 @@ it('can show a report as user logged in through cas (direct relation)', function
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -324,7 +324,7 @@ it('can show a report as user logged in through cas (direct relation)', function
         ->state([
             'multiple' => false,
             'active' => true,
-         ])
+        ])
         ->create();
 
     $form->schools()->attach($school);
@@ -345,7 +345,7 @@ it('can show a report as user logged in through cas (direct relation)', function
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -366,7 +366,7 @@ it('can show a report as user logged in through cas (direct relation)', function
         ->assertSee($form->notes);
 });
 
-it('cannot show an inactive report as user logged in through cas (direct relation)', function() {
+it('cannot show an inactive report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -384,7 +384,7 @@ it('cannot show an inactive report as user logged in through cas (direct relatio
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -392,7 +392,7 @@ it('cannot show an inactive report as user logged in through cas (direct relatio
         ->state([
             'multiple' => false,
             'active' => false,
-         ])
+        ])
         ->create();
 
     $form->schools()->attach($school);
@@ -411,7 +411,7 @@ it('cannot show an inactive report as user logged in through cas (direct relatio
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -430,7 +430,7 @@ it('cannot show an inactive report as user logged in through cas (direct relatio
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('can show a report as user logged in through cas (indirect relation)', function() {
+it('can show a report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -440,7 +440,7 @@ it('can show a report as user logged in through cas (indirect relation)', functi
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $form = Form::factory()
@@ -452,7 +452,7 @@ it('can show a report as user logged in through cas (indirect relation)', functi
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -484,7 +484,7 @@ it('can show a report as user logged in through cas (indirect relation)', functi
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -506,7 +506,7 @@ it('can show a report as user logged in through cas (indirect relation)', functi
 
 });
 
-it('cannot show an inactive report as user logged in through cas (indirect relation)', function() {
+it('cannot show an inactive report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -516,7 +516,7 @@ it('cannot show an inactive report as user logged in through cas (indirect relat
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $form = Form::factory()
@@ -528,7 +528,7 @@ it('cannot show an inactive report as user logged in through cas (indirect relat
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -558,7 +558,7 @@ it('cannot show an inactive report as user logged in through cas (indirect relat
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -577,7 +577,7 @@ it('cannot show an inactive report as user logged in through cas (indirect relat
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report that doesn\'t exist as user logged in through cas', function() {
+it('cannot edit a report that doesn\'t exist as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -595,7 +595,7 @@ it('cannot edit a report that doesn\'t exist as user logged in through cas', fun
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -612,7 +612,7 @@ it('cannot edit a report that doesn\'t exist as user logged in through cas', fun
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report as user logged in through cas (no permission - user not in schools)', function() {
+it('cannot edit a report as user logged in through cas (no permission - user not in schools)', function () {
 
     test_cas_logged_in();
 
@@ -625,7 +625,7 @@ it('cannot edit a report as user logged in through cas (no permission - user not
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -639,7 +639,7 @@ it('cannot edit a report as user logged in through cas (no permission - user not
         ->assertSee('Σφάλμα');
 });
 
-it('cannot edit a report as user logged in through cas (no permission - user has no rights)', function() {
+it('cannot edit a report as user logged in through cas (no permission - user has no rights)', function () {
 
     test_cas_logged_in();
 
@@ -657,7 +657,7 @@ it('cannot edit a report as user logged in through cas (no permission - user has
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -671,7 +671,7 @@ it('cannot edit a report as user logged in through cas (no permission - user has
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can edit a report as user logged in through cas (direct relation)', function() {
+it('can edit a report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -689,7 +689,7 @@ it('can edit a report as user logged in through cas (direct relation)', function
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -708,7 +708,7 @@ it('can edit a report as user logged in through cas (direct relation)', function
         ->assertSee($form->notes);
 });
 
-it('cannot edit an inactive report as user logged in through cas (direct relation)', function() {
+it('cannot edit an inactive report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -726,7 +726,7 @@ it('cannot edit an inactive report as user logged in through cas (direct relatio
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -743,7 +743,7 @@ it('cannot edit an inactive report as user logged in through cas (direct relatio
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('can edit a report as user logged in through cas (indirect relation)', function() {
+it('can edit a report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -753,7 +753,7 @@ it('can edit a report as user logged in through cas (indirect relation)', functi
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -767,7 +767,7 @@ it('can edit a report as user logged in through cas (indirect relation)', functi
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -788,7 +788,7 @@ it('can edit a report as user logged in through cas (indirect relation)', functi
         ->assertSee($form->notes);
 });
 
-it('cannot edit an inactive report as user logged in through cas (indirect relation)', function() {
+it('cannot edit an inactive report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -798,7 +798,7 @@ it('cannot edit an inactive report as user logged in through cas (indirect relat
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -812,7 +812,7 @@ it('cannot edit an inactive report as user logged in through cas (indirect relat
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -829,7 +829,7 @@ it('cannot edit an inactive report as user logged in through cas (indirect relat
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of a report that doesn\'t exist as user logged in through cas', function() {
+it('cannot edit a record of a report that doesn\'t exist as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -847,7 +847,7 @@ it('cannot edit a record of a report that doesn\'t exist as user logged in throu
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -865,7 +865,7 @@ it('cannot edit a record of a report that doesn\'t exist as user logged in throu
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report record as user logged in through cas (no permission - user not in schools)', function() {
+it('cannot edit a report record as user logged in through cas (no permission - user not in schools)', function () {
 
     test_cas_logged_in();
 
@@ -878,7 +878,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -893,7 +893,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
         ->assertSee('Σφάλμα');
 });
 
-it('cannot edit a report record as user logged in through cas (no permission - user has no rights)', function() {
+it('cannot edit a report record as user logged in through cas (no permission - user has no rights)', function () {
 
     test_cas_logged_in();
 
@@ -911,7 +911,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -926,7 +926,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can edit a report record as user logged in through cas (direct relation)', function() {
+it('can edit a report record as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -944,7 +944,7 @@ it('can edit a report record as user logged in through cas (direct relation)', f
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -964,7 +964,7 @@ it('can edit a report record as user logged in through cas (direct relation)', f
         ->assertSee($form->notes);
 });
 
-it('cannot edit a record of an inactive report as user logged in through cas (direct relation)', function() {
+it('cannot edit a record of an inactive report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -982,7 +982,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (di
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1000,7 +1000,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (di
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('can edit a report record as user logged in through cas (indirect relation)', function() {
+it('can edit a report record as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -1010,7 +1010,7 @@ it('can edit a report record as user logged in through cas (indirect relation)',
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1024,7 +1024,7 @@ it('can edit a report record as user logged in through cas (indirect relation)',
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1044,7 +1044,7 @@ it('can edit a report record as user logged in through cas (indirect relation)',
         ->assertSee($form->notes);
 });
 
-it('cannot edit a record of an inactive report as user logged in through cas (indirect relation)', function() {
+it('cannot edit a record of an inactive report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -1054,7 +1054,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (in
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1068,7 +1068,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (in
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1086,7 +1086,7 @@ it('cannot edit a record of an inactive report as user logged in through cas (in
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a report record as user logged in through cas (no permission - user not in schools) (no multiple)', function() {
+it('cannot edit a report record as user logged in through cas (no permission - user not in schools) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1099,7 +1099,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1114,7 +1114,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
         ->assertSee('Σφάλμα');
 });
 
-it('cannot edit a report record as user logged in through cas (no permission - user has no rights) (no multiple)', function() {
+it('cannot edit a report record as user logged in through cas (no permission - user has no rights) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1132,7 +1132,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1147,7 +1147,7 @@ it('cannot edit a report record as user logged in through cas (no permission - u
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('cannot edit a report record as user logged in through cas (direct relation) (no multiple)', function() {
+it('cannot edit a report record as user logged in through cas (direct relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1165,7 +1165,7 @@ it('cannot edit a report record as user logged in through cas (direct relation) 
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1183,7 +1183,7 @@ it('cannot edit a report record as user logged in through cas (direct relation) 
         ->assertSessionHas('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
 });
 
-it('cannot edit a report record as user logged in through cas (indirect relation) (no multiple)', function() {
+it('cannot edit a report record as user logged in through cas (indirect relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1193,7 +1193,7 @@ it('cannot edit a report record as user logged in through cas (indirect relation
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1207,7 +1207,7 @@ it('cannot edit a report record as user logged in through cas (indirect relation
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1225,7 +1225,7 @@ it('cannot edit a report record as user logged in through cas (indirect relation
         ->assertSessionHas('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
 });
 
-it('cannot update a report as user logged in through cas (no permission - user not in schools) (no multiple)', function() {
+it('cannot update a report as user logged in through cas (no permission - user not in schools) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1238,7 +1238,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1249,7 +1249,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1259,7 +1259,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
         ->assertSee('Σφάλμα');
 });
 
-it('cannot update a report as user logged in through cas (no permission - user has no rights) (no multiple)', function() {
+it('cannot update a report as user logged in through cas (no permission - user has no rights) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1277,7 +1277,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1288,7 +1288,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1298,7 +1298,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can update a report as user logged in through cas (direct relation) (no multiple)', function() {
+it('can update a report as user logged in through cas (direct relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1316,7 +1316,7 @@ it('can update a report as user logged in through cas (direct relation) (no mult
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1327,7 +1327,7 @@ it('can update a report as user logged in through cas (direct relation) (no mult
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1340,7 +1340,7 @@ it('can update a report as user logged in through cas (direct relation) (no mult
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data2';
     }
@@ -1350,13 +1350,13 @@ it('can update a report as user logged in through cas (direct relation) (no mult
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data2',
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data2',
+    ]);
 });
 
-it('cannot update an inactive report as user logged in through cas (direct relation) (no multiple)', function() {
+it('cannot update an inactive report as user logged in through cas (direct relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1374,7 +1374,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1385,7 +1385,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1398,7 +1398,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('can update a report as user logged in through cas (indirect relation) (no multiple)', function() {
+it('can update a report as user logged in through cas (indirect relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1408,7 +1408,7 @@ it('can update a report as user logged in through cas (indirect relation) (no mu
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1422,7 +1422,7 @@ it('can update a report as user logged in through cas (indirect relation) (no mu
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1433,7 +1433,7 @@ it('can update a report as user logged in through cas (indirect relation) (no mu
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1446,7 +1446,7 @@ it('can update a report as user logged in through cas (indirect relation) (no mu
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 });
 
-it('cannot update an inactive report as user logged in through cas (indirect relation) (no multiple)', function() {
+it('cannot update an inactive report as user logged in through cas (indirect relation) (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1456,7 +1456,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1470,7 +1470,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1481,7 +1481,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1494,7 +1494,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update a report that doesn\'t exist as user logged in through cas (no multiple)', function() {
+it('cannot update a report that doesn\'t exist as user logged in through cas (no multiple)', function () {
 
     test_cas_logged_in();
 
@@ -1512,7 +1512,7 @@ it('cannot update a report that doesn\'t exist as user logged in through cas (no
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1523,7 +1523,7 @@ it('cannot update a report that doesn\'t exist as user logged in through cas (no
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1532,11 +1532,10 @@ it('cannot update a report that doesn\'t exist as user logged in through cas (no
     $form->save();
 
     $this->put('/report/0', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertForbidden();
 });
 
-it('cannot update a report as user logged in through cas (no permission - user not in schools)', function() {
+it('cannot update a report as user logged in through cas (no permission - user not in schools)', function () {
 
     test_cas_logged_in();
 
@@ -1549,7 +1548,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1560,7 +1559,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1570,7 +1569,7 @@ it('cannot update a report as user logged in through cas (no permission - user n
         ->assertSee('Σφάλμα');
 });
 
-it('cannot update a report as user logged in through cas (no permission - user has no rights)', function() {
+it('cannot update a report as user logged in through cas (no permission - user has no rights)', function () {
 
     test_cas_logged_in();
 
@@ -1588,7 +1587,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1599,7 +1598,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1609,7 +1608,7 @@ it('cannot update a report as user logged in through cas (no permission - user h
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can update a report as user logged in through cas (direct relation)', function() {
+it('can update a report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -1627,7 +1626,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1638,7 +1637,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1651,7 +1650,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 1]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data2';
     }
@@ -1661,7 +1660,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 2]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data3';
     }
@@ -1671,7 +1670,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 1]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data2';
     }
@@ -1681,7 +1680,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data4';
     }
@@ -1691,7 +1690,7 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 4]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data5';
     }
@@ -1702,38 +1701,38 @@ it('can update a report as user logged in through cas (direct relation)', functi
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data',
-            'record' => 0,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data',
+        'record' => 0,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data2',
-            'record' => 1,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data2',
+        'record' => 1,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data3',
-            'record' => 2,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data3',
+        'record' => 2,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data4',
-            'record' => 3,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data4',
+        'record' => 3,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data5',
-            'record' => 4,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data5',
+        'record' => 4,
+    ]);
 });
 
-it('cannot update an inactive report as user logged in through cas (direct relation)', function() {
+it('cannot update an inactive report as user logged in through cas (direct relation)', function () {
 
     test_cas_logged_in();
 
@@ -1751,7 +1750,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1762,7 +1761,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1796,7 +1795,7 @@ it('cannot update an inactive report as user logged in through cas (direct relat
 
 });
 
-it('can update a report as user logged in through cas (indirect relation)', function() {
+it('can update a report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -1806,7 +1805,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1820,7 +1819,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1831,7 +1830,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1844,7 +1843,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 1]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data2';
     }
@@ -1854,7 +1853,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 2]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data3';
     }
@@ -1864,7 +1863,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 1]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data2';
     }
@@ -1874,7 +1873,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data4';
     }
@@ -1884,7 +1883,7 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertRedirect(route('report.edit.record', ['report' => $form->id, 'record' => 4]))
         ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
 
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data5';
     }
@@ -1895,38 +1894,38 @@ it('can update a report as user logged in through cas (indirect relation)', func
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data',
-            'record' => 0,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data',
+        'record' => 0,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data2',
-            'record' => 1,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data2',
+        'record' => 1,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data3',
-            'record' => 2,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data3',
+        'record' => 2,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data4',
-            'record' => 3,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data4',
+        'record' => 3,
+    ]);
     $this->assertDatabaseHas('form_field_data', [
-            'school_id' => $school->id,
-            'form_field_id' => $fields[0]->id,
-            'data' => 'Test data5',
-            'record' => 4,
-        ]);
+        'school_id' => $school->id,
+        'form_field_id' => $fields[0]->id,
+        'data' => 'Test data5',
+        'record' => 4,
+    ]);
 });
 
-it('cannot update an inactive report as user logged in through cas (indirect relation)', function() {
+it('cannot update an inactive report as user logged in through cas (indirect relation)', function () {
 
     test_cas_logged_in();
 
@@ -1936,7 +1935,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
     ]);
 
     $school_category = SchoolCategory::factory()->create([
-        'name' => 'Test Category'
+        'name' => 'Test Category',
     ]);
 
     $school->categories()->attach($school_category);
@@ -1950,7 +1949,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -1961,7 +1960,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -1994,7 +1993,7 @@ it('cannot update an inactive report as user logged in through cas (indirect rel
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update a report that doesn\'t exist as user logged in through cas', function() {
+it('cannot update a report that doesn\'t exist as user logged in through cas', function () {
 
     test_cas_logged_in();
 
@@ -2012,7 +2011,7 @@ it('cannot update a report that doesn\'t exist as user logged in through cas', f
                     return [
                         'sort_id' => $sequence->index,
                         'type' => 0,
-                        'listvalues' => ''
+                        'listvalues' => '',
                     ];
                 })),
             'form_fields'
@@ -2023,7 +2022,7 @@ it('cannot update a report that doesn\'t exist as user logged in through cas', f
         ]);
 
     $fields = $form->form_fields()->get();
-    $post_data = array();
+    $post_data = [];
     foreach ($fields as $field) {
         $post_data['f'.$field->id] = 'Test data';
     }
@@ -2032,6 +2031,5 @@ it('cannot update a report that doesn\'t exist as user logged in through cas', f
     $form->save();
 
     $this->put('/report/0/edit/0/update/new', $post_data)
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertForbidden();
 });

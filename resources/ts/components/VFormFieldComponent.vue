@@ -21,9 +21,7 @@
         </div>
         <div>
             <div class="row">
-                <label for="fieldtitleid" class="col-auto col-form-label"
-                    >Τίτλος πεδίου:</label
-                >
+                <label class="col-auto col-form-label">Τίτλος πεδίου:</label>
                 <div class="col align-self-center">
                     <editable-text
                         v-model:edittext="title"
@@ -51,6 +49,7 @@
                     <div v-if="!restricted">
                         <input
                             type="checkbox"
+                            class="form-check-input"
                             value="1"
                             v-model="is_required"
                         />
@@ -58,13 +57,12 @@
                 </div>
             </div>
             <div class="row">
-                <label for="fieldtitleid" class="col-auto col-form-label"
-                    >Τύπος πεδίου:</label
-                >
+                <label class="col-auto col-form-label">Τύπος πεδίου:</label>
                 <div class="col align-self-center">
                     <select
                         :name="'field[' + field_id + '][type]'"
                         v-model="cbselected"
+                        class="form-select"
                         v-if="!restricted"
                     >
                         <option
@@ -85,11 +83,37 @@
                     />
                 </div>
             </div>
+            <div v-if="cbselected === FieldType.File">
+                <div class="row my-2">
+                    <label
+                        class="col-auto col-form-label"
+                        :for="'field[' + field_id + '][filetype]'"
+                    >
+                        Αποδεκτά αρχεία:
+                    </label>
+                    <div class="col align-self-center">
+                        <AcceptedFiletypeSelect
+                            :name="'field[' + field_id + '][options][filetype]'"
+                            :accepted_filetypes="accepted_filetypes"
+                            :selected="field_options?.filetype?.value"
+                            :field_for_filename="
+                                field_options?.filetype?.field_for_filename ??
+                                ''
+                            "
+                            :custom_value="
+                                field_options?.filetype?.custom_value ?? ''
+                            "
+                            :fields
+                        />
+                    </div>
+                </div>
+            </div>
             <div v-if="cbselected > 1 && cbselected < 5">
                 <editable-list
                     v-model:edittext="dataListValues"
                     :restricted="restricted"
                     test-data-id="editableList"
+                    class="mt-3"
                 >
                 </editable-list>
 
@@ -122,12 +146,22 @@
                 :name="'field[' + field_id + '][sort_id]'"
                 :value="sort_id"
             />
+
+            <FormFieldAdvancedOptions
+                :id
+                :field_id
+                :cbselected
+                :fields
+                :field_options="createFormFieldOptions(field_options)"
+                class="form-row foldable mt-3"
+            />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, withDefaults } from "vue";
+import { defineComponent } from "vue";
+import AcceptedFiletypeSelect from "./AcceptedFiletypeSelect.vue";
 
 export default defineComponent({
     name: "vformfieldcomponent",
@@ -136,7 +170,13 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { FieldType } from "@/fieldtype";
+import {
+    FieldType,
+    FieldTypeOptions,
+    type FormFieldOptions,
+    createFormFieldOptions,
+} from "@/fieldtype";
+import FormFieldAdvancedOptions from "@/components/FormFieldAdvancedOptions.vue";
 
 const emit = defineEmits(["update:value", "deleteField"]);
 
@@ -152,6 +192,9 @@ const props = withDefaults(
         required?: boolean;
         selection_lists: Array<Pick<App.Models.SelectionList, "id" | "name">>;
         single_item: boolean;
+        field_options?: FormFieldOptions;
+        accepted_filetypes?: Array<App.Models.AcceptedFiletype>;
+        fields: Array<App.Models.FormField>;
     }>(),
     {
         value: "Νέο πεδίο",
@@ -160,64 +203,15 @@ const props = withDefaults(
     }
 );
 
-let title = ref(props.value);
-let cbselected = ref(props.type);
-let selection_list_selected = ref(
+const title = ref(props.value);
+const cbselected = ref(props.type);
+const selection_list_selected = ref(
     props.selection_lists.length ? props.selection_lists[0].id : 0
 );
-let options = [
-    {
-        id: FieldType.Text,
-        value: "Πεδίο κειμένου",
-    },
-    {
-        id: FieldType.TextArea,
-        value: "Περιοχή κειμένου",
-    },
-    {
-        id: FieldType.RadioButtons,
-        value: "Επιλογή ενός από πολλά",
-    },
-    {
-        id: FieldType.CheckBoxes,
-        value: "Πολλαπλή επιλογή",
-    },
-    {
-        id: FieldType.SelectionList,
-        value: "Λίστα επιλογών",
-    },
-    /*{
-        id: 5,
-        value: "Ανέβασμα αρχείου"
-    },*/
-    {
-        id: FieldType.Date,
-        value: "Ημερομηνία",
-    },
-    {
-        id: FieldType.Number,
-        value: "Αριθμός",
-    },
-    {
-        id: FieldType.Telephone,
-        value: "Τηλέφωνο",
-    },
-    {
-        id: FieldType.Email,
-        value: "E-mail",
-    },
-    {
-        id: FieldType.WebPage,
-        value: "Διεύθυνση ιστοσελίδας",
-    },
-    {
-        id: FieldType.List,
-        value: "Έτοιμη λίστα δεδομένων",
-    },
-];
-let dataListValues = ref(props.listvalues);
-let field_id = props.id;
-let is_required = ref(props.required);
+const options = FieldTypeOptions;
+const dataListValues = ref(props.listvalues);
+const field_id = props.id;
+const is_required = ref(props.required);
 
 watch(title, (value) => {
     emit("update:value", value);

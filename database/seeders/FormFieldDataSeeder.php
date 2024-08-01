@@ -6,8 +6,8 @@ use App\Models\Form;
 use App\Models\FormFieldData;
 use Faker\Generator;
 use Illuminate\Container\Container;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Seeder;
 
 class FormFieldDataSeeder extends Seeder
 {
@@ -62,12 +62,12 @@ class FormFieldDataSeeder extends Seeder
                     $count = rand(1, 10);
                 }
                 $keys = array_rand($category->schools->toArray(), rand(1, count($category->schools)));
-                if (!is_array($keys)) {
+                if (! is_array($keys)) {
                     $keys = [$keys];
                 }
                 foreach ($form->form_fields as $field) {
                     foreach ($keys as $key) {
-                        if (!in_array($category->schools[$key], $form->schools->toArray())) {
+                        if (! $form->schools->contains($category->schools[$key])) {
                             $this->create_field_data($field, $category->schools[$key], $count);
                         }
                     }
@@ -85,13 +85,13 @@ class FormFieldDataSeeder extends Seeder
                     case 0: // Πεδίο κειμένου
                         return [
                             'data' => $this->faker->sentence(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 1: // Περιοχή κειμένου
                         return [
                             'data' => $this->faker->text(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 2: // Επιλογή ενός από πολλά
@@ -101,27 +101,26 @@ class FormFieldDataSeeder extends Seeder
 
                         return [
                             'data' => $list[$item]->id,
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 3: // Πολλαπλή επιλογή
                         $list = json_decode($field->listvalues);
                         $itemcount = rand(1, count($list));
                         $keys = array_rand($list, $itemcount);
-                        $data = array();
+                        $data = [];
                         if (is_array($keys)) {
                             foreach ($keys as $key) {
                                 array_push($data, $list[$key]->id);
                             }
-                        }
-                        else {
+                        } else {
                             array_push($data, $list[$keys]->id);
                         }
                         $data = json_encode($data);
 
                         return [
                             'data' => $data,
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 5: // Αρχείο
@@ -129,31 +128,31 @@ class FormFieldDataSeeder extends Seeder
                     case 6: // Ημερομηνία
                         return [
                             'data' => $this->faker->date(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 7: // Αριθμός
                         return [
                             'data' => $this->faker->randomNumber(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 8: // Τηλέφωνο
                         return [
-                            'data' => $this->faker->numerify("##########"),
-                            'record' => $sequence->index
+                            'data' => $this->faker->numerify('##########'),
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 9: // E-mail
                         return [
                             'data' => $this->faker->email(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                     case 10: // Url
                         return [
                             'data' => $this->faker->url(),
-                            'record' => $sequence->index
+                            'record' => $sequence->index,
                         ];
                         break;
                 }
@@ -163,4 +162,3 @@ class FormFieldDataSeeder extends Seeder
             ->create();
     }
 }
-

@@ -24,18 +24,52 @@
                             <a class="btn btn-success" href="{{ route('admin.form.data.xlsx', $form)}}">
                                 @icon('fas fa-file-excel') Λήψη αρχείου excel
                             </a>
+
+                            @php
+                                $hasFieldWithFiles = $form->form_fields->where('type', \App\Models\FormField::TYPE_FILE) !== null;
+                            @endphp
+
+                            @if($hasFieldWithFiles)
+                            <a class="btn btn-primary" href="{{ route('admin.report.downloadAllFiles', $form) }}">
+                                @icon('fas fa-file-zipper') Λήψη αρχείων πεδίων
+                            </a>
+                            @endif
                         </div>
                     </div>
-                    <vdatatable-component
-                        :columns="{{ json_encode($dataTableColumns) }}"
-                        :data="{{ json_encode($dataTable) }}"
-                        :schools="{{ json_encode($schools) }}"
-                        :teachers="{{ json_encode($teachers) }}"
-                        :other_teachers="{{ json_encode($other_teachers) }}"
-                        :for_teachers="{{ $form->for_teachers }}"
-                        :for_all_teachers="{{ $form->for_all_teachers }}"
-                    >
-                    </vdatatable-component>
+
+                    <div class="table-responsive d-flex max-600">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="fixed-header">
+                                <tr>
+                                    @foreach ($dataTableColumns as $column)
+                                        <th>
+                                            {{ $column }}
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dataTable as $row)
+                                    <tr>
+                                        @foreach ($row as $item)
+                                            <td>
+                                                @if (!is_array($item))
+                                                    {{ $item }}
+                                                @else
+                                                    @if (isset($item['file']) && $item['file'] === true)
+                                                        <a href="{{ url($item['link']) }}">{{ $item['value'] }}</a>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @if ($links)
+                        {!! $links !!}
+                    @endif
                 </div>
             </div>
         </div>

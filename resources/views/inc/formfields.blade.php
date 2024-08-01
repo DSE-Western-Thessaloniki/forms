@@ -1,8 +1,10 @@
 @php
 $data = $data_dict[$field->id] ?? '';
+
+$options = json_decode($field->options);
 @endphp
 
-<div class="form-group row mb-3">
+<div class="form-group row mb-3" name="f{{$field->id}}-group">
     <label for="f{{$field->id}}" class="col-md-3 col-form-label">
         {{ $field->title }} {!! $field->required ? '<span class="text-danger">*</span>' : '' !!}
     </label>

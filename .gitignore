@@ -11,8 +11,8 @@
 /storage/*.key
 /vendor
 /.idea
-/.vscode
-!/.vscode/extensions.json
+/.vscode/launch.json
+/.vscode/settings.json
 /nbproject
 /.vagrant
 Homestead.json
@@ -29,3 +29,4 @@ yarn-error.log
 /**/.*.sw?
 /.kdev4
 *.kdev4
+_ide_helper*
