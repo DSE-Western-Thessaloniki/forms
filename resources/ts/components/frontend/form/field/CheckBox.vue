@@ -32,18 +32,20 @@ const isChecked = (id: number) => {
     return dataSelected.includes(`${id}`) || dataSelected.includes(id);
 };
 
-const state = listValues
-    .map((listValue) => {
-        return {
-            [`${listValue.id}`]: isChecked(listValue.id),
-        };
-    })
-    .reduce((a, b) => ({ ...a, ...b }), {});
+const state = ref(
+    listValues
+        .map((listValue) => {
+            return {
+                [`${listValue.id}`]: isChecked(listValue.id),
+            };
+        })
+        .reduce((a, b) => ({ ...a, ...b }), {})
+);
 
 const getValuesFromState = () => {
     const newValues: Array<string> = [];
-    Object.keys(state).forEach((key: string) => {
-        const keyValue = state[key];
+    Object.keys(state.value).forEach((key: string) => {
+        const keyValue = state.value[key];
         if (keyValue !== false) {
             newValues.push(listValues[parseInt(key, 10)].id.toString());
         }
@@ -56,7 +58,7 @@ const stateChanged = () => {
     formStore.field[props.field.id] = getValuesFromState();
 };
 
-watch(() => state, stateChanged, { deep: true });
+watch(state, stateChanged, { deep: true });
 </script>
 
 <template>
