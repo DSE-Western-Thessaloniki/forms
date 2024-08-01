@@ -512,6 +512,7 @@ class FormsController extends Controller
             $field->sort_id = $item->sort_id;
             $field->title = $item->title;
             $field->type = $item->type;
+            $field->required = $item->required;
             $field->listvalues = $item->listvalues;
             $form_clone->form_fields()->save($field);
         }
