@@ -45,6 +45,19 @@ const formStore = useFormStore();
 Object.entries(field_values).forEach(([key, value]) => {
     formStore.field[key] = value;
 });
+
+// Πέρασε και τους τύπους για επιπλέον ελέγχους
+const field_types = props.form.form_fields
+    .map((field) => {
+        return {
+            [field.id]: field.type,
+        };
+    })
+    .reduce((a, b) => ({ ...a, ...b }), {});
+
+Object.entries(field_types).forEach(([key, value]) => {
+    formStore.fieldType[key] = value;
+});
 </script>
 
 <template>

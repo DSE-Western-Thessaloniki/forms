@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FieldType, FormFieldOptions } from "@/fieldtype";
+import { FieldType, type FormFieldOptions } from "@/fieldtype";
 import Field from "./Field.vue";
 import { useOptions } from "@/components/composables/useOptions";
 
@@ -13,11 +13,15 @@ const props = defineProps<{
 
 const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
 
-const options = useOptions(fieldOptions);
+const options = useOptions(fieldOptions, true);
 </script>
 
 <template>
-    <div class="form-group row mb-3" :name="`f${field.id}-group`">
+    <div
+        class="form-group row mb-3"
+        :name="`f${field.id}-group`"
+        v-if="options.fieldVisible.value"
+    >
         <label :for="`f${field.id}`" class="col-md-3 col-form-label">
             {{ field.title }}
             <span v-if="field.required" class="text-danger">*</span>

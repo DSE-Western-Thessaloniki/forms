@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {
     FieldType,
-    FormFieldOptions,
-    FormFieldOptionsShowCriteria,
+    type FormFieldOptions,
+    type FormFieldOptionsShowCriteria,
 } from "@/fieldtype";
-import { Ref, computed, ref } from "vue";
+import { type Ref, computed, ref } from "vue";
 
 const props = defineProps<{
     id: number;
@@ -26,6 +26,7 @@ const parseAdvancedOptionsCriteria = () => {
                     active_field: criteria.active_field ?? "",
                     operator: criteria.operator ?? "and",
                     value: criteria.value ?? "",
+                    value_is: criteria.value_is ?? "",
                 };
             })
         );
@@ -37,6 +38,7 @@ const parseAdvancedOptionsCriteria = () => {
                 active_field: string;
                 operator: string;
                 value: string;
+                value_is: string;
             }[]
         >([
             {
@@ -45,6 +47,7 @@ const parseAdvancedOptionsCriteria = () => {
                 active_field: "",
                 operator: "",
                 value: "",
+                value_is: "",
             },
         ]);
     }
@@ -57,6 +60,7 @@ const advancedOptionsCriteria: Ref<
         active_field: string;
         operator: string;
         value: string;
+        value_is: string;
     }[]
 > = parseAdvancedOptionsCriteria();
 
@@ -68,6 +72,7 @@ const addAdvancedOptionsCriteria = () => {
         active_field: "",
         operator: "",
         value: "",
+        value_is: "",
     });
 };
 
@@ -375,7 +380,7 @@ const advancedTarget = computed(function () {
                             >
                                 <option
                                     v-for="field in fields"
-                                    :value="`f${field.id}`"
+                                    :value="`${field.id}`"
                                     :key="field.id"
                                 >
                                     {{ field.title }}
@@ -397,9 +402,9 @@ const advancedTarget = computed(function () {
                                         field_id +
                                         '][options][show_when][' +
                                         option.id +
-                                        '][operator]'
+                                        '][value_is]'
                                     "
-                                    v-model="option.operator"
+                                    v-model="option.value_is"
                                 >
                                     <option value="gt">μεγαλύτερη από</option>
                                     <option value="ge">
