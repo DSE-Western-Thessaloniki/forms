@@ -22,13 +22,12 @@
                                         >Σημειώσεις:</label
                                     >
                                     <div class="col align-self-center">
-                                        <textarea
-                                            id="notes"
+                                        <Editor
                                             name="notes"
                                             class="col-12 form-control"
                                             v-model="notes"
                                         >
-                                        </textarea>
+                                        </Editor>
                                     </div>
                                 </div>
                                 <div class="form-check">
@@ -233,6 +232,7 @@
 import draggable from "vuedraggable";
 import { ref } from "vue";
 import type { Ref } from "vue";
+import Editor from "./MarkdownEditor/Editor.vue";
 
 const props = withDefaults(
     defineProps<{

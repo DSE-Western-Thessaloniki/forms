@@ -44,7 +44,9 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.6.0",
         "@vue/tsconfig": "^0.5.1",
+        "marked": "^13.0.3",
         "pinia": "^2.1.7",
+        "string-strip-html": "^13.4.8",
         "vuedraggable": "^4.1.0",
         "ziggy-js": "^2.2.1"
     }
