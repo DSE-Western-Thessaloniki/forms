@@ -21,17 +21,29 @@
                             Σχολεία
                         </a>
                     </li>
-                    @if(Auth::user()->roles->where('name', 'Administrator')->count() || Auth::user()->roles->where('name', 'Author')->count())
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.list.index') }}" test-data-id="nav-item-lists">
-                            Λίστες
-                        </a>
-                    </li>
+                    @if (Auth::user()->roles->where('name', 'Administrator')->count() ||
+                            Auth::user()->roles->where('name', 'Author')->count())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.list.index') }}" test-data-id="nav-item-lists">
+                                Λίστες
+                            </a>
+                        </li>
                     @endif
-                    @if(Auth::user()->roles->where('name', 'Administrator')->count())
+                    @if (Auth::user()->roles->where('name', 'Administrator')->count())
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin.user.index') }}" test-data-id="nav-item-users">
                                 Χρήστες
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.teacher.index') }}" test-data-id="nav-item-users">
+                                Εκπαιδευτικοί Διεύθυνσης
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.other_teacher.index') }}"
+                                test-data-id="nav-item-users">
+                                Εκπαιδευτικοί εκτός Διεύθυνσης
                             </a>
                         </li>
                         <li class="nav-item">

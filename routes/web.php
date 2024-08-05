@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin\AcceptedFiletypeController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\OptionsController;
+use App\Http\Controllers\Admin\OtherTeacherController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
 use App\Http\Controllers\Admin\SchoolsController;
 use App\Http\Controllers\Admin\SelectionListsController;
+use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
@@ -120,6 +122,21 @@ Route::prefix('admin')
                     }
                 );
             Route::resource('school', SchoolsController::class)
+                ->middleware('auth');
+
+            Route::prefix('teacher')
+                ->name('teacher.')
+                ->middleware('auth')
+                ->group(function () {
+                    Route::get('/show_import', [TeacherController::class, 'show_import'])
+                        ->name('show_import');
+                    Route::get('/{teacher}/confirmDelete', [TeacherController::class, 'confirmDelete'])
+                        ->name('confirmDelete');
+                });
+            Route::resource('teacher', TeacherController::class)
+                ->middleware('auth');
+
+            Route::resource('other_teacher', OtherTeacherController::class)
                 ->middleware('auth');
 
             Route::prefix('options')
