@@ -284,21 +284,16 @@ const onHelpPressed = () => {
     );
 };
 
-const onKeyDown = (e: KeyboardEvent) => {
-    console.log("onKeyDown!");
-    console.log((e.target as HTMLElement).innerHTML);
-    if ((e.target as HTMLElement).innerHTML.indexOf("&ZeroWidthSpace;") != -1) {
-        (e.target as HTMLElement).innerHTML = (
-            e.target as HTMLElement
-        ).innerHTML.replace(/&ZeroWidthSpace;/g, "");
-    }
-};
-
 const updateModel = (event: Event) => {
-    model.value = (event.target as HTMLElement).innerText;
+    model.value = (event.target as HTMLElement).innerText.replace(
+        /\u200B/g,
+        ""
+    );
+    console.log("updateModel:\n", model.value);
 };
 
 const textToPreviewText = (text: string) => {
+    console.log("textToPreviewText:\n", text);
     return marked.parse(text, {
         gfm: true,
     });
@@ -328,7 +323,6 @@ const mainEditor: Ref<HTMLElement | null> = ref(null);
             contenteditable="true"
             @input="updateModel"
             @blur="updateModel"
-            @keydown="onKeyDown"
             ref="mainEditor"
         ></div>
         <textarea
@@ -336,7 +330,6 @@ const mainEditor: Ref<HTMLElement | null> = ref(null);
             rows="12"
             class="flex-fill rounded-bottom"
             v-model="model"
-            hidden
         ></textarea>
         <div name="preview" class="preview">
             <div class="preview-title">Προεπισκόπηση:</div>
