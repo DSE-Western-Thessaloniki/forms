@@ -330,6 +330,7 @@ const mainEditor: Ref<HTMLElement | null> = ref(null);
             rows="12"
             class="flex-fill rounded-bottom"
             v-model="model"
+            hidden
         ></textarea>
         <div name="preview" class="preview">
             <div class="preview-title">Προεπισκόπηση:</div>
