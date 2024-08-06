@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
@@ -86,7 +87,7 @@ class TeacherController extends Controller
      */
     public function edit(Teacher $teacher)
     {
-        //
+        return view('admin.teacher.edit')->with('teacher', $teacher);
     }
 
     /**
@@ -96,7 +97,14 @@ class TeacherController extends Controller
      */
     public function update(UpdateTeacherRequest $request, Teacher $teacher)
     {
-        //
+        $teacher->update(
+            array_merge(
+                $request->validated(),
+                ['active' => $request->get('active') == 1 ? 1 : 0]
+            )
+        );
+
+        return to_route('admin.teacher.index');
     }
 
     /**
@@ -106,11 +114,86 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        //
+        $teacher->delete();
+
+        return to_route('admin.teacher.index');
+    }
+
+    public function confirmDelete(Teacher $teacher)
+    {
+        return view('admin.teacher.confirm_delete')
+            ->with('teacher', $teacher);
     }
 
     public function show_import()
     {
+        return view('admin.teacher.import');
+    }
+
+    public function import(Request $request)
+    {
+        DB::beginTransaction();
+        $request->validate([
+            'csvfile' => 'required|file|mimes:csv,txt',
+        ]);
+
+        $uploadedFile = $request->file('csvfile');
+        $data = [];
+        if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
+            while (($row_data = fgetcsv($handle, 1000, ',')) !== false) {
+                array_push($data, $row_data);
+            }
+            fclose($handle);
+        }
+
+        if (! empty($data) && count($data[0]) != 4) { // Δοκίμασε το ';' ως διαχωριστικό
+            $data = [];
+            if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
+                while (($row_data = fgetcsv($handle, 1000, ';')) !== false) {
+                    array_push($data, $row_data);
+                }
+                fclose($handle);
+            }
+        }
+
+        if (empty($data)) {
+            return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+        }
+
+        DB::table('teachers')->
+            update(['active' => 0]);
+
+        foreach ($data as $row) {
+            if (count($row) != 4) {
+                return redirect(route('admin.teacher.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
+            }
+
+            $check = Teacher::where('am', $row[2])
+                ->orWhere('afm', $row[3])
+                ->first();
+
+            if ($check) {
+                if ($check->am !== $row[2] || $check->afm !== $row[3]) {
+                    return redirect(route('admin.teacher.index'))->with('error', "Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα {$row[0]} {$row[1]} ΑΜ: {$row[2]} ΑΦΜ: {$row[3]}");
+                }
+                $check->surname = $row[0];
+                $check->name = $row[1];
+                $check->active = true;
+                $check->save();
+            } else {
+                $teacher = new Teacher;
+                $teacher->surname = $row[0];
+                $teacher->name = $row[1];
+                $teacher->am = $row[2];
+                $teacher->afm = $row[3];
+                $teacher->active = true;
+                $teacher->save();
+            }
+        }
+
+        DB::commit();
+
+        return redirect(route('admin.teacher.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' εκπαιδευτικών');
 
     }
 }

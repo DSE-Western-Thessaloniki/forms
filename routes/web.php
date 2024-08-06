@@ -130,6 +130,8 @@ Route::prefix('admin')
                 ->group(function () {
                     Route::get('/show_import', [TeacherController::class, 'show_import'])
                         ->name('show_import');
+                    Route::post('/import', [TeacherController::class, 'import'])
+                        ->name('import');
                     Route::get('/{teacher}/confirmDelete', [TeacherController::class, 'confirmDelete'])
                         ->name('confirmDelete');
                 });

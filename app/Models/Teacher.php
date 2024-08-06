@@ -14,5 +14,6 @@ class Teacher extends Model
         'name',
         'am',
         'afm',
+        'active',
     ];
 }
