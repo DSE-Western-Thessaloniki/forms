@@ -136,9 +136,11 @@ Route::prefix('admin')
                         ->name('confirmDelete');
                 });
             Route::resource('teacher', TeacherController::class)
+                ->except('show')
                 ->middleware('auth');
 
             Route::resource('other_teacher', OtherTeacherController::class)
+                ->only(['index'])
                 ->middleware('auth');
 
             Route::prefix('options')
