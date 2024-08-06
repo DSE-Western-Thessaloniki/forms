@@ -85,7 +85,11 @@
                                     </tbody>
 
                                 @empty
-                                    Δεν βρέθηκαν σχολικές μονάδες
+                                    <tr>
+                                        <td colspan="5">
+                                            Δεν βρέθηκαν εκπαιδευτικοί
+                                        </td>
+                                    </tr>
                                     @endforelse
                                 </table>
                             </div>
