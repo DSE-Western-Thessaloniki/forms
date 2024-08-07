@@ -139,57 +139,78 @@ class TeacherController extends Controller
 
         $uploadedFile = $request->file('csvfile');
         $data = [];
+        $numFields = 4; // surname, name, am, afm
+        $missingField = false;
         if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
             while (($row_data = fgetcsv($handle, 1000, ',')) !== false) {
-                array_push($data, $row_data);
+                if (count($row_data) != $numFields) {
+                    $missingField = true;
+                    break;
+                }
+                array_push($data, [
+                    'surname' => $row_data[0],
+                    'name' => $row_data[1],
+                    'am' => $row_data[2],
+                    'afm' => $row_data[3],
+                    'active' => 1,
+                ]);
             }
             fclose($handle);
         }
 
-        if (! empty($data) && count($data[0]) != 4) { // Δοκίμασε το ';' ως διαχωριστικό
+        if ($missingField || empty($data)) { // Δοκίμασε το ';' ως διαχωριστικό
+            $missingField = false;
             $data = [];
             if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
                 while (($row_data = fgetcsv($handle, 1000, ';')) !== false) {
-                    array_push($data, $row_data);
+                    if (count($row_data) != $numFields) {
+                        $missingField = true;
+                        break;
+                    }
+                    array_push($data, [
+                        'surname' => $row_data[0],
+                        'name' => $row_data[1],
+                        'am' => $row_data[2],
+                        'afm' => $row_data[3],
+                        'active' => 1,
+                    ]);
                 }
                 fclose($handle);
             }
         }
 
-        if (empty($data)) {
-            return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+        if ($missingField || empty($data)) {
+            return redirect(route('admin.teacher.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 
         DB::table('teachers')->
             update(['active' => 0]);
 
-        foreach ($data as $row) {
-            if (count($row) != 4) {
-                return redirect(route('admin.teacher.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
-            }
-
-            $check = Teacher::where('am', $row[2])
-                ->orWhere('afm', $row[3])
+        $alreadyExist = [];
+        foreach ($data as $key => $row) {
+            $check = Teacher::where('am', $row['am'])
+                ->orWhere('afm', $row['afm'])
                 ->first();
 
             if ($check) {
-                if ($check->am !== $row[2] || $check->afm !== $row[3]) {
-                    return redirect(route('admin.teacher.index'))->with('error', "Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα {$row[0]} {$row[1]} ΑΜ: {$row[2]} ΑΦΜ: {$row[3]}");
+                if ($check->am !== $row['am'] || $check->afm !== $row['afm']) {
+                    return redirect(route('admin.teacher.index'))->with('error', "Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα {$row['surname']} {$row['name']} ΑΜ: {$row['am']} ΑΦΜ: {$row['afm']}");
                 }
-                $check->surname = $row[0];
-                $check->name = $row[1];
+                $check->surname = $row['surname'];
+                $check->name = $row['name'];
                 $check->active = true;
                 $check->save();
-            } else {
-                $teacher = new Teacher;
-                $teacher->surname = $row[0];
-                $teacher->name = $row[1];
-                $teacher->am = $row[2];
-                $teacher->afm = $row[3];
-                $teacher->active = true;
-                $teacher->save();
+
+                $alreadyExist[] = $key;
             }
         }
+
+        // Αφαίρεσε τις εγγραφές που ήδη υπάρχουν στη βάση
+        foreach ($alreadyExist as $item) {
+            unset($data[$item]);
+        }
+
+        Teacher::insert($data);
 
         DB::commit();
 
