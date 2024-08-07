@@ -12,42 +12,48 @@
             <ul class="navbar-nav me-auto">
                 @auth('web')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.form.index') }}" test-data-id="nav-item-forms">
+                        <a @class(['nav-link ', 'active' => Route::is('admin.form.*')]) href="{{ route('admin.form.index') }}"
+                            test-data-id="nav-item-forms">
                             Φόρμες
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.school.index') }}" test-data-id="nav-item-schools">
+                        <a @class(['nav-link ', 'active' => Route::is('admin.school.*')]) href="{{ route('admin.school.index') }}"
+                            test-data-id="nav-item-schools">
                             Σχολεία
                         </a>
                     </li>
                     @if (Auth::user()->roles->where('name', 'Administrator')->count() ||
                             Auth::user()->roles->where('name', 'Author')->count())
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.list.index') }}" test-data-id="nav-item-lists">
+                            <a @class(['nav-link ', 'active' => Route::is('admin.list.*')]) href="{{ route('admin.list.index') }}"
+                                test-data-id="nav-item-lists">
                                 Λίστες
                             </a>
                         </li>
                     @endif
                     @if (Auth::user()->roles->where('name', 'Administrator')->count())
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.user.index') }}" test-data-id="nav-item-users">
+                            <a @class(['nav-link ', 'active' => Route::is('admin.user.*')]) href="{{ route('admin.user.index') }}"
+                                test-data-id="nav-item-users">
                                 Χρήστες
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.teacher.index') }}" test-data-id="nav-item-users">
+                            <a @class(['nav-link ', 'active' => Route::is('admin.teacher.*')]) href="{{ route('admin.teacher.index') }}"
+                                test-data-id="nav-item-teachers">
                                 Εκπαιδευτικοί Διεύθυνσης
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.other_teacher.index') }}"
-                                test-data-id="nav-item-users">
+                            <a @class(['nav-link ', 'active' => Route::is('admin.other_teacher.*')]) href="{{ route('admin.other_teacher.index') }}"
+                                test-data-id="nav-item-other_teachers">
                                 Εκπαιδευτικοί εκτός Διεύθυνσης
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.options.index') }}" test-data-id="nav-item-users">
+                            <a @class(['nav-link ', 'active' => Route::is('admin.options.*')]) href="{{ route('admin.options.index') }}"
+                                test-data-id="nav-item-options">
                                 Επιλογές
                             </a>
                         </li>
