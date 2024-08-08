@@ -222,4 +222,12 @@ it('can import teachers as admin (comma as delimiter)', function () {
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
-})->only();
+});
+
+it('cannot import teachers as admin (wrong format of file)', function () {
+    $admin = User::factory()->admin()->create();
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101\n");
+
+    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    expect($response->getSession()->only(['error'])['error'])->toBe('Λανθασμένη μορφή αρχείου');
+});
