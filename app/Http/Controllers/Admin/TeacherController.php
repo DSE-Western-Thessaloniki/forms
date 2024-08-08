@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Teacher::class, 'teacher');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -67,7 +72,8 @@ class TeacherController extends Controller
             'active' => 1,
         ]);
 
-        return to_route('admin.teacher.index');
+        return to_route('admin.teacher.index')
+            ->with('status', 'Ο εκπαιδευτικός αποθηκεύτηκε!');
     }
 
     /**
@@ -104,7 +110,8 @@ class TeacherController extends Controller
             )
         );
 
-        return to_route('admin.teacher.index');
+        return to_route('admin.teacher.index')
+            ->with('status', 'Ο εκπαιδευτικός ενημερώθηκε!');
     }
 
     /**
@@ -116,7 +123,8 @@ class TeacherController extends Controller
     {
         $teacher->delete();
 
-        return to_route('admin.teacher.index');
+        return to_route('admin.teacher.index')
+            ->with('status', 'Ο εκπαιδευτικός διαγράφηκε!');
     }
 
     public function confirmDelete(Teacher $teacher)
