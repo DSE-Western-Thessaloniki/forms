@@ -31,6 +31,20 @@ it('can access the teacher panel as admin', function () {
     $this->actingAs($admin)->get('/admin/teacher')->assertOk();
 });
 
+it('can access the teacher panel as admin (use filter)', function () {
+    $admin = User::factory()->admin()->create();
+    $teachers = Teacher::factory()
+        ->createMany(2);
+    $filter = $teachers[0]->afm;
+
+    $response = $this->actingAs($admin)->call('GET', '/admin/teacher', [
+        'teacher_filter' => $filter,
+    ])->assertOk();
+
+    $response->assertSee($teachers[0]->surname);
+    $response->assertDontSee($teachers[1]->surname);
+})->only();
+
 it('cannot access a teacher\'s creation form as user', function () {
     $user = User::factory()->user()->create();
 
@@ -230,4 +244,18 @@ it('cannot import teachers as admin (wrong format of file)', function () {
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     expect($response->getSession()->only(['error'])['error'])->toBe('Λανθασμένη μορφή αρχείου');
+});
+
+it('cannot import teachers as admin (wrong am/afm combination)', function () {
+    $admin = User::factory()->admin()->create();
+    Teacher::factory()->create([
+        'name' => 'Joe',
+        'surname' => 'Doe',
+        'am' => '100',
+        'afm' => '120',
+    ]);
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
+
+    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    expect($response->getSession()->only(['error'])['error'])->toBe('Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
 });
