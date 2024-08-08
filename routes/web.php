@@ -126,7 +126,7 @@ Route::prefix('admin')
 
             Route::prefix('teacher')
                 ->name('teacher.')
-                ->middleware('auth')
+                ->middleware('auth', 'can:create,App\Models\Teacher')
                 ->group(function () {
                     Route::get('/show_import', [TeacherController::class, 'show_import'])
                         ->name('show_import');
@@ -135,6 +135,7 @@ Route::prefix('admin')
                     Route::get('/{teacher}/confirmDelete', [TeacherController::class, 'confirmDelete'])
                         ->name('confirmDelete');
                 });
+
             Route::resource('teacher', TeacherController::class)
                 ->except('show')
                 ->middleware('auth');
