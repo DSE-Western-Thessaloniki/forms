@@ -4,6 +4,7 @@ use App\Models\Option;
 use App\Models\Teacher;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
+use Illuminate\Http\UploadedFile;
 
 beforeEach(function () {
     $this->seed(OptionSeeder::class);
@@ -174,3 +175,51 @@ it('can update a teacher as admin', function () {
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός ενημερώθηκε!');
 });
+
+it('cannot access a teacher\'s import form as user', function () {
+    $user = User::factory()->user()->create();
+
+    $this->actingAs($user)->get('/admin/teacher/show_import')->assertForbidden();
+});
+
+it('cannot access a teacher\'s import form as author', function () {
+    $author = User::factory()->author()->create();
+
+    $this->actingAs($author)->get('/admin/teacher/show_import')->assertForbidden();
+});
+
+it('can access a teacher\'s import form as admin', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)->get('/admin/teacher/show_import')->assertOk();
+});
+
+it('cannot import teachers as user', function () {
+    $user = User::factory()->user()->create();
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
+
+    $this->actingAs($user)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
+});
+
+it('cannot import teachers as author', function () {
+    $author = User::factory()->author()->create();
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
+
+    $this->actingAs($author)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
+});
+
+it('can import teachers as admin (semicolon as delimiter)', function () {
+    $admin = User::factory()->admin()->create();
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
+
+    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
+});
+
+it('can import teachers as admin (comma as delimiter)', function () {
+    $admin = User::factory()->admin()->create();
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
+
+    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
+})->only();
