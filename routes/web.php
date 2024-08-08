@@ -128,7 +128,7 @@ Route::prefix('admin')
                 ->name('teacher.')
                 ->middleware('auth', 'can:create,App\Models\Teacher')
                 ->group(function () {
-                    Route::get('/show_import', [TeacherController::class, 'show_import'])
+                    Route::get('/import', [TeacherController::class, 'showImport'])
                         ->name('show_import');
                     Route::post('/import', [TeacherController::class, 'import'])
                         ->name('import');

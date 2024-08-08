@@ -179,19 +179,19 @@ it('can update a teacher as admin', function () {
 it('cannot access a teacher\'s import form as user', function () {
     $user = User::factory()->user()->create();
 
-    $this->actingAs($user)->get('/admin/teacher/show_import')->assertForbidden();
+    $this->actingAs($user)->get('/admin/teacher/import')->assertForbidden();
 });
 
 it('cannot access a teacher\'s import form as author', function () {
     $author = User::factory()->author()->create();
 
-    $this->actingAs($author)->get('/admin/teacher/show_import')->assertForbidden();
+    $this->actingAs($author)->get('/admin/teacher/import')->assertForbidden();
 });
 
 it('can access a teacher\'s import form as admin', function () {
     $admin = User::factory()->admin()->create();
 
-    $this->actingAs($admin)->get('/admin/teacher/show_import')->assertOk();
+    $this->actingAs($admin)->get('/admin/teacher/import')->assertOk();
 });
 
 it('cannot import teachers as user', function () {

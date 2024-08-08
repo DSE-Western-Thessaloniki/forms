@@ -133,7 +133,7 @@ class TeacherController extends Controller
             ->with('teacher', $teacher);
     }
 
-    public function show_import()
+    public function showImport()
     {
         return view('admin.teacher.import');
     }
