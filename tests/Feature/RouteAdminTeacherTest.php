@@ -43,7 +43,7 @@ it('can access the teacher panel as admin (use filter)', function () {
 
     $response->assertSee($teachers[0]->surname);
     $response->assertDontSee($teachers[1]->surname);
-})->only();
+});
 
 it('cannot access a teacher\'s creation form as user', function () {
     $user = User::factory()->user()->create();
@@ -258,4 +258,15 @@ it('cannot import teachers as admin (wrong am/afm combination)', function () {
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     expect($response->getSession()->only(['error'])['error'])->toBe('Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
+});
+
+it('can import teachers as admin and mark old teacher data as inactive', function () {
+    $admin = User::factory()->admin()->create();
+    $teachers = Teacher::factory()->createMany(2);
+    $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;{$teachers[0]->am};{$teachers[0]->afm}\n");
+
+    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $this->assertDatabaseCount('teachers', 3);
+    $this->assertDatabaseHas('teachers', ['id' => $teachers[0]->id, 'surname' => 'Doe', 'name' => 'Jane', 'active' => 1]);
+    $this->assertDatabaseHas('teachers', ['id' => $teachers[1]->id, 'active' => 0]);
 });
