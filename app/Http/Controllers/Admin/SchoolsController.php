@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 
 class SchoolsController extends Controller
 {
@@ -36,12 +37,12 @@ class SchoolsController extends Controller
                 ->orWhere('username', 'like', '%'.$filter.'%')
                 ->with('user', 'categories')
                 ->paginate(15);
-        }
-        else {
+        } else {
             $schools = School::orderBy('created_at', 'desc')
                 ->with('user', 'categories')
                 ->paginate(15);
         }
+
         return view('admin.school.index')
             ->with('schools', $schools)
             ->with('filter', $filter);
@@ -55,13 +56,13 @@ class SchoolsController extends Controller
     public function create()
     {
         $categories = SchoolCategory::all();
+
         return view('admin.school.create')->with('categories', $categories);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -77,12 +78,11 @@ class SchoolsController extends Controller
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν
         $category_answer = explode(',', $request->get('category'));
-        $categories = array();
+        $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
                 array_push($categories, $category);
-            }
-            else {
+            } else {
                 return redirect(route('admin.school.index'))
                     ->with('status', 'Άκυρες κατηγορίες');
             }
@@ -111,7 +111,6 @@ class SchoolsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\School  $school
      * @return \Illuminate\Http\Response
      */
     public function show(School $school)
@@ -122,16 +121,16 @@ class SchoolsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\School  $school
      * @return \Illuminate\Http\Response
      */
     public function edit(School $school)
     {
         $categories = SchoolCategory::all();
-        $category_arr = array();
+        $category_arr = [];
         foreach ($school->categories as $category) {
             array_push($category_arr, $category->id);
         }
+
         return view('admin.school.edit', compact('school'))
             ->with('categories', $categories)
             ->with('category_string', implode(',', $category_arr));
@@ -140,8 +139,6 @@ class SchoolsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\School  $school
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, School $school)
@@ -157,12 +154,11 @@ class SchoolsController extends Controller
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν
         $category_answer = explode(',', $request->get('category'));
-        $categories = array();
+        $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
                 array_push($categories, $category);
-            }
-            else {
+            } else {
                 return redirect(route('admin.school.index'))
                     ->with('status', 'Άκυρες κατηγορίες');
             }
@@ -186,7 +182,6 @@ class SchoolsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\School  $school
      * @return \Illuminate\Http\Response
      */
     public function destroy(School $school)
@@ -215,60 +210,96 @@ class SchoolsController extends Controller
      */
     public function import(Request $request)
     {
+        DB::beginTransaction();
+
         $request->validate([
             'csvfile' => 'required|file|mimes:csv,txt',
         ]);
 
         $uploadedFile = $request->file('csvfile');
         $data = [];
-        if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-            while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                array_push($data, $row_data);
+        $numFields = 6; // name, username, code, email, telephone, category
+        $missingField = false;
+        if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
+            while (($row_data = fgetcsv($handle, 1000, ',')) !== false) {
+                if (count($row_data) != $numFields) {
+                    $missingField = true;
+                    break;
+                }
+
+                array_push($data, [
+                    'name' => $row_data[0],
+                    'username' => $row_data[1],
+                    'code' => $row_data[2],
+                    'email' => $row_data[3],
+                    'telephone' => $row_data[4],
+                    'category' => $row_data[5],
+                ]);
             }
             fclose($handle);
         }
 
-        if (!empty($data) && count($data[0]) != 6) { // Δοκίμασε το ';' ως διαχωριστικό
+        if ($missingField || empty($data)) { // Δοκίμασε το ';' ως διαχωριστικό
+            $missingField = false;
             $data = [];
-            if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-                while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                    array_push($data, $row_data);
+            if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
+                while (($row_data = fgetcsv($handle, 1000, ';')) !== false) {
+                    if (count($row_data) != $numFields) {
+                        $missingField = true;
+                        break;
+                    }
+                    array_push($data, [
+                        'name' => $row_data[0],
+                        'username' => $row_data[1],
+                        'code' => $row_data[2],
+                        'email' => $row_data[3],
+                        'telephone' => $row_data[4],
+                        'category' => $row_data[5],
+                    ]);
                 }
                 fclose($handle);
             }
         }
 
-        if (empty($data)) {
+        if ($missingField || empty($data)) {
             return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 
         foreach ($data as $row) {
-            if (count($row) != 6) {
-                return redirect(route('admin.school.index'))->with('error', 'Λάθος αριθμός στηλών στο αρχείο');
+            $school = School::where('code', $row['code'])->first();
+
+            if ($school) {
+                $school->name = $row['name'];
+                $school->username = $row['username'];
+                $school->email = $row['email'];
+                $school->telephone = $row['telephone'];
+                $school->updated_by = Auth::user()->id;
+                $school->save();
+            } else {
+                $school = new School;
+                $school->name = $row['name'];
+                $school->username = $row['username'];
+                $school->code = $row['code'];
+                $school->email = $row['email'];
+                $school->telephone = $row['telephone'];
+                $school->active = true;
+                $school->updated_by = Auth::user()->id;
+                $school->save();
+
+                $category_name = $row['category'];
+                $category = SchoolCategory::where('name', $category_name)->first();
+
+                if (! $category) { // Η κατηγορία δεν υπάρχει ήδη
+                    $category = new SchoolCategory;
+                    $category->name = $row['category'];
+                    $category->save();
+                }
+
+                $school->categories()->attach($category);
             }
-
-            $school = new School;
-            $school->name = $row[0];
-            $school->username = $row[1];
-            $school->code = $row[2];
-            $school->email = $row[3];
-            $school->telephone = $row[4];
-            $school->active = true;
-            $school->updated_by = Auth::user()->id;
-            $school->save();
-
-            $category_name = $row[5];
-            $category = SchoolCategory::where('name', $category_name)->first();
-
-            if (!$category) { // Η κατηγορία δεν υπάρχει ήδη
-                $category = new SchoolCategory;
-                $category->name = $row[5];
-                $category->save();
-            }
-
-            $school->categories()->attach($category);
-
         }
+
+        DB::commit();
 
         return redirect(route('admin.school.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');
     }
@@ -276,7 +307,6 @@ class SchoolsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\School  $school
      * @return \Illuminate\Support\Facades\View
      */
     public function confirmDelete(School $school)
@@ -284,5 +314,4 @@ class SchoolsController extends Controller
         return view('admin.school.confirm_delete')
             ->with('school', $school);
     }
-
 }
