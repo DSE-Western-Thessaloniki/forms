@@ -111,7 +111,7 @@ it('can create a school category as admin and attach schools', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
     $savedCategory = SchoolCategory::where('name', 'Test Category')->first();
     expect($savedCategory->schools()->count())->toBe(2);
-})->only();
+});
 
 it('cannot edit a school category as user', function () {
     $user = User::factory()->user()->create();
