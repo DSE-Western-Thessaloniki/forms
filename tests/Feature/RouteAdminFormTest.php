@@ -52,6 +52,18 @@ it('can access the forms panel as admin', function () {
     $this->actingAs($admin)->get('/admin/form')->assertOk();
 });
 
+it('can access the forms panel as admin and filter list', function () {
+    $admin = User::factory()->admin()->create();
+    $testForms = Form::factory(2)->for($admin)->create(['active' => true]);
+
+    $result = $this->actingAs($admin)->call('GET', '/admin/form', [
+        'filter' => $testForms[0]->title,
+    ])->assertOk();
+
+    $result->assertSee($testForms[0]->title);
+    $result->assertDontSee($testForms[1]->title);
+});
+
 it('can access a form\'s preview as user', function () {
     $user = User::factory()->user()->create();
     $testForm = Form::factory()->for($user)->create(['active' => true]);
