@@ -6,142 +6,158 @@ use App\Models\SchoolCategory;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-
-it('cannot access the school category panel as user', function() {
+it('cannot access the school category panel as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/school/schoolcategory')->assertForbidden();
 });
 
-it('cannot access the school category panel as author', function() {
+it('cannot access the school category panel as author', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/school/schoolcategory')->assertForbidden();
 });
 
-it('can access the school category panel as admin', function() {
+it('can access the school category panel as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/school/schoolcategory')->assertOk();
 });
 
-it('cannot access a school category\'s info as user', function() {
+it('cannot access a school category\'s info as user', function () {
     $user = User::factory()->user()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($user)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertForbidden();
 });
 
-it('cannot access a school category\'s info as author', function() {
+it('cannot access a school category\'s info as author', function () {
     $author = User::factory()->author()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($author)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertForbidden();
 });
 
-it('can access a school category\'s info as admin', function() {
+it('can access a school category\'s info as admin', function () {
     $admin = User::factory()->admin()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($admin)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertOk();
 });
 
-it('cannot access a school category\'s creation form as user', function() {
+it('cannot access a school category\'s creation form as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/school/schoolcategory/create')->assertForbidden();
 });
 
-it('cannot access a school category\'s creation form as author', function() {
+it('cannot access a school category\'s creation form as author', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/school/schoolcategory/create')->assertForbidden();
 });
 
-it('can access a school category\'s creation form as admin', function() {
+it('can access a school category\'s creation form as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/school/schoolcategory/create')->assertOk();
 });
 
-it('cannot create a school category as user', function(){
+it('cannot create a school category as user', function () {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post('/admin/school/schoolcategory', [
-        'name' => "Test Category",
+        'name' => 'Test Category',
     ])->assertForbidden();
 });
 
-it('cannot create a school category as author', function(){
+it('cannot create a school category as author', function () {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->post('/admin/school/schoolcategory', [
-        'name' => "Test Category",
+        'name' => 'Test Category',
     ])->assertForbidden();
 });
 
-it('can create a school category as admin', function(){
+it('can create a school category as admin', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/school/schoolcategory', [
-        'name' => "Test Category",
+        'name' => 'Test Category',
     ]);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
 });
 
-it('cannot edit a school category as user', function(){
+it('can create a school category as admin and attach schools', function () {
+    $admin = User::factory()->admin()->create();
+    $schools = School::factory(2)
+        ->category()
+        ->for($admin)
+        ->create();
+
+    $response = $this->actingAs($admin)->post('/admin/school/schoolcategory', [
+        'name' => 'Test Category',
+        'schools' => implode(',', $schools->pluck('code')->toArray()),
+    ]);
+    $response->assertStatus(302);
+    expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
+    $savedCategory = SchoolCategory::where('name', 'Test Category')->first();
+    expect($savedCategory->schools()->count())->toBe(2);
+})->only();
+
+it('cannot edit a school category as user', function () {
     $user = User::factory()->user()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($user)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id.'/edit')->assertForbidden();
 });
 
-it('cannot edit a school category as author', function(){
+it('cannot edit a school category as author', function () {
     $author = User::factory()->author()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($author)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id.'/edit')->assertForbidden();
 });
 
-it('can edit a school category as admin', function(){
+it('can edit a school category as admin', function () {
     $admin = User::factory()->admin()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($admin)->get('/admin/school/schoolcategory/'.$testSchoolCategory->id.'/edit')->assertOk();
 });
 
-it('cannot delete a school category as user', function(){
+it('cannot delete a school category as user', function () {
     $user = User::factory()->user()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($user)->delete('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertForbidden();
 });
 
-it('cannot delete a school category as author', function(){
+it('cannot delete a school category as author', function () {
     $author = User::factory()->author()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $this->actingAs($author)->delete('/admin/school/schoolcategory/'.$testSchoolCategory->id)->assertForbidden();
 });
 
-it('can delete a school category as admin', function(){
+it('can delete a school category as admin', function () {
     $admin = User::factory()->admin()->create();
-    $testSchoolCategory = SchoolCategory::factory()->create(['name' => "Test Category"]);
+    $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'Test Category']);
 
     $response = $this->actingAs($admin)->delete('/admin/school/schoolcategory/'.$testSchoolCategory->id);
     $response->assertStatus(302);
     expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας διαγράφηκε!');
 });
 
-it('cannot update a school category as user', function(){
+it('cannot update a school category as user', function () {
     $user = User::factory()->user()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -151,7 +167,7 @@ it('cannot update a school category as user', function(){
     $response->assertForbidden();
 });
 
-it('cannot update a school category as author', function(){
+it('cannot update a school category as author', function () {
     $author = User::factory()->author()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -161,7 +177,7 @@ it('cannot update a school category as author', function(){
     $response->assertForbidden();
 });
 
-it('can update a school category as admin', function(){
+it('can update a school category as admin', function () {
     $admin = User::factory()->admin()->create();
     $testSchoolCategory = SchoolCategory::factory()->create(['name' => 'testCategory']);
 

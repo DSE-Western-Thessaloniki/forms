@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\School;
 use App\Models\SchoolCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class SchoolCategoriesController extends Controller
 {
@@ -27,6 +27,7 @@ class SchoolCategoriesController extends Controller
     public function index()
     {
         $categories = SchoolCategory::with('schools')->get();
+
         return view('admin.school.schoolcategory.index')->with('categories', $categories);
     }
 
@@ -43,13 +44,13 @@ class SchoolCategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'schools' => ['sometimes', 'string', 'nullable', 'max:4096'],
         ]);
 
         $schoolCategory = new SchoolCategory([
@@ -58,6 +59,17 @@ class SchoolCategoriesController extends Controller
 
         $schoolCategory->save();
 
+        $school_codes = $request->get('schools');
+        if ($school_codes) {
+            $codes = explode(',', $school_codes);
+            foreach ($codes as $code) {
+                $school = School::where('code', trim($code))->first();
+                if ($school) {
+                    $schoolCategory->schools()->attach($school);
+                }
+            }
+        }
+
         return redirect(route('admin.school.schoolcategory.index'))
             ->with('status', 'Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
     }
@@ -65,7 +77,6 @@ class SchoolCategoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SchoolCategory  $schoolcategory
      * @return \Illuminate\Http\Response
      */
     public function show(SchoolCategory $schoolcategory)
@@ -87,8 +98,6 @@ class SchoolCategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SchoolCategory  $schoolcategory
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, SchoolCategory $schoolcategory)
@@ -107,7 +116,6 @@ class SchoolCategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SchoolCategory  $schoolcategory
      * @return \Illuminate\Http\Response
      */
     public function destroy(SchoolCategory $schoolcategory)
