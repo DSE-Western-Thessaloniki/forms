@@ -34,73 +34,48 @@
                         <hr />
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover">
-                                @if ($form->for_teachers)
-                                    <thead>
+                                <thead>
+                                    <tr>
+                                        <th>Α/Α</th>
+                                        @foreach ($missing_data[0] as $header)
+                                            <th>{{ $header }}</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $columns = count($missing_data[0]) + 1;
+                                        // Αφαίρεσε την γραμμή με τις επικεφαλίδες
+                                        unset($missing_data[0]);
+                                    @endphp
+                                    @forelse ($missing_data as $row)
                                         <tr>
-                                            <th>Α/Α</th>
-                                            <th>Εκπαιδευτικός</th>
-                                            <th>ΑΜ</th>
-                                            <th>ΑΦΜ</th>
+                                            <td>
+                                                {{ $loop->index + 1 }}
+                                            </td>
+                                            @foreach ($row as $data)
+                                                <td>
+                                                    {{ $data }}
+                                                </td>
+                                            @endforeach
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($teachers as $teacher)
+
+                                    @empty
+                                        @if ($form->for_teachers)
                                             <tr>
-                                                <td>
-                                                    {{ $loop->index + 1 }}
-                                                </td>
-                                                <td>
-                                                    {{ $teacher->surname }} {{ $teacher->name }}
-                                                </td>
-                                                <td>
-                                                    {{ $teacher->am }}
-                                                </td>
-                                                <td>
-                                                    {{ $teacher->afm }}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="2">
+                                                <td class="text-center" colspan="{{ $columns }}">
                                                     Δεν υπάρχει κανένας εκπαιδευτικός που να μην απάντησε!!!
                                                 </td>
                                             </tr>
-                                        @endforelse
-                                    </tbody>
-                                @else
-                                    <thead>
-                                        <tr>
-                                            <th>Α/Α</th>
-                                            <th>Σχολική Μονάδα</th>
-                                            <th>Κωδικός</th>
-                                            <th>Τηλέφωνο</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($schools as $school)
+                                        @else
                                             <tr>
-                                                <td>
-                                                    {{ $loop->index + 1 }}
-                                                </td>
-                                                <td>
-                                                    {{ $school->name }}
-                                                </td>
-                                                <td>
-                                                    {{ $school->code }}
-                                                </td>
-                                                <td>
-                                                    {{ $school->telephone }}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="2">
+                                                <td class="text-center" colspan="{{ $columns }}">
                                                     Δεν υπάρχει καμία σχολική μονάδα που να μην απάντησε!!!
                                                 </td>
                                             </tr>
-                                        @endforelse
-                                    </tbody>
-                                @endif
+                                        @endif
+                                    @endforelse
+                                </tbody>
                             </table>
                         </div>
                         <hr />

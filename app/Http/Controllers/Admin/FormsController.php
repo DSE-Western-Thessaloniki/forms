@@ -12,6 +12,7 @@ use App\Models\SchoolCategory;
 use App\Models\SelectionList;
 use App\Models\Teacher;
 use App\Services\FormDataTableService;
+use App\Services\FormMissingDataService;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class FormsController extends Controller
      *
      * @return void
      */
-    public function __construct(private FormDataTableService $formDataTableService)
+    public function __construct(private FormDataTableService $formDataTableService, private FormMissingDataService $formMissingDataService)
     {
         $this->authorizeResource(Form::class, 'form');
     }
@@ -304,53 +305,11 @@ class FormsController extends Controller
      */
     public function missing(Form $form): \Illuminate\Contracts\View\View
     {
-        $filtered_schools = null;
-        $filtered_teachers = null;
-        if (! $form->for_teachers) {
-            $schools = $form->schools()->where('active', 1)->get();
-            foreach ($form->school_categories()->get() as $category) {
-                $schools = $schools->merge($category->schools()->where('active', 1)->get());
-            }
-            $schools = $schools->unique('id');
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->school_id] = true;
-            });
-            $seen = [];
-            $filtered_schools = $schools->filter(function ($school, $key) use ($answer, &$seen) {
-                if (in_array($school, $seen) || isset($answer[$school->id])) {
-                    return false;
-                }
-
-                array_push($seen, $school);
-
-                return true;
-            });
-        } else {
-            $teachers = Teacher::where('active', 1)->get();
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->teacher_id] = true;
-            });
-            $seen = [];
-            $filtered_teachers = $teachers->filter(function ($teacher, $key) use ($answer, &$seen) {
-                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
-                    return false;
-                }
-
-                array_push($seen, $teacher);
-
-                return true;
-            });
-
-        }
+        $data = $this->formMissingDataService->getMissingTable($form);
 
         return view('admin.form.missing')
             ->with('form', $form)
-            ->with('schools', $filtered_schools)
-            ->with('teachers', $filtered_teachers);
+            ->with('missing_data', $data);
     }
 
     /**
@@ -364,60 +323,9 @@ class FormsController extends Controller
             exit('Failed to open temporary file');
         }
 
-        if ($form->for_teachers) {
-            $dataTableColumns = ['Εκπαιδευτικός', 'ΑΜ/ΑΦΜ', 'Τηλέφωνο'];
-
-            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
-            $teachers = Teacher::where('active', 1)->get();
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->teacher_id] = true;
-            });
-            $seen = [];
-            $filtered_teachers = $teachers->filter(function ($teacher, $key) use ($answer, &$seen) {
-                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
-                    return false;
-                }
-
-                array_push($seen, $teacher);
-
-                return true;
-            });
-
-            fputcsv($fd, $dataTableColumns);
-            foreach ($filtered_teachers as $teacher) {
-                fputcsv($fd, [$teacher->name, $teacher->code, '']);
-            }
-        } else {
-            $dataTableColumns = ['Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο'];
-
-            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-            $schools = $form->schools()->where('active', 1)->get();
-            foreach ($form->school_categories()->get() as $category) {
-                $schools = $schools->merge($category->schools()->where('active', 1)->get());
-            }
-            $schools = $schools->unique('id');
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->school_id] = true;
-            });
-            $seen = [];
-            $filtered_schools = $schools->filter(function ($school, $key) use ($answer, &$seen) {
-                if (in_array($school, $seen) || isset($answer[$school->id])) {
-                    return false;
-                }
-
-                array_push($seen, $school);
-
-                return true;
-            });
-
-            fputcsv($fd, $dataTableColumns);
-            foreach ($filtered_schools as $school) {
-                fputcsv($fd, [$school->name, $school->code, $school->telephone]);
-            }
+        $data = $this->formMissingDataService->getMissingTable($form);
+        foreach ($data as $row) {
+            fputcsv($fd, $row);
         }
 
         fclose($fd);
@@ -433,64 +341,7 @@ class FormsController extends Controller
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx';
         $writer = new XLSXWriter();
 
-        if ($form->for_teachers) {
-            $dataTableColumns = ['Εκπαιδευτικός', 'ΑΜ/ΑΦΜ', 'Τηλέφωνο'];
-
-            // Βρες όλους τους εκπαιδευτικούς που θα έπρεπε να απαντήσουν
-            $teachers = Teacher::where('active', 1)->get();
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->teacher_id] = true;
-            });
-            $seen = [];
-            $filtered_teachers = $teachers->filter(function ($teacher, $key) use ($answer, &$seen) {
-                if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
-                    return false;
-                }
-
-                array_push($seen, $teacher);
-
-                return true;
-            });
-
-            $data = [];
-            array_push($data, $dataTableColumns);
-            foreach ($filtered_teachers as $teacher) {
-                array_push($data, [$teacher->name, $teacher->code, '']);
-            }
-        } else {
-            $dataTableColumns = ['Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο'];
-
-            // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
-            $schools = $form->schools()->where('active', 1)->get();
-            foreach ($form->school_categories()->get() as $category) {
-                $schools = $schools->merge($category->schools()->where('active', 1)->get());
-            }
-            $schools = $schools->unique('id');
-            $data = $form->data()->get();
-            $answer = [];
-            $data->each(function ($item, $key) use (&$answer) {
-                $answer[$item->school_id] = true;
-            });
-            $seen = [];
-            $filtered_schools = $schools->filter(function ($school, $key) use ($answer, &$seen) {
-                if (in_array($school, $seen) || isset($answer[$school->id])) {
-                    return false;
-                }
-
-                array_push($seen, $school);
-
-                return true;
-            });
-
-            $data = [];
-            array_push($data, $dataTableColumns);
-            foreach ($filtered_schools as $school) {
-                array_push($data, [$school->name, $school->code, $school->telephone]);
-            }
-        }
-
+        $data = $this->formMissingDataService->getMissingTable($form);
         $writer->writeSheet($data);
         $writer->writeToFile($fname);
 
