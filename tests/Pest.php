@@ -128,10 +128,6 @@ function test_create_one_form_for_user(User $user): Form
                 ->state(new Sequence(function ($sequence) {
                     $type = $sequence->index;
 
-                    // Δεν χρησιμοποιείται ο τύπος για την επιλογή αρχείου
-                    if ($type == 5) {
-                        $type = 0;
-                    }
                     // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
                     if (in_array($type, [2, 3, 4])) {
                         $listvalues = [];

@@ -124,6 +124,10 @@ class FormFieldDataSeeder extends Seeder
                         ];
                         break;
                     case 5: // Αρχείο
+                        return [
+                            'data' => $this->faker->word().'.'.$this->faker->fileExtension(),
+                            'record' => $sequence->index,
+                        ];
                         break;
                     case 6: // Ημερομηνία
                         return [
