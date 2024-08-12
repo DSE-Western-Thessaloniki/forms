@@ -66,6 +66,9 @@ class Form extends Model
                 ->withCount(['schools' => function ($query) {
                     $query->where('active', 1);
                 }])
+                ->with('schools')
+                ->with('school_categories')
+                ->with('school_categories.schools')
                 ->paginate(15);
         } elseif ($filter) {
             $forms = Form::orderBy('created_at', 'desc')
@@ -78,6 +81,9 @@ class Form extends Model
                 ->withCount(['schools' => function ($query) {
                     $query->where('active', 1);
                 }])
+                ->with('schools')
+                ->with('school_categories')
+                ->with('school_categories.schools')
                 ->paginate(15);
         } elseif ($only_active) {
             $forms = Form::orderBy('created_at', 'desc')
@@ -89,6 +95,9 @@ class Form extends Model
                 ->withCount(['schools' => function ($query) {
                     $query->where('active', 1);
                 }])
+                ->with('schools')
+                ->with('school_categories')
+                ->with('school_categories.schools')
                 ->paginate(15);
         } else {
             $forms = Form::orderBy('created_at', 'desc')
@@ -101,6 +110,9 @@ class Form extends Model
                 ->withCount(['schools' => function ($query) {
                     $query->where('active', 1);
                 }])
+                ->with('schools')
+                ->with('school_categories')
+                ->with('school_categories.schools')
                 ->paginate(15);
         }
 
