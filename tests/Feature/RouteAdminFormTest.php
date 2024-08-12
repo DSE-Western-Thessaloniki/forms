@@ -886,7 +886,7 @@ it('can access a form\'s data (csv) as user', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk()->assertDownload();
 });
 
 it('can access a form\'s data (csv) as author', function () {
@@ -896,7 +896,7 @@ it('can access a form\'s data (csv) as author', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk()->assertDownload();
 });
 
 it('can access a form\'s data (csv) as admin', function () {
@@ -906,7 +906,7 @@ it('can access a form\'s data (csv) as admin', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk();
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/csv')->assertOk()->assertDownload();
 });
 
 it('can access a form\'s data (xlsx) as user', function () {
@@ -916,7 +916,7 @@ it('can access a form\'s data (xlsx) as user', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk()->assertDownload();
 });
 
 it('can access a form\'s data (xlsx) as author', function () {
@@ -926,7 +926,7 @@ it('can access a form\'s data (xlsx) as author', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk()->assertDownload();
 });
 
 it('can access a form\'s data (xlsx) as admin', function () {
@@ -936,7 +936,97 @@ it('can access a form\'s data (xlsx) as admin', function () {
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk();
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data/xlsx')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s missing data as user', function () {
+    $user = User::factory()->user()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($user);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/missing')->assertOk();
+});
+
+it('can access a form\'s missing data as author', function () {
+    $author = User::factory()->author()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($author);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/missing')->assertOk();
+});
+
+it('can access a form\'s data missing as admin', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/missing')->assertOk();
+});
+
+it('can access a form\'s missing data (csv) as user', function () {
+    $user = User::factory()->user()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($user);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/missing/csv')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s missing data (csv) as author', function () {
+    $author = User::factory()->author()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($author);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/missing/csv')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s data missing (csv) as admin', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/missing/csv')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s missing data (xlsx) as user', function () {
+    $user = User::factory()->user()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($user);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/missing/xlsx')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s missing data (xlsx) as author', function () {
+    $author = User::factory()->author()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($author);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/missing/xlsx')->assertOk()->assertDownload();
+});
+
+it('can access a form\'s data missing (xlsx) as admin', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/missing/xlsx')->assertOk()->assertDownload();
 });
 
 it('cannot copy a form as user', function () {
