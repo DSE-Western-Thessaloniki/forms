@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Form;
+use App\Models\FormFieldData;
 use App\Models\Option;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -873,10 +874,16 @@ it('can access a form\'s data as admin', function () {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
+
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
 
-    $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/data')->assertOk();
+    $response = $this->actingAs($admin)->call('GET', '/admin/form/'.$testForm->id.'/data', ['noPagination' => 1])->assertOk();
+    $field_data = FormFieldData::all();
+    $response->assertViewIs('admin.form.data');
+    foreach ($field_data as $data) {
+        $response->assertSeeText($data->dataToString());
+    }
 });
 
 it('can access a form\'s data (csv) as user', function () {
