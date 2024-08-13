@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use App\Models\FormField;
-use App\Models\School;
+use Illuminate\Database\Eloquent\Model;
 
 class FormFieldData extends Model
 {
@@ -14,27 +11,84 @@ class FormFieldData extends Model
 
     protected $fillable = ['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'];
 
-    public function form_field() {
+    public function form_field()
+    {
         return $this->belongsTo(FormField::class);
     }
 
-    public function school() {
+    public function school()
+    {
         return $this->belongsTo(School::class, 'school_id');
     }
 
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo(Teacher::class, 'teacher_id');
     }
 
-    public function other_teacher() {
+    public function other_teacher()
+    {
         return $this->belongsTo(OtherTeacher::class, 'other_teacher_id');
     }
 
     /**
      * Returns the filename stored in storage and the real filename of the file
+     *
      * @return array{array{filename: string, real_filename: string}}
      */
-    public function file() {
+    public function file()
+    {
         return json_decode($this->data);
+    }
+
+    public function dataToString(?FormField $field = null): string
+    {
+        if ($field === null) {
+            $field = $this->form_field;
+        }
+
+        if ($this->data === null) {
+            return '';
+        }
+
+        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+            $selections = json_decode($field->listvalues);
+
+            // Μετέτρεψε την επιλογή σε τιμή
+            $result = '';
+
+            foreach ($selections as $selection) {
+                if ($selection->id == $this->data) {
+                    $result = $selection->value;
+                }
+            }
+
+            return $result;
+        }
+
+        if ($field->type == FormField::TYPE_CHECKBOX) {
+            $selections = json_decode($field->listvalues);
+
+            // Μπορεί να έχουμε επιλέξει παραπάνω από ένα
+            $result = '';
+            $data = json_decode($this->data);
+            $i = 0;
+            foreach ($data as $item) {
+                foreach ($selections as $selection) {
+                    if ($selection->id == $item) {
+                        if ($i === 0) {
+                            $result = $selection->value;
+                        } else {
+                            $result .= ', '.$selection->value;
+                        }
+                    }
+                }
+                $i++;
+            }
+
+            return $result;
+        }
+
+        return $this->data;
     }
 }
