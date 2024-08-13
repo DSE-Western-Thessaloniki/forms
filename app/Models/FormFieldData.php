@@ -31,16 +31,6 @@ class FormFieldData extends Model
         return $this->belongsTo(OtherTeacher::class, 'other_teacher_id');
     }
 
-    /**
-     * Returns the filename stored in storage and the real filename of the file
-     *
-     * @return array{array{filename: string, real_filename: string}}
-     */
-    public function file()
-    {
-        return json_decode($this->data);
-    }
-
     public function dataToString(?FormField $field = null): string
     {
         if ($field === null) {
