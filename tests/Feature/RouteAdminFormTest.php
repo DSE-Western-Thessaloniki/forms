@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Form;
+use App\Models\FormField;
 use App\Models\FormFieldData;
 use App\Models\Option;
 use App\Models\School;
@@ -1177,4 +1178,194 @@ it('can change active state of a form as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
+});
+
+it('can download a file attached to an answer in a form as user', function () {
+    $user = User::factory()->user()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($user);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->first();
+    expect($data)->not->toBeNull();
+
+    $subfolder = 'school';
+    $subfolderId = $data->school_id;
+    if ($data->teacher_id) {
+        $subfolder = 'teacher';
+        $subfolderId = $data->teacher_id;
+    } elseif ($data->other_teacher_id) {
+        $subfolder = 'other_teacher';
+        $subfolderId = $data->other_teacher_id;
+    }
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    Storage::fake('local');
+    Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
+
+    $response = $this->actingAs($user)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
+    $response->assertDownload();
+});
+
+it('can download a file attached to an answer in a form as author', function () {
+    $author = User::factory()->author()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($author);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->first();
+    expect($data)->not->toBeNull();
+
+    $subfolder = 'school';
+    $subfolderId = $data->school_id;
+    if ($data->teacher_id) {
+        $subfolder = 'teacher';
+        $subfolderId = $data->teacher_id;
+    } elseif ($data->other_teacher_id) {
+        $subfolder = 'other_teacher';
+        $subfolderId = $data->other_teacher_id;
+    }
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    Storage::fake('local');
+    Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
+
+    $response = $this->actingAs($author)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
+    $response->assertDownload();
+});
+
+it('can download a file attached to an answer in a form as admin', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->first();
+    expect($data)->not->toBeNull();
+
+    $subfolder = 'school';
+    $subfolderId = $data->school_id;
+    if ($data->teacher_id) {
+        $subfolder = 'teacher';
+        $subfolderId = $data->teacher_id;
+    } elseif ($data->other_teacher_id) {
+        $subfolder = 'other_teacher';
+        $subfolderId = $data->other_teacher_id;
+    }
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    Storage::fake('local');
+    Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
+    $response->assertDownload();
+});
+
+it('cannot download a file attached to an answer in a form as guest', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->first();
+    expect($data)->not->toBeNull();
+
+    $subfolder = 'school';
+    $subfolderId = $data->school_id;
+    if ($data->teacher_id) {
+        $subfolder = 'teacher';
+        $subfolderId = $data->teacher_id;
+    } elseif ($data->other_teacher_id) {
+        $subfolder = 'other_teacher';
+        $subfolderId = $data->other_teacher_id;
+    }
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    Storage::fake('local');
+    Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
+
+    $this->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}")
+        ->assertRedirect('/admin/login');
+});
+
+it('cannot download all files attached to a form as admin', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->get();
+    expect($data)->not->toBeNull();
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    foreach ($data as $item) {
+        $subfolder = 'school';
+        $subfolderId = $item->school_id;
+        if ($item->teacher_id) {
+            $subfolder = 'teacher';
+            $subfolderId = $item->teacher_id;
+        } elseif ($item->other_teacher_id) {
+            $subfolder = 'other_teacher';
+            $subfolderId = $item->other_teacher_id;
+        }
+
+        Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$item->record}/{$field->id}", 'Test file content');
+    }
+
+    /** @var Illuminate\Testing\TestResponse $response */
+    $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    $response->assertDownload();
+
+    // Έλεγξε ότι έχουμε τόσα αρχεία όσα δημιουργήσαμε
+    $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
+    $tmp = fopen($tmp_filename, 'w');
+    fwrite($tmp, $response->streamedContent());
+    fclose($tmp);
+    $archive = new ZipArchive;
+    $archive->open($tmp_filename);
+    expect($archive->count())->toBe(count($data));
+
+    // Εκκαθάριση προσωρινών αρχείων και φακέλων
+    unlink($tmp_filename);
+    Storage::deleteDirectory("report/{$testForm->id}");
 });
