@@ -213,15 +213,23 @@ class FormsController extends Controller
     /**
      * Παρουσίαση δεδομένων φόρμας.
      */
-    public function formData(Form $form): \Illuminate\Contracts\View\View
+    public function formData(Form $form, Request $request): \Illuminate\Contracts\View\View
     {
+        $noPagination = $request->get('noPagination');
         $form->load('form_fields');
 
-        [$dataTableColumns, $dataTable, $links] = $this
-            ->formDataTableService
-            ->useLinks()
-            ->usePagination()
-            ->create($form);
+        if ($noPagination == 1) {
+            [$dataTableColumns, $dataTable, $links] = $this
+                ->formDataTableService
+                ->useLinks()
+                ->create($form);
+        } else {
+            [$dataTableColumns, $dataTable, $links] = $this
+                ->formDataTableService
+                ->useLinks()
+                ->usePagination()
+                ->create($form);
+        }
 
         return view('admin.form.data')
             ->with('dataTable', $dataTable)
