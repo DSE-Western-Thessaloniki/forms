@@ -1213,6 +1213,7 @@ it('can download a file attached to an answer in a form as user', function () {
 
     $response = $this->actingAs($user)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
     $response->assertDownload();
+    expect($response->streamedContent())->toBe('Test file content');
 });
 
 it('can download a file attached to an answer in a form as author', function () {
@@ -1248,6 +1249,7 @@ it('can download a file attached to an answer in a form as author', function () 
 
     $response = $this->actingAs($author)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
     $response->assertDownload();
+    expect($response->streamedContent())->toBe('Test file content');
 });
 
 it('can download a file attached to an answer in a form as admin', function () {
@@ -1283,6 +1285,7 @@ it('can download a file attached to an answer in a form as admin', function () {
 
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
     $response->assertDownload();
+    expect($response->streamedContent())->toBe('Test file content');
 });
 
 it('cannot download a file attached to an answer in a form as guest', function () {
@@ -1364,6 +1367,7 @@ it('cannot download all files attached to a form as admin', function () {
     $archive = new ZipArchive;
     $archive->open($tmp_filename);
     expect($archive->count())->toBe(count($data));
+    $archive->close();
 
     // Εκκαθάριση προσωρινών αρχείων και φακέλων
     unlink($tmp_filename);
