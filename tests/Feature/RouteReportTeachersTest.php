@@ -2,6 +2,7 @@
 
 use App\Models\Form;
 use App\Models\FormField;
+use App\Models\FormFieldData;
 use App\Models\Option;
 use App\Models\Teacher;
 use App\Models\User;
@@ -20,6 +21,51 @@ beforeEach(function () {
     });
 
     test_cas_null();
+});
+
+it('cannot access reports as user logged in through cas if access is disabled', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    // Πρόσθεσε τον καθηγητή στους εκπαιδευτικούς της Διεύθυνσης
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    Option::where('name', 'allow_teacher_login')
+        ->update(['value' => '0']);
+
+    $this->get('/report')->assertViewIs('pages.deny_access');
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => '',
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'active' => true,
+        ]);
+
+    $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
+    $response = $this->put('/report/'.$form->id, [
+        'f1' => 'value1',
+        'f2' => 'value2',
+        'f3' => 'value3',
+        'f4' => 'value4',
+        'f5' => 'value5',
+    ]);
+    expect(FormFieldData::count())->toBe(0);
+    $response->assertViewIs('pages.deny_access');
 });
 
 it('cannot access reports as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
