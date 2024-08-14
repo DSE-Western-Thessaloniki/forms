@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\SchoolCategory;
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\School;
+use App\Models\SchoolCategory;
 use App\Models\User;
 use Faker\Generator;
 use Illuminate\Container\Container;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Seeder;
 
 class FormSeeder extends Seeder
 {
@@ -50,7 +50,7 @@ class FormSeeder extends Seeder
     {
         $user = User::where('username', 'admin0')->first();
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User admin0 not found!');
         }
 
@@ -60,22 +60,19 @@ class FormSeeder extends Seeder
             ->has(
                 FormField::factory()
                     ->count(15)
-                    ->state(new Sequence(function($sequence) {
-                        $type = rand(0,10);
+                    ->state(new Sequence(function ($sequence) {
+                        $type = rand(0, 10);
 
-                        // Δεν χρησιμοποιείται ο τύπος για την επιλογή αρχείου
-                        if ($type == 5) {
-                            $type = 0;
-                        }
                         // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
                         if (in_array($type, [2, 3, 4])) {
-                            $listvalues = array();
-                            for ($i = 0; $i < rand(1, 10); $i++) {
+                            $listvalues = [];
+                            $times = rand(1, 10);
+                            for ($i = 0; $i < $times; $i++) {
                                 array_push(
                                     $listvalues,
                                     [
-                                        "id" => $i,
-                                        "value" => $this->faker->word(),
+                                        'id' => $i,
+                                        'value' => $this->faker->word(),
                                     ]
                                 );
                             }
@@ -83,14 +80,13 @@ class FormSeeder extends Seeder
                             return [
                                 'sort_id' => $sequence->index,
                                 'type' => $type,
-                                'listvalues' => json_encode($listvalues)
+                                'listvalues' => json_encode($listvalues),
                             ];
-                        }
-                        else {
+                        } else {
                             return [
                                 'sort_id' => $sequence->index,
                                 'type' => $type,
-                                'listvalues' => ''
+                                'listvalues' => '',
                             ];
                         }
                     })),
@@ -98,10 +94,10 @@ class FormSeeder extends Seeder
             )
             ->create();
 
-            // Σύνδεση φόρμας με σχολική μονάδα και κατηγορία σχολείου
-            foreach($forms as $form) {
-                $form->schools()->attach(School::inRandomOrder()->first()->id);
-                $form->school_categories()->attach(SchoolCategory::inRandomOrder()->first()->id);
-            }
+        // Σύνδεση φόρμας με σχολική μονάδα και κατηγορία σχολείου
+        foreach ($forms as $form) {
+            $form->schools()->attach(School::inRandomOrder()->first()->id);
+            $form->school_categories()->attach(SchoolCategory::inRandomOrder()->first()->id);
+        }
     }
 }
