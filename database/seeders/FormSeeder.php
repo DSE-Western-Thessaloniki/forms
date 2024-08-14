@@ -61,7 +61,7 @@ class FormSeeder extends Seeder
                 FormField::factory()
                     ->count(15)
                     ->state(new Sequence(function ($sequence) {
-                        $type = rand(0, 10);
+                        $type = $sequence % 12;
 
                         // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
                         if (in_array($type, [2, 3, 4])) {
