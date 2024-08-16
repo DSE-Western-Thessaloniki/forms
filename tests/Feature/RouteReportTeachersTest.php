@@ -23,7 +23,7 @@ beforeEach(function () {
     test_cas_null();
 });
 
-it('cannot access reports as user logged in through cas if access is disabled', function () {
+it('cannot access reports as user logged in through cas if access is disabled (teacher)', function () {
 
     test_cas_logged_in_as_teacher();
 
@@ -57,7 +57,47 @@ it('cannot access reports as user logged in through cas if access is disabled', 
             'active' => true,
         ]);
 
-    Log::info(print_r($form, true));
+    $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
+
+    $fields = FormField::all();
+    $newValues = $fields->flatMap(function ($field) {
+        return [
+            "f{$field->id}" => "value{$field->id}",
+        ];
+    });
+    $response = $this->put('/report/'.$form->id, $newValues->toArray());
+    $response->assertViewIs('pages.deny_access');
+    expect(FormFieldData::count())->toBe(0);
+});
+
+it('cannot access reports as user logged in through cas if access is disabled (other_teacher)', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    Option::where('name', 'allow_all_teachers')
+        ->update(['value' => '0']);
+
+    $this->get('/report')->assertViewIs('pages.deny_access');
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => '',
+                        'required' => 1,
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'for_teachers' => true,
+            'active' => true,
+        ]);
 
     $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
 
