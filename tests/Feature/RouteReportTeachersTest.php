@@ -48,6 +48,7 @@ it('cannot access reports as user logged in through cas if access is disabled', 
                         'sort_id' => $sequence->index,
                         'type' => 0,
                         'listvalues' => '',
+                        'required' => 1,
                     ];
                 })),
             'form_fields'
@@ -56,16 +57,19 @@ it('cannot access reports as user logged in through cas if access is disabled', 
             'active' => true,
         ]);
 
+    Log::info(print_r($form, true));
+
     $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
-    $response = $this->put('/report/'.$form->id, [
-        'f1' => 'value1',
-        'f2' => 'value2',
-        'f3' => 'value3',
-        'f4' => 'value4',
-        'f5' => 'value5',
-    ]);
-    expect(FormFieldData::count())->toBe(0);
+
+    $fields = FormField::all();
+    $newValues = $fields->flatMap(function ($field) {
+        return [
+            "f{$field->id}" => "value{$field->id}",
+        ];
+    });
+    $response = $this->put('/report/'.$form->id, $newValues->toArray());
     $response->assertViewIs('pages.deny_access');
+    expect(FormFieldData::count())->toBe(0);
 });
 
 it('cannot access reports as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
