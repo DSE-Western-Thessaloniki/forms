@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\FormField;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\ValidationException;
@@ -41,7 +42,17 @@ class UpdateReportRequest extends FormRequest
             $field_rules = [];
 
             if ($field->required) {
-                $field_rules[] = 'required';
+                if ($field->type === FormField::TYPE_FILE) {
+                    $record = Route::current()->parameter('record') ?? 0;
+                    $field_data = $field->field_data->where('record', $record)->first();
+                    $data = $field_data?->data;
+
+                    if (! $data) {
+                        $field_rules[] = 'required';
+                    }
+                } else {
+                    $field_rules[] = 'required';
+                }
             } else {
                 $field_rules[] = 'nullable';
             }
