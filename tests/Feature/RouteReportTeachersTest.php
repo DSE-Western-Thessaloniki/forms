@@ -323,6 +323,12 @@ it('cannot access reports as teacher (not in teachers table) (form accepts teach
     $this->get('/report/'.$form->id)
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
+
+    Option::where('name', 'allow_all_teachers')
+        ->update(['value' => false]);
+
+    $this->get('/report')
+        ->assertViewIs('pages.deny_access');
 });
 
 it('can access reports as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
@@ -702,6 +708,106 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
     $this->get('/report/'.$form->id.'/edit')
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+});
+
+it('can edit a report as teacher (not in teachers) (form accepts teachers and all teachers)', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => '',
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $this->get('/report/'.$form->id.'/edit')
+        ->assertOk()
+        ->assertSee($form->title);
+});
+
+it('can edit a report as teacher (in teachers) (form accepts teachers)', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => '',
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => false,
+        ]);
+
+    $this->get('/report/'.$form->id.'/edit')
+        ->assertOk()
+        ->assertSee($form->title);
+});
+
+it('can edit a report as teacher (in teachers) (form accepts teachers and all teachers)', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    $teacher = Teacher::factory()->create([
+        'am' => '123456',
+        'active' => true,
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->count(5)
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 0,
+                        'listvalues' => '',
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+            'for_teachers' => true,
+            'for_all_teachers' => true,
+        ]);
+
+    $this->get('/report/'.$form->id.'/edit')
+        ->assertOk()
+        ->assertSee($form->title);
 });
 
 it('cannot edit a record of a report that doesn\'t exist as teacher', function () {
