@@ -8,6 +8,7 @@ use App\Models\School;
 use App\Models\Teacher;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCasManager;
 
@@ -27,6 +28,8 @@ beforeEach(function () {
 it('can upload a file on a report as user logged in through cas (school) (no multiple)', function () {
 
     test_cas_logged_in();
+
+    Storage::fake('local');
 
     $school = School::factory()->for(User::factory())->create([
         'name' => 'Test School',
@@ -77,6 +80,8 @@ it('can upload a file on a report as user logged in through cas (school) (no mul
 it('can upload a file on a report as user logged in through cas (school) (multiple)', function () {
 
     test_cas_logged_in();
+
+    Storage::fake('local');
 
     $school = School::factory()->for(User::factory())->create([
         'name' => 'Test School',
@@ -147,6 +152,8 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
 
     test_cas_logged_in_as_teacher();
 
+    Storage::fake('local');
+
     $form = Form::factory()
         ->for(User::factory()->admin())
         ->has(
@@ -189,6 +196,8 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
 it('can upload a file on a report as teacher (not in teachers table) (form accepts teachers and all teachers) (multiple)', function () {
 
     test_cas_logged_in_as_teacher();
+
+    Storage::fake('local');
 
     $form = Form::factory()
         ->for(User::factory()->admin())
@@ -244,6 +253,8 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
 
     test_cas_logged_in_as_teacher();
 
+    Storage::fake('local');
+
     $teacher = Teacher::factory()->create([
         'am' => '123456',
         'active' => true,
@@ -291,6 +302,8 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
 it('can upload a file on a report as teacher (in teachers table) (form accepts teachers and all teachers) (multiple)', function () {
 
     test_cas_logged_in_as_teacher();
+
+    Storage::fake('local');
 
     $teacher = Teacher::factory()->create([
         'am' => '123456',
@@ -345,4 +358,234 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
 
     expect(Storage::exists("report/{$form->id}/teacher/{$teacher->id}/0/{$fields[0]->id}"))->toBeTrue();
     expect(Storage::exists("report/{$form->id}/teacher/{$teacher->id}/1/{$fields[0]->id}"))->toBeTrue();
+});
+
+it('can keep already saved file in a form (no multiple)', function () {
+
+    test_cas_logged_in();
+
+    Storage::fake('local');
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+                        ]),
+                        'required' => true,
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+        ]);
+
+    $field = $form->form_fields()->first();
+    $post_data = [];
+    $post_data['f'.$field->id] = UploadedFile::fake()->create('test.jpg');
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+
+    $post_data = [];
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+    $this->assertDatabaseHas('form_field_data', [
+        'school_id' => $school->id,
+        'form_field_id' => $field->id,
+        'data' => 'test.jpg',
+    ]);
+});
+
+it('can keep already saved file in a form (multiple)', function () {
+
+    test_cas_logged_in();
+
+    Storage::fake('local');
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+
+                        ]),
+                        'required' => true,
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => true,
+            'active' => true,
+        ]);
+
+    $field = $form->form_fields()->first();
+    $post_data = [];
+    $post_data['f'.$field->id] = UploadedFile::fake()->create('test.jpg');
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->put('/report/'.$form->id.'/edit/0/update/new', $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.edit.record', [$form, 1]))
+        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+
+    $post_data = [];
+    $this->put('/report/'.$form->id.'/edit/0/update/1', $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.edit.record', [$form, 1]))
+        ->assertSessionHas('success', 'Η αναφορά ενημερώθηκε');
+    $this->assertDatabaseHas('form_field_data', [
+        'school_id' => $school->id,
+        'form_field_id' => $field->id,
+        'data' => 'test.jpg',
+        'record' => 0,
+    ]);
+});
+
+it('can download already saved file in a form', function () {
+
+    test_cas_logged_in();
+
+    Storage::fake('local');
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+                        ]),
+                        'required' => true,
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+        ]);
+
+    $field = $form->form_fields()->first();
+    $post_data = [];
+    $post_data['f'.$field->id] = UploadedFile::fake()->create('test.jpg');
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+
+    $this->get("/download/{$form->id}/{$field->id}/0")
+        ->assertDownload('test.jpg');
+});
+
+it('cannot download already saved file in a closed form', function () {
+
+    test_cas_logged_in();
+
+    Storage::fake('local');
+
+    $school = School::factory()->for(User::factory())->create([
+        'name' => 'Test School',
+        'username' => '999',
+    ]);
+
+    $form = Form::factory()
+        ->for(User::factory()->admin())
+        ->has(
+            FormField::factory()
+                ->state(new Sequence(function ($sequence) {
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+                        ]),
+                        'required' => true,
+                    ];
+                })),
+            'form_fields'
+        )
+        ->create([
+            'multiple' => false,
+            'active' => true,
+        ]);
+
+    $field = $form->form_fields()->first();
+    $post_data = [];
+    $post_data['f'.$field->id] = UploadedFile::fake()->create('test.jpg');
+
+    $form->schools()->attach($school);
+    $form->save();
+
+    $this->put('/report/'.$form->id, $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+
+    $form->active = false;
+    $form->save();
+
+    $this->get("/download/{$form->id}/{$field->id}/0")
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
