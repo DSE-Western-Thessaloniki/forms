@@ -465,8 +465,15 @@ class ReportsController extends Controller
                                 $subfolderId = $this->other_teacher_model_cache->id;
                             }
 
-                            $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/0", "{$field->id}");
-                            $data = $this->filterFilename($file->getClientOriginalName());
+                            if ($file) {
+                                $file->storeAs("report/{$form->id}/$subfolder/$subfolderId/0", "{$field->id}");
+                                $data = $this->filterFilename($file->getClientOriginalName());
+                            } else {
+                                // Αν δεν έχουμε νέα δεδομένα αρχείου έλεγξε μήπως έχουμε
+                                // ήδη ανεβάσει αρχείο και κράτησε τα στοιχεία του
+                                $field_data = $field->field_data->where('record', 0)->first();
+                                $data = $field_data?->data;
+                            }
                         } else {
                             $data = $request->input('f'.$field->id);
                         }
