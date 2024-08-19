@@ -730,14 +730,14 @@ class ReportsController extends Controller
                             ->where('form_field_id', $fieldId)
                             ->first();
                     } elseif ($this->teacher_model_cache !== null) {
-                        $subfolder = "school/{$this->teacher_model_cache->id}";
+                        $subfolder = "teacher/{$this->teacher_model_cache->id}";
                         $record_data = $form->data()
                             ->where('teacher_id', $this->teacher_model_cache->id)
                             ->where('record', $record)
                             ->where('form_field_id', $fieldId)
                             ->first();
                     } else {
-                        $subfolder = "school/{$this->other_teacher_model_cache->id}";
+                        $subfolder = "other_teacher/{$this->other_teacher_model_cache->id}";
                         $record_data = $form->data()
                             ->where('other_teacher_id', $this->other_teacher_model_cache->id)
                             ->where('record', $record)
