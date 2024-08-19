@@ -444,6 +444,11 @@ class FormsController extends Controller
                 ->first();
         }
 
+        // Αν περαστεί λάθος record
+        if (! $record_data) {
+            abort(404);
+        }
+
         $filename = $record_data->data;
         if (Storage::exists("report/$form->id/$category/$categoryId/$record/$fieldId")) {
             return Storage::download("report/$form->id/$category/$categoryId/$record/$fieldId", $filename);
