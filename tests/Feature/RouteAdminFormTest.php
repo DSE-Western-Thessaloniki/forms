@@ -4,8 +4,10 @@ use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormFieldData;
 use App\Models\Option;
+use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\SchoolCategory;
+use App\Models\Teacher;
 use App\Models\User;
 use Database\Seeders\FormFieldDataSeeder;
 use Database\Seeders\OptionSeeder;
@@ -14,6 +16,7 @@ use Database\Seeders\SchoolCategorySeeder;
 use Database\Seeders\SchoolSeeder;
 use Database\Seeders\UserSeeder;
 use Subfission\Cas\Facades\Cas;
+use Symfony\Component\VarDumper\VarDumper;
 use Tests\TestCasManager;
 
 beforeEach(function () {
@@ -1323,7 +1326,7 @@ it('cannot download a file attached to an answer in a form as guest', function (
         ->assertRedirect('/admin/login');
 });
 
-it('cannot download all files attached to a form as admin', function () {
+it('can download all files attached to a form as admin', function ($subfolder) {
     $admin = User::factory()->admin()->create();
     $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
     $testForm = test_create_one_form_for_user($admin);
@@ -1334,6 +1337,36 @@ it('cannot download all files attached to a form as admin', function () {
     $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
     expect($field)->not->toBeNull();
 
+    // Σε κάθε νέο αίτημα λήψης όλων των αρχείων γίνεται εκκαθάριση των παλαιότερων αρχείων
+    $zip_path = "/tmp/{$admin->id}/";
+    Storage::makeDirectory($zip_path);
+    Storage::put($zip_path.'all_files.zip', '');
+    Storage::put($zip_path.'all_files2.zip', '');
+
+    if ($subfolder === 'teacher') {
+        $testForm->for_teachers = true;
+        $testForm->save();
+        $teacher = Teacher::factory()->create();
+        FormFieldData::query()
+            ->update([
+                'school_id' => null,
+                'teacher_id' => $teacher->id,
+            ]);
+    } elseif ($subfolder === 'other_teacher') {
+        $testForm->for_teachers = true;
+        $testForm->for_all_teachers = true;
+        $testForm->save();
+        $other_teacher = OtherTeacher::factory()->create([
+            'employeenumber' => '9999999999999999',
+            'email' => 'invalid@email.com',
+        ]);
+        FormFieldData::query()
+            ->update([
+                'school_id' => null,
+                'other_teacher_id' => $other_teacher->id,
+            ]);
+    }
+
     // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
     $data = FormFieldData::query()
         ->where('form_field_id', $field->id)
@@ -1342,13 +1375,11 @@ it('cannot download all files attached to a form as admin', function () {
 
     // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
     foreach ($data as $item) {
-        $subfolder = 'school';
         $subfolderId = $item->school_id;
-        if ($item->teacher_id) {
-            $subfolder = 'teacher';
+        // Αλλάζουμε τον ιδιοκτήτη των δεδομένων αν χρειαστεί
+        if ($subfolder === 'teacher') {
             $subfolderId = $item->teacher_id;
-        } elseif ($item->other_teacher_id) {
-            $subfolder = 'other_teacher';
+        } elseif ($subfolder === 'other_teacher') {
             $subfolderId = $item->other_teacher_id;
         }
 
@@ -1357,7 +1388,17 @@ it('cannot download all files attached to a form as admin', function () {
 
     /** @var Illuminate\Testing\TestResponse $response */
     $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    if ($subfolder === 'teacher') {
+        // dd($testForm->form_fields->map(function ($field) {
+        //     return VarDumper::dump($field->field_data);
+        // }));
+        // dd($response);
+    }
     $response->assertDownload();
+
+    // Κάνε έλεγχο ότι έσβησε τα παλιά αρχεία
+    expect(Storage::exists($zip_path.'all_files.zip'))->toBeFalse();
+    expect(Storage::exists($zip_path.'all_files2.zip'))->toBeFalse();
 
     // Έλεγξε ότι έχουμε τόσα αρχεία όσα δημιουργήσαμε
     $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
@@ -1372,4 +1413,75 @@ it('cannot download all files attached to a form as admin', function () {
     // Εκκαθάριση προσωρινών αρχείων και φακέλων
     unlink($tmp_filename);
     Storage::deleteDirectory("report/{$testForm->id}");
-});
+    Storage::deleteDirectory("tmp/{$admin->id}");
+})->with(['school', 'teacher', 'other_teacher']);
+
+it('validates download links', function ($subfolder) {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+    $this->assertInstanceOf(Form::class, $testForm);
+
+    // Βρες το πεδίο με τον τύπο αρχείο
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->first();
+    expect($data)->not->toBeNull();
+
+    Storage::fake('local');
+
+    $subfolderId = $data->school_id;
+    if ($subfolder === 'teacher') {
+        $teacher = Teacher::factory()->create();
+        $data->teacher_id = $teacher->id;
+        $data->save();
+        $subfolderId = $data->teacher_id;
+    }
+    if ($subfolder === 'other_teacher') {
+        $other_teacher = OtherTeacher::factory()->create([
+            'employeenumber' => '9999999999999999',
+            'email' => 'invalid@email.com',
+        ]);
+        $data->other_teacher_id = $other_teacher->id;
+        $data->save();
+        $subfolderId = $data->other_teacher_id;
+    }
+
+    // Έλεγχος αν λείπει το αρχείο πρώτα από το server
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}")
+        ->assertRedirect(route('admin.form.index'));
+    expect($response->getSession()->only(['error'])['error'])->toBe('Το αρχείο δεν βρέθηκε');
+
+    // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
+    Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/notvalid/{$subfolderId}/{$data->record}/{$field->id}")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/notvalid/{$data->record}/{$field->id}")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/999/{$data->record}/{$field->id}")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/invalid/{$field->id}")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/999/{$field->id}")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/invalid")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/999")
+        ->assertNotFound();
+
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
+    $response->assertDownload();
+    expect($response->streamedContent())->toBe('Test file content');
+})->with(['school', 'teacher', 'other_teacher']);
