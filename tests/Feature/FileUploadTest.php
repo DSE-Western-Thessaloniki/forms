@@ -589,3 +589,111 @@ it('cannot download already saved file in a closed form', function () {
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
+
+it('validates download links', function ($type) {
+    Storage::fake('local');
+
+    if ($type === 'school') {
+        test_cas_logged_in();
+
+        $school = School::factory()->for(User::factory())->create([
+            'name' => 'Test School',
+            'username' => '999',
+        ]);
+
+        $form = Form::factory()
+            ->for(User::factory()->admin())
+            ->has(
+                FormField::factory()
+                    ->state(new Sequence(function ($sequence) {
+                        return [
+                            'sort_id' => $sequence->index,
+                            'type' => 5,
+                            'listvalues' => '',
+                            'options' => json_encode([
+                                'filetype' => [
+                                    'value' => '-1',
+                                    'custom_value' => '*.jpg',
+                                ],
+                            ]),
+                            'required' => true,
+                        ];
+                    })),
+                'form_fields'
+            )
+            ->create([
+                'multiple' => false,
+                'active' => true,
+            ]);
+
+        $form->schools()->attach($school);
+        $form->save();
+    } elseif ($type === 'teacher' || $type === 'other_teacher') {
+        test_cas_logged_in_as_teacher();
+
+        if ($type === 'teacher') {
+            Teacher::factory()->create(['am' => '123456']);
+        }
+
+        $form = Form::factory()
+            ->for(User::factory()->admin())
+            ->has(
+                FormField::factory()
+                    ->state(new Sequence(function ($sequence) {
+                        return [
+                            'sort_id' => $sequence->index,
+                            'type' => 5,
+                            'listvalues' => '',
+                            'options' => json_encode([
+                                'filetype' => [
+                                    'value' => '-1',
+                                    'custom_value' => '*.jpg',
+                                ],
+                            ]),
+                            'required' => true,
+                        ];
+                    })),
+                'form_fields'
+            )
+            ->create([
+                'multiple' => false,
+                'active' => true,
+            ]);
+
+        $form->for_teachers = true;
+        if ($type === 'other_teacher') {
+            $form->for_all_teachers = true;
+        }
+        $form->save();
+    }
+
+    $field = $form->form_fields()->first();
+    $post_data = [];
+    $post_data['f'.$field->id] = UploadedFile::fake()->create('test.jpg');
+
+    $response = $this->put('/report/'.$form->id, $post_data)
+        ->assertDontSee('Σφάλμα')
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+
+    $this->get("/download/invalid/{$field->id}/0")
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+
+    $this->get("/download/{$form->id}/invalid/0")
+        ->assertNotFound();
+
+    $this->get("/download/{$form->id}/999/0")
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Το αρχείο δεν βρέθηκε');
+
+    $this->get("/download/{$form->id}/{$field->id}/invalid")
+        ->assertNotFound();
+
+    $this->get("/download/{$form->id}/{$field->id}/999")
+        ->assertRedirect(route('report.index'))
+        ->assertSessionHas('error', 'Το αρχείο δεν βρέθηκε');
+
+    $this->get("/download/{$form->id}/{$field->id}/0")
+        ->assertDownload('test.jpg');
+})->with(['school', 'teacher', 'other_teacher']);
