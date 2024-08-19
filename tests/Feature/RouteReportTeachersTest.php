@@ -112,6 +112,19 @@ it('cannot access reports as user logged in through cas if access is disabled (o
     expect(FormFieldData::count())->toBe(0);
 });
 
+it('cannot access reports as teacher (not in teachers table) (system doesn\'t accept other teachers)', function () {
+
+    test_cas_logged_in_as_teacher();
+
+    Option::where('name', 'allow_all_teachers')
+        ->update(['value' => '0']);
+
+    $this->get('/report')
+        ->assertOK()
+        ->assertSee('Σφάλμα')
+        ->assertViewIs('pages.deny_access');
+});
+
 it('cannot access reports as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
 
     test_cas_logged_in_as_teacher();
