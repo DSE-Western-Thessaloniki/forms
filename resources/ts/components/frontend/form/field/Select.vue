@@ -23,6 +23,20 @@ const formStore = useFormStore();
 const isChecked = (id: string) => {
     return formStore.field[props.field.id] === id;
 };
+
+// Κάνε έναν έλεγχο μήπως δεν υπάρχει ήδη τιμή στη βάση και επέλεξε την πρώτη διαθέσιμη
+const optionFound = listValues.find((item: { id: string }) => {
+    if (
+        formStore.field[props.field.id] !== "" &&
+        item.id == formStore.field[props.field.id]
+    ) {
+        return true;
+    }
+});
+
+if (!optionFound && listValues.length > 0) {
+    formStore.field[props.field.id] = listValues[0].id; // Set default value if not found
+}
 </script>
 
 <template>
