@@ -3,29 +3,53 @@ import type { FormFieldOptions } from "@/fieldtype";
 import { useOptions } from "../../../composables/useOptions";
 import { useFormStore } from "@/stores/formStore";
 import { useTextInputEventHandlers } from "@/components/composables/useTextInputEventHandlers";
-import { ref, type Ref } from "vue";
+import { onMounted, ref, type Ref } from "vue";
 
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
-        error: string;
+        errors: Array<string>;
     }>(),
     {
         disabled: false,
-        error: "",
     }
 );
 
-const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
-
-const options = useOptions(fieldOptions);
+const emit = defineEmits<{
+    validationErrors: [Array<string>];
+}>();
 
 const formStore = useFormStore();
 
 const errorMessages: Ref<Array<string>> = ref([]);
 
-const eventHandlers = useTextInputEventHandlers(options, errorMessages);
+const eventHandlers = useTextInputEventHandlers(
+    formStore.fieldOptions[props.field.id],
+    errorMessages
+);
+
+const validationErrors: Ref<Array<string>> = ref([]);
+
+const validationCheck = () => {
+    errorMessages.value = [];
+
+    // Αν το πεδίο είναι κενό τότε δεν έχει νόημα να γίνει validation check
+    if ((formStore.field[props.field.id] ?? "") == "") {
+        emit("validationErrors", validationErrors.value);
+        return;
+    }
+
+    const result = formStore.fieldOptions[props.field.id].validationCheck(
+        formStore.field[props.field.id] ?? ""
+    );
+
+    validationErrors.value = result.errorMessages;
+
+    emit("validationErrors", validationErrors.value);
+};
+
+onMounted(validationCheck);
 </script>
 
 <template>
@@ -46,14 +70,14 @@ const eventHandlers = useTextInputEventHandlers(options, errorMessages);
             type="number"
             class="form-control"
             :id="`f${field.id}`"
-            :class="error ? 'is-invalid' : ''"
+            :class="errors.length ? 'is-invalid' : ''"
             :name="`f${field.id}`"
             :disabled="disabled"
             :required="field.required ? 'true' : undefined"
             @keydown="eventHandlers.onKeyDown"
             @keypress="eventHandlers.onKeyPress"
             @paste="eventHandlers.onPaste"
-            @blur="errorMessages.splice(0, errorMessages.length)"
+            @blur="validationCheck"
             v-model="formStore.field[props.field.id]"
             autocomplete="off"
         />

@@ -121,6 +121,7 @@ const advancedTarget = computed(function () {
                 <div v-if="cbselected !== FieldType.File" class="pb-4">
                     <div class="pb-3">Κριτήρια συμπλήρωσης πεδίου:</div>
                     <div class="px-4">
+                        Έλεγχοι κατά τη πληκτρολόγηση:
                         <div
                             class="input-group mb-1"
                             v-if="
@@ -252,6 +253,7 @@ const advancedTarget = computed(function () {
                                 />
                             </div>
                         </div>
+                        <div class="mt-4">Έλεγχοι μετά τη πληκτρολόγηση:</div>
                         <div
                             class="input-group mb-1"
                             v-if="

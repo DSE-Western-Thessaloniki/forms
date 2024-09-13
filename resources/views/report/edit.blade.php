@@ -63,21 +63,19 @@
             }
         }
 
+        $errors = json_encode($errors->getBag('default'), JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+        // Τα σφάλματα περνάνε από json_decode αργότερα για να γίνουν αντικείμενο
+        // οπότε για να μην σκάσει παρακάτω μετατρέπουμε τον κενό πίνακα σε
+        // κενό αντικείμενο.
+        if ($errors === '[]') {
+            $errors = '{}';
+        }
     @endphp
-    <v-form
-        action="{{ $action }}"
-        :form="{{ $form }}"
-        :record="{{ $record }}"
-        :total_records="{{ $total_records }}"
-        :form_data="{{ json_encode($data_dict) }}"
+    <v-form action="{{ $action }}" :form="{{ $form }}" :record="{{ $record }}"
+        :total_records="{{ $total_records }}" :form_data="{{ json_encode($data_dict) }}"
         acting_as="{{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }} {{ $school?->name }}"
-        :save="{{ $save ? "true" : "false" }}"
-        method="put"
-        :old={{ json_encode(old()) }}
-        :errors={{ json_encode($errors->getBag('default')) }}
-    >
+        :save="{{ $save ? 'true' : 'false' }}" method="put" :old={{ json_encode(old()) }} errors="{{ $errors }}">
         <template #description>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</template>
         <template #csrf_token>@csrf</template>
     </v-form>
-
 @endsection

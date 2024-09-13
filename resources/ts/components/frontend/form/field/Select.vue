@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { useFormStore } from "@/stores/formStore";
+import { ref } from "vue";
 
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
-        error: string;
+        errors: Array<string>;
     }>(),
     {
         disabled: false,
-        error: "",
     }
 );
+
+const emit = defineEmits<{
+    clearError: [];
+}>();
+
+const backendErrors = ref(props.errors);
 
 let listValues = JSON.parse(props.field.listvalues);
 if (!Array.isArray(listValues)) {
@@ -19,10 +25,6 @@ if (!Array.isArray(listValues)) {
 }
 
 const formStore = useFormStore();
-
-const isChecked = (id: string) => {
-    return formStore.field[props.field.id] === id;
-};
 
 // Κάνε έναν έλεγχο μήπως δεν υπάρχει ήδη τιμή στη βάση και επέλεξε την πρώτη διαθέσιμη
 const optionFound = listValues.find((item: { id: string }) => {
@@ -34,9 +36,14 @@ const optionFound = listValues.find((item: { id: string }) => {
     }
 });
 
-if (!optionFound && listValues.length > 0) {
-    formStore.field[props.field.id] = listValues[0].id; // Set default value if not found
+if (!optionFound) {
+    formStore.field[props.field.id] = "-1";
 }
+
+const onChange = () => {
+    backendErrors.value = [];
+    emit("clearError");
+};
 </script>
 
 <template>
@@ -44,17 +51,18 @@ if (!optionFound && listValues.length > 0) {
         <!-- Λίστα επιλογών -->
         <select
             class="form-select"
-            :class="error ? 'is-invalid' : ''"
+            :class="backendErrors.length ? 'is-invalid' : ''"
             :id="`f${field.id}`"
             :name="`f${field.id}`"
             :disabled="disabled"
             v-model="formStore.field[props.field.id]"
+            @change="onChange"
         >
+            <option value="-1">Παρακαλώ επιλέξτε μια τιμή</option>
             <option
                 v-for="listValue in listValues"
                 :key="listValue.id"
                 :value="listValue.id"
-                :selected="isChecked(`${listValue.id}`)"
             >
                 {{ listValue.value }}
             </option>
