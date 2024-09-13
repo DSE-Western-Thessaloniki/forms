@@ -75,21 +75,31 @@ export class useOptionsObject {
     readonly valueChecks: Array<
         (value: string) => { result: boolean; errorMsg: string }
     > = [];
+    readonly validationChecks: Array<
+        (value: string) => { result: boolean; errorMsg: string }
+    > = [];
     readonly showWhenCriteria: Array<FormFieldOptionsShowCriteria> = [];
     readonly fieldVisible: Ref<boolean>;
     readonly formStore: ReturnType<typeof useFormStore>;
+    readonly options: FormFieldOptions;
 
     constructor(
         valueChecks: Array<
             (value: string) => { result: boolean; errorMsg: string }
         >,
+        validationChecks: Array<
+            (value: string) => { result: boolean; errorMsg: string }
+        >,
         showWhenChecks: Array<FormFieldOptionsShowCriteria>,
-        withWatchers: boolean
+        withWatchers: boolean,
+        options: FormFieldOptions
     ) {
         this.valueChecks = valueChecks;
+        this.validationChecks = validationChecks;
         this.showWhenCriteria = showWhenChecks;
         this.fieldVisible = ref(false);
         this.formStore = useFormStore();
+        this.options = options;
 
         if (withWatchers) {
             this.addWatchers();
@@ -259,6 +269,24 @@ export class useOptionsObject {
             );
         });
     }
+
+    validationCheck(this: useOptionsObject, value: string) {
+        if (this.validationChecks.length === 0) {
+            return { result: true, errorMessages: [] };
+        }
+
+        let result = true;
+        let errorMessages: Array<string> = [];
+        this.validationChecks.forEach((check) => {
+            const response = check(value);
+            result = result && response.result;
+            if (!response.result) {
+                errorMessages.push(response.errorMsg);
+            }
+        });
+
+        return { result, errorMessages };
+    }
 }
 
 export function useOptions(
@@ -266,6 +294,9 @@ export function useOptions(
     withWatchers: boolean = false
 ): useOptionsObject {
     const valueChecks: Array<
+        (value: string) => { result: boolean; errorMsg: string }
+    > = [];
+    const validationChecks: Array<
         (value: string) => { result: boolean; errorMsg: string }
     > = [];
     let showWhenChecks: Array<FormFieldOptionsShowCriteria> = [];
@@ -283,7 +314,7 @@ export function useOptions(
         options?.regex &&
         options?.regex_description
     ) {
-        valueChecks.push(
+        validationChecks.push(
             matchesRegex.bind(null, options.regex, options.regex_description)
         );
     }
@@ -300,5 +331,11 @@ export function useOptions(
         showWhenChecks = options.show_when;
     }
 
-    return new useOptionsObject(valueChecks, showWhenChecks, withWatchers);
+    return new useOptionsObject(
+        valueChecks,
+        validationChecks,
+        showWhenChecks,
+        withWatchers,
+        options
+    );
 }

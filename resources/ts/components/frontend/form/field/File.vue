@@ -5,13 +5,12 @@ const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
-        error: string;
+        errors: Array<string>;
         route?: string;
         accept: string;
     }>(),
     {
         disabled: false,
-        error: "",
     }
 );
 
@@ -36,12 +35,12 @@ const handleValueChange = (event: Event) => {
             <input
                 type="file"
                 class="form-control mb-2"
-                :class="error ? 'is-invalid' : ''"
+                :class="errors.length ? 'is-invalid' : ''"
                 :id="`f${field.id}`"
                 :name="`f${field.id}`"
                 :disabled
                 :accept
-                :required="field.required"
+                :required="!alreadyUploadedFile && field.required"
                 @change="handleValueChange"
             />
             <div class="">Σημείωση: Μπορείτε να ανεβάσετε μόνο ένα αρχείο</div>

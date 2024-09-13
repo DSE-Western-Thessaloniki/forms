@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { FieldType } from "@/fieldtype";
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, onUnmounted, ref, type Ref } from "vue";
 
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
-        error: string;
+        errors: Array<string>;
         accept?: string;
         route?: string;
     }>(),
@@ -14,6 +14,11 @@ const props = withDefaults(
         disabled: false,
     }
 );
+
+const emit = defineEmits<{
+    validationErrors: [Array<string>];
+    clearError: [];
+}>();
 
 const f = new Map<FieldType, any>([
     [
@@ -83,6 +88,13 @@ const f = new Map<FieldType, any>([
         ),
     ],
 ]);
+
+const validationErrors: Ref<Array<string>> = ref([]);
+const setValidationErrors = (messages: Array<string>) => {
+    console.log("Field.setValidationErrors:", messages);
+    validationErrors.value = messages;
+    emit("validationErrors", messages);
+};
 </script>
 
 <template>
@@ -90,8 +102,11 @@ const f = new Map<FieldType, any>([
         :is="f.get(field.type)"
         :field="field"
         :disabled="disabled"
-        :error
+        :errors
         :accept
         :route
+        :class="validationErrors ? 'validation-error' : ''"
+        @validationErrors="setValidationErrors"
+        @clearError="emit('clearError')"
     />
 </template>

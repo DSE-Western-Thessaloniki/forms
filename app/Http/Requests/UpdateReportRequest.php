@@ -16,6 +16,18 @@ class UpdateReportRequest extends FormRequest
 {
     private $form;
 
+    public function attributes(): array
+    {
+        /** @var Collection<FormField> */
+        $form_fields = $this->form->form_fields;
+
+        $attributes = $form_fields->flatMap(function (FormField $field) {
+            return ["f$field->id" => "'{$field->title}'"];
+        })->toArray();
+
+        return $attributes;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -41,21 +53,22 @@ class UpdateReportRequest extends FormRequest
         foreach ($form_fields as $field) {
             $field_rules = [];
 
-            if ($field->required) {
-                if ($field->type === FormField::TYPE_FILE) {
-                    $record = Route::current()->parameter('record') ?? 0;
-                    $field_data = $field->field_data->where('record', $record)->first();
-                    $data = $field_data?->data;
+            // if ($field->required) {
+            //     if ($field->type === FormField::TYPE_FILE) {
+            //         $record = Route::current()->parameter('record') ?? 0;
+            //         $field_data = $field->field_data->where('record', $record)->first();
+            //         $data = $field_data?->data;
 
-                    if (! $data) {
-                        $field_rules[] = 'required';
-                    }
-                } else {
-                    $field_rules[] = 'required';
-                }
-            } else {
-                $field_rules[] = 'nullable';
-            }
+            //         if (! $data) {
+            //             $field_rules[] = 'required';
+            //         }
+            //     } else {
+            //         $field_rules[] = 'required';
+            //     }
+            // } else {
+            //     $field_rules[] = 'nullable';
+            // }
+            $field_rules[] = 'nullable';
 
             /** @var FormField $field */
             if ($field->type === FormField::TYPE_CHECKBOX) {
@@ -106,6 +119,9 @@ class UpdateReportRequest extends FormRequest
                 $accepted_values = array_map(function ($item) {
                     return $item->id;
                 }, json_decode($field->listvalues));
+                if (! $field->required) {
+                    $accepted_values[] = '-1';
+                }
                 $field_rules[] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_TELEPHONE) {
                 $field_rules[] = 'integer';
@@ -125,5 +141,10 @@ class UpdateReportRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [];
     }
 }

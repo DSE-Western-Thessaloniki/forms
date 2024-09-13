@@ -2,8 +2,10 @@
 import { route } from "ziggy-js";
 import FieldGroup from "./FieldGroup.vue";
 import { FieldType } from "@/fieldtype";
-import { ref } from "vue";
+import { computed, ref, watch, watchEffect, type Ref } from "vue";
 import { useFormStore } from "@/stores/formStore";
+import { useTemplateRefsList } from "@vueuse/core";
+import { useOptions } from "@/components/composables/useOptions";
 
 const props = withDefaults(
     defineProps<{
@@ -19,12 +21,13 @@ const props = withDefaults(
         save: boolean;
         disabled?: boolean;
         old: Record<string, string>;
-        errors: Record<string, string>;
+        errors: string;
     }>(),
     {
         record: 0,
         total_records: 1,
         disabled: false,
+        errors: "{}",
     }
 );
 
@@ -58,6 +61,100 @@ const field_types = props.form.form_fields
 Object.entries(field_types).forEach(([key, value]) => {
     formStore.fieldType[key] = value;
 });
+
+const fieldErrors = JSON.parse(props.errors);
+console.log("Errors:", props.errors);
+console.log("FieldErrors:", fieldErrors);
+
+const fieldGroupRefs = useTemplateRefsList();
+
+// Η κατάσταση του κάθε πεδίου της φόρμας (0 κανένα λάθος, 1 υπάρχει σφάλμα)
+const validationStatus = ref(
+    props.form.form_fields.map(() => {
+        return 0;
+    })
+);
+
+const validation_errors = computed(() => {
+    return validationStatus.value.reduce(
+        (previous, current) => previous + current,
+        0
+    );
+});
+
+const changeValidationStatus = (el: HTMLDivElement | null, value: number) => {
+    fieldGroupRefs.value.forEach((field, index) => {
+        if (field.contains(el)) {
+            validationStatus.value[index] = value;
+        }
+    });
+    console.log("Form.changeValidationStatus:", value, el);
+};
+
+const clearValidationStatus = (id: number) => {
+    console.log("Here!");
+    const idx = props.form.form_fields.findIndex((field) => field.id == id);
+    console.log(`Index: ${idx}`);
+    validationStatus.value[idx] = 0;
+    checkSaveStatus();
+};
+
+formStore.fieldOptions = props.form.form_fields
+    .map((field) => {
+        const fieldOptions = JSON.parse(field.options);
+        return {
+            [`${field.id}`]: useOptions(fieldOptions, true),
+        };
+    })
+    .reduce((a, b) => ({ ...a, ...b }), {});
+
+const saveDisabled = ref(false);
+
+const checkSaveStatus = () => {
+    if (validation_errors.value > 0) {
+        console.log(
+            "Save disabled due to validation errors: ",
+            validation_errors.value,
+            validationStatus.value
+        );
+        saveDisabled.value = true;
+        return;
+    }
+
+    let result = false;
+    props.form.form_fields.forEach((field) => {
+        if (
+            formStore.fieldOptions[field.id].fieldVisible &&
+            props.form.form_fields.find((item) => item.id == field.id)
+                ?.required &&
+            ((field.type !== FieldType.CheckBoxes &&
+                !`${formStore.field[field.id]}`.length) ||
+                // Πρόσθεσε έλεγχο για υποχρεωτική επιλογή checkboxes
+                (field.type === FieldType.CheckBoxes &&
+                    (`${formStore.field[field.id]}` === "[]" ||
+                        !`${formStore.field[field.id]}`.length)))
+        ) {
+            console.log("Save disabled due to visible field: " + field.id);
+            result = true;
+        }
+    });
+
+    saveDisabled.value = result;
+};
+
+checkSaveStatus();
+
+const watchers = Object.entries(formStore.fieldOptions).map((item) => item[1]);
+
+watch([validation_errors, ...watchers], checkSaveStatus, { deep: true });
+
+console.log("Old:", props.old);
+props.form.form_fields.forEach((field) => {
+    if (typeof props.old[`f${field.id}`] !== "undefined") {
+        console.log("Setting old value for field:", field.id);
+        formStore.field[field.id] = props.old[`f${field.id}`];
+    }
+});
 </script>
 
 <template>
@@ -81,27 +178,38 @@ Object.entries(field_types).forEach(([key, value]) => {
                     υποχρεωτικά πεδία.
                 </div>
 
-                <FieldGroup
+                <div
                     v-for="field in form.form_fields"
                     :key="field.id"
-                    :field="field"
-                    error=""
-                    :disabled="disabled"
-                    :accept="
-                        field.type === FieldType.File
-                            ? field.accepted ?? ''
-                            : ''
-                    "
-                    :route="
-                        field.type === FieldType.File
-                            ? route('report.download', [
-                                  form.id,
-                                  field.id,
-                                  record ?? 0,
-                              ])
-                            : ''
-                    "
-                />
+                    :ref="fieldGroupRefs.set"
+                >
+                    <FieldGroup
+                        :key="field.id"
+                        :field="field"
+                        :errors="
+                            `f${field.id}` in fieldErrors
+                                ? fieldErrors[`f${field.id}`]
+                                : []
+                        "
+                        :disabled="disabled"
+                        :accept="
+                            field.type === FieldType.File
+                                ? field.accepted ?? ''
+                                : ''
+                        "
+                        :route="
+                            field.type === FieldType.File
+                                ? route('report.download', [
+                                      form.id,
+                                      field.id,
+                                      record ?? 0,
+                                  ])
+                                : ''
+                        "
+                        @validationChanged="changeValidationStatus"
+                        @clearValidation="clearValidationStatus"
+                    />
+                </div>
 
                 <!-- Αν επιτρέπονται πολλαπλές εγγραφές -->
                 <nav v-if="form.multiple">
@@ -216,7 +324,12 @@ Object.entries(field_types).forEach(([key, value]) => {
                 >
             </div>
             <div class="col d-flex justify-content-end">
-                <button v-if="save" class="btn btn-primary" type="submit">
+                <button
+                    v-if="save"
+                    class="btn btn-primary"
+                    type="submit"
+                    :disabled="saveDisabled"
+                >
                     Αποθήκευση
                 </button>
             </div>

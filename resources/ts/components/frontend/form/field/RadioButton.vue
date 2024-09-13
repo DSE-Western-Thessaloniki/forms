@@ -6,11 +6,10 @@ const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
-        error: string;
+        errors: Array<string>;
     }>(),
     {
         disabled: false,
-        error: "",
     }
 );
 
@@ -39,7 +38,7 @@ watch(value, () => {
             <input
                 type="radio"
                 class="form-check-input"
-                :class="error ? 'is-invalid' : ''"
+                :class="errors.length ? 'is-invalid' : ''"
                 :name="`f${field.id}`"
                 :id="`f${field.id}l${listValue.id}`"
                 :value="`${listValue.id}`"

@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="btn-group">
-        <a href="{{route('admin.form.index')}}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+        <a href="{{ route('admin.form.index') }}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
         <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">@icon('fas fa-edit') Επεξεργασία</a>
         <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
     </div>
-    <h1>{{$form->title}}</h1>
+    <h1>{{ $form->title }}</h1>
     <h3>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</h3>
-    <hr/>
+    <hr />
     <div class="card">
         <div class="card-header">
             Προεπισκόπιση
@@ -27,24 +27,16 @@
                         $route = route('report.download', [$form->id, $field->id, $record ?? 0]);
                     @endphp
                 @endif
-                <field-group
-                    :field="{{ $field }}"
-                    data=""
-                    :disabled="false"
-                    error="{{ $errors->first("f{$field->id}") }}"
-                    route=""
-                    accept=""
-                    old=""
-                    :old_valid="false"
-                ></field-group>
+                <field-group :field="{{ $field }}" data="" :disabled="false" :errors="[]"
+                    route="" accept="" old="" :old_valid="false"></field-group>
             @endforeach
         </div>
     </div>
-    <small>Δημιουργήθηκε στις {{$form->created_at}}</small>
-    <hr/>
+    <small>Δημιουργήθηκε στις {{ $form->created_at }}</small>
+    <hr />
 
     <!-- The following lines are needed to be able to delete a form -->
-    <form action="{{ route('admin.form.destroy', $form->id)}}" id="delete" method="post" class="float-right">
+    <form action="{{ route('admin.form.destroy', $form->id) }}" id="delete" method="post" class="float-right">
         @csrf
         @method('DELETE')
     </form>
