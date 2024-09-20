@@ -29,8 +29,8 @@ class UpdateTeacherRequest extends FormRequest
         return [
             'surname' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
-            'am' => ['required', 'integer', Rule::unique('teachers', 'am')->ignore($teacher->id)],
-            'afm' => ['required', 'integer', Rule::unique('teachers', 'afm')->ignore($teacher->id)],
+            'am' => ['required', 'string', Rule::unique('teachers', 'am')->ignore($teacher->id)],
+            'afm' => ['required', 'string', Rule::unique('teachers', 'afm')->ignore($teacher->id)],
             'active' => ['sometimes', 'boolean'],
         ];
     }

@@ -26,8 +26,8 @@ class StoreTeacherRequest extends FormRequest
         return [
             'surname' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
-            'am' => ['required', 'integer', 'unique:teachers,am'],
-            'afm' => ['required', 'integer', 'unique:teachers,afm'],
+            'am' => ['required', 'string', 'unique:teachers,am'],
+            'afm' => ['required', 'string', 'unique:teachers,afm'],
         ];
     }
 }
