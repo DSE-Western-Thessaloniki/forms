@@ -201,7 +201,7 @@ class TeacherController extends Controller
                 ->first();
 
             if ($check) {
-                if (($check->am !== $row['am'] || $check->afm !== $row['afm']) && ($check->am !== $check->afm || intval($check->am) !== intval($check->afm))) {
+                if (($check->am !== $row['am'] || $check->afm !== $row['afm']) && ($check->am !== $check->afm && intval($check->am) !== intval($check->afm))) {
                     return redirect(route('admin.teacher.index'))->with('error', "Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα {$row['surname']} {$row['name']} ΑΜ: {$row['am']} ΑΦΜ: {$row['afm']}");
                 }
                 $check->surname = $row['surname'];
