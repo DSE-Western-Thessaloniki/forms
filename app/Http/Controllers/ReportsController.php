@@ -29,9 +29,7 @@ class ReportsController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Create a new controller instance.
@@ -42,7 +40,7 @@ class ReportsController extends Controller
     {
         $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
-        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ') { // Εκπαιδευτικός
+        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ' || $login_category === 'ΠΡΟΣΩΠΙΚΟ') { // Εκπαιδευτικός
             $this->school_model_cache = null;
 
             $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
@@ -145,7 +143,7 @@ class ReportsController extends Controller
     {
         $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
-        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ') { // Εκπαιδευτικός
+        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ' || $login_category === 'ΠΡΟΣΩΠΙΚΟ') { // Εκπαιδευτικός
             $this->school_model_cache = null;
 
             $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
