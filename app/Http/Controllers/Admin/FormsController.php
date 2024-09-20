@@ -274,7 +274,7 @@ class FormsController extends Controller
         [$dataTableColumns, $dataTable] = $this->formDataTableService->create($form);
 
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx';
-        $writer = new XLSXWriter();
+        $writer = new XLSXWriter;
 
         $data = array_merge([$dataTableColumns], $dataTable->toArray());
 
@@ -347,7 +347,7 @@ class FormsController extends Controller
     public function missingXLSX(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx';
-        $writer = new XLSXWriter();
+        $writer = new XLSXWriter;
 
         $data = $this->formMissingDataService->getMissingTable($form);
         $writer->writeSheet($data);
@@ -473,7 +473,7 @@ class FormsController extends Controller
             Storage::delete($file);
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $now = DateTime::createFromFormat('U.u', microtime(true));
         $zip_name = $now->format('YmdHisu').'.zip';
         $zip->open(storage_path('app').$zip_path.$zip_name, ZipArchive::CREATE);
@@ -482,15 +482,27 @@ class FormsController extends Controller
             $subfolder = mb_strimwidth($field->title, 0, 15, '...');
             foreach ($field->field_data as $data) {
                 if ($data->school) {
-                    $subfolder2 = "$subfolder/{$data->school->name}/{$data->record}";
+                    if ($form->multiple) {
+                        $subfolder2 = "$subfolder/{$data->school->name}/{$data->record}";
+                    } else {
+                        $subfolder2 = "$subfolder/{$data->school->name}";
+                    }
                     $local_file = storage_path('app')."/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
                     $zip->addFile($local_file, "$subfolder2/{$data->data}");
                 } elseif ($data->teacher) {
-                    $subfolder2 = "$subfolder/{$data->teacher->name}/{$data->record}";
+                    if ($form->multiple) {
+                        $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}/{$data->record}";
+                    } else {
+                        $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}";
+                    }
                     $local_file = storage_path('app')."/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
                     $zip->addFile($local_file, "$subfolder2/{$data->data}");
                 } else {
-                    $subfolder2 = "$subfolder/{$data->other_teacher->name}/{$data->record}";
+                    if ($form->multiple) {
+                        $subfolder2 = "$subfolder/{$data->other_teacher->name}/{$data->record}";
+                    } else {
+                        $subfolder2 = "$subfolder/{$data->other_teacher->name}";
+                    }
                     $local_file = storage_path('app')."/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
                     $zip->addFile($local_file, "$subfolder2/{$data->data}");
                 }
