@@ -165,7 +165,7 @@
                                 class="form-check-label"
                                 for="for_all_teachers"
                             >
-                                Επέτρεψε είσοδο από όλες τις Διευθύνσεις
+                                Επίτρεψε είσοδο από όλες τις Διευθύνσεις
                             </label>
                         </div>
                         <div class="form-check">
