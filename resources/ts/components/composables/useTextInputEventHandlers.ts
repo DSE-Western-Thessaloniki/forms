@@ -69,12 +69,30 @@ export function useTextInputEventHandlers(
     };
 
     const onPaste = (event: ClipboardEvent) => {
-        event.preventDefault();
         if (!event.clipboardData) return;
 
         const pastedText = event.clipboardData.getData("text/plain");
 
         const target = event.target as HTMLInputElement;
+
+        if (
+            !["text", "search", "url", "tel", "password"].includes(target.type)
+        ) {
+            // Δεν είναι διαθέσιμο το selectionStart & selectionEnd
+            const match = options.valueMatch(pastedText);
+            errorRef.value = match.errorMessages;
+            const originalType = target.type;
+            target.type = "text";
+            console.log(target.selectionStart);
+            target.type = originalType;
+            if (!match.result) {
+                event.preventDefault();
+                return;
+            }
+
+            return;
+        }
+
         const cursorPos = target.selectionStart ?? 0;
         const selectionEnd = target.selectionEnd ?? cursorPos;
         const inputText = target.value;
@@ -86,13 +104,11 @@ export function useTextInputEventHandlers(
 
         const match = options.valueMatch(proposedNewText);
         errorRef.value = match.errorMessages;
+
         if (!match.result) {
+            event.preventDefault();
             return;
         }
-
-        target.value = proposedNewText;
-        target.selectionStart = pastedText.length + cursorPos;
-        target.selectionEnd = pastedText.length + cursorPos;
     };
 
     return { onKeyPress, onKeyDown, onPaste };
