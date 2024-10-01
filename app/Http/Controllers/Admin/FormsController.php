@@ -373,6 +373,7 @@ class FormsController extends Controller
             $field->type = $item->type;
             $field->required = $item->required;
             $field->listvalues = $item->listvalues;
+            $field->options = $item->options;
             $form_clone->form_fields()->save($field);
         }
 
