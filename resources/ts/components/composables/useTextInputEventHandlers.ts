@@ -103,7 +103,6 @@ export function useTextInputEventHandlers(
 
         if (!match.result) {
             event.preventDefault();
-            event.preventDefault();
             return;
         }
     };
