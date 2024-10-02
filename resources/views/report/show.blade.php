@@ -35,7 +35,8 @@
         <hr />
         <div class="card">
             <div class="card-header">
-                Συμπληρωμένη φόρμα - <span class="h5 fw-bold">{{ $school?->name }} {{ $teacher?->surname }} {{ $teacher?->name }} {{ $other_teacher?->name }}</span>
+                Συμπληρωμένη φόρμα - <span class="h5 fw-bold">{{ $school?->name }} {{ $teacher?->surname }}
+                    {{ $teacher?->name }} {{ $other_teacher?->name }}</span>
             </div>
             <div class="card-body">
                 @php
@@ -44,7 +45,7 @@
                             ->data()
                             ->where('school_id', $school->id)
                             ->max('record');
-                    } else if ($teacher !== null) {
+                    } elseif ($teacher !== null) {
                         $total_records = $form
                             ->data()
                             ->where('teacher_id', $teacher->id)
@@ -70,7 +71,8 @@
 
                             $options = json_decode($field->options);
                         @endphp
-                        <field-group :field="{{ $field }}" :data="{{ $data }}" :disabled="false" error="{{ $errors->first("f{$field->id}") }}"></field-group>
+                        <field-group :field="{{ $field }}" :disabled="false"
+                            errors="{{ $errors->first("f{$field->id}") ?? [] }}"></field-group>
                     @endforeach
                     @if ($form->multiple)
                         {{-- Αν επιτρέπονται πολλαπλές εγγραφές --}}
