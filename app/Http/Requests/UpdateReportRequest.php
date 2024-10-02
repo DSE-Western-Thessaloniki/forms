@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\FormField;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
@@ -121,6 +122,12 @@ class UpdateReportRequest extends FormRequest
                 }, json_decode($field->listvalues));
                 if (! $field->required) {
                     $accepted_values[] = '-1';
+                } else {
+                    if (Request::input("f{$field->id}") === '-1') {
+                        throw ValidationException::withMessages([
+                            "f{$field->id}" => ['Πρέπει να επιλέξετε κάτι από τη λίστα'],
+                        ]);
+                    }
                 }
                 $field_rules[] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_TELEPHONE) {
