@@ -4,7 +4,6 @@ import {
     type FormFieldOptionsShowCriteria,
 } from "@/fieldtype";
 import { useFormStore } from "@/stores/formStore";
-import type { Store } from "pinia";
 import { nextTick, type Ref, ref, watch } from "vue";
 
 function isUppercase(value: string) {
@@ -309,22 +308,25 @@ export function useOptions(
         valueChecks.push(isInGreek);
     }
 
-    if (
-        options?.regex_enabled &&
-        options?.regex &&
-        options?.regex_description
-    ) {
-        validationChecks.push(
-            matchesRegex.bind(null, options.regex, options.regex_description)
-        );
-    }
-
     if (options?.field_width_enabled && options?.field_width) {
         valueChecks.push(matchesLength.bind(null, options.field_width));
     }
 
     if (options?.positive) {
         valueChecks.push(isPositive);
+    }
+
+    if (
+        options?.regex_enabled &&
+        options?.regex &&
+        options?.regex_description
+    ) {
+        validationChecks.push(
+            ...valueChecks,
+            matchesRegex.bind(null, options.regex, options.regex_description)
+        );
+    } else {
+        validationChecks.push(...valueChecks);
     }
 
     if (options?.show_when && options?.show_when.length > 0) {
