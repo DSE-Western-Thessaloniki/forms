@@ -81,10 +81,6 @@ export function useTextInputEventHandlers(
             // Δεν είναι διαθέσιμο το selectionStart & selectionEnd
             const match = options.valueMatch(pastedText);
             errorRef.value = match.errorMessages;
-            const originalType = target.type;
-            target.type = "text";
-            console.log(target.selectionStart);
-            target.type = originalType;
             if (!match.result) {
                 event.preventDefault();
                 return;

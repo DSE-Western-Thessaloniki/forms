@@ -41,9 +41,8 @@ const validationCheck = () => {
     }
 
     const result = formStore.fieldOptions[props.field.id].validationCheck(
-        formStore.field[props.field.id] ?? ""
+        `${formStore.field[props.field.id]}` ?? ""
     );
-
     validationErrors.value = result.errorMessages;
 
     emit("validationErrors", validationErrors.value);
