@@ -29,7 +29,7 @@ class FormsController extends Controller
      *
      * @return void
      */
-    public function __construct(private FormDataTableService $formDataTableService, private FormMissingDataService $formMissingDataService)
+    public function __construct()
     {
         $this->authorizeResource(Form::class, 'form');
     }
@@ -213,21 +213,19 @@ class FormsController extends Controller
     /**
      * Παρουσίαση δεδομένων φόρμας.
      */
-    public function formData(Form $form, Request $request): \Illuminate\Contracts\View\View
+    public function formData(Form $form, Request $request, FormDataTableService $formDataTableService): \Illuminate\Contracts\View\View
     {
         $noPagination = $request->get('noPagination');
         $form->load('form_fields');
 
         if ($noPagination == 1) {
-            [$dataTableColumns, $dataTable, $links] = $this
-                ->formDataTableService
+            [$dataTableColumns, $dataTable, $links] = $formDataTableService
                 ->useLinks()
                 ->create($form);
         } else {
-            [$dataTableColumns, $dataTable, $links] = $this
-                ->formDataTableService
+            [$dataTableColumns, $dataTable, $links] = $formDataTableService
                 ->useLinks()
-                ->usePagination()
+                ->usePagination(50)
                 ->create($form);
         }
 
@@ -241,11 +239,11 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataCSV(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataCSV(Form $form, FormDataTableService $formDataTableService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $form->load('form_fields');
 
-        [$dataTableColumns, $dataTable] = $this->formDataTableService->create($form);
+        [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv';
         $fd = fopen($fname, 'w');
@@ -267,11 +265,11 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataXLSX(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataXLSX(Form $form, FormDataTableService $formDataTableService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $form->load('form_fields');
 
-        [$dataTableColumns, $dataTable] = $this->formDataTableService->create($form);
+        [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx';
         $writer = new XLSXWriter;
@@ -311,9 +309,9 @@ class FormsController extends Controller
     /**
      * Εμφάνιση σχολικών μονάδων/εκπαιδευτικών που δεν απάντησαν.
      */
-    public function missing(Form $form): \Illuminate\Contracts\View\View
+    public function missing(Form $form, FormMissingDataService $formMissingDataService): \Illuminate\Contracts\View\View
     {
-        $data = $this->formMissingDataService->getMissingTable($form);
+        $data = $formMissingDataService->getMissingTable($form);
 
         return view('admin.form.missing')
             ->with('form', $form)
@@ -323,7 +321,7 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingCSV(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function missingCSV(Form $form, FormMissingDataService $formMissingDataService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv';
         $fd = fopen($fname, 'w');
@@ -331,7 +329,7 @@ class FormsController extends Controller
             exit('Failed to open temporary file');
         }
 
-        $data = $this->formMissingDataService->getMissingTable($form);
+        $data = $formMissingDataService->getMissingTable($form);
         foreach ($data as $row) {
             fputcsv($fd, $row);
         }
@@ -344,12 +342,12 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingXLSX(Form $form): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx';
         $writer = new XLSXWriter;
 
-        $data = $this->formMissingDataService->getMissingTable($form);
+        $data = $formMissingDataService->getMissingTable($form);
         $writer->writeSheet($data);
         $writer->writeToFile($fname);
 
