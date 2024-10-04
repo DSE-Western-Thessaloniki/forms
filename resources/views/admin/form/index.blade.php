@@ -41,7 +41,14 @@
                         <div class="container">
                             @forelse ($forms as $form)
                                 <div class="card my-2 shadow-sm">
-                                    <div class="card-header">
+                                    @php
+                                        if ($form->active) {
+                                            $active_class = 'card-header-active';
+                                        } else {
+                                            $active_class = 'card-header-inactive';
+                                        }
+                                    @endphp
+                                    <div class="card-header {{ $active_class }}">
                                         <div class="container p-0">
                                             <div class="d-flex align-items-center">
                                                 <button type="button" class="btn btn-sm btn-primary me-2"
