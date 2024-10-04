@@ -455,12 +455,15 @@ class ReportsController extends Controller
                             if ($this->school_model_cache !== null) {
                                 $subfolder = 'school';
                                 $subfolderId = $this->school_model_cache->id;
+                                $data_field_key = 'school_id';
                             } elseif ($this->teacher_model_cache !== null) {
                                 $subfolder = 'teacher';
                                 $subfolderId = $this->teacher_model_cache->id;
+                                $data_field_key = 'teacher_id';
                             } else {
                                 $subfolder = 'other_teacher';
                                 $subfolderId = $this->other_teacher_model_cache->id;
+                                $data_field_key = 'other_teacher_id';
                             }
 
                             if ($file) {
@@ -469,7 +472,10 @@ class ReportsController extends Controller
                             } else {
                                 // Αν δεν έχουμε νέα δεδομένα αρχείου έλεγξε μήπως έχουμε
                                 // ήδη ανεβάσει αρχείο και κράτησε τα στοιχεία του
-                                $field_data = $field->field_data->where('record', 0)->first();
+                                $field_data = $field->field_data
+                                    ->where('record', 0)
+                                    ->where($data_field_key, $subfolderId)
+                                    ->first();
                                 $data = $field_data?->data;
                             }
                         } else {
@@ -550,12 +556,15 @@ class ReportsController extends Controller
                             if ($this->school_model_cache !== null) {
                                 $subfolder = 'school';
                                 $subfolderId = $this->school_model_cache->id;
+                                $data_field_key = 'school_id';
                             } elseif ($this->teacher_model_cache !== null) {
                                 $subfolder = 'teacher';
                                 $subfolderId = $this->teacher_model_cache->id;
+                                $data_field_key = 'teacher_id';
                             } else {
                                 $subfolder = 'other_teacher';
                                 $subfolderId = $this->other_teacher_model_cache->id;
+                                $data_field_key = 'other_teacher_id';
                             }
 
                             if ($file) {
@@ -564,7 +573,10 @@ class ReportsController extends Controller
                             } else {
                                 // Αν δεν έχουμε νέα δεδομένα αρχείου έλεγξε μήπως έχουμε
                                 // ήδη ανεβάσει αρχείο και κράτησε τα στοιχεία του
-                                $field_data = $field->field_data->where('record', $record)->first();
+                                $field_data = $field->field_data
+                                    ->where('record', $record)
+                                    ->where($data_field_key, $subfolderId)
+                                    ->first();
                                 $data = $field_data?->data;
                             }
                         } else {
