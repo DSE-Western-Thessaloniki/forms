@@ -18,7 +18,7 @@
                     if (cas()->isAuthenticated()) {
                         $teacher_uid = cas()->getAttribute('employeenumber');
                         $login_category = cas()->getAttribute('businesscategory');
-                        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ') { // Εκπαιδευτικός
+                        if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ' || $login_category === 'ΠΡΟΣΩΠΙΚΟ') {
                             // Εκπαιδευτικός
                             $school = null;
                             $teacher_name = cas()->getAttribute('cn');
@@ -35,7 +35,7 @@
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ $school?->name }} {{ $teacher_name ?? ''}}
+                            {{ $school?->name }} {{ $teacher_name ?? '' }}
                             <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
