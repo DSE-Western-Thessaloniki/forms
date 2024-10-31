@@ -39,8 +39,9 @@ class FormDataTableService
                     )
                     ->union(function (Builder $query) use ($form) {
                         $query->from('other_teachers')
-                            ->addSelect(['form_field_data.*', 'other_teachers.id as tid', 'name', 'employeenumber as am_afm'])
+                            ->addSelect(['form_field_data.*', 'other_teachers.id as tid'])
                             ->selectRaw("'other_teacher' as type")
+                            ->addSelect(['name', 'employeenumber as am_afm'])
                             ->leftJoin('form_field_data', 'form_field_data.other_teacher_id', '=', 'other_teachers.id')
                             ->leftJoin('form_fields', 'form_fields.id', '=', 'form_field_data.form_field_id')
                             ->whereIn(
