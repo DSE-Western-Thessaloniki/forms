@@ -15,8 +15,8 @@
 
                         <div class="btn-toolbar pb-2" role="toolbar">
                             <div class="btn-group me-2">
-                                <a href="{{ route('admin.form.index') }}" class="btn btn-primary"
-                                    role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+                                <button onclick="history.back()" class="btn btn-primary" role="button">@icon('fas fa-long-arrow-alt-left')
+                                    Πίσω</button>
                                 <a class="btn btn-danger" href="{{ route('admin.form.missing.csv', $form) }}">
                                     @icon('fas fa-file-csv') Λήψη αρχείου csv
                                 </a>

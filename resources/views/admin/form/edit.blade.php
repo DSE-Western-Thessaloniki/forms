@@ -5,27 +5,21 @@
     <div class="container">
         <form action="{{ route('admin.form.update', $form->id) }}" method="post">
 
-            <vform-component
-                :parse=true
-                :parseobj="{{ $form->form_fields->toJson() }}"
-                parsetitle="{{ $form->title }}"
-                parsenotes="{{ $form->notes }}"
-                :schools="{{ json_encode($schools) }}"
+            <vform-component :parse=true :parseobj="{{ $form->form_fields->toJson() }}" parsetitle="{{ $form->title }}"
+                parsenotes="{{ $form->notes }}" :schools="{{ json_encode($schools) }}"
                 :categories="{{ json_encode($categories) }}"
                 :school_selected_values="{{ json_encode($school_selected_values) }}"
                 :category_selected_values="{{ json_encode($category_selected_values) }}"
-                :multiple="{{ $form->multiple ? "true" : "false" }}"
-                :restricted="{{ $form->active ? "true" : "false" }}"
+                :multiple="{{ $form->multiple ? 'true' : 'false' }}" :restricted="{{ $form->active ? 'true' : 'false' }}"
                 :for_teachers="{{ $form->for_teachers ? 1 : 0 }}"
-                :for_all_teachers="{{ $form->for_all_teachers ? "true" : "false" }}"
+                :for_all_teachers="{{ $form->for_all_teachers ? 'true' : 'false' }}"
                 :selection_lists="{{ $selection_lists->toJson() }}"
-                :accepted_filetypes="{{ $accepted_filetypes->toJson() }}"
-            >
+                :accepted_filetypes="{{ $accepted_filetypes->toJson() }}">
             </vform-component>
 
             <div class="form-group row mt-5">
                 <div class="col-2">
-                    <a class="btn btn-danger" href="{{ route('admin.form.index') }}">Ακύρωση</a>
+                    <button class="btn btn-danger" onclick="history.back()"}}">Ακύρωση</button>
                 </div>
                 <div class="col d-flex justify-content-end">
                     @csrf
