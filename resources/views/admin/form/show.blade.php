@@ -2,7 +2,8 @@
 
 @section('content')
     <div class="btn-group">
-        <a href="{{ route('admin.form.index') }}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left') Πίσω</a>
+        <a href="{{ route('admin.form.index') . "#$form->id" }}" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left')
+            Πίσω</a>
         <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">@icon('fas fa-edit') Επεξεργασία</a>
         <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
     </div>
