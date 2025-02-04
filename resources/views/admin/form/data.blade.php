@@ -15,7 +15,7 @@
 
                         <div class="btn-toolbar pb-2" role="toolbar">
                             <div class="btn-group me-2">
-                                <button class="btn btn-primary" onclick="history.back()">
+                                <button type="button" class="btn btn-primary" onclick="history.back()">
                                     @icon('fas fa-long-arrow-alt-left') Επιστροφή
                                 </button>
                                 <a class="btn btn-danger" href="{{ route('admin.form.data.csv', $form) }}">

@@ -19,7 +19,7 @@
 
             <div class="form-group row mt-5">
                 <div class="col-2">
-                    <button class="btn btn-danger" onclick="history.back()">Ακύρωση</button>
+                    <button type="button" class="btn btn-danger" onclick="history.back()">Ακύρωση</button>
                 </div>
                 <div class="col d-flex justify-content-end">
                     @csrf
