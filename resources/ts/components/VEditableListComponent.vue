@@ -1,14 +1,23 @@
 <template>
     <div class="editable-list-group row justify-content-center">
         <div class="card col-8">
-            <div test-data-id="preview" class="card-header" v-if="!restricted" @click="toggleEdit(list)"
-                v-show="!list.edit">
+            <div
+                test-data-id="preview"
+                class="card-header"
+                v-if="!restricted"
+                @click="toggleEdit(list)"
+                v-show="!list.edit"
+            >
                 <div class="d-flex justify-content-end">
-                    <i class="fas fa-edit">
-                    </i>
+                    <i class="fas fa-edit"> </i>
                 </div>
             </div>
-            <div test-data-id="preview-body" class="card-body" v-show="!list.edit" @click="startEdit()">
+            <div
+                test-data-id="preview-body"
+                class="card-body"
+                v-show="!list.edit"
+                @click="startEdit()"
+            >
                 Τιμές:
                 <ol>
                     <li v-for="item in validListItems" :key="item.id">
@@ -16,18 +25,32 @@
                     </li>
                 </ol>
             </div>
-            <div test-data-id="edit" class="card-header" @click="saveEdit(list)" v-show="list.edit">
+            <div
+                test-data-id="edit"
+                class="card-header"
+                @click="saveEdit(list)"
+                v-show="list.edit"
+            >
                 <div class="d-flex justify-content-end">
-                    <i class="fas fa-save">
-                    </i>
+                    <i class="fas fa-save"> </i>
                 </div>
             </div>
             <div test-data-id="edit-body" class="card-body" v-show="list.edit">
                 <ol>
-                    <li v-for="(item, index) in list_array" :key="item.id" ref="items">
-                        <input type="text" v-model="item.value" placeholder="Νέα επιλογή"
-                            @paste="checkPaste($event, index)" @keypress="checkKey($event, index)"
-                            @blur="checkList($event, index)" />
+                    <li
+                        v-for="(item, index) in list_array"
+                        :key="item.id"
+                        ref="items"
+                    >
+                        <input
+                            type="text"
+                            v-model="item.value"
+                            placeholder="Νέα επιλογή"
+                            class="form-control"
+                            @paste="checkPaste($event, index)"
+                            @keypress="checkKey($event, index)"
+                            @blur="checkList($event, index)"
+                        />
                     </li>
                 </ol>
             </div>
@@ -36,22 +59,22 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, nextTick, computed, ref } from 'vue';
-import type { Ref } from 'vue';
+import { onMounted, nextTick, computed, ref } from "vue";
+import type { Ref } from "vue";
 
-const emit = defineEmits(['update:edittext']);
+const emit = defineEmits(["update:edittext"]);
 
 const props = defineProps<{
-    edittext: string,
-    restricted: boolean,
+    edittext: string;
+    restricted: boolean;
 }>();
 
-type List = { val: string, edit: boolean };
-type ValidListItem = { id: number, value: string }
+type List = { val: string; edit: boolean };
+type ValidListItem = { id: number; value: string };
 
 let list: Ref<List> = ref({
     val: props.edittext,
-    edit: false
+    edit: false,
 });
 
 let list_array = ref(props.edittext.length ? JSON.parse(props.edittext) : []);
@@ -60,11 +83,13 @@ let items = ref<Array<HTMLInputElement | null> | null>(null);
 
 onMounted(() => {
     nextTick(function () {
-        if (list_array.value.length &&
-            (list_array.value[list_array.value.length - 1] != ''))
+        if (
+            list_array.value.length &&
+            list_array.value[list_array.value.length - 1] != ""
+        )
             list_array.value.push({
                 id: list_array.value.length,
-                value: ''
+                value: "",
             });
     });
 });
@@ -74,8 +99,8 @@ const toggleEdit = (list: List) => {
     if (!list_array.value.length) {
         list_array.value.push({
             id: 0,
-            value: ""
-        })
+            value: "",
+        });
     }
 
     if (list.edit) {
@@ -88,20 +113,19 @@ const toggleEdit = (list: List) => {
 };
 
 const startEdit = () => {
-    if (props.restricted)
-        return;
+    if (props.restricted) return;
 
     if (!list.value.edit) {
         toggleEdit(list.value);
     }
-}
+};
 
 const saveEdit = (list: List) => {
     //save your changes
-    var new_list = JSON.parse(JSON.stringify(list_array.value))
+    var new_list = JSON.parse(JSON.stringify(list_array.value));
     new_list.pop();
     list.val = JSON.stringify(new_list);
-    emit('update:edittext', list.val);
+    emit("update:edittext", list.val);
     toggleEdit(list);
 };
 
@@ -109,11 +133,11 @@ const checkPaste = (event: ClipboardEvent, index: number | string | symbol) => {
     if (typeof index === "number") {
         checkForNewListItem(index);
     } else {
-        console.error('Το index δεν είναι αριθμός!');
+        console.error("Το index δεν είναι αριθμός!");
     }
 
     return true;
-}
+};
 
 const checkKey = (event: KeyboardEvent, index: number | string | symbol) => {
     if (event.which == 13 || event.keyCode == 13) {
@@ -123,30 +147,32 @@ const checkKey = (event: KeyboardEvent, index: number | string | symbol) => {
     if (typeof index === "number") {
         checkForNewListItem(index);
     } else {
-        console.error('Το index δεν είναι αριθμός!');
+        console.error("Το index δεν είναι αριθμός!");
     }
 
     return true;
-}
+};
 
 const checkForNewListItem = (index: number) => {
-    if (list_array.value.length == (index + 1)) {
+    if (list_array.value.length == index + 1) {
         list_array.value.push({
             id: index + 1,
-            value: ""
-        })
+            value: "",
+        });
     }
-}
+};
 
 const checkList = (event: FocusEvent, index: number | string | symbol) => {
     if (typeof index !== "number") {
-        console.error('Το index δεν είναι αριθμός!');
+        console.error("Το index δεν είναι αριθμός!");
         return;
     }
 
     // If it isn't the last item and it is empty
-    if ((list_array.value.length != (index + 1)) &&
-        (list_array.value[index].value.length == 0)) {
+    if (
+        list_array.value.length != index + 1 &&
+        list_array.value[index].value.length == 0
+    ) {
         list_array.value.splice(index, 1);
         for (var i = index; i < list_array.value.length; i++) {
             list_array.value[i].id = i;
@@ -165,25 +191,24 @@ const checkList = (event: FocusEvent, index: number | string | symbol) => {
 
         let allUnfocused = true;
         if (grandparent) {
-            grandparent.childNodes.forEach(child => {
-                child.childNodes.forEach(child => {
+            grandparent.childNodes.forEach((child) => {
+                child.childNodes.forEach((child) => {
                     if (child.isSameNode(focusedItem)) {
                         allUnfocused = false;
                     }
-                })
-            })
+                });
+            });
         }
 
         if (allUnfocused) {
             saveEdit(list.value);
         }
     }
-}
+};
 
 const validListItems = computed(() => {
     var new_list = Array<ValidListItem>();
-    if (list.value.val.length)
-        new_list = JSON.parse(list.value.val);
+    if (list.value.val.length) new_list = JSON.parse(list.value.val);
     return new_list;
 });
 </script>
