@@ -77,7 +77,7 @@ class FormsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request, FormService $formService): \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -108,6 +108,10 @@ class FormsController extends Controller
         foreach ($schools as $school) {
             $form->schools()->attach($school);
         }
+
+        $fields = $form->form_fields()->get();
+
+        $formService->fixFormFieldOptionsAfterStore($form);
 
         DB::commit();
 
@@ -156,7 +160,7 @@ class FormsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Form $form): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -193,6 +197,8 @@ class FormsController extends Controller
         )->get();
 
         $form->schools()->sync($schools);
+
+        $formService->fixFormFieldOptionsAfterUpdate($form);
 
         DB::commit();
 
