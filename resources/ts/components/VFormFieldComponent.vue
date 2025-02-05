@@ -127,6 +127,7 @@
                 <label class="col-auto col-form-label">Όνομα λίστας:</label>
                 <div class="col align-self-center">
                     <select
+                        class="form-select"
                         :name="'field[' + field_id + '][selection_list]'"
                         v-model="selection_list_selected"
                         v-if="!restricted"
