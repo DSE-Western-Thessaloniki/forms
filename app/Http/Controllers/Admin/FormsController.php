@@ -13,11 +13,10 @@ use App\Models\SelectionList;
 use App\Models\Teacher;
 use App\Services\FormDataTableService;
 use App\Services\FormMissingDataService;
+use App\Services\FormService;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use XLSXWriter;
@@ -358,78 +357,9 @@ class FormsController extends Controller
     /**
      * Αντιγραφή φόρμας
      */
-    public function copyForm(Form $form): \Illuminate\Http\RedirectResponse
+    public function copyForm(Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
     {
-        // Δημιουργία αντιγράφου
-        $form_clone = $form->replicate();
-        $form_clone->user_id = Auth::user()->id;
-        $form_clone->save();
-
-        $form_fields = $form->form_fields()->get();
-        $new_form_fields = collect();
-        foreach ($form_fields as $item) {
-            $field = new FormField;
-            $field->sort_id = $item->sort_id;
-            $field->title = $item->title;
-            $field->type = $item->type;
-            $field->required = $item->required;
-            $field->listvalues = $item->listvalues;
-            $field->options = $item->options;
-            $result = $form_clone->form_fields()->save($field);
-
-            // Αν δεν απέτυχε η αποθήκευση
-            if ($result) {
-                $new_form_fields->push($field);
-            }
-        }
-
-        // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
-        $new_form_fields->each(function ($field) use ($form_fields, $new_form_fields) {
-            $options = json_decode($field->options, true);
-            Log::info(print_r($options, true));
-            if (! isset($options['show_when'])) {
-                return;
-            }
-
-            for ($i = 0; $i < count($options['show_when']); $i++) {
-                if (! isset($options['show_when'][$i]['active_field'])) {
-                    continue;
-                }
-                // Το id του πεδίου είναι λάθος γιατί περιέχει το πεδίο της αρχικής φόρμας.
-                // Κάνε σύνδεση με το νέο πεδίο
-                $old_field_id = $options['show_when'][$i]['active_field'];
-                $found = false;
-                $idx = 0;
-                while (! $found && $idx < count($form_fields)) {
-                    Log::info('Comparing: '.$form_fields[$idx]->id.' with '.$old_field_id);
-                    if ($form_fields[$idx]->id == $old_field_id) {
-                        $found = true;
-
-                        Log::info('Found!');
-
-                        continue;
-                    }
-                    $idx++;
-                }
-
-                // Log::info('Found: '.$found ? 'true' : 'false');
-                if ($found) {
-                    $options['show_when'][$i]['active_field'] = $new_form_fields[$idx]->id;
-                    Log::info(print_r($options, true));
-                    $field->options = json_encode($options);
-                    $field->save();
-                }
-            }
-
-        });
-
-        foreach ($form->school_categories()->get() as $category) {
-            $form_clone->school_categories()->attach($category);
-        }
-
-        foreach ($form->schools()->get() as $school) {
-            $form_clone->schools()->attach($school);
-        }
+        $formService->copyForm($form);
 
         return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
     }
