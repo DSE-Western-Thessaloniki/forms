@@ -2,10 +2,12 @@
 import { route } from "ziggy-js";
 import FieldGroup from "./FieldGroup.vue";
 import { FieldType } from "@/fieldtype";
-import { computed, ref, watch, watchEffect, type Ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useFormStore } from "@/stores/formStore";
 import { useTemplateRefsList } from "@vueuse/core";
 import { useOptions } from "@/components/composables/useOptions";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const props = withDefaults(
     defineProps<{
@@ -38,6 +40,16 @@ const real_method = props.method?.toLowerCase() === "get" ? "get" : "post";
 // πεδίου στη φόρμα.
 const field_values = props.form.form_fields
     .map((field) => {
+        if (field.type === FieldType.Number) {
+            return {
+                [field.id]: String(
+                    Number(
+                        props.form_data ? props.form_data[field.id] ?? "" : ""
+                    )
+                ),
+            };
+        }
+
         return {
             [field.id]: props.form_data ? props.form_data[field.id] ?? "" : "",
         };
@@ -155,6 +167,16 @@ props.form.form_fields.forEach((field) => {
         formStore.field[field.id] = props.old[`f${field.id}`];
     }
 });
+
+const formNotReady = () => {
+    toast.error(
+        "Παρακαλούμε ελέγξτε αν έχετε συμπληρώσει σωστά τη φόρμα. Τα υποχρεωτικά πεδία της φόρμας εμφανίζονται με έναν κόκκινο αστερίσκο.",
+        {
+            autoClose: 10000,
+        }
+    );
+    console.log("Form is not ready.");
+};
 </script>
 
 <template>
@@ -325,10 +347,17 @@ props.form.form_fields.forEach((field) => {
             </div>
             <div class="col d-flex justify-content-end">
                 <button
-                    v-if="save"
+                    v-if="save && saveDisabled"
+                    class="btn btn-primary"
+                    type="button"
+                    @click="formNotReady"
+                >
+                    Αποθήκευση
+                </button>
+                <button
+                    v-if="save && !saveDisabled"
                     class="btn btn-primary"
                     type="submit"
-                    :disabled="saveDisabled"
                 >
                     Αποθήκευση
                 </button>
