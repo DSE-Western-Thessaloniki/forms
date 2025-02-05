@@ -6,6 +6,7 @@
             Πίσω</button>
         <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">@icon('fas fa-edit') Επεξεργασία</a>
         <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
+        <a href="{{ route('admin.form.data', $form->id) }}" class="btn btn-success">@icon('fas fa-table') Δεδομένα</a>
     </div>
     <h1>{{ $form->title }}</h1>
     <h3>{!! Str::replace('<a ', '<a target="_blank" ', Str::of($form->notes)->markdown(['html_input' => 'strip'])) !!}</h3>
