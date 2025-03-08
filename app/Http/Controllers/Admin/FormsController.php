@@ -13,9 +13,9 @@ use App\Models\SelectionList;
 use App\Models\Teacher;
 use App\Services\FormDataTableService;
 use App\Services\FormMissingDataService;
+use App\Services\FormService;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -77,7 +77,7 @@ class FormsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request, FormService $formService): \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -108,6 +108,10 @@ class FormsController extends Controller
         foreach ($schools as $school) {
             $form->schools()->attach($school);
         }
+
+        $fields = $form->form_fields()->get();
+
+        $formService->fixFormFieldOptionsAfterStore($form);
 
         DB::commit();
 
@@ -156,7 +160,7 @@ class FormsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Form $form): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -193,6 +197,8 @@ class FormsController extends Controller
         )->get();
 
         $form->schools()->sync($schools);
+
+        $formService->fixFormFieldOptionsAfterUpdate($form);
 
         DB::commit();
 
@@ -357,31 +363,9 @@ class FormsController extends Controller
     /**
      * Αντιγραφή φόρμας
      */
-    public function copyForm(Form $form): \Illuminate\Http\RedirectResponse
+    public function copyForm(Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
     {
-        // Δημιουργία αντιγράφου
-        $form_clone = $form->replicate();
-        $form_clone->user_id = Auth::user()->id;
-        $form_clone->save();
-
-        foreach ($form->form_fields()->get() as $item) {
-            $field = new FormField;
-            $field->sort_id = $item->sort_id;
-            $field->title = $item->title;
-            $field->type = $item->type;
-            $field->required = $item->required;
-            $field->listvalues = $item->listvalues;
-            $field->options = $item->options;
-            $form_clone->form_fields()->save($field);
-        }
-
-        foreach ($form->school_categories()->get() as $category) {
-            $form_clone->school_categories()->attach($category);
-        }
-
-        foreach ($form->schools()->get() as $school) {
-            $form_clone->schools()->attach($school);
-        }
+        $formService->copyForm($form);
 
         return redirect(route('admin.form.index'))->with('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
     }

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { FormFieldOptions } from "@/fieldtype";
-import { useOptions } from "../../../composables/useOptions";
 import { useFormStore } from "@/stores/formStore";
 import { useTextInputEventHandlers } from "@/components/composables/useTextInputEventHandlers";
 import { onMounted, ref, type Ref } from "vue";
@@ -35,13 +33,13 @@ const validationCheck = () => {
     errorMessages.value = [];
 
     // Αν το πεδίο είναι κενό τότε δεν έχει νόημα να γίνει validation check
-    if ((formStore.field[props.field.id] ?? "") == "") {
-        emit("validationErrors", validationErrors.value);
-        return;
-    }
+    // if ((formStore.field[props.field.id] ?? "") == "") {
+    //     emit("validationErrors", validationErrors.value);
+    //     return;
+    // }
 
     const result = formStore.fieldOptions[props.field.id].validationCheck(
-        `${formStore.field[props.field.id]}` ?? ""
+        `${formStore.field[props.field.id]}`
     );
     validationErrors.value = result.errorMessages;
 
