@@ -8,7 +8,7 @@
     "devDependencies": {
         "@cypress/vite-dev-server": "^5.0.3",
         "@cypress/vue": "^3.1.0",
-        "@cypress/webpack-dev-server": "^2.4.1",
+        "@cypress/webpack-dev-server": "^4.1.0",
         "@types/bootstrap": "^5.2.3",
         "@types/jquery": "^3.5.30",
         "@types/lodash": "^4.14.184",
