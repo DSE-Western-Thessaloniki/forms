@@ -53,9 +53,7 @@ class FormDataTableService
                                     ->toArray()
                             );
                     });
-            }, 'p')
-            ->orderBy('name')
-            ->orderBy('record');
+            }, 'p');
 
         foreach ($form->form_fields as $field) {
             $subQuery->selectRaw("CASE WHEN form_field_id='{$field->id}' THEN data END AS '{$field->id}'");
@@ -65,7 +63,9 @@ class FormDataTableService
         $pivot = DB::query()
             ->select(['p2.record', 'p2.name', 'p2.am_afm', 'p2.type', 'p2.tid', 'p2.created_at', 'p2.updated_at'])
             ->fromSub($subQuery, 'p2')
-            ->groupBy(['name', 'record']);
+            ->groupBy(['am_afm', 'record'])
+            ->orderBy('name')
+            ->orderBy('record');
 
         foreach ($form->form_fields as $field) {
             $pivot->selectRaw("GROUP_CONCAT(`p2`.`{$field->id}`) AS '{$field->id}'");
