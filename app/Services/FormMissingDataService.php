@@ -40,7 +40,7 @@ class FormMissingDataService
 
     private function getMissingSchoolTable(Form $form)
     {
-        $dataTableColumns = ['Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο'];
+        $dataTableColumns = ['Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο', 'E-mail'];
 
         // Βρες όλα τα σχολεία που θα έπρεπε να απαντήσουν
         $schools = $form->schools()->where('active', 1)->get();
@@ -67,7 +67,7 @@ class FormMissingDataService
         $data = [];
         array_push($data, $dataTableColumns);
         foreach ($filtered_schools as $school) {
-            array_push($data, [$school->name, $school->code, $school->telephone]);
+            array_push($data, [$school->name, $school->code, $school->telephone, $school->email]);
         }
 
         return $data;
