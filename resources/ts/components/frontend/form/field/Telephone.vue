@@ -76,11 +76,10 @@ onMounted(validationCheck);
                 :name="`f${field.id}`"
                 :disabled="disabled"
                 :required="field.required ? 'true' : undefined"
-                @keydown="eventHandlers.onKeyDown"
-                @keypress="eventHandlers.onKeyPress"
+                v-model="formStore.field[props.field.id]"
+                @beforeinput="eventHandlers.onBeforeInput"
                 @paste="eventHandlers.onPaste"
                 @blur="validationCheck"
-                v-model="formStore.field[props.field.id]"
                 autocomplete="off"
             />
             <small>Μορφή: 1234567890</small>
