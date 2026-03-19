@@ -4,7 +4,7 @@ import {
     type FormFieldOptions,
     type FormFieldOptionsShowCriteria,
 } from "@/fieldtype";
-import { type Ref, computed, ref } from "vue";
+import { type Ref, computed, ref, watch } from "vue";
 
 const props = defineProps<{
     id: number;
@@ -92,6 +92,86 @@ const canRemoveAdvancedOptionsCriteria = (id: number) => {
               advancedOptionsCriteria.value.length > 1
         : true;
 };
+
+/**
+ * Gets a list of selectable values for a field (typically radio/select fields)
+ * so the user can choose a value by label instead of by raw id.
+ */
+const getFieldChoiceOptions = (activeFieldId: string) => {
+    const field = props.fields.find(
+        (f) => String(f.id) === String(activeFieldId)
+    );
+
+    if (!field) {
+        return [] as Array<{ id: string; value: string }>;
+    }
+
+    // Only fields that have a list of values make sense to show here.
+    if (
+        ![FieldType.RadioButtons, FieldType.SelectionList, FieldType.CheckBoxes].includes(
+            field.type as FieldType
+        )
+    ) {
+        return [] as Array<{ id: string; value: string }>;
+    }
+
+    try {
+        const parsed = JSON.parse(field.listvalues || "[]");
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+
+        return parsed.map((item: any) => {
+            const id = item?.id ?? item;
+            const value = item?.value ?? String(id);
+            return { id: String(id), value: String(value) };
+        });
+    } catch {
+        return [];
+    }
+};
+
+const normalizeCriteriaValue = (criteria: {
+    id: number;
+    check: FormFieldOptionsShowCriteria["visible"];
+    active_field: string;
+    operator: string;
+    value: string;
+    value_is: string;
+}) => {
+    if (criteria.check !== "when_value") {
+        return;
+    }
+
+    const choices = getFieldChoiceOptions(criteria.active_field);
+    if (!choices.length) {
+        return;
+    }
+
+    const hasValidValue = choices.some((choice) => choice.id === criteria.value);
+
+    if (!hasValidValue) {
+        // Reset to empty so the user explicitly selects a matching value.
+        criteria.value = "";
+    }
+};
+
+// Ensure that when the user changes the “active field” for a “when_value” rule,
+// the selected value doesn't remain an invalid leftover ID.
+watch(
+    () => advancedOptionsCriteria.value.map((c) => c.active_field),
+    (newActiveFields, oldActiveFields) => {
+        newActiveFields.forEach((activeField, idx) => {
+            if (oldActiveFields?.[idx] !== activeField) {
+                const criteria = advancedOptionsCriteria.value[idx];
+                if (criteria) {
+                    normalizeCriteriaValue(criteria);
+                }
+            }
+        });
+    },
+    { immediate: true }
+);
 
 const advancedId = computed(function () {
     return "advanced_f" + props.id;
@@ -419,7 +499,32 @@ const advancedTarget = computed(function () {
                                     <option value="eq">ίση με</option>
                                     <option value="ne">διαφορετική από</option>
                                 </select>
+
+                                <template v-if="getFieldChoiceOptions(option.active_field).length">
+                                    <select
+                                        class="form-select col-auto w-auto"
+                                        :name="
+                                            'field[' +
+                                            field_id +
+                                            '][options][show_when][' +
+                                            option.id +
+                                            '][value]'
+                                        "
+                                        v-model="option.value"
+                                    >
+                                        <option value="">-- Επιλέξτε --</option>
+                                        <option
+                                            v-for="choice in getFieldChoiceOptions(option.active_field)"
+                                            :key="choice.id"
+                                            :value="choice.id"
+                                        >
+                                            {{ choice.value }}
+                                        </option>
+                                    </select>
+                                </template>
+
                                 <input
+                                    v-else
                                     type="text"
                                     class="form-control col-auto w-auto"
                                     :name="
