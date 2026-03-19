@@ -139,6 +139,9 @@ class FormDataTableService
 
             if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                 $selections = json_decode($field->listvalues);
+                if (! is_array($selections) && ! is_object($selections)) {
+                    $selections = [];
+                }
 
                 // Μετέτρεψε την επιλογή σε τιμή
                 $result = $result->map(function ($row) use ($selections, $field) {
@@ -152,6 +155,9 @@ class FormDataTableService
                 });
             } elseif ($field->type == FormField::TYPE_CHECKBOX) {
                 $selections = json_decode($field->listvalues);
+                if (! is_array($selections) && ! is_object($selections)) {
+                    $selections = [];
+                }
 
                 // Μετέτρεψε την επιλογή σε τιμή
                 $result = $result->map(function ($row) use ($selections, $field) {
@@ -162,6 +168,10 @@ class FormDataTableService
 
                     // Μπορεί να έχουμε επιλέξει παραπάνω από ένα
                     $data = json_decode($row->{$field->id});
+                    if (! is_array($data) && ! is_object($data)) {
+                        return $row;
+                    }
+
                     $i = 0;
                     foreach ($data as $item) {
                         foreach ($selections as $selection) {

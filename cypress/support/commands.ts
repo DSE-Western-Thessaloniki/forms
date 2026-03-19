@@ -57,3 +57,48 @@ Cypress.Commands.add("rewriteHeaders", () => {
         })
     );
 });
+
+declare global {
+    namespace Cypress {
+        interface Chainable {
+            /**
+             * Drags an element to a target element.
+             *
+             * This is a minimal helper to simulate a drag-and-drop action for
+             * Sortable.js / vuedraggable-based list reordering.
+             */
+            dragTo(target: string | JQuery<HTMLElement>): Chainable<Element>;
+        }
+    }
+}
+
+Cypress.Commands.add(
+    "dragTo",
+    { prevSubject: "element" },
+    (subject, target) => {
+        cy.wrap(subject).then(($source) => {
+            const srcRect = $source[0].getBoundingClientRect();
+            const startX = srcRect.left + srcRect.width / 2;
+            const startY = srcRect.top + srcRect.height / 2;
+
+            cy.wrap($source).trigger("mousedown", {
+                button: 0,
+                clientX: startX,
+                clientY: startY,
+                force: true,
+            });
+
+            cy.get(target).then(($target) => {
+                const tgtRect = $target[0].getBoundingClientRect();
+                const endX = tgtRect.left + tgtRect.width / 2;
+                const endY = tgtRect.top + tgtRect.height / 2;
+
+                cy.wrap($target)
+                    .trigger("mousemove", { clientX: endX, clientY: endY, force: true })
+                    .trigger("mouseup", { force: true });
+            });
+        });
+
+        return cy.wrap(subject);
+    }
+);

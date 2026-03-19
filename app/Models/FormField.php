@@ -64,9 +64,11 @@ class FormField extends Model
     public static function fromRequest(Request $request, Form $form): void
     {
         $formfield = $request->input('field');
+
         foreach (array_keys($formfield) as $key) {
             $field = new FormField;
-            $field->sort_id = $formfield[$key]['sort_id'];
+            $defaultSort = is_numeric($key) ? (int) $key : 0;
+            $field->sort_id = self::sanitizeSortId($formfield[$key]['sort_id'] ?? null, $defaultSort + 1);
             $field->title = $formfield[$key]['title'];
 
             // Αν βρεις προκαθορισμένη λίστα μετέτρεψέ την σε απλή λίστα επιλογών
@@ -74,16 +76,18 @@ class FormField extends Model
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass());
+                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass());
+                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
             $field->required = $formfield[$key]['required'] === 'true' ? true : false;
             $form->form_fields()->save($field);
         }
+
+        self::normalizeSortIds($form);
     }
 
     public static function updateFromRequest(Request $request, Form $form): void
@@ -92,23 +96,56 @@ class FormField extends Model
 
         foreach (array_keys($formfield) as $key) {
             $field = $form->form_fields()->firstOrNew(['id' => $key]);
-            $field->sort_id = $formfield[$key]['sort_id'] ?? $key;
+            $defaultSort = is_numeric($key) ? (int) $key : 0;
+            $field->sort_id = self::sanitizeSortId($formfield[$key]['sort_id'] ?? null, $defaultSort + 1);
             $field->title = $formfield[$key]['title'];
 
             if ($formfield[$key]['type'] == FormField::TYPE_LIST) {
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass());
+                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass());
+                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
 
             $field->required = $formfield[$key]['required'] === 'true' ? true : false;
             $form->form_fields()->save($field);
         }
+
+        self::normalizeSortIds($form);
+    }
+
+    /**
+     * Ensure sort_id values are sequential (1..N) to avoid duplicates/gaps
+     * which can occur when new fields are added but sort IDs are not updated.
+     */
+    private static function normalizeSortIds(Form $form): void
+    {
+        $fields = $form->form_fields()->orderBy('sort_id')->orderBy('id')->get();
+        $sortId = 1;
+
+        foreach ($fields as $field) {
+            if ($field->sort_id !== $sortId) {
+                $field->sort_id = $sortId;
+                $field->save();
+            }
+            $sortId++;
+        }
+    }
+
+    private static function sanitizeSortId(mixed $value, int $default): int
+    {
+        if (is_numeric($value)) {
+            $int = (int) $value;
+            if ($int > 0) {
+                return $int;
+            }
+        }
+
+        return $default > 0 ? $default : 1;
     }
 }

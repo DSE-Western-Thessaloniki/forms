@@ -91,6 +91,11 @@ class FormsController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
+            'field' => 'required|array|min:1',
+            'field.*.title' => 'required|string',
+            'field.*.type' => 'required|integer',
+            'field.*.sort_id' => 'nullable|integer|min:1',
+            'field.*.required' => 'required|in:true,false,1,0',
         ]);
 
         DB::beginTransaction();
@@ -174,6 +179,11 @@ class FormsController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
+            'field' => 'required|array|min:1',
+            'field.*.title' => 'required|string',
+            'field.*.type' => 'required|integer',
+            'field.*.sort_id' => 'nullable|integer|min:1',
+            'field.*.required' => 'required|in:true,false,1,0',
         ]);
 
         DB::beginTransaction();

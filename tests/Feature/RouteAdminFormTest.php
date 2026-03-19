@@ -15,6 +15,7 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\SchoolCategorySeeder;
 use Database\Seeders\SchoolSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Testing\TestResponse;
 use Subfission\Cas\Facades\Cas;
 use Symfony\Component\VarDumper\VarDumper;
 use Tests\TestCasManager;
@@ -26,7 +27,7 @@ beforeEach(function () {
     $option->save();
 
     $this->app->singleton('cas', function () {
-        return new TestCasManager();
+        return new TestCasManager;
     });
 
     Cas::shouldReceive('isAuthenticated')
@@ -175,6 +176,64 @@ it('can create a form as admin', function () {
         'listvalues' => '',
         'required' => 1,
     ]);
+});
+
+it('keeps field order when adding a new field and reordering', function () {
+    $admin = User::factory()->admin()->create();
+    $form = Form::factory()->for($admin)->create();
+
+    $field1 = FormField::factory()
+        ->for($form)
+        ->create(['id' => 1, 'title' => 'First', 'sort_id' => 1]);
+
+    $field2 = FormField::factory()
+        ->for($form)
+        ->create(['id' => 2, 'title' => 'Second', 'sort_id' => 2]);
+
+    $response = $this->actingAs($admin)->patch('/admin/form/'.$form->id, [
+        'title' => 'Test form',
+        'notes' => 'This is a test',
+        'active' => true,
+        'multiple' => false,
+        'field' => [
+            $field1->id => [
+                'title' => 'First',
+                'type' => 0,
+                'values' => '',
+                'required' => 'true',
+                'sort_id' => 2,
+            ],
+            $field2->id => [
+                'title' => 'Second',
+                'type' => 0,
+                'values' => '',
+                'required' => 'true',
+                'sort_id' => 3,
+            ],
+            3 => [
+                'title' => 'New field',
+                'type' => 0,
+                'values' => '',
+                'required' => 'true',
+                'sort_id' => 1,
+            ],
+        ],
+    ]);
+
+    $response->assertStatus(302);
+
+    $order = FormField::where('form_id', $form->id)
+        ->orderBy('sort_id')
+        ->pluck('title')
+        ->toArray();
+
+    $sortIds = FormField::where('form_id', $form->id)
+        ->orderBy('sort_id')
+        ->pluck('sort_id')
+        ->toArray();
+
+    expect($order)->toEqual(['New field', 'First', 'Second']);
+    expect($sortIds)->toEqual([1, 2, 3]);
 });
 
 it('can create a form with school categories as author', function () {
@@ -1386,7 +1445,7 @@ it('can download all files attached to a form as admin', function ($subfolder) {
         Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$item->record}/{$field->id}", 'Test file content');
     }
 
-    /** @var Illuminate\Testing\TestResponse $response */
+    /** @var TestResponse $response */
     $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
     if ($subfolder === 'teacher') {
         // dd($testForm->form_fields->map(function ($field) {
