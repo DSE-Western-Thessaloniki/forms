@@ -317,7 +317,7 @@ class FormsController extends Controller
             $form->active = $state;
             $form->save();
 
-            return redirect(route('admin.form.index'))->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
+            return redirect(route('admin.form.index').'#form-'.$form->id)->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
         }
     }
 
@@ -329,7 +329,7 @@ class FormsController extends Controller
         $form->active = $form->active ? 0 : 1;
         $form->save();
 
-        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
+        return redirect(route('admin.form.index').'#form-'.$form->id)->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
     }
 
     /**
