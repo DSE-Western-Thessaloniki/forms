@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useFormStore } from "@/stores/formStore";
 import { useTextInputEventHandlers } from "@/components/composables/useTextInputEventHandlers";
-import { onMounted, ref, type Ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 
 const props = withDefaults(
     defineProps<{
         field: App.Models.FormField;
         disabled?: boolean;
         errors: Array<string>;
+        step?: "any" | number;
     }>(),
     {
         disabled: false,
@@ -19,6 +20,33 @@ const emit = defineEmits<{
 }>();
 
 const formStore = useFormStore();
+
+const step = computed(() => {
+    const options = formStore.fieldOptions[props.field.id]?.options as any;
+    if (!options) {
+        return undefined;
+    }
+
+    if (options.number_type === "float") {
+        const decimals = Number(options.decimal_places);
+        if (Number.isInteger(decimals) && decimals >= 0) {
+            return 1 / Math.pow(10, decimals);
+        }
+
+        return "any";
+    }
+
+    const stepValue = options.step;
+    if (typeof stepValue === "string" && stepValue !== "") {
+        const parsed = Number(stepValue);
+        if (!Number.isNaN(parsed)) {
+            return parsed;
+        }
+        return stepValue;
+    }
+
+    return undefined;
+});
 
 const errorMessages: Ref<Array<string>> = ref([]);
 
@@ -70,6 +98,7 @@ onMounted(validationCheck);
             :class="errors.length ? 'is-invalid' : ''"
             :name="`f${field.id}`"
             :disabled="disabled"
+            :step="step"
             :required="field.required ? 'true' : undefined"
             @keydown="eventHandlers.onKeyDown"
             @keypress="eventHandlers.onKeyPress"

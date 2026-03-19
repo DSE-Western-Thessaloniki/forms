@@ -83,6 +83,73 @@
                     />
                 </div>
             </div>
+            <div v-if="cbselected === FieldType.Number">
+                <div class="row my-2">
+                    <label class="col-auto col-form-label">Τύπος αριθμού:</label>
+                    <div class="col align-self-center">
+                        <div class="form-check form-check-inline">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                :name="'field[' + field_id + '][options][number_type]'"
+                                :id="'field_' + field_id + '_number_type_integer'"
+                                value="integer"
+                                v-model="numberType"
+                                :disabled="restricted"
+                            />
+                            <label
+                                class="form-check-label"
+                                :for="'field_' + field_id + '_number_type_integer'"
+                            >
+                                Ακέραιος
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                :name="'field[' + field_id + '][options][number_type]'"
+                                :id="'field_' + field_id + '_number_type_float'"
+                                value="float"
+                                v-model="numberType"
+                                :disabled="restricted"
+                            />
+                            <label
+                                class="form-check-label"
+                                :for="'field_' + field_id + '_number_type_float'"
+                            >
+                                Δεκαδικός
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row my-2" v-if="numberType === 'float'">
+                    <label class="col-auto col-form-label">
+                        Δεκαδικά ψηφία:
+                    </label>
+                    <div class="col align-self-center">
+                        <input
+                            type="number"
+                            min="0"
+                            step="1"
+                            class="form-control"
+                            :name="
+                                'field[' + field_id + '][options][decimal_places]'
+                            "
+                            v-model="decimalPlaces"
+                            :disabled="restricted"
+                        />
+                        <div class="form-text text-muted">
+                            Αφήστε κενό για οποιοδήποτε αριθμό δεκαδικών ψηφίων.
+                        </div>
+                    </div>
+                </div>
+                <input
+                    type="hidden"
+                    :name="'field[' + field_id + '][options][step]'"
+                    :value="computedStep"
+                />
+            </div>
             <div v-if="cbselected === FieldType.File">
                 <div class="row my-2">
                     <label
@@ -95,13 +162,13 @@
                         <AcceptedFiletypeSelect
                             :name="'field[' + field_id + '][options][filetype]'"
                             :accepted_filetypes="accepted_filetypes"
-                            :selected="field_options?.filetype?.value"
+                            :selected="fieldOptions?.filetype?.value"
                             :field_for_filename="
-                                field_options?.filetype?.field_for_filename ??
+                                fieldOptions?.filetype?.field_for_filename ??
                                 ''
                             "
                             :custom_value="
-                                field_options?.filetype?.custom_value ?? ''
+                                fieldOptions?.filetype?.custom_value ?? ''
                             "
                             :fields
                         />
@@ -153,7 +220,7 @@
                 :field_id
                 :cbselected
                 :fields
-                :field_options="createFormFieldOptions(field_options)"
+                :field_options="createFormFieldOptions(fieldOptions)"
                 class="form-row foldable mt-3"
             />
         </div>
@@ -210,9 +277,88 @@ const selection_list_selected = ref(
     props.selection_lists.length ? props.selection_lists[0].id : 0
 );
 const options = FieldTypeOptions;
+const fieldOptions = ref(createFormFieldOptions(props.field_options ?? {}));
+
 const dataListValues = ref(props.listvalues);
 const field_id = props.id;
 const is_required = ref(props.required);
+
+const getInitialNumberType = (): "integer" | "float" => {
+    if (fieldOptions.value.number_type === "float") {
+        return "float";
+    }
+    if (fieldOptions.value.number_type === "integer") {
+        return "integer";
+    }
+
+    const step = fieldOptions.value.step;
+    if (step === "any") {
+        return "float";
+    }
+    if (step && step !== "" && step !== "1") {
+        return "float";
+    }
+
+    return "integer";
+};
+
+const getInitialDecimalPlaces = (): string => {
+    if (
+        fieldOptions.value.decimal_places !== undefined &&
+        fieldOptions.value.decimal_places !== null &&
+        String(fieldOptions.value.decimal_places) !== ""
+    ) {
+        return String(fieldOptions.value.decimal_places);
+    }
+
+    const step = fieldOptions.value.step;
+    if (typeof step === "string" && step.startsWith("0.")) {
+        const parts = step.split(".");
+        return parts[1]?.length ? String(parts[1].length) : "";
+    }
+
+    return "";
+};
+
+const numberType = ref<"integer" | "float">(getInitialNumberType());
+const decimalPlaces = ref<string>(getInitialDecimalPlaces());
+
+const computedStep = computed(() => {
+    const existingStep = fieldOptions.value.step;
+
+    if (numberType.value === "integer") {
+        const numeric = Number(existingStep);
+        if (!Number.isNaN(numeric) && Number.isInteger(numeric) && numeric > 0) {
+            return String(numeric);
+        }
+        return "1";
+    }
+
+    if (!decimalPlaces.value) {
+        return "any";
+    }
+
+    const decimals = Number(decimalPlaces.value);
+    if (Number.isInteger(decimals) && decimals >= 0) {
+        return String(1 / Math.pow(10, decimals));
+    }
+
+    return "any";
+});
+
+watch(
+    [numberType, decimalPlaces, cbselected],
+    () => {
+        if (cbselected.value !== FieldType.Number) {
+            return;
+        }
+
+        fieldOptions.value.number_type = numberType.value;
+        fieldOptions.value.decimal_places = decimalPlaces.value;
+        fieldOptions.value.step = computedStep.value;
+    },
+    { immediate: true }
+);
 
 watch(title, (value) => {
     emit("update:value", value);

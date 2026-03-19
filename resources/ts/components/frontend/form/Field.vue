@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FieldType } from "@/fieldtype";
-import { defineAsyncComponent, onUnmounted, ref, type Ref } from "vue";
+import { useFormStore } from "@/stores/formStore";
+import { computed, defineAsyncComponent, onUnmounted, ref, type Ref } from "vue";
 
 const props = withDefaults(
     defineProps<{
@@ -89,6 +90,35 @@ const f = new Map<FieldType, any>([
     ],
 ]);
 
+const formStore = useFormStore();
+
+const step = computed(() => {
+    const options = formStore.fieldOptions[props.field.id]?.options as any;
+    if (!options) {
+        return undefined;
+    }
+
+    if (options.number_type === "float") {
+        const decimals = Number(options.decimal_places);
+        if (Number.isInteger(decimals) && decimals >= 0) {
+            return 1 / Math.pow(10, decimals);
+        }
+
+        return "any";
+    }
+
+    const stepValue = options.step;
+    if (typeof stepValue === "string" && stepValue !== "") {
+        const parsed = Number(stepValue);
+        if (!Number.isNaN(parsed)) {
+            return parsed;
+        }
+        return stepValue;
+    }
+
+    return undefined;
+});
+
 const validationErrors: Ref<Array<string>> = ref([]);
 const setValidationErrors = (messages: Array<string>) => {
     console.log("Field.setValidationErrors:", messages);
@@ -102,6 +132,7 @@ const setValidationErrors = (messages: Array<string>) => {
         :is="f.get(field.type)"
         :field="field"
         :disabled="disabled"
+        :step="step"
         :errors
         :accept
         :route
