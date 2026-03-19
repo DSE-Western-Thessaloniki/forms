@@ -316,6 +316,51 @@ export function useOptions(
         valueChecks.push(isPositive);
     }
 
+    if (options?.number_type === "integer") {
+        valueChecks.push((value: string) => {
+            // Allow clearing the field and typing the sign before digits
+            if (["", "-", "+"].includes(value)) {
+                return { result: true, errorMsg: "" };
+            }
+
+            const result = /^[+-]?\d+$/.test(value);
+            return {
+                result,
+                errorMsg: "Μόνο ακέραιοι αριθμοί επιτρέπονται",
+            };
+        });
+    } else if (options?.number_type === "float") {
+        const parsedDecimals = Number(options.decimal_places);
+        const hasValidDecimals =
+            !Number.isNaN(parsedDecimals) &&
+            Number.isInteger(parsedDecimals) &&
+            parsedDecimals >= 0;
+
+        if (hasValidDecimals) {
+            const regex = new RegExp(
+                `^[+-]?\\d*(?:\\.\\d{0,${parsedDecimals}})?$`
+            );
+            valueChecks.push((value: string) => {
+                const result = regex.test(value);
+                return {
+                    result,
+                    errorMsg: result
+                        ? ""
+                        : `Μέχρι ${parsedDecimals} δεκαδικά ψηφία επιτρέπονται`,
+                };
+            });
+        } else {
+            const regex = /^[+-]?\d*(?:\.\d*)?$/;
+            valueChecks.push((value: string) => {
+                const result = regex.test(value);
+                return {
+                    result,
+                    errorMsg: "Μόνο αριθμητικές τιμές επιτρέπονται",
+                };
+            });
+        }
+    }
+
     if (
         options?.regex_enabled &&
         options?.regex &&

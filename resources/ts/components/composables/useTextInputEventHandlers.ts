@@ -9,14 +9,15 @@ export function useTextInputEventHandlers(
 
     const onKeyPress = (event: KeyboardEvent) => {
         const target = event.target as HTMLInputElement;
-        const cursorPos = target.selectionStart ?? 0;
-        const selectionEnd = target.selectionEnd ?? cursorPos;
         const inputText = target.value;
+        const cursorPos = target.selectionStart ?? inputText.length;
+        const selectionEnd = target.selectionEnd ?? cursorPos;
 
         const proposedNewText = `${inputText.slice(0, cursorPos)}${
             event.key
         }${inputText.slice(selectionEnd, inputText.length)}`;
 
+        console.log(`Proposed new text: '${proposedNewText}'`);
         const match = options.valueMatch(proposedNewText);
         errorRef.value = match.errorMessages;
         if (!match.result) {
@@ -27,9 +28,9 @@ export function useTextInputEventHandlers(
     const onKeyDown = (event: KeyboardEvent) => {
         // Εδώ θα χειριστούμε μόνο τους μη εκτυπώσιμους χαρακτήρες (Delete, Backspace, ...)
         const target = event.target as HTMLInputElement;
-        const cursorPos = target.selectionStart ?? 0;
-        const selectionEnd = target.selectionEnd ?? cursorPos;
         const inputText = target.value;
+        const cursorPos = target.selectionStart ?? inputText.length;
+        const selectionEnd = target.selectionEnd ?? cursorPos;
 
         let proposedNewText = inputText;
 
@@ -89,9 +90,9 @@ export function useTextInputEventHandlers(
             return;
         }
 
-        const cursorPos = target.selectionStart ?? 0;
-        const selectionEnd = target.selectionEnd ?? cursorPos;
         const inputText = target.value;
+        const cursorPos = target.selectionStart ?? inputText.length;
+        const selectionEnd = target.selectionEnd ?? cursorPos;
 
         const proposedNewText = `${inputText.slice(
             0,

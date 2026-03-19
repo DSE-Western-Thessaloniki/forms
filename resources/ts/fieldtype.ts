@@ -79,6 +79,11 @@ export interface FormFieldOptions {
     capitals_enabled?: boolean;
     greek_enabled?: boolean;
     positive?: boolean;
+
+    // For numerical fields
+    number_type?: "integer" | "float";
+    decimal_places?: number | string;
+
     show_when?: Array<FormFieldOptionsShowCriteria>;
     field_width_enabled?: boolean;
     field_width?: string;
@@ -87,6 +92,9 @@ export interface FormFieldOptions {
         field_for_filename?: string | null;
         custom_value?: string | null;
     };
+
+    // For legacy support / backward compatibility (stored as plain string in the DB)
+    step?: string;
 }
 
 export function createFormFieldOptions(
