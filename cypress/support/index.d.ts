@@ -100,5 +100,10 @@ declare namespace Cypress {
         php(command: string): Chainable<any>;
 
         rewriteHeaders(): Chainable<any>;
+
+        /**
+         * Simulates dragging an element to another element.
+         */
+        dragTo(target: string | JQuery<HTMLElement>): Chainable<Element>;
     }
 }

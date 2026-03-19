@@ -333,5 +333,8 @@ const dragEnded = (event: MouseEvent) => {
         item.sort_id = sort_id;
         sort_id++;
     });
+
+    // Make sure newly added fields continue the correct sort numbering.
+    cur_sort_id = sort_id - 1;
 };
 </script>
