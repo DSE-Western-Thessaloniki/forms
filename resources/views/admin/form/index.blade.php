@@ -40,7 +40,7 @@
 
                         <div class="container">
                             @forelse ($forms as $form)
-                                <div class="card my-2 shadow-sm">
+                                <div class="card my-2 shadow-sm" id="form-{{ $form->id }}">
                                     @php
                                         if ($form->active) {
                                             $active_class = 'card-header-active';

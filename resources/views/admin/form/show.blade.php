@@ -2,8 +2,10 @@
 
 @section('content')
     <div class="btn-group">
-        <button type="button" onclick="history.back()" class="btn btn-secondary" role="button">@icon('fas fa-long-arrow-alt-left')
-            Πίσω</button>
+        <a type="button" class="btn btn-secondary"
+            href="{{ route('admin.form.index', ['back' => true]) }}#form-{{ $form->id }}">
+            @icon('fas fa-long-arrow-alt-left') Πίσω
+        </a>
         <a href="{{ route('admin.form.edit', $form->id) }}" class="btn btn-primary">@icon('fas fa-edit') Επεξεργασία</a>
         <button class="btn btn-danger" type="submit" form="delete">@icon('fas fa-trash-alt') Διαγραφή</button>
         <a href="{{ route('admin.form.data', $form->id) }}" class="btn btn-success">@icon('fas fa-table') Δεδομένα</a>

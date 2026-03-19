@@ -15,10 +15,13 @@ use App\Services\FormDataTableService;
 use App\Services\FormMissingDataService;
 use App\Services\FormService;
 use DateTime;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use XLSXWriter;
 use ZipArchive;
 
@@ -37,11 +40,18 @@ class FormsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Illuminate\Contracts\View\View
+    public function index(Request $request): View
     {
         // Κράτησε τις ρυθμίσεις για το φίλτρο και τις ενεργές φόρμες
         $only_active = $request->get('only_active') ?? $request->session()->get('only_active', 0);
         $request->session()->put('only_active', $only_active);
+
+        if ($request->exists('back')) {
+            $request->merge(['page' => $request->session()->get('page', 1)]);
+        } else {
+            $request->session()->put('page', $request->get('page', 1));
+        }
+
         if ($request->exists('filter')) {
             $filter = $request->get('filter');
         } else {
@@ -60,7 +70,7 @@ class FormsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Illuminate\Contracts\View\View
+    public function create(): View
     {
         $schools = School::where('active', 1)->get(['id', 'name']);
         $categories = SchoolCategory::all('id', 'name');
@@ -77,7 +87,7 @@ class FormsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, FormService $formService): \Illuminate\Http\RedirectResponse
+    public function store(Request $request, FormService $formService): RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -121,7 +131,7 @@ class FormsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Form $form): \Illuminate\Contracts\View\View
+    public function show(Form $form): View
     {
         return view('admin.form.show')->with('form', $form);
     }
@@ -129,7 +139,7 @@ class FormsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Form $form): \Illuminate\Contracts\View\View
+    public function edit(Form $form): View
     {
         $schools = School::get(['id', 'name', 'active']);
         $categories = SchoolCategory::all('id', 'name');
@@ -160,7 +170,7 @@ class FormsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
+    public function update(Request $request, Form $form, FormService $formService): RedirectResponse
     {
         $this->validate($request, [
             'title' => 'required',
@@ -208,7 +218,7 @@ class FormsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Form $form): \Illuminate\Http\RedirectResponse
+    public function destroy(Form $form): RedirectResponse
     {
         $form->form_fields()->delete();
         $form->delete();
@@ -219,7 +229,7 @@ class FormsController extends Controller
     /**
      * Παρουσίαση δεδομένων φόρμας.
      */
-    public function formData(Form $form, Request $request, FormDataTableService $formDataTableService): \Illuminate\Contracts\View\View
+    public function formData(Form $form, Request $request, FormDataTableService $formDataTableService): View
     {
         $noPagination = $request->get('noPagination');
         $form->load('form_fields');
@@ -245,7 +255,7 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataCSV(Form $form, FormDataTableService $formDataTableService): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataCSV(Form $form, FormDataTableService $formDataTableService): BinaryFileResponse
     {
         $form->load('form_fields');
 
@@ -271,7 +281,7 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataXLSX(Form $form, FormDataTableService $formDataTableService): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function formDataXLSX(Form $form, FormDataTableService $formDataTableService): BinaryFileResponse
     {
         $form->load('form_fields');
 
@@ -291,7 +301,7 @@ class FormsController extends Controller
     /**
      * Αλλαγή κατάστασης φόρμας.
      */
-    public function setActive(Form $form, int $state): \Illuminate\Http\RedirectResponse
+    public function setActive(Form $form, int $state): RedirectResponse
     {
         if (in_array($state, [0, 1])) {
             $form->active = $state;
@@ -304,7 +314,7 @@ class FormsController extends Controller
     /**
      * Εναλλαγή κατάστασης φόρμας (από ενεργή σε ανενεργή και το ανάποδο).
      */
-    public function toggleActive(Form $form): \Illuminate\Http\RedirectResponse
+    public function toggleActive(Form $form): RedirectResponse
     {
         $form->active = $form->active ? 0 : 1;
         $form->save();
@@ -315,7 +325,7 @@ class FormsController extends Controller
     /**
      * Εμφάνιση σχολικών μονάδων/εκπαιδευτικών που δεν απάντησαν.
      */
-    public function missing(Form $form, FormMissingDataService $formMissingDataService): \Illuminate\Contracts\View\View
+    public function missing(Form $form, FormMissingDataService $formMissingDataService): View
     {
         $data = $formMissingDataService->getMissingTable($form);
 
@@ -327,7 +337,7 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingCSV(Form $form, FormMissingDataService $formMissingDataService): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function missingCSV(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
     {
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv';
         $fd = fopen($fname, 'w');
@@ -348,7 +358,7 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
     {
         $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx';
         $writer = new XLSXWriter;
@@ -363,7 +373,7 @@ class FormsController extends Controller
     /**
      * Αντιγραφή φόρμας
      */
-    public function copyForm(Form $form, FormService $formService): \Illuminate\Http\RedirectResponse
+    public function copyForm(Form $form, FormService $formService): RedirectResponse
     {
         $formService->copyForm($form);
 
@@ -373,7 +383,7 @@ class FormsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function confirmDelete(Form $form): \Illuminate\Contracts\View\View
+    public function confirmDelete(Form $form): View
     {
         return view('admin.form.confirm_delete')->with('form', $form);
     }
