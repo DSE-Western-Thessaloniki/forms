@@ -19,7 +19,10 @@
 
             <div class="form-group row mt-5">
                 <div class="col-2">
-                    <button type="button" class="btn btn-danger" onclick="history.back()">Ακύρωση</button>
+                    <a type="button" class="btn btn-danger"
+                        href="{{ route('admin.form.index', ['back' => true]) }}#form-{{ $form->id }}">
+                        @icon('fas fa-long-arrow-alt-left') Πίσω
+                    </a>
                 </div>
                 <div class="col d-flex justify-content-end">
                     @csrf

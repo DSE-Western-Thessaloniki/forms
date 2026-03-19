@@ -15,9 +15,10 @@
 
                         <div class="btn-toolbar pb-2" role="toolbar">
                             <div class="btn-group me-2">
-                                <button type="button" class="btn btn-primary" onclick="history.back()">
-                                    @icon('fas fa-long-arrow-alt-left') Επιστροφή
-                                </button>
+                                <a type="button" class="btn btn-primary"
+                                    href="{{ route('admin.form.index', ['back' => true]) }}#form-{{ $form->id }}">
+                                    @icon('fas fa-long-arrow-alt-left') Πίσω
+                                </a>
                                 <a class="btn btn-danger" href="{{ route('admin.form.data.csv', $form) }}">
                                     @icon('fas fa-file-csv') Λήψη αρχείου csv
                                 </a>
