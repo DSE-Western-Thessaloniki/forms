@@ -30,8 +30,46 @@ const props = withDefaults(
         total_records: 1,
         disabled: false,
         errors: "{}",
-    }
+    },
 );
+
+const showDeleteDialog = ref(false);
+
+const deleteRecord = () => {
+    if (props.disabled) {
+        return;
+    }
+    showDeleteDialog.value = true;
+};
+
+const confirmDelete = () => {
+    showDeleteDialog.value = false;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = route("report.record.destroy", [
+        props.form.id,
+        props.record ?? 0,
+    ]);
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (csrfToken) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "_token";
+        input.value = csrfToken.getAttribute("content") ?? "";
+        form.appendChild(input);
+    }
+    const methodInput = document.createElement("input");
+    methodInput.type = "hidden";
+    methodInput.name = "_method";
+    methodInput.value = "DELETE";
+    form.appendChild(methodInput);
+    document.body.appendChild(form);
+    form.submit();
+};
+
+const cancelDelete = () => {
+    showDeleteDialog.value = false;
+};
 
 const real_method = props.method?.toLowerCase() === "get" ? "get" : "post";
 
@@ -44,14 +82,18 @@ const field_values = props.form.form_fields
             return {
                 [field.id]: String(
                     Number(
-                        props.form_data ? props.form_data[field.id] ?? "" : ""
-                    )
+                        props.form_data
+                            ? (props.form_data[field.id] ?? "")
+                            : "",
+                    ),
                 ),
             };
         }
 
         return {
-            [field.id]: props.form_data ? props.form_data[field.id] ?? "" : "",
+            [field.id]: props.form_data
+                ? (props.form_data[field.id] ?? "")
+                : "",
         };
     })
     .reduce((a, b) => ({ ...a, ...b }), {});
@@ -84,13 +126,13 @@ const fieldGroupRefs = useTemplateRefsList();
 const validationStatus = ref(
     props.form.form_fields.map(() => {
         return 0;
-    })
+    }),
 );
 
 const validation_errors = computed(() => {
     return validationStatus.value.reduce(
         (previous, current) => previous + current,
-        0
+        0,
     );
 });
 
@@ -127,7 +169,7 @@ const checkSaveStatus = () => {
         console.log(
             "Save disabled due to validation errors: ",
             validation_errors.value,
-            validationStatus.value
+            validationStatus.value,
         );
         saveDisabled.value = true;
         return;
@@ -173,7 +215,7 @@ const formNotReady = () => {
         "Παρακαλούμε ελέγξτε αν έχετε συμπληρώσει σωστά τη φόρμα. Τα υποχρεωτικά πεδία της φόρμας εμφανίζονται με έναν κόκκινο αστερίσκο.",
         {
             autoClose: 10000,
-        }
+        },
     );
     console.log("Form is not ready.");
 };
@@ -186,7 +228,18 @@ const formNotReady = () => {
         enctype="multipart/form-data"
         :action="action"
     >
-        <h1>{{ form.title }}</h1>
+        <h1>
+            {{ form.title }}
+            <button
+                v-if="save && !disabled"
+                class="btn btn-sm btn-danger float-end"
+                type="button"
+                @click="deleteRecord"
+                title="Διαγραφή εγγραφής"
+            >
+                <i class="fas fa-trash"></i>
+            </button>
+        </h1>
         <h3><slot name="description"></slot></h3>
         <hr />
         <div class="card">
@@ -216,7 +269,7 @@ const formNotReady = () => {
                         :disabled="disabled"
                         :accept="
                             field.type === FieldType.File
-                                ? field.accepted ?? ''
+                                ? (field.accepted ?? '')
                                 : ''
                         "
                         :route="
@@ -374,4 +427,43 @@ const formNotReady = () => {
         />
         <slot name="csrf_token"></slot>
     </form>
+    <div
+        v-if="showDeleteDialog"
+        class="modal d-block"
+        tabindex="-1"
+        style="background-color: rgba(0, 0, 0, 0.5)"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Διαγραφή εγγραφής</h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        @click="cancelDelete"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <p>Είστε σίγουροι ότι θέλετε να διαγράψετε την εγγραφή;</p>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        @click="cancelDelete"
+                    >
+                        Όχι
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        @click="confirmDelete"
+                    >
+                        Ναι
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

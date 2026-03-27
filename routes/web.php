@@ -191,6 +191,7 @@ Route::get('/logout', function () {
 
 Route::middleware('cas.auth')
     ->group(function () {
+        Route::delete('/report/{report}/record/{record}', [ReportsController::class, 'destroyRecord'])->name('report.record.destroy');
         Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');
         Route::get('/report/{report}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
         Route::get('/report/{report}/record/{record}', [ReportsController::class, 'showRecord'])->name('report.show.record');
