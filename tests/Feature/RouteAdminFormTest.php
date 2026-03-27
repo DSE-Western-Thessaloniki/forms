@@ -1172,28 +1172,28 @@ it('can change active state of a form as author', function () {
     $tmpForm['multiple'] = $tmpForm['multiple'] ? 1 : 0;
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/0');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/1');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/toggle');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/toggle');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
@@ -1214,28 +1214,28 @@ it('can change active state of a form as admin', function () {
     $tmpForm['multiple'] = $tmpForm['multiple'] ? 1 : 0;
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/0');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/1');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/toggle');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/toggle');
-    $response->assertRedirect(route('admin.form.index'));
+    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
     expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
