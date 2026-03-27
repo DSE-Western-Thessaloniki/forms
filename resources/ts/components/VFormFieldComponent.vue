@@ -85,21 +85,31 @@
             </div>
             <div v-if="cbselected === FieldType.Number">
                 <div class="row my-2">
-                    <label class="col-auto col-form-label">Τύπος αριθμού:</label>
+                    <label class="col-auto col-form-label"
+                        >Τύπος αριθμού:</label
+                    >
                     <div class="col align-self-center">
                         <div class="form-check form-check-inline">
                             <input
                                 class="form-check-input"
                                 type="radio"
-                                :name="'field[' + field_id + '][options][number_type]'"
-                                :id="'field_' + field_id + '_number_type_integer'"
+                                :name="
+                                    'field[' +
+                                    field_id +
+                                    '][options][number_type]'
+                                "
+                                :id="
+                                    'field_' + field_id + '_number_type_integer'
+                                "
                                 value="integer"
                                 v-model="numberType"
                                 :disabled="restricted"
                             />
                             <label
                                 class="form-check-label"
-                                :for="'field_' + field_id + '_number_type_integer'"
+                                :for="
+                                    'field_' + field_id + '_number_type_integer'
+                                "
                             >
                                 Ακέραιος
                             </label>
@@ -108,7 +118,11 @@
                             <input
                                 class="form-check-input"
                                 type="radio"
-                                :name="'field[' + field_id + '][options][number_type]'"
+                                :name="
+                                    'field[' +
+                                    field_id +
+                                    '][options][number_type]'
+                                "
                                 :id="'field_' + field_id + '_number_type_float'"
                                 value="float"
                                 v-model="numberType"
@@ -116,7 +130,9 @@
                             />
                             <label
                                 class="form-check-label"
-                                :for="'field_' + field_id + '_number_type_float'"
+                                :for="
+                                    'field_' + field_id + '_number_type_float'
+                                "
                             >
                                 Δεκαδικός
                             </label>
@@ -134,7 +150,9 @@
                             step="1"
                             class="form-control"
                             :name="
-                                'field[' + field_id + '][options][decimal_places]'
+                                'field[' +
+                                field_id +
+                                '][options][decimal_places]'
                             "
                             v-model="decimalPlaces"
                             :disabled="restricted"
@@ -144,6 +162,18 @@
                         </div>
                     </div>
                 </div>
+                <input
+                    v-if="restricted"
+                    type="hidden"
+                    :name="'field[' + field_id + '][options][number_type]'"
+                    :value="numberType"
+                />
+                <input
+                    v-if="restricted"
+                    type="hidden"
+                    :name="'field[' + field_id + '][options][decimal_places]'"
+                    :value="decimalPlaces"
+                />
                 <input
                     type="hidden"
                     :name="'field[' + field_id + '][options][step]'"
@@ -164,8 +194,7 @@
                             :accepted_filetypes="accepted_filetypes"
                             :selected="fieldOptions?.filetype?.value"
                             :field_for_filename="
-                                fieldOptions?.filetype?.field_for_filename ??
-                                ''
+                                fieldOptions?.filetype?.field_for_filename ?? ''
                             "
                             :custom_value="
                                 fieldOptions?.filetype?.custom_value ?? ''
@@ -268,13 +297,13 @@ const props = withDefaults(
         value: "Νέο πεδίο",
         listvalues: "",
         required: true,
-    }
+    },
 );
 
 const title = ref(props.value);
 const cbselected = ref(props.type);
 const selection_list_selected = ref(
-    props.selection_lists.length ? props.selection_lists[0].id : 0
+    props.selection_lists.length ? props.selection_lists[0].id : 0,
 );
 const options = FieldTypeOptions;
 const fieldOptions = ref(createFormFieldOptions(props.field_options ?? {}));
@@ -328,7 +357,11 @@ const computedStep = computed(() => {
 
     if (numberType.value === "integer") {
         const numeric = Number(existingStep);
-        if (!Number.isNaN(numeric) && Number.isInteger(numeric) && numeric > 0) {
+        if (
+            !Number.isNaN(numeric) &&
+            Number.isInteger(numeric) &&
+            numeric > 0
+        ) {
             return String(numeric);
         }
         return "1";
@@ -357,7 +390,7 @@ watch(
         fieldOptions.value.decimal_places = decimalPlaces.value;
         fieldOptions.value.step = computedStep.value;
     },
-    { immediate: true }
+    { immediate: true },
 );
 
 watch(title, (value) => {
