@@ -784,4 +784,65 @@ class ReportsController extends Controller
 
         return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
+
+    public function destroyRecord($report, $record)
+    {
+        $form = Form::where('active', true)->find($report);
+        if ($form) {
+            $access = $this->school_or_teacher_has_access($form);
+            if (is_bool($access)) {
+                if ($access) {
+                    if ($this->school_model_cache !== null) {
+                        $form->data()
+                            ->where('school_id', $this->school_model_cache->id)
+                            ->where('record', $record)
+                            ->delete();
+
+                        if ($form->multiple) {
+                            $form->data()
+                                ->where('school_id', $this->school_model_cache->id)
+                                ->where('record', '>', $record)
+                                ->decrement('record');
+                        }
+                    } elseif ($this->teacher_model_cache !== null) {
+                        $form->data()
+                            ->where('teacher_id', $this->teacher_model_cache->id)
+                            ->where('record', $record)
+                            ->delete();
+
+                        if ($form->multiple) {
+                            $form->data()
+                                ->where('teacher_id', $this->teacher_model_cache->id)
+                                ->where('record', '>', $record)
+                                ->decrement('record');
+                        }
+                    } else {
+                        $form->data()
+                            ->where('other_teacher_id', $this->other_teacher_model_cache->id)
+                            ->where('record', $record)
+                            ->delete();
+
+                        if ($form->multiple) {
+                            $form->data()
+                                ->where('other_teacher_id', $this->other_teacher_model_cache->id)
+                                ->where('record', '>', $record)
+                                ->decrement('record');
+                        }
+                    }
+
+                    if ($form->multiple) {
+                        return redirect(route('report.edit.record', ['report' => $report, 'record' => 0]))->with('success', 'Η εγγραφή διαγράφηκε');
+                    }
+
+                    return redirect(route('report.edit', ['report' => $report]))->with('success', 'Η εγγραφή διαγράφηκε');
+                }
+
+                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+            }
+
+            return $access;
+        }
+
+        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+    }
 }
