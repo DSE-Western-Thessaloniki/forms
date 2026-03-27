@@ -267,7 +267,7 @@ let fieldObj = {
     type: 0,
     validators: [],
     listvalues: "",
-    sort_id: 0,
+    sort_id: 1,
     new_field: false,
     options: "{}",
 };
@@ -278,7 +278,7 @@ let fields: Ref<Array<App.Models.FormField>> = ref([
     JSON.parse(JSON.stringify(fieldObj)),
 ]);
 let cur_id = 0;
-let cur_sort_id = 0;
+let cur_sort_id = 1;
 let allow_multiple = ref(props.multiple);
 let for_teachers = ref(props.for_teachers);
 let for_all_teachers = ref(props.for_all_teachers);
