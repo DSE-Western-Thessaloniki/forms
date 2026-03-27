@@ -95,26 +95,32 @@ export interface FormFieldOptions {
 
     // For legacy support / backward compatibility (stored as plain string in the DB)
     step?: string;
+
+    // Read-only fields cannot be edited by users
+    readonly?: boolean;
 }
 
 export function createFormFieldOptions(
     options: Partial<FormFieldOptions> = {}
 ): Required<FormFieldOptions> {
     return {
-        regex_enabled: false,
-        regex: "",
-        regex_description: "",
-        capitals_enabled: false,
-        greek_enabled: false,
-        positive: false,
-        show_when: [],
-        field_width_enabled: false,
-        field_width: "",
-        filetype: {
+        regex_enabled: options.regex_enabled ?? false,
+        regex: options.regex ?? "",
+        regex_description: options.regex_description ?? "",
+        capitals_enabled: options.capitals_enabled ?? false,
+        greek_enabled: options.greek_enabled ?? false,
+        positive: options.positive ?? false,
+        number_type: options.number_type ?? "integer",
+        decimal_places: options.decimal_places ?? "",
+        show_when: options.show_when ?? [],
+        field_width_enabled: options.field_width_enabled ?? false,
+        field_width: options.field_width ?? "",
+        filetype: options.filetype ?? {
             value: "",
             field_for_filename: null,
             custom_value: null,
         },
-        ...options,
+        step: options.step ?? "",
+        readonly: options.readonly ?? false,
     };
 }

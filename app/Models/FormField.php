@@ -61,6 +61,13 @@ class FormField extends Model
         return json_decode($this->options);
     }
 
+    public function readonly(): bool
+    {
+        $options = $this->field_options();
+
+        return $options->readonly ?? false;
+    }
+
     public static function fromRequest(Request $request, Form $form): void
     {
         $formfield = $request->input('field');

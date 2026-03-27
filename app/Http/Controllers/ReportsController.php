@@ -10,6 +10,7 @@ use App\Models\Option;
 use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\Teacher;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -137,7 +138,7 @@ class ReportsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -238,7 +239,7 @@ class ReportsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -284,7 +285,7 @@ class ReportsController extends Controller
      *
      * @param  int  $id
      * @param  int  $record
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function showRecord($id, $record)
     {
@@ -330,7 +331,7 @@ class ReportsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -382,7 +383,7 @@ class ReportsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function editRecord($id, $record)
     {
@@ -439,7 +440,7 @@ class ReportsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateReportRequest $request, $id)
     {
@@ -450,6 +451,10 @@ class ReportsController extends Controller
                 if ($access) {
                     $fields = $form->form_fields;
                     foreach ($fields as $field) {
+                        if ($field->readonly()) {
+                            continue;
+                        }
+
                         if ($field->type === FormField::TYPE_FILE) {
                             $file = $request->file('f'.$field->id);
                             if ($this->school_model_cache !== null) {
@@ -540,7 +545,7 @@ class ReportsController extends Controller
      * @param  int  $id  The form id
      * @param  int  $record  The record to be saved
      * @param  int|string  $next  The next record to go to
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function updateRecord(UpdateReportRequest $request, $id, int $record, $next)
     {
@@ -551,6 +556,10 @@ class ReportsController extends Controller
                 if ($access) {
                     $fields = $form->form_fields;
                     foreach ($fields as $field) {
+                        if ($field->readonly()) {
+                            continue;
+                        }
+
                         if ($field->type === FormField::TYPE_FILE) {
                             $file = $request->file('f'.$field->id);
                             if ($this->school_model_cache !== null) {

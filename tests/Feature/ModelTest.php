@@ -3,7 +3,6 @@
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormFieldData;
-use App\Models\Option;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -34,9 +33,9 @@ it('can check for admin', function () {
 
 it('can create a new role', function () {
     $role = Role::factory()
-        ->state([ 'name' => 'Test Role' ])
+        ->state(['name' => 'Test Role'])
         ->create();
-    expect($role)->toMatchArray([ 'name' => 'Test Role' ]);
+    expect($role)->toMatchArray(['name' => 'Test Role']);
 });
 
 it('can create a new form', function () {
@@ -46,7 +45,7 @@ it('can create a new form', function () {
             School::factory()
                 ->state(
                     [
-                        'name' => 'School'
+                        'name' => 'School',
                     ]
                 )
                 ->for(User::factory())
@@ -71,7 +70,7 @@ it('can create form fields for a form', function () {
                     new Sequence(
                         fn ($sequence) => [
                             'sort_id' => $sequence->index,
-                            ]
+                        ]
                     )
                 ),
             'form_fields'
@@ -92,21 +91,21 @@ it('can add data to form fields', function () {
                     new Sequence(
                         fn ($sequence) => [
                             'sort_id' => $sequence->index,
-                            ]
+                        ]
                     )
                 )
                 ->has(
                     FormFieldData::factory()
                         ->state(
                             [
-                                'data' => 'test'
+                                'data' => 'test',
                             ]
                         )
                         ->for(
                             School::factory()
                                 ->state(
                                     [
-                                        'name' => 'test school'
+                                        'name' => 'test school',
                                     ]
                                 )
                                 ->for($user)
@@ -152,7 +151,7 @@ it('can find forms available for a school', function () {
                     new Sequence(
                         fn ($sequence) => [
                             'sort_id' => $sequence->index,
-                            ]
+                        ]
                     )
                 ),
             'form_fields'
@@ -177,7 +176,7 @@ it('can find forms available for a school category', function () {
                     new Sequence(
                         fn ($sequence) => [
                             'sort_id' => $sequence->index,
-                            ]
+                        ]
                     )
                 ),
             'form_fields'
@@ -188,7 +187,6 @@ it('can find forms available for a school category', function () {
         });
     expect($category->forms->count())->toBe(2);
 });
-
 
 it('can find form fields filled by a school', function () {
     $user = User::factory()
@@ -206,14 +204,14 @@ it('can find form fields filled by a school', function () {
                     new Sequence(
                         fn ($sequence) => [
                             'sort_id' => $sequence->index,
-                            ]
+                        ]
                     )
                 )
                 ->has(
                     FormFieldData::factory()
                         ->state(
                             [
-                                'data' => 'test'
+                                'data' => 'test',
                             ]
                         )
                         ->for($school),
@@ -255,7 +253,7 @@ it('can find schools of a specific category', function () {
     $schools = School::factory()
         ->count(4)
         ->state(new Sequence(fn ($sequence) => [
-            'name' => 'test school '.$sequence->index
+            'name' => 'test school '.$sequence->index,
         ]))
         ->for(User::factory())
         ->create();
@@ -272,3 +270,58 @@ it('can find schools of a specific category', function () {
     expect($categories[2]->schools()->count())->toBe(0);
 });
 
+it('can identify readonly fields', function () {
+    $form = Form::factory()->for(User::factory())->create();
+
+    $field = FormField::factory()->for($form)->create([
+        'options' => json_encode(['readonly' => true]),
+    ]);
+    expect($field->readonly())->toBeTrue();
+
+    $fieldNoReadonly = FormField::factory()->for($form)->create([
+        'options' => json_encode(['multiple' => true]),
+    ]);
+    expect($fieldNoReadonly->readonly())->toBeFalse();
+
+    $fieldEmptyOptions = FormField::factory()->for($form)->create([
+        'options' => json_encode(new stdClass),
+    ]);
+    expect($fieldEmptyOptions->readonly())->toBeFalse();
+});
+
+it('saves a form with readonly fields retaining field values', function () {
+    $user = User::factory()->admin()->create();
+    $form = Form::factory()->for($user)->create();
+    $school = School::factory()->for($user)->category()->create();
+
+    $field1 = FormField::factory()->for($form)->create([
+        'sort_id' => 1,
+        'title' => 'Field 1',
+        'type' => FormField::TYPE_TEXT,
+        'options' => json_encode(['readonly' => true]),
+    ]);
+
+    $field2 = FormField::factory()->for($form)->create([
+        'sort_id' => 2,
+        'title' => 'Field 2',
+        'type' => FormField::TYPE_TEXT,
+        'options' => json_encode(new stdClass),
+    ]);
+
+    FormFieldData::factory()->create([
+        'form_field_id' => $field1->id,
+        'school_id' => $school->id,
+        'record' => 0,
+        'data' => 'Readonly value',
+    ]);
+
+    FormFieldData::factory()->create([
+        'form_field_id' => $field2->id,
+        'school_id' => $school->id,
+        'record' => 0,
+        'data' => 'Editable value',
+    ]);
+
+    expect($field1->field_data()->first()->data)->toBe('Readonly value');
+    expect($field2->field_data()->first()->data)->toBe('Editable value');
+});
