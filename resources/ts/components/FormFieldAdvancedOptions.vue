@@ -400,6 +400,27 @@ const advancedTarget = computed(function () {
                                 v-model="fieldOptions.regex_description"
                             />
                         </div>
+
+                        <!-- Read-only option -->
+                        <div class="input-group mb-1 mt-3">
+                            <div class="input-group-text">
+                                <input
+                                    class="form-check-input mt-0"
+                                    type="checkbox"
+                                    id="readonly"
+                                    value="true"
+                                    :name="
+                                        'field[' +
+                                        field_id +
+                                        '][options][readonly]'
+                                    "
+                                    v-model="fieldOptions.readonly"
+                                />
+                            </div>
+                            <label for="readonly" class="form-control"
+                                >Μόνο για ανάγνωση (τα δεδομένα δεν μπορούν να αλλάξουν από τον χρήστη)</label
+                            >
+                        </div>
                     </div>
                 </div>
 
