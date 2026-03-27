@@ -12,6 +12,14 @@
             "type": "vcs",
             "url": "https://github.com/DSE-Western-Thessaloniki/cas.git",
             "reference": "master"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/EsupPortail/phpCAS.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laravel-shift/cypress.git"
         }
     ],
     "require": {
@@ -26,11 +34,12 @@
         "tightenco/ziggy": "^2.2"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
+        "barryvdh/laravel-debugbar": "^4.0",
         "barryvdh/laravel-ide-helper": "^3.0",
         "fakerphp/faker": "^1.13",
-        "laracasts/cypress": "^3.0",
+        "laracasts/cypress": "dev-l13-compatibility@dev",
         "laravel-lang/common": "^6.2",
+        "laravel/boost": "^2.4",
         "laravel/dusk": "^8.0",
         "laravel/pint": "^1.15",
         "laravel/sail": "^1.10",
