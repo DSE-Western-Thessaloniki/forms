@@ -10,6 +10,19 @@ jobs:
   pest:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.11
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd=mariadb-admin ping
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+        env:
+          MYSQL_ROOT_PASSWORD: password
+
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +47,7 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Copy environment file
-        run: cp .env.example .env
+        run: cp .env.testing .env
 
       - name: Generate application key
         run: php artisan key:generate
