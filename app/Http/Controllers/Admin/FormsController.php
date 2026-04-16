@@ -94,7 +94,7 @@ class FormsController extends Controller
             'field' => 'required|array|min:1',
             'field.*.title' => 'required|string',
             'field.*.type' => 'required|integer',
-            'field.*.sort_id' => 'nullable|integer|min:1',
+            'field.*.sort_id' => 'nullable|integer|min:0',
             'field.*.required' => 'required|in:true,false,1,0',
         ]);
 
@@ -182,7 +182,7 @@ class FormsController extends Controller
             'field' => 'required|array|min:1',
             'field.*.title' => 'required|string',
             'field.*.type' => 'required|integer',
-            'field.*.sort_id' => 'nullable|integer|min:1',
+            'field.*.sort_id' => 'nullable|integer|min:0',
             'field.*.required' => 'required|in:true,false,1,0',
         ]);
 
