@@ -3,6 +3,15 @@
 @section('content')
     <h1 class="text-center">Επεξεργασία φόρμας</h1>
     <div class="container">
+        @if (session('errors'))
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (session('errors')->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form action="{{ route('admin.form.update', $form->id) }}" method="post">
 
             <vform-component :parse=true :parseobj="{{ $form->form_fields->toJson() }}" parsetitle="{{ $form->title }}"
