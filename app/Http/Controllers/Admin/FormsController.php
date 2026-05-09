@@ -481,6 +481,7 @@ class FormsController extends Controller
         $zip_name = $now->format('YmdHisu').'.zip';
         $zip->open(storage_path('app').$zip_path.$zip_name, ZipArchive::CREATE);
 
+        $files_added = 0;
         foreach ($fields as $field) {
             $subfolder = mb_strimwidth($field->title, 0, 15, '...');
             foreach ($field->field_data as $data) {
@@ -494,6 +495,7 @@ class FormsController extends Controller
                     $local_file = storage_path('app').$filepath;
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                        $files_added++;
                     }
                 } elseif ($data->teacher) {
                     if ($form->multiple) {
@@ -505,6 +507,7 @@ class FormsController extends Controller
                     $local_file = storage_path('app').$filepath;
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                        $files_added++;
                     }
                 } else {
                     if ($form->multiple) {
@@ -516,12 +519,19 @@ class FormsController extends Controller
                     $local_file = storage_path('app').$filepath;
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                        $files_added++;
                     }
                 }
             }
         }
 
         $zip->close();
+
+        if ($files_added === 0) {
+            Storage::delete($zip_path.$zip_name);
+
+            return redirect(route('admin.form.data', $form->id))->with('error', 'Δεν βρέθηκαν αρχεία για λήψη');
+        }
 
         return Storage::download($zip_path.$zip_name);
     }
