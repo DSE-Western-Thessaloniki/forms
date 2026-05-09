@@ -490,24 +490,33 @@ class FormsController extends Controller
                     } else {
                         $subfolder2 = "$subfolder/{$data->school->name}";
                     }
-                    $local_file = storage_path('app')."/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
-                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    $filepath = "/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
+                    $local_file = storage_path('app').$filepath;
+                    if ($field->required || file_exists("$local_file")) {
+                        $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    }
                 } elseif ($data->teacher) {
                     if ($form->multiple) {
                         $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}/{$data->record}";
                     } else {
                         $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}";
                     }
-                    $local_file = storage_path('app')."/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
-                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    $filepath = "/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
+                    $local_file = storage_path('app').$filepath;
+                    if ($field->required || file_exists("$local_file")) {
+                        $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    }
                 } else {
                     if ($form->multiple) {
                         $subfolder2 = "$subfolder/{$data->other_teacher->name}/{$data->record}";
                     } else {
                         $subfolder2 = "$subfolder/{$data->other_teacher->name}";
                     }
-                    $local_file = storage_path('app')."/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
-                    $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    $filepath = "/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
+                    $local_file = storage_path('app').$filepath;
+                    if ($field->required || file_exists("$local_file")) {
+                        $zip->addFile($local_file, "$subfolder2/{$data->data}");
+                    }
                 }
             }
         }
