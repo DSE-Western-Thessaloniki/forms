@@ -15,10 +15,6 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/EsupPortail/phpCAS.git"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/laravel-shift/cypress.git"
         }
     ],
@@ -30,7 +26,7 @@
         "laravel/ui": "^4.2",
         "mk-j/php_xlsxwriter": "^0.38.0",
         "subfission/cas": "dev-master@dev",
-        "apereo/phpcas": "dev-master@dev",
+        "apereo/phpcas": "^1.6.2",
         "tightenco/ziggy": "^2.2"
     },
     "require-dev": {
