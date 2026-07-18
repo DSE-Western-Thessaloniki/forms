@@ -1546,3 +1546,225 @@ it('validates download links', function ($subfolder) {
     $response->assertDownload();
     expect($response->streamedContent())->toBe('Test file content');
 })->with(['school', 'teacher', 'other_teacher']);
+
+it('filters invalid characters from school names in zip subfolders', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Use a school already attached to the form and set a name with a slash
+    $school = $testForm->schools()->first();
+    $school->update(['name' => '1ο Γ/Σ Σταυρούπολης']);
+
+    // Make sure all field data for this field points to this school
+    FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->update([
+            'school_id' => $school->id,
+        ]);
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->get();
+    expect($data)->not->toBeEmpty();
+
+    // Store test files
+    foreach ($data as $item) {
+        Storage::put("report/{$testForm->id}/school/{$item->school_id}/{$item->record}/{$field->id}", 'Test file content');
+    }
+
+    $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    $response->assertDownload();
+
+    $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
+    $tmp = fopen($tmp_filename, 'w');
+    fwrite($tmp, $response->streamedContent());
+    fclose($tmp);
+    $archive = new ZipArchive;
+    $archive->open($tmp_filename);
+
+    // Check that no zip entry contains the unfiltered school name with a slash in it
+    for ($i = 0; $i < $archive->count(); $i++) {
+        $name = $archive->getNameIndex($i);
+        expect($name)->not->toContain('1ο Γ/Σ Σταυρούπολης');
+    }
+
+    $archive->close();
+    unlink($tmp_filename);
+    Storage::deleteDirectory("report/{$testForm->id}");
+});
+
+it('filters invalid characters from teacher names in zip subfolders', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    $testForm->for_teachers = true;
+    $testForm->save();
+
+    $teacher = Teacher::factory()->create([
+        'surname' => 'Παπαδόπουλος/α',
+        'name' => 'Νίκος',
+        'am' => '123456',
+    ]);
+
+    // Update all field data for this field to point to this teacher
+    FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->update([
+            'school_id' => null,
+            'teacher_id' => $teacher->id,
+        ]);
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->get();
+    expect($data)->not->toBeEmpty();
+
+    // Store test files
+    foreach ($data as $item) {
+        Storage::put("report/{$testForm->id}/teacher/{$item->teacher_id}/{$item->record}/{$field->id}", 'Test file content');
+    }
+
+    $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    $response->assertDownload();
+
+    $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
+    $tmp = fopen($tmp_filename, 'w');
+    fwrite($tmp, $response->streamedContent());
+    fclose($tmp);
+    $archive = new ZipArchive;
+    $archive->open($tmp_filename);
+
+    // Check that no zip entry contains the unfiltered teacher name with a slash
+    for ($i = 0; $i < $archive->count(); $i++) {
+        $name = $archive->getNameIndex($i);
+        expect($name)->not->toContain('Παπαδόπουλος/α');
+    }
+
+    $archive->close();
+    unlink($tmp_filename);
+    Storage::deleteDirectory("report/{$testForm->id}");
+});
+
+it('filters invalid characters from other teacher names in zip subfolders', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    $testForm->for_teachers = true;
+    $testForm->for_all_teachers = true;
+    $testForm->save();
+
+    $other_teacher = OtherTeacher::factory()->create([
+        'employeenumber' => '9999999999999999',
+        'email' => 'invalid@email.com',
+        'name' => 'Τσιρ/ίδης Γιώργος',
+    ]);
+
+    // Update all field data for this field to point to this other_teacher
+    FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->update([
+            'school_id' => null,
+            'other_teacher_id' => $other_teacher->id,
+        ]);
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->get();
+    expect($data)->not->toBeEmpty();
+
+    // Store test files
+    foreach ($data as $item) {
+        Storage::put("report/{$testForm->id}/other_teacher/{$item->other_teacher_id}/{$item->record}/{$field->id}", 'Test file content');
+    }
+
+    $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    $response->assertDownload();
+
+    $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
+    $tmp = fopen($tmp_filename, 'w');
+    fwrite($tmp, $response->streamedContent());
+    fclose($tmp);
+    $archive = new ZipArchive;
+    $archive->open($tmp_filename);
+
+    // Check that no zip entry contains the unfiltered other teacher name with a slash
+    for ($i = 0; $i < $archive->count(); $i++) {
+        $name = $archive->getNameIndex($i);
+        expect($name)->not->toContain('Τσιρ/ίδης');
+    }
+
+    $archive->close();
+    unlink($tmp_filename);
+    Storage::deleteDirectory("report/{$testForm->id}");
+});
+
+it('filters backslashes and colons from school names in zip subfolders', function () {
+    $admin = User::factory()->admin()->create();
+    $this->seed([RoleSeeder::class, UserSeeder::class, SchoolCategorySeeder::class, SchoolSeeder::class]);
+    $testForm = test_create_one_form_for_user($admin);
+    $this->seed(FormFieldDataSeeder::class);
+
+    $field = FormField::query()->where('type', FormField::TYPE_FILE)->first();
+    expect($field)->not->toBeNull();
+
+    // Use a school already attached to the form and set a name with various invalid characters
+    $school = $testForm->schools()->first();
+    $school->update(['name' => 'Σχολείο: "Τεστ"\Νέο']);
+
+    // Make sure all field data for this field points to this school
+    FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->update([
+            'school_id' => $school->id,
+        ]);
+
+    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    $data = FormFieldData::query()
+        ->where('form_field_id', $field->id)
+        ->get();
+    expect($data)->not->toBeEmpty();
+
+    // Store test files
+    foreach ($data as $item) {
+        Storage::put("report/{$testForm->id}/school/{$item->school_id}/{$item->record}/{$field->id}", 'Test file content');
+    }
+
+    $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
+    $response->assertDownload();
+
+    $tmp_filename = tempnam(sys_get_temp_dir(), 'zip');
+    $tmp = fopen($tmp_filename, 'w');
+    fwrite($tmp, $response->streamedContent());
+    fclose($tmp);
+    $archive = new ZipArchive;
+    $archive->open($tmp_filename);
+
+    for ($i = 0; $i < $archive->count(); $i++) {
+        $name = $archive->getNameIndex($i);
+        expect($name)->not->toContain(':');
+        expect($name)->not->toContain('"');
+        expect($name)->not->toContain('\\');
+    }
+
+    $archive->close();
+    unlink($tmp_filename);
+    Storage::deleteDirectory("report/{$testForm->id}");
+});
