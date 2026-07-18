@@ -23,10 +23,13 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use XLSXWriter;
+use App\Http\Traits\UsesFileFiltering;
 use ZipArchive;
 
 class FormsController extends Controller
 {
+    use UsesFileFiltering;
+
     /**
      * Create a new controller instance.
      *
@@ -515,13 +518,14 @@ class FormsController extends Controller
 
         $files_added = 0;
         foreach ($fields as $field) {
-            $subfolder = mb_strimwidth($field->title, 0, 15, '...');
+            $subfolder = mb_strimwidth($this->filterFilename($field->title, false), 0, 15, '...');
             foreach ($field->field_data as $data) {
                 if ($data->school) {
+                    $schoolName = $this->filterFilename($data->school->name, false);
                     if ($form->multiple) {
-                        $subfolder2 = "$subfolder/{$data->school->name}/{$data->record}";
+                        $subfolder2 = "$subfolder/{$schoolName}/{$data->record}";
                     } else {
-                        $subfolder2 = "$subfolder/{$data->school->name}";
+                        $subfolder2 = "$subfolder/{$schoolName}";
                     }
                     $filepath = "/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
                     $local_file = Storage::path($filepath);
@@ -530,10 +534,11 @@ class FormsController extends Controller
                         $files_added++;
                     }
                 } elseif ($data->teacher) {
+                    $teacherName = $this->filterFilename("{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}", false);
                     if ($form->multiple) {
-                        $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}/{$data->record}";
+                        $subfolder2 = "$subfolder/{$teacherName}/{$data->record}";
                     } else {
-                        $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}";
+                        $subfolder2 = "$subfolder/{$teacherName}";
                     }
                     $filepath = "/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
                     $local_file = Storage::path($filepath);
@@ -542,10 +547,11 @@ class FormsController extends Controller
                         $files_added++;
                     }
                 } else {
+                    $otherTeacherName = $this->filterFilename($data->other_teacher->name, false);
                     if ($form->multiple) {
-                        $subfolder2 = "$subfolder/{$data->other_teacher->name}/{$data->record}";
+                        $subfolder2 = "$subfolder/{$otherTeacherName}/{$data->record}";
                     } else {
-                        $subfolder2 = "$subfolder/{$data->other_teacher->name}";
+                        $subfolder2 = "$subfolder/{$otherTeacherName}";
                     }
                     $filepath = "/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
                     $local_file = Storage::path($filepath);
