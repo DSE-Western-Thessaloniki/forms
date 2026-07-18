@@ -271,7 +271,9 @@ class FormsController extends Controller
 
         [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
-        $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv';
+        $directory = '/tmp/'.auth()->user()->id.'/';
+        Storage::makeDirectory($directory);
+        $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
             exit('Failed to open temporary file');
@@ -297,7 +299,9 @@ class FormsController extends Controller
 
         [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
-        $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx';
+        $directory = '/tmp/'.auth()->user()->id.'/';
+        Storage::makeDirectory($directory);
+        $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx');
         $writer = new XLSXWriter;
 
         $data = array_merge([$dataTableColumns], $dataTable->toArray());
@@ -349,7 +353,9 @@ class FormsController extends Controller
      */
     public function missingCSV(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
     {
-        $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv';
+        $directory = '/tmp/'.auth()->user()->id.'/';
+        Storage::makeDirectory($directory);
+        $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
             exit('Failed to open temporary file');
@@ -370,7 +376,9 @@ class FormsController extends Controller
      */
     public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
     {
-        $fname = '/tmp/'.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx';
+        $directory = '/tmp/'.auth()->user()->id.'/';
+        Storage::makeDirectory($directory);
+        $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx');
         $writer = new XLSXWriter;
 
         $data = $formMissingDataService->getMissingTable($form);
@@ -479,7 +487,7 @@ class FormsController extends Controller
         $zip = new ZipArchive;
         $now = DateTime::createFromFormat('U.u', microtime(true));
         $zip_name = $now->format('YmdHisu').'.zip';
-        $zip->open(storage_path('app').$zip_path.$zip_name, ZipArchive::CREATE);
+        $zip->open(Storage::path($zip_path.$zip_name), ZipArchive::CREATE);
 
         $files_added = 0;
         foreach ($fields as $field) {
@@ -492,7 +500,7 @@ class FormsController extends Controller
                         $subfolder2 = "$subfolder/{$data->school->name}";
                     }
                     $filepath = "/report/{$form->id}/school/{$data->school->id}/{$data->record}/{$field->id}";
-                    $local_file = storage_path('app').$filepath;
+                    $local_file = Storage::path($filepath);
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
                         $files_added++;
@@ -504,7 +512,7 @@ class FormsController extends Controller
                         $subfolder2 = "$subfolder/{$data->teacher->surname} {$data->teacher->name} {$data->teacher->am}";
                     }
                     $filepath = "/report/{$form->id}/teacher/{$data->teacher->id}/{$data->record}/{$field->id}";
-                    $local_file = storage_path('app').$filepath;
+                    $local_file = Storage::path($filepath);
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
                         $files_added++;
@@ -516,7 +524,7 @@ class FormsController extends Controller
                         $subfolder2 = "$subfolder/{$data->other_teacher->name}";
                     }
                     $filepath = "/report/{$form->id}/other_teacher/{$data->other_teacher->id}/{$data->record}/{$field->id}";
-                    $local_file = storage_path('app').$filepath;
+                    $local_file = Storage::path($filepath);
                     if ($field->required || file_exists("$local_file")) {
                         $zip->addFile($local_file, "$subfolder2/{$data->data}");
                         $files_added++;

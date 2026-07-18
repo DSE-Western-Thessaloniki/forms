@@ -15,6 +15,7 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\SchoolCategorySeeder;
 use Database\Seeders\SchoolSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Subfission\Cas\Facades\Cas;
 use Symfony\Component\VarDumper\VarDumper;
@@ -1398,6 +1399,7 @@ it('can download all files attached to a form as admin', function ($subfolder) {
 
     // Σε κάθε νέο αίτημα λήψης όλων των αρχείων γίνεται εκκαθάριση των παλαιότερων αρχείων
     $zip_path = "/tmp/{$admin->id}/";
+    Storage::fake('local');
     Storage::makeDirectory($zip_path);
     Storage::put($zip_path.'all_files.zip', '');
     Storage::put($zip_path.'all_files2.zip', '');
