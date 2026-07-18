@@ -273,6 +273,12 @@ class FormsController extends Controller
 
         $directory = '/tmp/'.auth()->user()->id.'/';
         Storage::makeDirectory($directory);
+
+        // Κάνε εκκαθάριση παλιών αρχείων
+        foreach (Storage::files($directory) as $file) {
+            Storage::delete($file);
+        }
+
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
@@ -301,6 +307,12 @@ class FormsController extends Controller
 
         $directory = '/tmp/'.auth()->user()->id.'/';
         Storage::makeDirectory($directory);
+
+        // Κάνε εκκαθάριση παλιών αρχείων
+        foreach (Storage::files($directory) as $file) {
+            Storage::delete($file);
+        }
+
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx');
         $writer = new XLSXWriter;
 
@@ -355,6 +367,12 @@ class FormsController extends Controller
     {
         $directory = '/tmp/'.auth()->user()->id.'/';
         Storage::makeDirectory($directory);
+
+        // Κάνε εκκαθάριση παλιών αρχείων
+        foreach (Storage::files($directory) as $file) {
+            Storage::delete($file);
+        }
+
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
@@ -378,6 +396,12 @@ class FormsController extends Controller
     {
         $directory = '/tmp/'.auth()->user()->id.'/';
         Storage::makeDirectory($directory);
+
+        // Κάνε εκκαθάριση παλιών αρχείων
+        foreach (Storage::files($directory) as $file) {
+            Storage::delete($file);
+        }
+
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.xlsx');
         $writer = new XLSXWriter;
 
