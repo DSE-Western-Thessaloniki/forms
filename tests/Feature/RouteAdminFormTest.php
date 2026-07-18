@@ -1527,19 +1527,19 @@ it('validates download links', function ($subfolder) {
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/notvalid/{$data->record}/{$field->id}")
         ->assertNotFound();
 
-    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/999/{$data->record}/{$field->id}")
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/555/{$data->record}/{$field->id}")
         ->assertNotFound();
 
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/invalid/{$field->id}")
         ->assertNotFound();
 
-    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/999/{$field->id}")
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/555/{$field->id}")
         ->assertNotFound();
 
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/invalid")
         ->assertNotFound();
 
-    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/999")
+    $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/555")
         ->assertNotFound();
 
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}");
