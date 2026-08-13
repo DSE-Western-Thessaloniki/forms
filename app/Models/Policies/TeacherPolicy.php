@@ -20,7 +20,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return false;
     }
@@ -30,7 +30,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Teacher $teacher)
+    public function view(User $user, Teacher $teacher): bool
     {
         return false;
     }
@@ -40,7 +40,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return false;
     }
@@ -50,7 +50,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Teacher $teacher)
+    public function update(User $user, Teacher $teacher): bool
     {
         return false;
     }
@@ -60,7 +60,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Teacher $teacher)
+    public function delete(User $user, Teacher $teacher): bool
     {
         return false;
     }
@@ -70,7 +70,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Teacher $teacher)
+    public function restore(User $user, Teacher $teacher): bool
     {
         return false;
     }
@@ -80,7 +80,7 @@ class TeacherPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Teacher $teacher)
+    public function forceDelete(User $user, Teacher $teacher): bool
     {
         return false;
     }

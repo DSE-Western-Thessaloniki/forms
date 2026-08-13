@@ -20,7 +20,7 @@ class UserPolicy
      * @param  \App\Models\User  $current_user
      * @return mixed
      */
-    public function viewAny(User $current_user)
+    public function viewAny(User $current_user): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class UserPolicy
      * @param  \App\Models\User  $current_user
      * @return mixed
      */
-    public function create(User $current_user)
+    public function create(User $current_user): bool
     {
         return false;
     }
@@ -67,7 +67,7 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function delete(User $current_user, User $user)
+    public function delete(User $current_user, User $user): bool
     {
         return false;
     }

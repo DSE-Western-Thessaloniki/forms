@@ -20,7 +20,7 @@ return RectorConfig::configure()
     ->withFluentCallNewLine()
     ->withTreatClassesAsFinal()
     ->withPhpSets(php84: true)
-    ->withTypeCoverageLevel(6)
+    ->withTypeCoverageLevel(7)
     ->withTypeCoverageDocblockLevel(0)
     ->withDeadCodeLevel(0)
     ->withCodeQualityLevel(0);

@@ -22,7 +22,7 @@ class FormPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return true;
     }
@@ -34,7 +34,7 @@ class FormPolicy
      * @param  \App\Models\Form  $form
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Form $form)
+    public function view(User $user, Form $form): bool
     {
         return true;
     }
@@ -45,7 +45,7 @@ class FormPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if ($user->roles()->where('name', 'Author')->exists()) {
             return true;
@@ -60,7 +60,7 @@ class FormPolicy
      * @param  \App\Models\Form  $form
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Form $form)
+    public function update(User $user, Form $form): bool
     {
         if ($user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id) {
             return true;
@@ -76,7 +76,7 @@ class FormPolicy
      * @param  \App\Models\Form  $form
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Form $form)
+    public function delete(User $user, Form $form): bool
     {
         if ($user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id) {
             return true;

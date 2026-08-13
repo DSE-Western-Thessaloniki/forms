@@ -21,7 +21,7 @@ class SchoolCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return false;
     }
@@ -33,7 +33,7 @@ class SchoolCategoryPolicy
      * @param  \App\Models\SchoolCategory  $schoolCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, SchoolCategory $schoolCategory)
+    public function view(User $user, SchoolCategory $schoolCategory): bool
     {
         return false;
     }
@@ -44,7 +44,7 @@ class SchoolCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return false;
     }
@@ -56,7 +56,7 @@ class SchoolCategoryPolicy
      * @param  \App\Models\SchoolCategory  $schoolCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, SchoolCategory $schoolCategory)
+    public function update(User $user, SchoolCategory $schoolCategory): bool
     {
         return false;
     }
@@ -68,7 +68,7 @@ class SchoolCategoryPolicy
      * @param  \App\Models\SchoolCategory  $schoolCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, SchoolCategory $schoolCategory)
+    public function delete(User $user, SchoolCategory $schoolCategory): bool
     {
         return false;
     }

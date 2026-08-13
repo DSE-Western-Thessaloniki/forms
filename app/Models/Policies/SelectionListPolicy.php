@@ -56,7 +56,7 @@ class SelectionListPolicy
      * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, SelectionList $selectionList)
+    public function update(User $user, SelectionList $selectionList): bool
     {
         if (!$user->roles()->where("name", "Author")->exists())
             return false;
@@ -74,7 +74,7 @@ class SelectionListPolicy
      * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, SelectionList $selectionList)
+    public function delete(User $user, SelectionList $selectionList): bool
     {
         if (!$user->roles()->where("name", "Author")->exists())
             return false;
@@ -92,7 +92,7 @@ class SelectionListPolicy
      * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, SelectionList $selectionList)
+    public function restore(User $user, SelectionList $selectionList): bool
     {
         return false;
     }
@@ -104,7 +104,7 @@ class SelectionListPolicy
      * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, SelectionList $selectionList)
+    public function forceDelete(User $user, SelectionList $selectionList): bool
     {
         return false;
     }
