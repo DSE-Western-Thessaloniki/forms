@@ -6,32 +6,32 @@ use App\Models\User;
 use Database\Seeders\OptionSeeder;
 use Illuminate\Http\UploadedFile;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-it('cannot access the teacher panel as user', function () {
+it('cannot access the teacher panel as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/teacher')->assertForbidden();
 });
 
-it('cannot access the teacher panel as author', function () {
+it('cannot access the teacher panel as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/teacher')->assertForbidden();
 });
 
-it('can access the teacher panel as admin', function () {
+it('can access the teacher panel as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/teacher')->assertOk();
 });
 
-it('can access the teacher panel as admin (use filter)', function () {
+it('can access the teacher panel as admin (use filter)', function (): void {
     $admin = User::factory()->admin()->create();
     $teachers = Teacher::factory()
         ->createMany(2);
@@ -45,25 +45,25 @@ it('can access the teacher panel as admin (use filter)', function () {
     $response->assertDontSee($teachers[1]->surname);
 });
 
-it('cannot access a teacher\'s creation form as user', function () {
+it('cannot access a teacher\'s creation form as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/teacher/create')->assertForbidden();
 });
 
-it('cannot access a teacher\'s creation form as author', function () {
+it('cannot access a teacher\'s creation form as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/teacher/create')->assertForbidden();
 });
 
-it('can access a teacher\'s creation form as admin', function () {
+it('can access a teacher\'s creation form as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/teacher/create')->assertOk();
 });
 
-it('cannot create a teacher as user', function () {
+it('cannot create a teacher as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post('/admin/teacher', [
@@ -74,7 +74,7 @@ it('cannot create a teacher as user', function () {
     ])->assertForbidden();
 });
 
-it('cannot create a teacher as author', function () {
+it('cannot create a teacher as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->post('/admin/teacher', [
@@ -85,7 +85,7 @@ it('cannot create a teacher as author', function () {
     ])->assertForbidden();
 });
 
-it('can create a teacher as admin', function () {
+it('can create a teacher as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $teacher_data = [
         'surname' => 'Doe',
@@ -100,42 +100,42 @@ it('can create a teacher as admin', function () {
     $this->assertDatabaseHas('teachers', $teacher_data);
 });
 
-it('cannot edit a teacher as user', function () {
+it('cannot edit a teacher as user', function (): void {
     $user = User::factory()->user()->create();
     $teacher = Teacher::factory()->create();
 
     $this->actingAs($user)->get('/admin/teacher/'.$teacher->id.'/edit')->assertForbidden();
 });
 
-it('cannot edit a teacher as author', function () {
+it('cannot edit a teacher as author', function (): void {
     $author = User::factory()->author()->create();
     $teacher = Teacher::factory()->create();
 
     $this->actingAs($author)->get('/admin/teacher/'.$teacher->id.'/edit')->assertForbidden();
 });
 
-it('can edit a teacher as admin', function () {
+it('can edit a teacher as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $teacher = Teacher::factory()->create();
 
     $this->actingAs($admin)->get('/admin/teacher/'.$teacher->id.'/edit')->assertOk();
 });
 
-it('cannot delete a teacher as user', function () {
+it('cannot delete a teacher as user', function (): void {
     $user = User::factory()->user()->create();
     $teacher = Teacher::factory()->create();
 
     $this->actingAs($user)->delete('/admin/teacher/'.$teacher->id)->assertForbidden();
 });
 
-it('cannot delete a teacher as author', function () {
+it('cannot delete a teacher as author', function (): void {
     $author = User::factory()->author()->create();
     $teacher = Teacher::factory()->create();
 
     $this->actingAs($author)->delete('/admin/teacher/'.$teacher->id)->assertForbidden();
 });
 
-it('can delete a teacher as admin', function () {
+it('can delete a teacher as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $teacher = Teacher::factory()->create();
 
@@ -144,7 +144,7 @@ it('can delete a teacher as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός διαγράφηκε!');
 });
 
-it('cannot update a teacher as user', function () {
+it('cannot update a teacher as user', function (): void {
     $user = User::factory()->user()->create();
     $teacher = Teacher::factory()->create();
 
@@ -159,7 +159,7 @@ it('cannot update a teacher as user', function () {
     $response->assertForbidden();
 });
 
-it('cannot update a teacher as author', function () {
+it('cannot update a teacher as author', function (): void {
     $author = User::factory()->author()->create();
     $teacher = Teacher::factory()->create();
 
@@ -174,7 +174,7 @@ it('cannot update a teacher as author', function () {
     $response->assertForbidden();
 });
 
-it('can update a teacher as admin', function () {
+it('can update a teacher as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $teacher = Teacher::factory()->create();
 
@@ -190,39 +190,39 @@ it('can update a teacher as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός ενημερώθηκε!');
 });
 
-it('cannot access a teacher\'s import form as user', function () {
+it('cannot access a teacher\'s import form as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/teacher/import')->assertForbidden();
 });
 
-it('cannot access a teacher\'s import form as author', function () {
+it('cannot access a teacher\'s import form as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/teacher/import')->assertForbidden();
 });
 
-it('can access a teacher\'s import form as admin', function () {
+it('can access a teacher\'s import form as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/teacher/import')->assertOk();
 });
 
-it('cannot import teachers as user', function () {
+it('cannot import teachers as user', function (): void {
     $user = User::factory()->user()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
     $this->actingAs($user)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
 });
 
-it('cannot import teachers as author', function () {
+it('cannot import teachers as author', function (): void {
     $author = User::factory()->author()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
     $this->actingAs($author)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
 });
 
-it('can import teachers as admin (semicolon as delimiter)', function () {
+it('can import teachers as admin (semicolon as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
@@ -230,7 +230,7 @@ it('can import teachers as admin (semicolon as delimiter)', function () {
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
-it('can import teachers as admin (comma as delimiter)', function () {
+it('can import teachers as admin (comma as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
 
@@ -238,7 +238,7 @@ it('can import teachers as admin (comma as delimiter)', function () {
     expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
-it('cannot import teachers as admin (wrong format of file)', function () {
+it('cannot import teachers as admin (wrong format of file)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101\n");
 
@@ -246,7 +246,7 @@ it('cannot import teachers as admin (wrong format of file)', function () {
     expect($response->getSession()->only(['error'])['error'])->toBe('Λανθασμένη μορφή αρχείου');
 });
 
-it('cannot import teachers as admin (wrong am/afm combination)', function () {
+it('cannot import teachers as admin (wrong am/afm combination)', function (): void {
     $admin = User::factory()->admin()->create();
     Teacher::factory()->create([
         'name' => 'Joe',
@@ -260,7 +260,7 @@ it('cannot import teachers as admin (wrong am/afm combination)', function () {
     expect($response->getSession()->only(['error'])['error'])->toBe('Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
 });
 
-it('can import teachers as admin and mark old teacher data as inactive', function () {
+it('can import teachers as admin and mark old teacher data as inactive', function (): void {
     $admin = User::factory()->admin()->create();
     $teachers = Teacher::factory()->createMany(2);
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;{$teachers[0]->am};{$teachers[0]->afm}\n");

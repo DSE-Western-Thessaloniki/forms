@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 trait UsesUuid
 {
   protected static function bootUsesUuid() {
-    static::creating(function ($model) {
+    static::creating(function ($model): void {
       if (! $model->getKey()) {
         $model->{$model->getKeyName()} = (string) Str::orderedUuid();
       }

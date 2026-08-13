@@ -150,7 +150,7 @@ class TeacherController extends Controller
         $numFields = 4; // surname, name, am, afm
         $missingField = false;
         if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
-            while (($row_data = fgetcsv($handle, 1000, ',')) !== false) {
+            while (($row_data = fgetcsv($handle, 1000, ',', escape: '\\')) !== false) {
                 if (count($row_data) != $numFields) {
                     $missingField = true;
                     break;
@@ -170,7 +170,7 @@ class TeacherController extends Controller
             $missingField = false;
             $data = [];
             if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
-                while (($row_data = fgetcsv($handle, 1000, ';')) !== false) {
+                while (($row_data = fgetcsv($handle, 1000, ';', escape: '\\')) !== false) {
                     if (count($row_data) != $numFields) {
                         $missingField = true;
                         break;

@@ -20,7 +20,7 @@ class FormService
         $formFields = $form->form_fields()->get();
 
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
-        $formFields->each(function ($field) use ($formFields) {
+        $formFields->each(function ($field) use ($formFields): void {
             $options = json_decode($field->options, true);
             if (! isset($options['show_when'])) {
                 return;
@@ -51,7 +51,7 @@ class FormService
         $formFields = $form->form_fields()->get();
 
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
-        $formFields->each(function ($field, $fieldIndex) use ($formFields) {
+        $formFields->each(function ($field, $fieldIndex) use ($formFields): void {
             $options = json_decode($field->options, true);
             if (! isset($options['show_when'])) {
                 return;
@@ -91,7 +91,7 @@ class FormService
     private function fixFormFieldOptionsAfterCopy(Collection $oldFields, Collection $newFields): void
     {
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
-        $newFields->each(function ($field) use ($oldFields, $newFields) {
+        $newFields->each(function ($field) use ($oldFields, $newFields): void {
             $options = json_decode($field->options, true);
             if (! isset($options['show_when'])) {
                 return;

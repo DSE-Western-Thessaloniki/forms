@@ -35,9 +35,7 @@ uses(Tests\DuskTestCase::class, DatabaseMigrations::class)->in('Browser');
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+expect()->extend('toBeOne', fn() => $this->toBe(1));
 
 /*
 |--------------------------------------------------------------------------
@@ -131,7 +129,7 @@ function test_create_one_form_for_user(User $user): Form
                     // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
                     if (in_array($type, [2, 3, 4])) {
                         $listvalues = [];
-                        for ($i = 0; $i < rand(1, 10); $i++) {
+                        for ($i = 0; $i < random_int(1, 10); $i++) {
                             array_push(
                                 $listvalues,
                                 [

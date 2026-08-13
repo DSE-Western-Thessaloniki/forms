@@ -22,9 +22,7 @@ class UpdateReportRequest extends FormRequest
         /** @var Collection<FormField> */
         $form_fields = $this->form->form_fields;
 
-        $attributes = $form_fields->flatMap(function (FormField $field) {
-            return ["f$field->id" => "'{$field->title}'"];
-        })->toArray();
+        $attributes = $form_fields->flatMap(fn(FormField $field) => ["f$field->id" => "'{$field->title}'"])->toArray();
 
         return $attributes;
     }
@@ -75,9 +73,7 @@ class UpdateReportRequest extends FormRequest
             if ($field->type === FormField::TYPE_CHECKBOX) {
                 $field_rules[] = 'array';
 
-                $accepted_values = array_map(function ($item) {
-                    return $item->id;
-                }, json_decode($field->listvalues));
+                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
                 $rules["f{$field->id}.*"] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_DATE) {
                 $field_rules[] = 'date';
@@ -111,15 +107,11 @@ class UpdateReportRequest extends FormRequest
                 $field_rules[] = 'numeric';
             } elseif ($field->type === FormField::TYPE_RADIO_BUTTON) {
                 $field_rules[] = 'integer';
-                $accepted_values = array_map(function ($item) {
-                    return $item->id;
-                }, json_decode($field->listvalues));
+                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
                 $field_rules[] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_SELECT) {
                 $field_rules[] = 'integer';
-                $accepted_values = array_map(function ($item) {
-                    return $item->id;
-                }, json_decode($field->listvalues));
+                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
                 if (! $field->required) {
                     $accepted_values[] = '-1';
                 } else {

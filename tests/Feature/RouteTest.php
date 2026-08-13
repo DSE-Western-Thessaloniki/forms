@@ -5,26 +5,24 @@ use App\Models\User;
 use Database\Seeders\OptionSeeder;
 use Tests\TestCasManager;
 
-beforeEach(function() {
+beforeEach(function(): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', function () {
-        return new TestCasManager();
-    });
+    $this->app->singleton('cas', fn() => new TestCasManager());
 
     test_cas_null();
 });
 
-it('can get /', function() {
+it('can get /', function(): void {
     $response = $this->get('/');
 
     $response->assertOk();
 });
 
-it('shows first run setup', function() {
+it('shows first run setup', function(): void {
     $option = Option::where('name', 'first_run')->first();
     $option->value = 1;
     $option->save();
@@ -35,32 +33,32 @@ it('shows first run setup', function() {
     $this->get('/setup')->assertOk();
 });
 
-it('cannot get /setup after first run setup', function() {
+it('cannot get /setup after first run setup', function(): void {
     $response = $this->get('/setup');
 
     $response->assertRedirect('/');
 });
 
-it('gets /admin/login without logging in', function($url) {
+it('gets /admin/login without logging in', function($url): void {
     $response = $this->get($url);
 
     $response->assertRedirect('/admin/login');
 
 })->with('admin_routes');
 
-it('can access the admin backend as user', function() {
+it('can access the admin backend as user', function(): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin')->assertOk();
 });
 
-it('can access the admin backend as author', function() {
+it('can access the admin backend as author', function(): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin')->assertOk();
 });
 
-it('can access the admin backend as admin', function() {
+it('can access the admin backend as admin', function(): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin')->assertOk();

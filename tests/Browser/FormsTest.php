@@ -8,7 +8,7 @@ use Database\Seeders\UserSeeder;
 use Laravel\Dusk\Browser;
 use function Pest\Faker\faker;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Το πρώτο seed φορτώνει μόνο τις αρχικές τιμές για την λειτουργία της
     // εφαρμογής. Χρειαζόμαστε και το δεύτερο για να παραχθούν επιπλέον δοκιμαστικά
     // δεδομένα.
@@ -20,16 +20,16 @@ beforeEach(function () {
     $first_run->save();
 });
 
-it('cannot create/edit/delete forms as user', function () {
+it('cannot create/edit/delete forms as user', function (): void {
     Form::factory()->for(User::where('username', 'admin0')->first())->create();
 
-    $user = User::whereHas('roles', function ($query) {
+    $user = User::whereHas('roles', function ($query): void {
         $query->where('name', 'User');
     })->first();
     $user->active = true;
     $user->save();
 
-    $this->browse(function (Browser $browser) use ($user) {
+    $this->browse(function (Browser $browser) use ($user): void {
         $browser->loginAs($user)->visit('/admin/form')
             ->assertSeeIn('div.card-header', 'Φόρμες')
             ->assertDontSeeIn('button[type="submit"]', 'Διαγραφή')
@@ -38,8 +38,8 @@ it('cannot create/edit/delete forms as user', function () {
     });
 });
 
-it('can create/edit/delete forms as author', function () {
-    $author = User::whereHas('roles', function ($query) {
+it('can create/edit/delete forms as author', function (): void {
+    $author = User::whereHas('roles', function ($query): void {
         $query->where('name', 'Author');
     })->first();
     $author->active = true;
@@ -47,7 +47,7 @@ it('can create/edit/delete forms as author', function () {
 
     Form::factory()->for($author)->create();
 
-    $this->browse(function (Browser $browser) use ($author) {
+    $this->browse(function (Browser $browser) use ($author): void {
         $browser->loginAs($author)->visit('/admin/form')
             ->assertSeeIn('div.card-header', 'Φόρμες')
             ->assertSeeIn('button[type="submit"]', 'Διαγραφή')
@@ -57,8 +57,8 @@ it('can create/edit/delete forms as author', function () {
 
 });
 
-it('can edit/delete only forms created by author', function () {
-    $author = User::whereHas('roles', function ($query) {
+it('can edit/delete only forms created by author', function (): void {
+    $author = User::whereHas('roles', function ($query): void {
         $query->where('name', 'Author');
     })->first();
     $author->active = true;
@@ -66,7 +66,7 @@ it('can edit/delete only forms created by author', function () {
 
     Form::factory()->for(User::where('username', 'admin0')->first())->create();
 
-    $this->browse(function (Browser $browser) use ($author) {
+    $this->browse(function (Browser $browser) use ($author): void {
         $browser->loginAs($author)->visit('/admin/form')
             ->assertSeeIn('div.card-header', 'Φόρμες')
             ->assertDontSeeIn('button[type="submit"]', 'Διαγραφή')

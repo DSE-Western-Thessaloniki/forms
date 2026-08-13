@@ -288,10 +288,10 @@ class FormsController extends Controller
             exit('Failed to open temporary file');
         }
 
-        fputcsv($fd, $dataTableColumns);
+        fputcsv($fd, $dataTableColumns, escape: '\\');
 
         foreach ($dataTable->toArray() as $row) {
-            fputcsv($fd, $row);
+            fputcsv($fd, $row, escape: '\\');
         }
 
         fclose($fd);
@@ -384,7 +384,7 @@ class FormsController extends Controller
 
         $data = $formMissingDataService->getMissingTable($form);
         foreach ($data as $row) {
-            fputcsv($fd, $row);
+            fputcsv($fd, $row, escape: '\\');
         }
 
         fclose($fd);

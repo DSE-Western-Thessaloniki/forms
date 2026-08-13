@@ -9,14 +9,14 @@ use App\Models\SchoolCategory;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
-it('can create a new user', function () {
+it('can create a new user', function (): void {
     $user = User::factory()->create();
 
-    $this->assertInstanceOf('App\Models\User', $user);
+    $this->assertInstanceOf(\App\Models\User::class, $user);
     $this->assertDatabaseHas('users', ['updated_by' => 0]);
 });
 
-it('can check for admin', function () {
+it('can check for admin', function (): void {
     $user1 = User::factory()
         ->admin()
         ->create();
@@ -31,14 +31,14 @@ it('can check for admin', function () {
     $this->assertFalse($user2->isAdministrator());
 });
 
-it('can create a new role', function () {
+it('can create a new role', function (): void {
     $role = Role::factory()
         ->state(['name' => 'Test Role'])
         ->create();
     expect($role)->toMatchArray(['name' => 'Test Role']);
 });
 
-it('can create a new form', function () {
+it('can create a new form', function (): void {
     $form = Form::factory()
         ->for(User::factory())
         ->has(
@@ -56,12 +56,12 @@ it('can create a new form', function () {
             'school_categories'
         )
         ->create();
-    $this->assertInstanceOf('App\Models\Form', $form);
-    $this->assertInstanceOf('App\Models\School', $form->schools()->first());
-    $this->assertInstanceOf('App\Models\SchoolCategory', $form->school_categories()->first());
+    $this->assertInstanceOf(\App\Models\Form::class, $form);
+    $this->assertInstanceOf(\App\Models\School::class, $form->schools()->first());
+    $this->assertInstanceOf(\App\Models\SchoolCategory::class, $form->school_categories()->first());
 });
 
-it('can create form fields for a form', function () {
+it('can create form fields for a form', function (): void {
     $form = Form::factory()
         ->for(User::factory())
         ->has(
@@ -76,12 +76,12 @@ it('can create form fields for a form', function () {
             'form_fields'
         )
         ->create();
-    $this->assertInstanceOf('App\Models\FormField', $form->form_fields()->first());
+    $this->assertInstanceOf(\App\Models\FormField::class, $form->form_fields()->first());
     $this->assertEquals($form->getAttributes(), $form->form_fields()->first()->form->getAttributes());
     $this->assertCount(3, $form->form_fields()->get());
 });
 
-it('can add data to form fields', function () {
+it('can add data to form fields', function (): void {
     $user = User::factory()->create();
     $form = Form::factory()
         ->for($user)
@@ -124,18 +124,18 @@ it('can add data to form fields', function () {
     }
 });
 
-it('can find users with a specific role', function () {
+it('can find users with a specific role', function (): void {
     $role = Role::factory()->state(['name' => 'Test'])->create();
     User::factory()
         ->count(2)
         ->create()
-        ->each(function ($user) use ($role) {
+        ->each(function ($user) use ($role): void {
             $user->roles()->attach($role);
         });
     expect(Role::where('name', 'Test')->first()->users->count())->toBe(2);
 });
 
-it('can find forms available for a school', function () {
+it('can find forms available for a school', function (): void {
     $user = User::factory()
         ->admin()
         ->create();
@@ -157,13 +157,13 @@ it('can find forms available for a school', function () {
             'form_fields'
         )
         ->create()
-        ->each(function ($form) use ($school) {
+        ->each(function ($form) use ($school): void {
             $form->schools()->attach($school);
         });
     expect($school->forms->count())->toBe(1);
 });
 
-it('can find forms available for a school category', function () {
+it('can find forms available for a school category', function (): void {
     $category = SchoolCategory::factory()
         ->state(['name' => 'Test Category'])
         ->create();
@@ -182,13 +182,13 @@ it('can find forms available for a school category', function () {
             'form_fields'
         )
         ->create()
-        ->each(function ($form) use ($category) {
+        ->each(function ($form) use ($category): void {
             $form->school_categories()->attach($category);
         });
     expect($category->forms->count())->toBe(2);
 });
 
-it('can find form fields filled by a school', function () {
+it('can find form fields filled by a school', function (): void {
     $user = User::factory()
         ->admin()
         ->create();
@@ -220,13 +220,13 @@ it('can find form fields filled by a school', function () {
             'form_fields'
         )
         ->create()
-        ->each(function ($form) use ($school) {
+        ->each(function ($form) use ($school): void {
             $form->schools()->attach($school);
         });
     expect($school->field_data->count())->toBe(3);
 });
 
-it('can find the categories a school belongs to', function () {
+it('can find the categories a school belongs to', function (): void {
     $categories = SchoolCategory::factory()
         ->count(3)
         ->state(new Sequence(fn ($sequence) => [
@@ -243,7 +243,7 @@ it('can find the categories a school belongs to', function () {
     expect($school->categories->count())->toBe(3);
 });
 
-it('can find schools of a specific category', function () {
+it('can find schools of a specific category', function (): void {
     $categories = SchoolCategory::factory()
         ->count(3)
         ->state(new Sequence(fn ($sequence) => [
@@ -270,7 +270,7 @@ it('can find schools of a specific category', function () {
     expect($categories[2]->schools()->count())->toBe(0);
 });
 
-it('can identify readonly fields', function () {
+it('can identify readonly fields', function (): void {
     $form = Form::factory()->for(User::factory())->create();
 
     $field = FormField::factory()->for($form)->create([
@@ -289,7 +289,7 @@ it('can identify readonly fields', function () {
     expect($fieldEmptyOptions->readonly())->toBeFalse();
 });
 
-it('saves a form with readonly fields retaining field values', function () {
+it('saves a form with readonly fields retaining field values', function (): void {
     $user = User::factory()->admin()->create();
     $form = Form::factory()->for($user)->create();
     $school = School::factory()->for($user)->category()->create();

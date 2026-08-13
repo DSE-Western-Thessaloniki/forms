@@ -212,12 +212,12 @@ class ReportsController extends Controller
             if ($school) {
                 $categories = $school->categories->pluck('id');
                 $forms = Form::where('active', true)
-                    ->where(function ($query) use ($school, $categories) { // Προσθήκη παρένθεσης
-                        $query->whereHas('schools', function ($q) use ($school) {
+                    ->where(function ($query) use ($school, $categories): void { // Προσθήκη παρένθεσης
+                        $query->whereHas('schools', function ($q) use ($school): void {
                             $q->where('school_id', $school->id);
                         })
-                            ->when($categories, function ($q) use ($categories) { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
-                                $q->orWhereHas('school_categories', function ($q) use ($categories) {
+                            ->when($categories, function ($q) use ($categories): void { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                                $q->orWhereHas('school_categories', function ($q) use ($categories): void {
                                     $q->whereIn('school_category_id', $categories);
                                 });
                             });

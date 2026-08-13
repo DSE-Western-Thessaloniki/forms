@@ -15,7 +15,7 @@ class FormMissingDataService
         $teachers = Teacher::where('active', 1)->get();
         $data = $form->data()->get();
         $answer = [];
-        $data->each(function ($item, $key) use (&$answer) {
+        $data->each(function ($item, $key) use (&$answer): void {
             $answer[$item->teacher_id] = true;
         });
         $seen = [];
@@ -50,7 +50,7 @@ class FormMissingDataService
         $schools = $schools->unique('id');
         $data = $form->data()->get();
         $answer = [];
-        $data->each(function ($item, $key) use (&$answer) {
+        $data->each(function ($item, $key) use (&$answer): void {
             $answer[$item->school_id] = true;
         });
         $seen = [];

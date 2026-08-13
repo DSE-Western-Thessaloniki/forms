@@ -5,50 +5,50 @@ use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-it('cannot access the accepted filetype panel as user', function () {
+it('cannot access the accepted filetype panel as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get(route('admin.accepted_filetype.index'))->assertForbidden();
 });
 
-it('cannot access the accepted filetype panel as author', function () {
+it('cannot access the accepted filetype panel as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get(route('admin.accepted_filetype.index'))->assertForbidden();
 });
 
-it('can access the accepted filetype panel as admin', function () {
+it('can access the accepted filetype panel as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get(route('admin.accepted_filetype.index'))->assertOk();
 });
 
-it('cannot access the accepted filetype creation as user', function () {
+it('cannot access the accepted filetype creation as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get(route('admin.accepted_filetype.create'))->assertForbidden();
 });
 
-it('cannot access the accepted filetype creation as author', function () {
+it('cannot access the accepted filetype creation as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get(route('admin.accepted_filetype.create'))->assertForbidden();
 });
 
-it('can access the accepted filetype creation as admin', function () {
+it('can access the accepted filetype creation as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get(route('admin.accepted_filetype.create'))->assertOk();
 });
 
-it('cannot create an accepted filetype as user', function () {
+it('cannot create an accepted filetype as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post(route('admin.accepted_filetype.store'), [
@@ -57,7 +57,7 @@ it('cannot create an accepted filetype as user', function () {
     ])->assertForbidden();
 });
 
-it('cannot create an accepted filetype as author', function () {
+it('cannot create an accepted filetype as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->post(route('admin.accepted_filetype.store'), [
@@ -66,7 +66,7 @@ it('cannot create an accepted filetype as author', function () {
     ])->assertForbidden();
 });
 
-it('can create an accepted filetype as admin', function () {
+it('can create an accepted filetype as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('admin.accepted_filetype.store'), [
@@ -77,7 +77,7 @@ it('can create an accepted filetype as admin', function () {
     expect($response->getSession()->only(['success'])['success'])->toBe('Ο τύπος αρχείων δημιουργήθηκε επιτυχώς');
 });
 
-it('cannot edit an accepted filetype as user', function () {
+it('cannot edit an accepted filetype as user', function (): void {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -88,7 +88,7 @@ it('cannot edit an accepted filetype as user', function () {
         ->assertForbidden();
 });
 
-it('cannot edit an accepted filetype as author', function () {
+it('cannot edit an accepted filetype as author', function (): void {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -99,7 +99,7 @@ it('cannot edit an accepted filetype as author', function () {
         ->assertForbidden();
 });
 
-it('can edit an accepted filetype as admin', function () {
+it('can edit an accepted filetype as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $accepted_filetype = AcceptedFiletype::factory()
@@ -111,7 +111,7 @@ it('can edit an accepted filetype as admin', function () {
         ->assertOk();
 });
 
-it('cannot delete an accepted filetype as user', function () {
+it('cannot delete an accepted filetype as user', function (): void {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -119,7 +119,7 @@ it('cannot delete an accepted filetype as user', function () {
     $this->actingAs($user)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype))->assertForbidden();
 });
 
-it('cannot delete an accepted filetype as author', function () {
+it('cannot delete an accepted filetype as author', function (): void {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -127,7 +127,7 @@ it('cannot delete an accepted filetype as author', function () {
     $this->actingAs($author)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype))->assertForbidden();
 });
 
-it('can delete an accepted filetype as admin', function () {
+it('can delete an accepted filetype as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -137,7 +137,7 @@ it('can delete an accepted filetype as admin', function () {
     expect($response->getSession()->only(['success'])['success'])->toBe('Επιτυχής διαγραφή τύπου αρχείων');
 });
 
-it('cannot update an accepted filetype as user', function () {
+it('cannot update an accepted filetype as user', function (): void {
     $user = User::factory()->user()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -149,7 +149,7 @@ it('cannot update an accepted filetype as user', function () {
     $response->assertForbidden();
 });
 
-it('cannot update an accepted filetype as author', function () {
+it('cannot update an accepted filetype as author', function (): void {
     $author = User::factory()->author()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();
@@ -161,7 +161,7 @@ it('cannot update an accepted filetype as author', function () {
     $response->assertForbidden();
 });
 
-it('can update an accepted filetype as admin', function () {
+it('can update an accepted filetype as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $accepted_filetype = AcceptedFiletype::factory()
         ->create();

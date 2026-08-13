@@ -12,20 +12,18 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCasManager;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', function () {
-        return new TestCasManager();
-    });
+    $this->app->singleton('cas', fn() => new TestCasManager());
 
     test_cas_null();
 });
 
-it('can upload a file on a report as user logged in through cas (school) (no multiple)', function () {
+it('can upload a file on a report as user logged in through cas (school) (no multiple)', function (): void {
 
     test_cas_logged_in();
 
@@ -77,7 +75,7 @@ it('can upload a file on a report as user logged in through cas (school) (no mul
     expect(Storage::exists("report/{$form->id}/school/{$school->id}/0/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can upload a file on a report as user logged in through cas (school) (multiple)', function () {
+it('can upload a file on a report as user logged in through cas (school) (multiple)', function (): void {
 
     test_cas_logged_in();
 
@@ -148,7 +146,7 @@ it('can upload a file on a report as user logged in through cas (school) (multip
     expect(Storage::exists("report/{$form->id}/school/{$school->id}/1/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can upload a file on a report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function () {
+it('can upload a file on a report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -193,7 +191,7 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
     expect(Storage::exists("report/{$form->id}/other_teacher/{$other_teacher->id}/0/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can upload a file on a report as teacher (not in teachers table) (form accepts teachers and all teachers) (multiple)', function () {
+it('can upload a file on a report as teacher (not in teachers table) (form accepts teachers and all teachers) (multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -249,7 +247,7 @@ it('can upload a file on a report as teacher (not in teachers table) (form accep
     expect(Storage::exists("report/{$form->id}/other_teacher/{$other_teacher->id}/1/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can upload a file on a report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function () {
+it('can upload a file on a report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -299,7 +297,7 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
     expect(Storage::exists("report/{$form->id}/teacher/{$teacher->id}/0/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can upload a file on a report as teacher (in teachers table) (form accepts teachers and all teachers) (multiple)', function () {
+it('can upload a file on a report as teacher (in teachers table) (form accepts teachers and all teachers) (multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -360,7 +358,7 @@ it('can upload a file on a report as teacher (in teachers table) (form accepts t
     expect(Storage::exists("report/{$form->id}/teacher/{$teacher->id}/1/{$fields[0]->id}"))->toBeTrue();
 });
 
-it('can keep already saved file in a form (no multiple)', function () {
+it('can keep already saved file in a form (no multiple)', function (): void {
 
     test_cas_logged_in();
 
@@ -375,20 +373,18 @@ it('can keep already saved file in a form (no multiple)', function () {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 5,
-                        'listvalues' => '',
-                        'options' => json_encode([
-                            'filetype' => [
-                                'value' => '-1',
-                                'custom_value' => '*.jpg',
-                            ],
-                        ]),
-                        'required' => true,
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 5,
+                    'listvalues' => '',
+                    'options' => json_encode([
+                        'filetype' => [
+                            'value' => '-1',
+                            'custom_value' => '*.jpg',
+                        ],
+                    ]),
+                    'required' => true,
+                ])),
             'form_fields'
         )
         ->create([
@@ -420,7 +416,7 @@ it('can keep already saved file in a form (no multiple)', function () {
     ]);
 });
 
-it('can keep already saved file in a form (multiple)', function () {
+it('can keep already saved file in a form (multiple)', function (): void {
 
     test_cas_logged_in();
 
@@ -435,21 +431,19 @@ it('can keep already saved file in a form (multiple)', function () {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 5,
-                        'listvalues' => '',
-                        'options' => json_encode([
-                            'filetype' => [
-                                'value' => '-1',
-                                'custom_value' => '*.jpg',
-                            ],
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 5,
+                    'listvalues' => '',
+                    'options' => json_encode([
+                        'filetype' => [
+                            'value' => '-1',
+                            'custom_value' => '*.jpg',
+                        ],
 
-                        ]),
-                        'required' => true,
-                    ];
-                })),
+                    ]),
+                    'required' => true,
+                ])),
             'form_fields'
         )
         ->create([
@@ -482,7 +476,7 @@ it('can keep already saved file in a form (multiple)', function () {
     ]);
 });
 
-it('can download already saved file in a form', function () {
+it('can download already saved file in a form', function (): void {
 
     test_cas_logged_in();
 
@@ -497,20 +491,18 @@ it('can download already saved file in a form', function () {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 5,
-                        'listvalues' => '',
-                        'options' => json_encode([
-                            'filetype' => [
-                                'value' => '-1',
-                                'custom_value' => '*.jpg',
-                            ],
-                        ]),
-                        'required' => true,
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 5,
+                    'listvalues' => '',
+                    'options' => json_encode([
+                        'filetype' => [
+                            'value' => '-1',
+                            'custom_value' => '*.jpg',
+                        ],
+                    ]),
+                    'required' => true,
+                ])),
             'form_fields'
         )
         ->create([
@@ -534,7 +526,7 @@ it('can download already saved file in a form', function () {
         ->assertDownload('test.jpg');
 });
 
-it('cannot download already saved file in a closed form', function () {
+it('cannot download already saved file in a closed form', function (): void {
 
     test_cas_logged_in();
 
@@ -549,20 +541,18 @@ it('cannot download already saved file in a closed form', function () {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 5,
-                        'listvalues' => '',
-                        'options' => json_encode([
-                            'filetype' => [
-                                'value' => '-1',
-                                'custom_value' => '*.jpg',
-                            ],
-                        ]),
-                        'required' => true,
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 5,
+                    'listvalues' => '',
+                    'options' => json_encode([
+                        'filetype' => [
+                            'value' => '-1',
+                            'custom_value' => '*.jpg',
+                        ],
+                    ]),
+                    'required' => true,
+                ])),
             'form_fields'
         )
         ->create([
@@ -590,7 +580,7 @@ it('cannot download already saved file in a closed form', function () {
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('validates download links', function ($type) {
+it('validates download links', function ($type): void {
     Storage::fake('local');
 
     if ($type === 'school') {
@@ -605,20 +595,18 @@ it('validates download links', function ($type) {
             ->for(User::factory()->admin())
             ->has(
                 FormField::factory()
-                    ->state(new Sequence(function ($sequence) {
-                        return [
-                            'sort_id' => $sequence->index,
-                            'type' => 5,
-                            'listvalues' => '',
-                            'options' => json_encode([
-                                'filetype' => [
-                                    'value' => '-1',
-                                    'custom_value' => '*.jpg',
-                                ],
-                            ]),
-                            'required' => true,
-                        ];
-                    })),
+                    ->state(new Sequence(fn($sequence) => [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+                        ]),
+                        'required' => true,
+                    ])),
                 'form_fields'
             )
             ->create([
@@ -639,20 +627,18 @@ it('validates download links', function ($type) {
             ->for(User::factory()->admin())
             ->has(
                 FormField::factory()
-                    ->state(new Sequence(function ($sequence) {
-                        return [
-                            'sort_id' => $sequence->index,
-                            'type' => 5,
-                            'listvalues' => '',
-                            'options' => json_encode([
-                                'filetype' => [
-                                    'value' => '-1',
-                                    'custom_value' => '*.jpg',
-                                ],
-                            ]),
-                            'required' => true,
-                        ];
-                    })),
+                    ->state(new Sequence(fn($sequence) => [
+                        'sort_id' => $sequence->index,
+                        'type' => 5,
+                        'listvalues' => '',
+                        'options' => json_encode([
+                            'filetype' => [
+                                'value' => '-1',
+                                'custom_value' => '*.jpg',
+                            ],
+                        ]),
+                        'required' => true,
+                    ])),
                 'form_fields'
             )
             ->create([

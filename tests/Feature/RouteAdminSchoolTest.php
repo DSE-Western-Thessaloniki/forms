@@ -9,32 +9,32 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-it('cannot access the schools panel as user', function () {
+it('cannot access the schools panel as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/school')->assertForbidden();
 });
 
-it('cannot access the schools panel as author', function () {
+it('cannot access the schools panel as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/school')->assertForbidden();
 });
 
-it('can access the schools panel as admin', function () {
+it('can access the schools panel as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/school')->assertOk();
 });
 
-it('can access the schools panel as admin with filter', function () {
+it('can access the schools panel as admin with filter', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchools = School::factory(2)
         ->category()
@@ -56,46 +56,46 @@ it('can access the schools panel as admin with filter', function () {
     $response->assertDontSee($testSchools[1]->name);
 });
 
-it('cannot access the school creation as user', function () {
+it('cannot access the school creation as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/school/create')->assertForbidden();
 });
 
-it('cannot access the school creation as author', function () {
+it('cannot access the school creation as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/school/create')->assertForbidden();
 });
 
-it('can access the school creation as admin', function () {
+it('can access the school creation as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/school/create')->assertOk();
 });
 
-it('cannot access a school\'s info as user', function () {
+it('cannot access a school\'s info as user', function (): void {
     $user = User::factory()->user()->create();
     $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
 
     $this->actingAs($user)->get('/admin/school/'.$testSchool->id)->assertForbidden();
 });
 
-it('cannot access a school\'s info as author', function () {
+it('cannot access a school\'s info as author', function (): void {
     $author = User::factory()->author()->create();
     $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
 
     $this->actingAs($author)->get('/admin/school/'.$testSchool->id)->assertForbidden();
 });
 
-it('can access a school\'s info as admin', function () {
+it('can access a school\'s info as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
 
     $this->actingAs($admin)->get('/admin/school/'.$testSchool->id)->assertOk();
 });
 
-it('cannot create a school as user', function () {
+it('cannot create a school as user', function (): void {
     $user = User::factory()->user()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -109,7 +109,7 @@ it('cannot create a school as user', function () {
     ])->assertForbidden();
 });
 
-it('cannot create a school as author', function () {
+it('cannot create a school as author', function (): void {
     $author = User::factory()->author()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -123,7 +123,7 @@ it('cannot create a school as author', function () {
     ])->assertForbidden();
 });
 
-it('can create a school as admin', function () {
+it('can create a school as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -139,7 +139,7 @@ it('can create a school as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα αποθηκεύτηκε!');
 });
 
-it('cannot create a school as user with invalid categories', function () {
+it('cannot create a school as user with invalid categories', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post('/admin/school', [
@@ -152,7 +152,7 @@ it('cannot create a school as user with invalid categories', function () {
     ])->assertForbidden();
 });
 
-it('cannot create a school as author with invalid categories', function () {
+it('cannot create a school as author with invalid categories', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->post('/admin/school', [
@@ -165,7 +165,7 @@ it('cannot create a school as author with invalid categories', function () {
     ])->assertForbidden();
 });
 
-it('cannot create a school as admin with invalid categories', function () {
+it('cannot create a school as admin with invalid categories', function (): void {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/school', [
@@ -180,7 +180,7 @@ it('cannot create a school as admin with invalid categories', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
 });
 
-it('cannot edit a school as user', function () {
+it('cannot edit a school as user', function (): void {
     $user = User::factory()->user()->create();
     $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
     $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
@@ -189,7 +189,7 @@ it('cannot edit a school as user', function () {
     $this->actingAs($user)->get('/admin/school/'.$testSchool->id.'/edit')->assertForbidden();
 });
 
-it('cannot edit a school as author', function () {
+it('cannot edit a school as author', function (): void {
     $author = User::factory()->author()->create();
     $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
     $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
@@ -198,7 +198,7 @@ it('cannot edit a school as author', function () {
     $this->actingAs($author)->get('/admin/school/'.$testSchool->id.'/edit')->assertForbidden();
 });
 
-it('can edit a school as admin', function () {
+it('can edit a school as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
     $testSchool->categories()->attach(SchoolCategory::factory()->create(['name' => 'Test Category 1']));
@@ -207,21 +207,21 @@ it('can edit a school as admin', function () {
     $this->actingAs($admin)->get('/admin/school/'.$testSchool->id.'/edit')->assertOk();
 });
 
-it('cannot delete a school as user', function () {
+it('cannot delete a school as user', function (): void {
     $user = User::factory()->user()->create();
     $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
 
     $this->actingAs($user)->delete('/admin/school/'.$testSchool->id)->assertForbidden();
 });
 
-it('cannot delete a school as author', function () {
+it('cannot delete a school as author', function (): void {
     $author = User::factory()->author()->create();
     $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
 
     $this->actingAs($author)->delete('/admin/school/'.$testSchool->id)->assertForbidden();
 });
 
-it('can delete a school as admin', function () {
+it('can delete a school as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
 
@@ -230,7 +230,7 @@ it('can delete a school as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα διαγράφηκε!');
 });
 
-it('cannot update a school as user', function () {
+it('cannot update a school as user', function (): void {
     $user = User::factory()->user()->create();
     $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
@@ -246,7 +246,7 @@ it('cannot update a school as user', function () {
     $response->assertForbidden();
 });
 
-it('cannot update a school as author', function () {
+it('cannot update a school as author', function (): void {
     $author = User::factory()->author()->create();
     $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
@@ -262,7 +262,7 @@ it('cannot update a school as author', function () {
     $response->assertForbidden();
 });
 
-it('can update a school as admin', function () {
+it('can update a school as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
@@ -279,7 +279,7 @@ it('can update a school as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα ενημερώθηκε!');
 });
 
-it('cannot update a school as user with invalid categories', function () {
+it('cannot update a school as user with invalid categories', function (): void {
     $user = User::factory()->user()->create();
     $testSchool = School::factory()->for($user)->create(['name' => 'Test School']);
 
@@ -294,7 +294,7 @@ it('cannot update a school as user with invalid categories', function () {
     $response->assertForbidden();
 });
 
-it('cannot update a school as author with invalid categories', function () {
+it('cannot update a school as author with invalid categories', function (): void {
     $author = User::factory()->author()->create();
     $testSchool = School::factory()->for($author)->create(['name' => 'Test School']);
 
@@ -309,7 +309,7 @@ it('cannot update a school as author with invalid categories', function () {
     $response->assertForbidden();
 });
 
-it('cannot update a school as admin with invalid categories', function () {
+it('cannot update a school as admin with invalid categories', function (): void {
     $admin = User::factory()->admin()->create();
     $testSchool = School::factory()->for($admin)->create(['name' => 'Test School']);
 
@@ -325,7 +325,7 @@ it('cannot update a school as admin with invalid categories', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
 });
 
-it('cannot import a school as user', function () {
+it('cannot import a school as user', function (): void {
     $user = User::factory()->user()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -340,7 +340,7 @@ it('cannot import a school as user', function () {
     $response->assertForbidden();
 });
 
-it('cannot import a school as author', function () {
+it('cannot import a school as author', function (): void {
     $author = User::factory()->author()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -355,7 +355,7 @@ it('cannot import a school as author', function () {
     $response->assertForbidden();
 });
 
-it('can import a school as admin', function () {
+it('can import a school as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -382,7 +382,7 @@ it('can import a school as admin', function () {
     ]);
 });
 
-it('can import a school as admin (with ; as delimiter)', function () {
+it('can import a school as admin (with ; as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -409,7 +409,7 @@ it('can import a school as admin (with ; as delimiter)', function () {
     ]);
 });
 
-it('can import multiple schools as admin', function () {
+it('can import multiple schools as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -452,7 +452,7 @@ Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory2');
     expect(SchoolCategory::where('name', 'testCategory2')->first()->schools()->count())->toBe(1);
 });
 
-it('cannot import multiple schools as admin (bad file)', function () {
+it('cannot import multiple schools as admin (bad file)', function (): void {
     $admin = User::factory()->admin()->create();
     $category = SchoolCategory::factory()->create(['name' => 'testCategory']);
 
@@ -472,7 +472,7 @@ Test School3;testUser3;9999992;test3@example.com;123-456-7892;testCategory2');
     $this->assertDatabaseCount('school_category_school', 0);
 });
 
-it('can import multiple schools as admin (update already existing schools)', function () {
+it('can import multiple schools as admin (update already existing schools)', function (): void {
     $admin = User::factory()->admin()->create();
     $schools = School::factory()
         ->count(3)

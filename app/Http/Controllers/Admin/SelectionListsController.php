@@ -170,7 +170,7 @@ class SelectionListsController extends Controller
         $uploadedFile = $request->file('csvfile');
         $data = [];
         if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-            while (($row_data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+            while (($row_data = fgetcsv($handle, 1000, ";", escape: '\\')) !== FALSE) {
                 array_push($data, $row_data);
             }
             fclose($handle);

@@ -39,7 +39,7 @@ Route::get('/admin', [DashboardController::class, 'index'])
 Route::prefix('admin')
     ->name('admin.')
     ->group(
-        function () {
+        function (): void {
             Route::get('/form/{form}/missing/csv', [FormsController::class, 'missingCSV'])
                 ->name('form.missing.csv')
                 ->middleware('auth');
@@ -81,7 +81,7 @@ Route::prefix('admin')
                 ->name('user.')
                 ->middleware('auth', 'can:delete,user')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/{user}/confirmDelete', [UserController::class, 'confirmDelete'])->name('confirmDelete');
                     }
                 );
@@ -89,7 +89,7 @@ Route::prefix('admin')
                 ->name('user.')
                 ->middleware('auth', 'can:update,user')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/{user}/password', [UserController::class, 'password'])->name('password');
                         Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('change_password');
                     }
@@ -100,7 +100,7 @@ Route::prefix('admin')
                 ->name('school.')
                 ->middleware('auth', 'can:delete,school')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/{school}/confirmDelete', [SchoolsController::class, 'confirmDelete'])->name('confirmDelete');
                     }
                 );
@@ -108,7 +108,7 @@ Route::prefix('admin')
                 ->middleware('auth', 'can:create,App\Models\School')
                 ->name('school.')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/import', [SchoolsController::class, 'showImport'])->name('show_import');
                         Route::post('/import', [SchoolsController::class, 'import'])->name('import');
                     }
@@ -116,7 +116,7 @@ Route::prefix('admin')
             Route::prefix('school')
                 ->name('school.')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::resource('schoolcategory', SchoolCategoriesController::class)
                             ->middleware('auth');
                     }
@@ -127,7 +127,7 @@ Route::prefix('admin')
             Route::prefix('teacher')
                 ->name('teacher.')
                 ->middleware('auth', 'can:create,App\Models\Teacher')
-                ->group(function () {
+                ->group(function (): void {
                     Route::get('/import', [TeacherController::class, 'showImport'])
                         ->name('show_import');
                     Route::post('/import', [TeacherController::class, 'import'])
@@ -148,7 +148,7 @@ Route::prefix('admin')
                 ->name('options.')
                 ->middleware('auth')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/', [OptionsController::class, 'index'])->name('index');
                         Route::post('/', [OptionsController::class, 'store'])->name('store');
                     }
@@ -157,7 +157,7 @@ Route::prefix('admin')
                 ->name('list.')
                 ->middleware('auth', 'can:create,App\Models\SelectionList')
                 ->group(
-                    function () {
+                    function (): void {
                         Route::get('/import', [SelectionListsController::class, 'showImport'])->name('show_import');
                         Route::post('/import', [SelectionListsController::class, 'import'])->name('import');
                         Route::get('/{selection_list}/confirmDelete', [SelectionListsController::class, 'confirmDelete'])->name('confirmDelete');
@@ -181,25 +181,21 @@ Route::prefix('admin')
         }
     );
 
-Route::get('/login', function () {
-    return Redirect::route('report.index');
-})->name('login');
+Route::get('/login', fn() => Redirect::route('report.index'))->name('login');
 
-Route::get('/logout', function () {
+Route::get('/logout', function (): void {
     cas()->logout();
 })->middleware('cas.auth')->name('logout');
 
 Route::middleware('cas.auth')
-    ->group(function () {
+    ->group(function (): void {
         Route::delete('/report/{report}/record/{record}', [ReportsController::class, 'destroyRecord'])->name('report.record.destroy');
         Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');
         Route::get('/report/{report}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
         Route::get('/report/{report}/record/{record}', [ReportsController::class, 'showRecord'])->name('report.show.record');
         Route::get('/download/{report}/{fieldId}/{record}', [ReportsController::class, 'downloadFile'])->name('report.download');
         Route::resource('report', ReportsController::class)
-            ->missing(function (Request $request) {
-                return Redirect::route('report.index');
-            });
+            ->missing(fn(Request $request) => Redirect::route('report.index'));
     });
 
 Route::get('/home', [DashboardController::class, 'index'])

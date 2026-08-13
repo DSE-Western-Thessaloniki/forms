@@ -4,32 +4,32 @@ use App\Models\Option;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-it('cannot access the options panel as user', function () {
+it('cannot access the options panel as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/options')->assertForbidden();
 });
 
-it('cannot access the options panel as author', function () {
+it('cannot access the options panel as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/options')->assertForbidden();
 });
 
-it('can access the options panel as admin', function () {
+it('can access the options panel as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/options')->assertOk();
 });
 
-it('cannot store options as user', function () {
+it('cannot store options as user', function (): void {
     $user = User::factory()->user()->create();
     $options = [
         'allow_teacher_login' => '1',
@@ -39,7 +39,7 @@ it('cannot store options as user', function () {
     $this->actingAs($user)->post('/admin/options', $options)->assertForbidden();
 });
 
-it('cannot store options as author', function () {
+it('cannot store options as author', function (): void {
     $author = User::factory()->author()->create();
     $options = [
         'allow_teacher_login' => '1',
@@ -49,7 +49,7 @@ it('cannot store options as author', function () {
     $this->actingAs($author)->post('/admin/options', $options)->assertForbidden();
 });
 
-it('can store options as admin', function () {
+it('can store options as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $options = [
         'allow_teacher_login' => '1',
@@ -62,7 +62,7 @@ it('can store options as admin', function () {
     expect(Option::where('name', 'allow_all_teachers')->first()->value)->toBe('1');
 });
 
-it('can store options as admin (don\'t allow all teachers)', function () {
+it('can store options as admin (don\'t allow all teachers)', function (): void {
     $admin = User::factory()->admin()->create();
     $options = [
         'allow_teacher_login' => '1',
@@ -75,7 +75,7 @@ it('can store options as admin (don\'t allow all teachers)', function () {
     expect(Option::where('name', 'allow_all_teachers')->first()->value)->toBe('0');
 });
 
-it('can store options as admin (don\'t allow teachers)', function () {
+it('can store options as admin (don\'t allow teachers)', function (): void {
     $admin = User::factory()->admin()->create();
     $options = [
         'allow_teacher_login' => '0',

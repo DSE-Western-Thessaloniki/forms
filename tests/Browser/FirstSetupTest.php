@@ -4,19 +4,19 @@ use Database\Seeders\OptionSeeder;
 use Laravel\Dusk\Browser;
 use function Pest\Faker\faker;
 
-it('shows first run setup', function () {
+it('shows first run setup', function (): void {
     $this->seed(OptionSeeder::class);
 
-    $this->browse(function (Browser $browser) {
+    $this->browse(function (Browser $browser): void {
         $browser->visit('/')
             ->assertSee('Ρύθμιση διαχειριστή συστήματος');
     });
 });
 
-it('completes first run setup', function () {
+it('completes first run setup', function (): void {
     $this->seed(OptionSeeder::class);
 
-    $this->browse(function (Browser $browser) {
+    $this->browse(function (Browser $browser): void {
         $password = faker()->password();
         $browser->visit('/')
             ->assertSee('Ρύθμιση διαχειριστή συστήματος')

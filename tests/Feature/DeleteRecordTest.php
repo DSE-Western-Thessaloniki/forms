@@ -10,20 +10,18 @@ use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Tests\TestCasManager;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', function () {
-        return new TestCasManager;
-    });
+    $this->app->singleton('cas', fn() => new TestCasManager);
 
     test_cas_null();
 });
 
-it('cannot delete a record without being logged in through cas', function () {
+it('cannot delete a record without being logged in through cas', function (): void {
     $school = School::factory()->for(User::factory())->create([
         'name' => 'Test School',
         'username' => '999',
@@ -34,13 +32,11 @@ it('cannot delete a record without being logged in through cas', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -64,7 +60,7 @@ it('cannot delete a record without being logged in through cas', function () {
         ->assertStatus(500);
 });
 
-it('cannot delete a record from a non-existent form', function () {
+it('cannot delete a record from a non-existent form', function (): void {
     test_cas_logged_in();
 
     $school = School::factory()->for(User::factory())->create([
@@ -77,7 +73,7 @@ it('cannot delete a record from a non-existent form', function () {
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot delete a record from an inactive form', function () {
+it('cannot delete a record from an inactive form', function (): void {
     test_cas_logged_in();
 
     $school = School::factory()->for(User::factory())->create([
@@ -90,13 +86,11 @@ it('cannot delete a record from an inactive form', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -112,7 +106,7 @@ it('cannot delete a record from an inactive form', function () {
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot delete a record without permission (user not in schools)', function () {
+it('cannot delete a record without permission (user not in schools)', function (): void {
     test_cas_logged_in();
 
     $form = Form::factory()
@@ -120,13 +114,11 @@ it('cannot delete a record without permission (user not in schools)', function (
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -139,7 +131,7 @@ it('cannot delete a record without permission (user not in schools)', function (
         ->assertSee('Σφάλμα');
 });
 
-it('cannot delete a record without permission (user has no rights)', function () {
+it('cannot delete a record without permission (user has no rights)', function (): void {
     test_cas_logged_in();
 
     School::factory()->for(User::factory())->create([
@@ -152,13 +144,11 @@ it('cannot delete a record without permission (user has no rights)', function ()
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -171,7 +161,7 @@ it('cannot delete a record without permission (user has no rights)', function ()
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
 });
 
-it('can delete a record from a form with multiple records (direct relation)', function () {
+it('can delete a record from a form with multiple records (direct relation)', function (): void {
     test_cas_logged_in();
 
     $school = School::factory()->for(User::factory())->create([
@@ -184,13 +174,11 @@ it('can delete a record from a form with multiple records (direct relation)', fu
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -245,7 +233,7 @@ it('can delete a record from a form with multiple records (direct relation)', fu
     }
 });
 
-it('can delete a record from a form with multiple records (indirect relation)', function () {
+it('can delete a record from a form with multiple records (indirect relation)', function (): void {
     test_cas_logged_in();
 
     $school = School::factory()->for(User::factory())->create([
@@ -264,13 +252,11 @@ it('can delete a record from a form with multiple records (indirect relation)', 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -314,7 +300,7 @@ it('can delete a record from a form with multiple records (indirect relation)', 
     }
 });
 
-it('can delete a record from a form without multiple records', function () {
+it('can delete a record from a form without multiple records', function (): void {
     test_cas_logged_in();
 
     $school = School::factory()->for(User::factory())->create([
@@ -327,13 +313,11 @@ it('can delete a record from a form without multiple records', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([

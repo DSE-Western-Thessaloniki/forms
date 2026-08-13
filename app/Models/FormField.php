@@ -19,29 +19,29 @@ class FormField extends Model
     public $timestamps = true;
 
     // Τύποι πεδίων
-    const TYPE_TEXT = 0;
+    const int TYPE_TEXT = 0;
 
-    const TYPE_TEXTAREA = 1;
+    const int TYPE_TEXTAREA = 1;
 
-    const TYPE_RADIO_BUTTON = 2;
+    const int TYPE_RADIO_BUTTON = 2;
 
-    const TYPE_CHECKBOX = 3;
+    const int TYPE_CHECKBOX = 3;
 
-    const TYPE_SELECT = 4;
+    const int TYPE_SELECT = 4;
 
-    const TYPE_FILE = 5;
+    const int TYPE_FILE = 5;
 
-    const TYPE_DATE = 6;
+    const int TYPE_DATE = 6;
 
-    const TYPE_NUMBER = 7;
+    const int TYPE_NUMBER = 7;
 
-    const TYPE_TELEPHONE = 8;
+    const int TYPE_TELEPHONE = 8;
 
-    const TYPE_EMAIL = 9;
+    const int TYPE_EMAIL = 9;
 
-    const TYPE_URL = 10;
+    const int TYPE_URL = 10;
 
-    const TYPE_LIST = 11;
+    const int TYPE_LIST = 11;
 
     public function form()
     {

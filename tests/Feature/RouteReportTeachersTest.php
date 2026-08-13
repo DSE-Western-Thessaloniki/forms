@@ -10,20 +10,18 @@ use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Tests\TestCasManager;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', function () {
-        return new TestCasManager();
-    });
+    $this->app->singleton('cas', fn() => new TestCasManager());
 
     test_cas_null();
 });
 
-it('cannot access reports as user logged in through cas if access is disabled (teacher)', function () {
+it('cannot access reports as user logged in through cas if access is disabled (teacher)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -43,14 +41,12 @@ it('cannot access reports as user logged in through cas if access is disabled (t
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                        'required' => 1,
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                    'required' => 1,
+                ])),
             'form_fields'
         )
         ->create([
@@ -60,17 +56,15 @@ it('cannot access reports as user logged in through cas if access is disabled (t
     $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
 
     $fields = FormField::all();
-    $newValues = $fields->flatMap(function ($field) {
-        return [
-            "f{$field->id}" => "value{$field->id}",
-        ];
-    });
+    $newValues = $fields->flatMap(fn($field) => [
+        "f{$field->id}" => "value{$field->id}",
+    ]);
     $response = $this->put('/report/'.$form->id, $newValues->toArray());
     $response->assertViewIs('pages.deny_access');
     expect(FormFieldData::count())->toBe(0);
 });
 
-it('cannot access reports as user logged in through cas if access is disabled (other_teacher)', function () {
+it('cannot access reports as user logged in through cas if access is disabled (other_teacher)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -84,14 +78,12 @@ it('cannot access reports as user logged in through cas if access is disabled (o
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                        'required' => 1,
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                    'required' => 1,
+                ])),
             'form_fields'
         )
         ->create([
@@ -102,17 +94,15 @@ it('cannot access reports as user logged in through cas if access is disabled (o
     $this->get('/report/'.$form->id)->assertViewIs('pages.deny_access');
 
     $fields = FormField::all();
-    $newValues = $fields->flatMap(function ($field) {
-        return [
-            "f{$field->id}" => "value{$field->id}",
-        ];
-    });
+    $newValues = $fields->flatMap(fn($field) => [
+        "f{$field->id}" => "value{$field->id}",
+    ]);
     $response = $this->put('/report/'.$form->id, $newValues->toArray());
     $response->assertViewIs('pages.deny_access');
     expect(FormFieldData::count())->toBe(0);
 });
 
-it('cannot access reports as teacher (not in teachers table) (system doesn\'t accept other teachers)', function () {
+it('cannot access reports as teacher (not in teachers table) (system doesn\'t accept other teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -125,7 +115,7 @@ it('cannot access reports as teacher (not in teachers table) (system doesn\'t ac
         ->assertViewIs('pages.deny_access');
 });
 
-it('cannot access reports as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot access reports as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -145,13 +135,11 @@ it('cannot access reports as teacher (in teachers table) (form doesn\'t accept t
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -169,7 +157,7 @@ it('cannot access reports as teacher (in teachers table) (form doesn\'t accept t
         ->assertRedirect(route('report.index'))
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
-it('cannot access reports as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot access reports as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -183,13 +171,11 @@ it('cannot access reports as teacher (not in teachers table) (form doesn\'t acce
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -208,7 +194,7 @@ it('cannot access reports as teacher (not in teachers table) (form doesn\'t acce
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('can access reports as teacher (in teachers table) (form accepts teachers, not all teachers)', function () {
+it('can access reports as teacher (in teachers table) (form accepts teachers, not all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -228,13 +214,11 @@ it('can access reports as teacher (in teachers table) (form accepts teachers, no
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -253,7 +237,7 @@ it('can access reports as teacher (in teachers table) (form accepts teachers, no
         ->assertOK();
 });
 
-it('can access reports as teacher (in teachers table) (form accepts teachers and all teachers)', function () {
+it('can access reports as teacher (in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -273,13 +257,11 @@ it('can access reports as teacher (in teachers table) (form accepts teachers and
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -298,7 +280,7 @@ it('can access reports as teacher (in teachers table) (form accepts teachers and
         ->assertOK();
 });
 
-it('cannot access reports as teacher (not in teachers table) (form accepts teachers, not all teachers)', function () {
+it('cannot access reports as teacher (not in teachers table) (form accepts teachers, not all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -312,13 +294,11 @@ it('cannot access reports as teacher (not in teachers table) (form accepts teach
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -344,7 +324,7 @@ it('cannot access reports as teacher (not in teachers table) (form accepts teach
         ->assertViewIs('pages.deny_access');
 });
 
-it('can access reports as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
+it('can access reports as teacher (not in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -358,13 +338,11 @@ it('can access reports as teacher (not in teachers table) (form accepts teachers
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -383,7 +361,7 @@ it('can access reports as teacher (not in teachers table) (form accepts teachers
         ->assertOK();
 });
 
-it('cannot see inactive reports as teacher', function () {
+it('cannot see inactive reports as teacher', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -397,13 +375,11 @@ it('cannot see inactive reports as teacher', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -419,7 +395,7 @@ it('cannot see inactive reports as teacher', function () {
         ->assertDontSee('Direct');
 });
 
-it('cannot show a report that doesn\'t exist as teacher', function () {
+it('cannot show a report that doesn\'t exist as teacher', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -428,13 +404,11 @@ it('cannot show a report that doesn\'t exist as teacher', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -446,7 +420,7 @@ it('cannot show a report that doesn\'t exist as teacher', function () {
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report that doesn\'t exist as teacher', function () {
+it('cannot edit a report that doesn\'t exist as teacher', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -455,13 +429,11 @@ it('cannot edit a report that doesn\'t exist as teacher', function () {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -473,7 +445,7 @@ it('cannot edit a report that doesn\'t exist as teacher', function () {
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit a report as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -487,13 +459,11 @@ it('cannot edit a report as teacher (in teachers table) (form doesn\'t accept te
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -506,7 +476,7 @@ it('cannot edit a report as teacher (in teachers table) (form doesn\'t accept te
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('cannot edit a report as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit a report as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -515,13 +485,11 @@ it('cannot edit a report as teacher (not in teachers table) (form doesn\'t accep
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -534,7 +502,7 @@ it('cannot edit a report as teacher (not in teachers table) (form doesn\'t accep
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('cannot edit an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -543,13 +511,11 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form does
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -563,7 +529,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form does
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers)', function () {
+it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -572,13 +538,11 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -592,7 +556,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
+it('cannot edit an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -601,13 +565,11 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -621,7 +583,7 @@ it('cannot edit an inactive report as teacher (not in teachers table) (form acce
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -635,13 +597,11 @@ it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -655,7 +615,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form doesn\'t
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers)', function () {
+it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -669,13 +629,11 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -689,7 +647,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function () {
+it('cannot edit an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -703,13 +661,11 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -723,7 +679,7 @@ it('cannot edit an inactive report as teacher (in teachers table) (form accepts 
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('can edit a report as teacher (not in teachers) (form accepts teachers and all teachers)', function () {
+it('can edit a report as teacher (not in teachers) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -732,13 +688,11 @@ it('can edit a report as teacher (not in teachers) (form accepts teachers and al
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -753,7 +707,7 @@ it('can edit a report as teacher (not in teachers) (form accepts teachers and al
         ->assertSee($form->title);
 });
 
-it('can edit a report as teacher (in teachers) (form accepts teachers)', function () {
+it('can edit a report as teacher (in teachers) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -767,13 +721,11 @@ it('can edit a report as teacher (in teachers) (form accepts teachers)', functio
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -788,7 +740,7 @@ it('can edit a report as teacher (in teachers) (form accepts teachers)', functio
         ->assertSee($form->title);
 });
 
-it('can edit a report as teacher (in teachers) (form accepts teachers and all teachers)', function () {
+it('can edit a report as teacher (in teachers) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -802,13 +754,11 @@ it('can edit a report as teacher (in teachers) (form accepts teachers and all te
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -823,7 +773,7 @@ it('can edit a report as teacher (in teachers) (form accepts teachers and all te
         ->assertSee($form->title);
 });
 
-it('cannot edit a record of a report that doesn\'t exist as teacher', function () {
+it('cannot edit a record of a report that doesn\'t exist as teacher', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -832,13 +782,11 @@ it('cannot edit a record of a report that doesn\'t exist as teacher', function (
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -853,7 +801,7 @@ it('cannot edit a record of a report that doesn\'t exist as teacher', function (
         ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
 });
 
-it('cannot edit a report record as teacher (not in teachers) (form accepts teachers)', function () {
+it('cannot edit a report record as teacher (not in teachers) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -862,13 +810,11 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -883,7 +829,7 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
 });
 
-it('can edit a report record as teacher (not in teachers) (form accepts teachers and all teachers)', function () {
+it('can edit a report record as teacher (not in teachers) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -892,13 +838,11 @@ it('can edit a report record as teacher (not in teachers) (form accepts teachers
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -913,7 +857,7 @@ it('can edit a report record as teacher (not in teachers) (form accepts teachers
         ->assertSee($form->title);
 });
 
-it('can edit a report record as teacher (in teachers) (form accepts teachers)', function () {
+it('can edit a report record as teacher (in teachers) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -927,13 +871,11 @@ it('can edit a report record as teacher (in teachers) (form accepts teachers)', 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -948,7 +890,7 @@ it('can edit a report record as teacher (in teachers) (form accepts teachers)', 
         ->assertSee($form->title);
 });
 
-it('can edit a report record as teacher (in teachers) (form accepts teachers and all teachers)', function () {
+it('can edit a report record as teacher (in teachers) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -962,13 +904,11 @@ it('can edit a report record as teacher (in teachers) (form accepts teachers and
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -983,7 +923,7 @@ it('can edit a report record as teacher (in teachers) (form accepts teachers and
         ->assertSee($form->title);
 });
 
-it('cannot edit a record of an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -992,13 +932,11 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1013,7 +951,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1022,13 +960,11 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1043,7 +979,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1052,13 +988,11 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1073,7 +1007,7 @@ it('cannot edit a record of an inactive report as teacher (not in teachers table
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1087,13 +1021,11 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1108,7 +1040,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1122,13 +1054,11 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1143,7 +1073,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function () {
+it('cannot edit a record of an inactive report as teacher (in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1157,13 +1087,11 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1178,7 +1106,7 @@ it('cannot edit a record of an inactive report as teacher (in teachers table) (f
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot edit a report record as teacher (not in teachers) (form doesn\'t accept teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (not in teachers) (form doesn\'t accept teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1187,13 +1115,11 @@ it('cannot edit a report record as teacher (not in teachers) (form doesn\'t acce
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1209,7 +1135,7 @@ it('cannot edit a report record as teacher (not in teachers) (form doesn\'t acce
 
 });
 
-it('cannot edit a report record as teacher (not in teachers) (form accepts teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (not in teachers) (form accepts teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1218,13 +1144,11 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1240,7 +1164,7 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
 
 });
 
-it('cannot edit a report record as teacher (not in teachers) (form accepts teachers and all teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (not in teachers) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1249,13 +1173,11 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1271,7 +1193,7 @@ it('cannot edit a report record as teacher (not in teachers) (form accepts teach
 
 });
 
-it('cannot edit a report record as teacher (in teachers) (form doesn\'t accept teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (in teachers) (form doesn\'t accept teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1285,13 +1207,11 @@ it('cannot edit a report record as teacher (in teachers) (form doesn\'t accept t
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1307,7 +1227,7 @@ it('cannot edit a report record as teacher (in teachers) (form doesn\'t accept t
 
 });
 
-it('cannot edit a report record as teacher (in teachers) (form accepts teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (in teachers) (form accepts teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1321,13 +1241,11 @@ it('cannot edit a report record as teacher (in teachers) (form accepts teachers)
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1343,7 +1261,7 @@ it('cannot edit a report record as teacher (in teachers) (form accepts teachers)
 
 });
 
-it('cannot edit a report record as teacher (in teachers) (form accepts teachers and all teachers) (no multiple)', function () {
+it('cannot edit a report record as teacher (in teachers) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1357,13 +1275,11 @@ it('cannot edit a report record as teacher (in teachers) (form accepts teachers 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1379,7 +1295,7 @@ it('cannot edit a report record as teacher (in teachers) (form accepts teachers 
 
 });
 
-it('cannot update a report as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot update a report as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1388,13 +1304,11 @@ it('cannot update a report as teacher (not in teachers table) (form doesn\'t acc
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1415,7 +1329,7 @@ it('cannot update a report as teacher (not in teachers table) (form doesn\'t acc
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('cannot update a report as teacher (not in teachers table) (form accepts teachers)', function () {
+it('cannot update a report as teacher (not in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1424,13 +1338,11 @@ it('cannot update a report as teacher (not in teachers table) (form accepts teac
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1451,7 +1363,7 @@ it('cannot update a report as teacher (not in teachers table) (form accepts teac
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
 });
 
-it('can update a report as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
+it('can update a report as teacher (not in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1460,13 +1372,11 @@ it('can update a report as teacher (not in teachers table) (form accepts teacher
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1495,7 +1405,7 @@ it('can update a report as teacher (not in teachers table) (form accepts teacher
 
 });
 
-it('cannot update a report as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot update a report as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1509,13 +1419,11 @@ it('cannot update a report as teacher (in teachers table) (form doesn\'t accept 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1536,7 +1444,7 @@ it('cannot update a report as teacher (in teachers table) (form doesn\'t accept 
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('can update a report as teacher (in teachers table) (form accepts teachers)', function () {
+it('can update a report as teacher (in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1550,13 +1458,11 @@ it('can update a report as teacher (in teachers table) (form accepts teachers)',
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1584,7 +1490,7 @@ it('can update a report as teacher (in teachers table) (form accepts teachers)',
     }
 });
 
-it('can update a report as teacher (in teachers table) (form accepts teachers and all teachers)', function () {
+it('can update a report as teacher (in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1598,13 +1504,11 @@ it('can update a report as teacher (in teachers table) (form accepts teachers an
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1633,7 +1537,7 @@ it('can update a report as teacher (in teachers table) (form accepts teachers an
 
 });
 
-it('cannot update an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (not in teachers table) (form doesn\'t accept teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1642,13 +1546,11 @@ it('cannot update an inactive report as teacher (not in teachers table) (form do
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1669,7 +1571,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form do
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1678,13 +1580,11 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1705,7 +1605,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (not in teachers table) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1714,13 +1614,11 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1741,7 +1639,7 @@ it('cannot update an inactive report as teacher (not in teachers table) (form ac
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update an inactive report as teacher (in teachers table) (form doesn\'t accept teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (in teachers table) (form doesn\'t accept teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1755,13 +1653,11 @@ it('cannot update an inactive report as teacher (in teachers table) (form doesn\
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1782,7 +1678,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form doesn\
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1796,13 +1692,11 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1823,7 +1717,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function () {
+it('cannot update an inactive report as teacher (in teachers table) (form accepts teachers and all teachers) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1837,13 +1731,11 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1864,7 +1756,7 @@ it('cannot update an inactive report as teacher (in teachers table) (form accept
         ->assertSessionHas('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
 });
 
-it('cannot update a report that doesn\'t exist as teacher (not in teachers table) (no multiple)', function () {
+it('cannot update a report that doesn\'t exist as teacher (not in teachers table) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1873,13 +1765,11 @@ it('cannot update a report that doesn\'t exist as teacher (not in teachers table
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1897,7 +1787,7 @@ it('cannot update a report that doesn\'t exist as teacher (not in teachers table
         ->assertForbidden();
 });
 
-it('cannot update a report that doesn\'t exist as teacher (in teachers table) (no multiple)', function () {
+it('cannot update a report that doesn\'t exist as teacher (in teachers table) (no multiple)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1911,13 +1801,11 @@ it('cannot update a report that doesn\'t exist as teacher (in teachers table) (n
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1935,7 +1823,7 @@ it('cannot update a report that doesn\'t exist as teacher (in teachers table) (n
         ->assertForbidden();
 });
 
-it('cannot update a report record as teacher (not in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot update a report record as teacher (not in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1944,13 +1832,11 @@ it('cannot update a report record as teacher (not in teachers table) (form doesn
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -1971,7 +1857,7 @@ it('cannot update a report record as teacher (not in teachers table) (form doesn
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('cannot update a report record as teacher (not in teachers table) (form accepts teachers)', function () {
+it('cannot update a report record as teacher (not in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -1980,13 +1866,11 @@ it('cannot update a report record as teacher (not in teachers table) (form accep
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2007,7 +1891,7 @@ it('cannot update a report record as teacher (not in teachers table) (form accep
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
 });
 
-it('can update a report record as teacher (not in teachers table) (form accepts teachers and all teachers)', function () {
+it('can update a report record as teacher (not in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2016,13 +1900,11 @@ it('can update a report record as teacher (not in teachers table) (form accepts 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2054,7 +1936,7 @@ it('can update a report record as teacher (not in teachers table) (form accepts 
 
 });
 
-it('cannot update a report record as teacher (in teachers table) (form doesn\'t accept teachers)', function () {
+it('cannot update a report record as teacher (in teachers table) (form doesn\'t accept teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2068,13 +1950,11 @@ it('cannot update a report record as teacher (in teachers table) (form doesn\'t 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2095,7 +1975,7 @@ it('cannot update a report record as teacher (in teachers table) (form doesn\'t 
         ->assertSessionHas('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
 });
 
-it('can update a report record as teacher (in teachers table) (form accepts teachers)', function () {
+it('can update a report record as teacher (in teachers table) (form accepts teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2109,13 +1989,11 @@ it('can update a report record as teacher (in teachers table) (form accepts teac
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2146,7 +2024,7 @@ it('can update a report record as teacher (in teachers table) (form accepts teac
     }
 });
 
-it('can update a report record as teacher (in teachers table) (form accepts teachers and all teachers)', function () {
+it('can update a report record as teacher (in teachers table) (form accepts teachers and all teachers)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2160,13 +2038,11 @@ it('can update a report record as teacher (in teachers table) (form accepts teac
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2198,7 +2074,7 @@ it('can update a report record as teacher (in teachers table) (form accepts teac
 
 });
 
-it('can traverse a report (with multiple) as teacher (not in teachers table)', function () {
+it('can traverse a report (with multiple) as teacher (not in teachers table)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2207,13 +2083,11 @@ it('can traverse a report (with multiple) as teacher (not in teachers table)', f
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2311,7 +2185,7 @@ it('can traverse a report (with multiple) as teacher (not in teachers table)', f
     ]);
 });
 
-it('can traverse a report (with multiple) as teacher (in teachers table)', function () {
+it('can traverse a report (with multiple) as teacher (in teachers table)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2325,13 +2199,11 @@ it('can traverse a report (with multiple) as teacher (in teachers table)', funct
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2434,7 +2306,7 @@ it('can traverse a report (with multiple) as teacher (in teachers table)', funct
     ]);
 });
 
-it('cannot traverse an inactive report (with multiple) as teacher (not in teachers table)', function () {
+it('cannot traverse an inactive report (with multiple) as teacher (not in teachers table)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2443,13 +2315,11 @@ it('cannot traverse an inactive report (with multiple) as teacher (not in teache
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([
@@ -2491,7 +2361,7 @@ it('cannot traverse an inactive report (with multiple) as teacher (not in teache
 
 });
 
-it('cannot traverse an inactive report (with multiple) as teacher (in teachers table)', function () {
+it('cannot traverse an inactive report (with multiple) as teacher (in teachers table)', function (): void {
 
     test_cas_logged_in_as_teacher();
 
@@ -2505,13 +2375,11 @@ it('cannot traverse an inactive report (with multiple) as teacher (in teachers t
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(function ($sequence) {
-                    return [
-                        'sort_id' => $sequence->index,
-                        'type' => 0,
-                        'listvalues' => '',
-                    ];
-                })),
+                ->state(new Sequence(fn($sequence) => [
+                    'sort_id' => $sequence->index,
+                    'type' => 0,
+                    'listvalues' => '',
+                ])),
             'form_fields'
         )
         ->create([

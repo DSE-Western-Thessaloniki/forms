@@ -54,16 +54,16 @@ class Form extends Model
     {
         if ($filter && $only_active) {
             $forms = Form::orderBy('created_at', 'desc')
-                ->withCount(['data' => function ($query) {
+                ->withCount(['data' => function ($query): void {
                     $query->where('record', 0);
                 }])
                 ->where('active', '1')
-                ->where(function ($query) use ($filter) {
+                ->where(function ($query) use ($filter): void {
                     $query->where('id', 'like', '%'.$filter.'%')
                         ->orWhere('title', 'like', '%'.$filter.'%');
                 })
                 ->with('user')
-                ->withCount(['schools' => function ($query) {
+                ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);
                 }])
                 ->with('schools')
@@ -72,13 +72,13 @@ class Form extends Model
                 ->paginate(15);
         } elseif ($filter) {
             $forms = Form::orderBy('created_at', 'desc')
-                ->withCount(['data' => function ($query) {
+                ->withCount(['data' => function ($query): void {
                     $query->where('record', 0);
                 }])
                 ->where('id', 'like', '%'.$filter.'%')
                 ->orWhere('title', 'like', '%'.$filter.'%')
                 ->with('user')
-                ->withCount(['schools' => function ($query) {
+                ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);
                 }])
                 ->with('schools')
@@ -87,12 +87,12 @@ class Form extends Model
                 ->paginate(15);
         } elseif ($only_active) {
             $forms = Form::orderBy('created_at', 'desc')
-                ->withCount(['data' => function ($query) {
+                ->withCount(['data' => function ($query): void {
                     $query->where('record', 0);
                 }])
                 ->where('active', '1')
                 ->with('user')
-                ->withCount(['schools' => function ($query) {
+                ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);
                 }])
                 ->with('schools')
@@ -102,12 +102,12 @@ class Form extends Model
         } else {
             $forms = Form::orderBy('created_at', 'desc')
                 ->withCount([
-                    'data' => function ($query) {
+                    'data' => function ($query): void {
                         $query->where('record', 0);
                     },
                 ])
                 ->with('user')
-                ->withCount(['schools' => function ($query) {
+                ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);
                 }])
                 ->with('schools')

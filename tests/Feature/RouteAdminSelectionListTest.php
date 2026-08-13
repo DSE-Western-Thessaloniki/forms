@@ -10,32 +10,32 @@ use Illuminate\Support\Facades\Storage;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->seed(OptionSeeder::class);
     $option = Option::where('name', 'first_run')->first();
     $option->value = 0;
     $option->save();
 });
 
-it('cannot access the lists panel as user', function () {
+it('cannot access the lists panel as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/selection_list')->assertForbidden();
 });
 
-it('can access the lists panel as author', function () {
+it('can access the lists panel as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/selection_list')->assertOk();
 });
 
-it('can access the lists panel as admin', function () {
+it('can access the lists panel as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/selection_list')->assertOk();
 });
 
-it('can access the lists panel as admin with filter', function () {
+it('can access the lists panel as admin with filter', function (): void {
     $admin = User::factory()->admin()->create();
     $lists = SelectionList::factory(2, [
         'active' => 1,
@@ -51,25 +51,25 @@ it('can access the lists panel as admin with filter', function () {
     $response->assertDontSee($lists[1]->name);
 });
 
-it('cannot access the list creation as user', function () {
+it('cannot access the list creation as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->get('/admin/selection_list/create')->assertForbidden();
 });
 
-it('cannot access the list creation as author', function () {
+it('cannot access the list creation as author', function (): void {
     $author = User::factory()->author()->create();
 
     $this->actingAs($author)->get('/admin/selection_list/create')->assertOk();
 });
 
-it('can access the list creation as admin', function () {
+it('can access the list creation as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin/selection_list/create')->assertOk();
 });
 
-it('cannot access a list\'s info as user', function () {
+it('cannot access a list\'s info as user', function (): void {
     $user = User::factory()->user()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -81,7 +81,7 @@ it('cannot access a list\'s info as user', function () {
     $this->actingAs($user)->get('/admin/selection_list/'.$testList->id)->assertStatus(405);
 });
 
-it('cannot access a list\'s info as author', function () {
+it('cannot access a list\'s info as author', function (): void {
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -93,7 +93,7 @@ it('cannot access a list\'s info as author', function () {
     $this->actingAs($author)->get('/admin/selection_list/'.$testList->id)->assertStatus(405);
 });
 
-it('cannot access a list\'s info as admin', function () {
+it('cannot access a list\'s info as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -105,7 +105,7 @@ it('cannot access a list\'s info as admin', function () {
     $this->actingAs($admin)->get('/admin/selection_list/'.$testList->id)->assertStatus(405);
 });
 
-it('cannot create a list as user', function () {
+it('cannot create a list as user', function (): void {
     $user = User::factory()->user()->create();
 
     $this->actingAs($user)->post('/admin/selection_list', [
@@ -117,7 +117,7 @@ it('cannot create a list as user', function () {
     ])->assertForbidden();
 });
 
-it('can create a list as author', function () {
+it('can create a list as author', function (): void {
     $author = User::factory()->author()->create();
 
     $response = $this->actingAs($author)->post('/admin/selection_list', [
@@ -139,7 +139,7 @@ it('can create a list as author', function () {
     ]);
 });
 
-it('can create a list as admin', function () {
+it('can create a list as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post('/admin/selection_list', [
@@ -161,7 +161,7 @@ it('can create a list as admin', function () {
     ]);
 });
 
-it('cannot edit a list as user', function () {
+it('cannot edit a list as user', function (): void {
     $user = User::factory()->user()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -173,7 +173,7 @@ it('cannot edit a list as user', function () {
     $this->actingAs($user)->get('/admin/selection_list/'.$testList->id.'/edit')->assertForbidden();
 });
 
-it('can edit a list as author', function () {
+it('can edit a list as author', function (): void {
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -185,7 +185,7 @@ it('can edit a list as author', function () {
     $this->actingAs($author)->get('/admin/selection_list/'.$testList->id.'/edit')->assertOk();
 });
 
-it('can edit a list as admin', function () {
+it('can edit a list as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -197,7 +197,7 @@ it('can edit a list as admin', function () {
     $this->actingAs($admin)->get('/admin/selection_list/'.$testList->id.'/edit')->assertOk();
 });
 
-it('cannot delete a list as user', function () {
+it('cannot delete a list as user', function (): void {
     $user = User::factory()->user()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -211,7 +211,7 @@ it('cannot delete a list as user', function () {
     assertDatabaseCount('selection_lists', 1);
 });
 
-it('cannot delete a list as author with no ownership', function () {
+it('cannot delete a list as author with no ownership', function (): void {
     $admin = User::factory()->admin()->create();
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
@@ -226,7 +226,7 @@ it('cannot delete a list as author with no ownership', function () {
     assertDatabaseCount('selection_lists', 1);
 });
 
-it('can delete a list as author with ownership', function () {
+it('can delete a list as author with ownership', function (): void {
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -243,7 +243,7 @@ it('can delete a list as author with ownership', function () {
     assertDatabaseCount('selection_lists', 0);
 });
 
-it('can delete a list as admin', function () {
+it('can delete a list as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -258,7 +258,7 @@ it('can delete a list as admin', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα διαγράφηκε!');
 });
 
-it('cannot update a list as user', function () {
+it('cannot update a list as user', function (): void {
     $user = User::factory()->user()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -274,7 +274,7 @@ it('cannot update a list as user', function () {
     ])->assertForbidden();
 });
 
-it('cannot update a list as author with no ownership', function () {
+it('cannot update a list as author with no ownership', function (): void {
     $author = User::factory()->author()->create();
     $author2 = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
@@ -291,7 +291,7 @@ it('cannot update a list as author with no ownership', function () {
     ])->assertForbidden();
 });
 
-it('can update a list as author with ownership', function () {
+it('can update a list as author with ownership', function (): void {
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -315,7 +315,7 @@ it('can update a list as author with ownership', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
-it('can update a list as admin without ownership', function () {
+it('can update a list as admin without ownership', function (): void {
     $admin = User::factory()->admin()->create();
     $author = User::factory()->author()->create();
     $testList = SelectionList::factory()->create([
@@ -340,7 +340,7 @@ it('can update a list as admin without ownership', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
-it('can update a list as admin with ownership', function () {
+it('can update a list as admin with ownership', function (): void {
     $admin = User::factory()->admin()->create();
     $testList = SelectionList::factory()->create([
         'name' => 'Test List',
@@ -364,7 +364,7 @@ it('can update a list as admin with ownership', function () {
     expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
-it('cannot import a list as user', function () {
+it('cannot import a list as user', function (): void {
     $user = User::factory()->user()->create();
 
     Storage::fake('uploads');
@@ -378,7 +378,7 @@ it('cannot import a list as user', function () {
     $response->assertForbidden();
 });
 
-it('can import a list as author', function () {
+it('can import a list as author', function (): void {
     $author = User::factory()->author()->create();
 
     Storage::fake('uploads');
@@ -398,7 +398,7 @@ it('can import a list as author', function () {
     ]);
 });
 
-it('can import a list as admin (with ; as delimiter)', function () {
+it('can import a list as admin (with ; as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
 
     Storage::fake('uploads');
@@ -418,7 +418,7 @@ it('can import a list as admin (with ; as delimiter)', function () {
     ]);
 });
 
-it('cannot create a copy of a list as user', function () {
+it('cannot create a copy of a list as user', function (): void {
     $user = User::factory()->user()->create();
     $list = SelectionList::factory()->create([
         'active' => 1,
@@ -435,7 +435,7 @@ it('cannot create a copy of a list as user', function () {
     ]);
 });
 
-it('can create a copy of a list as author', function () {
+it('can create a copy of a list as author', function (): void {
     $author = User::factory()->author()->create();
     $list = SelectionList::factory()->create([
         'active' => 1,
@@ -452,7 +452,7 @@ it('can create a copy of a list as author', function () {
     ]);
 });
 
-it('can create a copy of a list as admin', function () {
+it('can create a copy of a list as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $list = SelectionList::factory()->create([
         'active' => 1,

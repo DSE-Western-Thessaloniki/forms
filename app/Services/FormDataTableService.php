@@ -21,7 +21,7 @@ class FormDataTableService
         // Ετοίμασε το υποερώτημα
         $subQuery = DB::query()
             ->select(['record', 'name', 'am_afm', 'type', 'tid', 'created_at', 'updated_at'])
-            ->fromSub(function (Builder $query) use ($form) {
+            ->fromSub(function (Builder $query) use ($form): void {
                 $query->from('teachers')
                     ->addSelect(['form_field_data.*', 'teachers.id as tid'])
                     ->selectRaw("'teacher' as type")
@@ -37,7 +37,7 @@ class FormDataTableService
                             ->flatten()
                             ->toArray()
                     )
-                    ->union(function (Builder $query) use ($form) {
+                    ->union(function (Builder $query) use ($form): void {
                         $query->from('other_teachers')
                             ->addSelect(['form_field_data.*', 'other_teachers.id as tid'])
                             ->selectRaw("'other_teacher' as type")
@@ -79,7 +79,7 @@ class FormDataTableService
         // Ετοίμασε το υποερώτημα
         $subQuery = DB::query()
             ->select(['record', 'name', 'code', 'type', 'tid', 'created_at', 'updated_at'])
-            ->fromSub(function (Builder $query) use ($form) {
+            ->fromSub(function (Builder $query) use ($form): void {
                 $query->from('schools')
                     ->addSelect(['form_field_data.*', 'schools.id as tid', 'name', 'code'])
                     ->selectRaw("'school' as type")
