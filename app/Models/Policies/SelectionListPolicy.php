@@ -10,7 +10,7 @@ class SelectionListPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $current_user, $ability)
+    public function before(User $current_user, $ability): ?true
     {
         return $current_user->isAdministrator() ? true : null;
     }

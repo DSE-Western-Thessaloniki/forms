@@ -19,7 +19,7 @@ trait UsesUuid
       return false;
   }
 
-  public function getKeyType()
+  public function getKeyType(): string
   {
       return 'string';
   }

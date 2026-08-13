@@ -11,7 +11,7 @@ class FormPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before(User $user, $ability): ?true
     {
         return $user->isAdministrator() ? true : null;
     }
