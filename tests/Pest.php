@@ -48,7 +48,7 @@ expect()->extend('toBeOne', fn() => $this->toBe(1));
 |
 */
 
-function test_cas_null()
+function test_cas_null(): void
 {
     Cas::shouldReceive('isAuthenticated')
         ->andReturnNull();
@@ -62,7 +62,7 @@ function test_cas_null()
         ->andReturnNull();
 }
 
-function test_cas_not_logged_in()
+function test_cas_not_logged_in(): void
 {
     Cas::shouldReceive('checkAuthentication')
         ->andReturnFalse();
@@ -70,7 +70,7 @@ function test_cas_not_logged_in()
         ->andThrow(Exception::class, 'Must authenticate with CAS');
 }
 
-function test_cas_logged_in(int $uid = 999, string $mail = 'tst@sch.gr', string $cn = 'Dokimastiki monada', string $businessCategory = '')
+function test_cas_logged_in(int $uid = 999, string $mail = 'tst@sch.gr', string $cn = 'Dokimastiki monada', string $businessCategory = ''): void
 {
     Cas::shouldReceive('isAuthenticated')
         ->andReturnTrue();
@@ -93,7 +93,7 @@ function test_cas_logged_in(int $uid = 999, string $mail = 'tst@sch.gr', string 
         ->andReturn($businessCategory);
 }
 
-function test_cas_logged_in_as_teacher(int $uid = 888, string $mail = 'tstteacher@sch.gr', string $cn = 'Dokimastikos ekpaideytikos', string $businessCategory = 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ', string $employeeNumber = '123456')
+function test_cas_logged_in_as_teacher(int $uid = 888, string $mail = 'tstteacher@sch.gr', string $cn = 'Dokimastikos ekpaideytikos', string $businessCategory = 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ', string $employeeNumber = '123456'): void
 {
     Cas::shouldReceive('isAuthenticated')
         ->andReturnTrue();
