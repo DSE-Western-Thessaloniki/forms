@@ -18,7 +18,7 @@ beforeEach(function (): void {
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', fn() => new TestCasManager());
+    $this->app->singleton('cas', fn (): TestCasManager => new TestCasManager);
 
     test_cas_null();
 });
@@ -373,7 +373,7 @@ it('can keep already saved file in a form (no multiple)', function (): void {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 5,
                     'listvalues' => '',
@@ -431,7 +431,7 @@ it('can keep already saved file in a form (multiple)', function (): void {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 5,
                     'listvalues' => '',
@@ -491,7 +491,7 @@ it('can download already saved file in a form', function (): void {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 5,
                     'listvalues' => '',
@@ -541,7 +541,7 @@ it('cannot download already saved file in a closed form', function (): void {
         ->for(User::factory()->admin())
         ->has(
             FormField::factory()
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 5,
                     'listvalues' => '',
@@ -595,7 +595,7 @@ it('validates download links', function ($type): void {
             ->for(User::factory()->admin())
             ->has(
                 FormField::factory()
-                    ->state(new Sequence(fn($sequence) => [
+                    ->state(new Sequence(fn ($sequence): array => [
                         'sort_id' => $sequence->index,
                         'type' => 5,
                         'listvalues' => '',
@@ -627,7 +627,7 @@ it('validates download links', function ($type): void {
             ->for(User::factory()->admin())
             ->has(
                 FormField::factory()
-                    ->state(new Sequence(fn($sequence) => [
+                    ->state(new Sequence(fn ($sequence): array => [
                         'sort_id' => $sequence->index,
                         'type' => 5,
                         'listvalues' => '',

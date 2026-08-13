@@ -1,6 +1,6 @@
 <?php
 
-dataset('admin_routes', fn() => [
+dataset('admin_routes', fn(): array => [
     '/admin',
     '/admin/form',
     '/admin/form/0',

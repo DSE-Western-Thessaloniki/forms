@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Blade::directive('icon', fn($expression) => "<i class=\"fas fa-fw fa-{{ $expression }}\"></i>");
+        Blade::directive('icon', fn($expression): string => "<i class=\"fas fa-fw fa-{{ $expression }}\"></i>");
         Paginator::useBootstrap();
     }
 }

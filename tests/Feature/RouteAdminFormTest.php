@@ -27,7 +27,7 @@ beforeEach(function (): void {
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', fn() => new TestCasManager);
+    $this->app->singleton('cas', fn (): TestCasManager => new TestCasManager);
 
     Cas::shouldReceive('isAuthenticated')
         ->andReturn(false);

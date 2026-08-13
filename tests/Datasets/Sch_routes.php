@@ -1,6 +1,6 @@
 <?php
 
-dataset('sch_routes', fn() => [
+dataset('sch_routes', fn(): array => [
     '/login',
     '/report',
     '/report/create',

@@ -1,6 +1,6 @@
 <?php
 
-dataset('setup_validation_data', fn() => [
+dataset('setup_validation_data', fn(): array => [
     [
         'setup' => [
             'name' => '',

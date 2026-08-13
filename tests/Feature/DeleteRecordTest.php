@@ -16,7 +16,7 @@ beforeEach(function (): void {
     $option->value = 0;
     $option->save();
 
-    $this->app->singleton('cas', fn() => new TestCasManager);
+    $this->app->singleton('cas', fn (): TestCasManager => new TestCasManager);
 
     test_cas_null();
 });
@@ -32,7 +32,7 @@ it('cannot delete a record without being logged in through cas', function (): vo
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -86,7 +86,7 @@ it('cannot delete a record from an inactive form', function (): void {
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -114,7 +114,7 @@ it('cannot delete a record without permission (user not in schools)', function (
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -144,7 +144,7 @@ it('cannot delete a record without permission (user has no rights)', function ()
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -174,7 +174,7 @@ it('can delete a record from a form with multiple records (direct relation)', fu
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -252,7 +252,7 @@ it('can delete a record from a form with multiple records (indirect relation)', 
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',
@@ -313,7 +313,7 @@ it('can delete a record from a form without multiple records', function (): void
         ->has(
             FormField::factory()
                 ->count(5)
-                ->state(new Sequence(fn($sequence) => [
+                ->state(new Sequence(fn ($sequence): array => [
                     'sort_id' => $sequence->index,
                     'type' => 0,
                     'listvalues' => '',

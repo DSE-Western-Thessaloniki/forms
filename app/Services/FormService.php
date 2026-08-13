@@ -62,7 +62,7 @@ class FormService
                     continue;
                 }
 
-                if (! count($formFields->filter(fn ($item) => $item->id == $options['show_when'][$i]['active_field']))) {
+                if (! count($formFields->filter(fn ($item): bool => $item->id == $options['show_when'][$i]['active_field']))) {
                     // Το id του πεδίου είναι λάθος γιατί περιέχει id που δεν υπάρχει.
                     // Κάνε σύνδεση με το νέο πεδίο
                     $old_field_id = $options['show_when'][$i]['active_field'];

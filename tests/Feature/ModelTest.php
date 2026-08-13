@@ -68,7 +68,7 @@ it('can create form fields for a form', function (): void {
             FormField::factory(3)
                 ->state(
                     new Sequence(
-                        fn ($sequence) => [
+                        fn ($sequence): array => [
                             'sort_id' => $sequence->index,
                         ]
                     )
@@ -89,7 +89,7 @@ it('can add data to form fields', function (): void {
             FormField::factory(3)
                 ->state(
                     new Sequence(
-                        fn ($sequence) => [
+                        fn ($sequence): array => [
                             'sort_id' => $sequence->index,
                         ]
                     )
@@ -149,7 +149,7 @@ it('can find forms available for a school', function (): void {
             FormField::factory(3)
                 ->state(
                     new Sequence(
-                        fn ($sequence) => [
+                        fn ($sequence): array => [
                             'sort_id' => $sequence->index,
                         ]
                     )
@@ -174,7 +174,7 @@ it('can find forms available for a school category', function (): void {
             FormField::factory(3)
                 ->state(
                     new Sequence(
-                        fn ($sequence) => [
+                        fn ($sequence): array => [
                             'sort_id' => $sequence->index,
                         ]
                     )
@@ -202,7 +202,7 @@ it('can find form fields filled by a school', function (): void {
             FormField::factory(3)
                 ->state(
                     new Sequence(
-                        fn ($sequence) => [
+                        fn ($sequence): array => [
                             'sort_id' => $sequence->index,
                         ]
                     )
@@ -229,7 +229,7 @@ it('can find form fields filled by a school', function (): void {
 it('can find the categories a school belongs to', function (): void {
     $categories = SchoolCategory::factory()
         ->count(3)
-        ->state(new Sequence(fn ($sequence) => [
+        ->state(new Sequence(fn ($sequence): array => [
             'name' => $sequence->index,
         ]))
         ->create();
@@ -246,13 +246,13 @@ it('can find the categories a school belongs to', function (): void {
 it('can find schools of a specific category', function (): void {
     $categories = SchoolCategory::factory()
         ->count(3)
-        ->state(new Sequence(fn ($sequence) => [
+        ->state(new Sequence(fn ($sequence): array => [
             'name' => $sequence->index,
         ]))
         ->create();
     $schools = School::factory()
         ->count(4)
-        ->state(new Sequence(fn ($sequence) => [
+        ->state(new Sequence(fn ($sequence): array => [
             'name' => 'test school '.$sequence->index,
         ]))
         ->for(User::factory())
