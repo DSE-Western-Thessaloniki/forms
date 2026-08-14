@@ -19,16 +19,14 @@ class ReportsController extends Controller
     use UsesFileFiltering;
 
     // Κρατάει το μοντέλο της σχολικής μονάδας μετά τον έλεγχο από την συνάρτηση school_or_teacher_has_access
-    private $school_model_cache = null;
+    private $school_model_cache;
 
-    private $teacher_model_cache = null;
+    private $teacher_model_cache;
 
-    private $other_teacher_model_cache = null;
+    private $other_teacher_model_cache;
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct() {}
 
@@ -109,7 +107,8 @@ class ReportsController extends Controller
             $this->teacher_model_cache = null;
             $this->other_teacher_model_cache = null;
             $school = School::where('username', cas()->getAttribute('uid'))
-                ->orWhere('email', cas()->getAttribute('mail'))
+                ->orWhere('email', cas()
+                    ->getAttribute('mail'))
                 ->first();
 
             if (! $school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
@@ -207,16 +206,19 @@ class ReportsController extends Controller
             return view('pages.deny_access');
         } else { // Τότε μάλλον σχολείο
             $school = School::where('username', cas()->getAttribute('uid'))
-                ->orWhere('email', cas()->getAttribute('mail'))
+                ->orWhere('email', cas()
+                    ->getAttribute('mail'))
                 ->first();
             if ($school) {
                 $categories = $school->categories->pluck('id');
                 $forms = Form::where('active', true)
-                    ->where(function ($query) use ($school, $categories): void { // Προσθήκη παρένθεσης
+                    ->where(function ($query) use ($school, $categories): void {
+                        // Προσθήκη παρένθεσης
                         $query->whereHas('schools', function ($q) use ($school): void {
                             $q->where('school_id', $school->id);
                         })
-                            ->when($categories, function ($q) use ($categories): void { // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                            ->when($categories, function ($q) use ($categories): void {
+                                // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
                                 $q->orWhereHas('school_categories', function ($q) use ($categories): void {
                                     $q->whereIn('school_category_id', $categories);
                                 });
@@ -494,28 +496,19 @@ class ReportsController extends Controller
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['school_id' => $this->school_model_cache->id],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         } elseif ($this->teacher_model_cache !== null) {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         } else {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         }
                     }
@@ -599,28 +592,19 @@ class ReportsController extends Controller
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['school_id' => $this->school_model_cache->id, 'record' => $record],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['teacher_id' => $this->teacher_model_cache->id, 'record' => $record],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         } else {
                             $field->field_data()
                                 ->updateOrCreate(
                                     ['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $record],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                         }
                     }
@@ -640,14 +624,8 @@ class ReportsController extends Controller
                             foreach ($fields as $field) {
                                 $data = null;
                                 $field->field_data()->updateOrCreate(
-                                    [
-                                        'school_id' => $this->school_model_cache->id,
-                                        'record' => $last_record,
-                                    ],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['school_id' => $this->school_model_cache->id, 'record' => $last_record],
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                             }
                         } elseif ($this->teacher_model_cache !== null) { // Εκπαιδευτικός
@@ -660,14 +638,8 @@ class ReportsController extends Controller
                             foreach ($fields as $field) {
                                 $data = null;
                                 $field->field_data()->updateOrCreate(
-                                    [
-                                        'teacher_id' => $this->teacher_model_cache->id,
-                                        'record' => $last_record,
-                                    ],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['teacher_id' => $this->teacher_model_cache->id, 'record' => $last_record],
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                             }
                         } else {
@@ -680,14 +652,8 @@ class ReportsController extends Controller
                             foreach ($fields as $field) {
                                 $data = null;
                                 $field->field_data()->updateOrCreate(
-                                    [
-                                        'other_teacher_id' => $this->other_teacher_model_cache->id,
-                                        'record' => $last_record,
-                                    ],
-                                    [
-                                        'data' => $data,
-                                        'updated_at' => now(),
-                                    ]
+                                    ['other_teacher_id' => $this->other_teacher_model_cache->id, 'record' => $last_record],
+                                    ['data' => $data, 'updated_at' => now()]
                                 );
                             }
                         }

@@ -10,65 +10,47 @@ class SchoolCategoryPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability): ?true
+    public function before(User $user): ?true
     {
         return $user->isAdministrator() ? true : null;
     }
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, SchoolCategory $schoolCategory): bool
+    public function view(): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user): bool
+    public function create(): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, SchoolCategory $schoolCategory): bool
+    public function update(): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, SchoolCategory $schoolCategory): bool
+    public function delete(): bool
     {
         return false;
     }

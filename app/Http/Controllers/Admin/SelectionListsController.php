@@ -17,8 +17,6 @@ class SelectionListsController extends Controller
 {
     /**
      * Create the controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -35,7 +33,7 @@ class SelectionListsController extends Controller
         $filter = $request->get('filter');
         if ($filter) {
             $lists = SelectionList::orderBy('name')
-                ->where('name', 'like', '%'.$filter.'%')
+                ->where('name', 'like', '%' . $filter . '%')
                 ->with('created_by')
                 ->with('updated_by')
                 ->paginate(15);
@@ -87,8 +85,6 @@ class SelectionListsController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return Response
      */
     public function show(SelectionList $selectionList): void
     {

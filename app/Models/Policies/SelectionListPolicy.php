@@ -10,7 +10,7 @@ class SelectionListPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $current_user, $ability): ?true
+    public function before(User $current_user): ?true
     {
         return $current_user->isAdministrator() ? true : null;
     }
@@ -18,7 +18,6 @@ class SelectionListPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
@@ -29,11 +28,9 @@ class SelectionListPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, SelectionList $selectionList)
+    public function view(User $user)
     {
         return $user->roles()->where("name", "Author")->exists();
     }
@@ -41,7 +38,6 @@ class SelectionListPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -51,10 +47,6 @@ class SelectionListPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, SelectionList $selectionList): bool
     {
@@ -69,10 +61,6 @@ class SelectionListPolicy
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, SelectionList $selectionList): bool
     {
@@ -87,24 +75,16 @@ class SelectionListPolicy
 
     /**
      * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, SelectionList $selectionList): bool
+    public function restore(): bool
     {
         return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, SelectionList $selectionList): bool
+    public function forceDelete(): bool
     {
         return false;
     }

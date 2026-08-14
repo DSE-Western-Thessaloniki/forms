@@ -22,9 +22,7 @@ class UpdateReportRequest extends FormRequest
         /** @var Collection<FormField> */
         $form_fields = $this->form->form_fields;
 
-        $attributes = $form_fields->flatMap(fn(FormField $field): array => ["f$field->id" => "'{$field->title}'"])->toArray();
-
-        return $attributes;
+        return $form_fields->flatMap(fn(FormField $field): array => ["f$field->id" => "'{$field->title}'"])->toArray();
     }
 
     /**

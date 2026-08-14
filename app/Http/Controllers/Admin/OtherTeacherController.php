@@ -29,9 +29,9 @@ class OtherTeacherController extends Controller
 
         if ($filter) {
             $otherTeachers = OtherTeacher::query()
-                ->where('employeenumber', 'like', '%'.$filter.'%')
-                ->orWhere('name', 'like', '%'.$filter.'%')
-                ->orWhere('email', 'like', '%'.$filter.'%')
+                ->where('employeenumber', 'like', '%' . $filter . '%')
+                ->orWhere('name', 'like', '%' . $filter . '%')
+                ->orWhere('email', 'like', '%' . $filter . '%')
                 ->paginate(15);
         } else {
             $otherTeachers = OtherTeacher::orderBy('name', 'asc')

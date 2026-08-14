@@ -9,18 +9,15 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $current_user, $ability): ?true
+    public function before(User $current_user): ?true
     {
         return $current_user->isAdministrator() ? true : null;
     }
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $current_user
-     * @return mixed
      */
-    public function viewAny(User $current_user): bool
+    public function viewAny(): bool
     {
         return false;
     }
@@ -28,8 +25,6 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $current_user
-     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function view(User $current_user, User $user)
@@ -39,11 +34,8 @@ class UserPolicy
 
     /**
      * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $current_user
-     * @return mixed
      */
-    public function create(User $current_user): bool
+    public function create(): bool
     {
         return false;
     }
@@ -51,8 +43,6 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $current_user
-     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function update(User $current_user, User $user)
@@ -62,12 +52,8 @@ class UserPolicy
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $current_user
-     * @param  \App\Models\User  $user
-     * @return mixed
      */
-    public function delete(User $current_user, User $user): bool
+    public function delete(): bool
     {
         return false;
     }

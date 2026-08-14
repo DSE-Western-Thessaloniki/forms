@@ -16,8 +16,6 @@ class SchoolsController extends Controller
 {
     /**
      * Create the controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -34,9 +32,9 @@ class SchoolsController extends Controller
         $filter = $request->get('filter');
         if ($filter) {
             $schools = School::orderBy('created_at', 'desc')
-                ->where('name', 'like', '%'.$filter.'%')
-                ->orWhere('code', 'like', '%'.$filter.'%')
-                ->orWhere('username', 'like', '%'.$filter.'%')
+                ->where('name', 'like', '%' . $filter . '%')
+                ->orWhere('code', 'like', '%' . $filter . '%')
+                ->orWhere('username', 'like', '%' . $filter . '%')
                 ->with('user', 'categories')
                 ->paginate(15);
         } else {

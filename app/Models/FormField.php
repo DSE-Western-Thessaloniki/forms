@@ -90,7 +90,7 @@ class FormField extends Model
                 $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
-            $field->required = $formfield[$key]['required'] === 'true' ? true : false;
+            $field->required = $formfield[$key]['required'] === 'true';
             $form->form_fields()->save($field);
         }
 
@@ -119,7 +119,7 @@ class FormField extends Model
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
 
-            $field->required = $formfield[$key]['required'] === 'true' ? true : false;
+            $field->required = $formfield[$key]['required'] === 'true';
             $form->form_fields()->save($field);
         }
 

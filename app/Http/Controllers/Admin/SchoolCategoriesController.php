@@ -13,8 +13,6 @@ class SchoolCategoriesController extends Controller
 {
     /**
      * Create the controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {

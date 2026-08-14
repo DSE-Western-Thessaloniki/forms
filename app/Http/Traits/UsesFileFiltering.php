@@ -28,9 +28,8 @@ trait UsesFileFiltering
         }
         // maximize filename length to 255 bytes http://serverfault.com/a/9548/44086
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $filename = mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)).($ext ? '.'.$ext : '');
 
-        return $filename;
+        return mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)).($ext ? '.'.$ext : '');
     }
 
     protected function beautifyFilename($filename): string

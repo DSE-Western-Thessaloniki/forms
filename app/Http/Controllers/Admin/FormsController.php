@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\UsesFileFiltering;
 use App\Models\AcceptedFiletype;
 use App\Models\Form;
 use App\Models\FormField;
@@ -23,7 +24,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use XLSXWriter;
-use App\Http\Traits\UsesFileFiltering;
 use ZipArchive;
 
 class FormsController extends Controller
@@ -32,8 +32,6 @@ class FormsController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -126,8 +124,6 @@ class FormsController extends Controller
         foreach ($schools as $school) {
             $form->schools()->attach($school);
         }
-
-        $fields = $form->form_fields()->get();
 
         $formService->fixFormFieldOptionsAfterStore($form);
 

@@ -34,10 +34,10 @@ class TeacherController extends Controller
 
         if ($filter) {
             $teachers = Teacher::query()
-                ->where('surname', 'like', '%'.$filter.'%')
-                ->orWhere('name', 'like', '%'.$filter.'%')
-                ->orWhere('am', 'like', '%'.$filter.'%')
-                ->orWhere('afm', 'like', '%'.$filter.'%')
+                ->where('surname', 'like', '%' . $filter . '%')
+                ->orWhere('name', 'like', '%' . $filter . '%')
+                ->orWhere('am', 'like', '%' . $filter . '%')
+                ->orWhere('afm', 'like', '%' . $filter . '%')
                 ->orderBy('surname', 'asc')
                 ->orderBy('name', 'asc')
                 ->paginate(15);
@@ -78,8 +78,6 @@ class TeacherController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return Response
      */
     public function show(Teacher $teacher): void
     {

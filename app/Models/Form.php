@@ -60,7 +60,7 @@ class Form extends Model
                 ->where('active', '1')
                 ->where(function ($query) use ($filter): void {
                     $query->where('id', 'like', '%'.$filter.'%')
-                        ->orWhere('title', 'like', '%'.$filter.'%');
+                        ->orWhere('title', 'like', '%' . $filter . '%');
                 })
                 ->with('user')
                 ->withCount(['schools' => function ($query): void {
@@ -75,8 +75,8 @@ class Form extends Model
                 ->withCount(['data' => function ($query): void {
                     $query->where('record', 0);
                 }])
-                ->where('id', 'like', '%'.$filter.'%')
-                ->orWhere('title', 'like', '%'.$filter.'%')
+                ->where('id', 'like', '%' . $filter . '%')
+                ->orWhere('title', 'like', '%' . $filter . '%')
                 ->with('user')
                 ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);
@@ -101,11 +101,9 @@ class Form extends Model
                 ->paginate(15);
         } else {
             $forms = Form::orderBy('created_at', 'desc')
-                ->withCount([
-                    'data' => function ($query): void {
-                        $query->where('record', 0);
-                    },
-                ])
+                ->withCount(['data' => function ($query): void {
+                    $query->where('record', 0);
+                }])
                 ->with('user')
                 ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);

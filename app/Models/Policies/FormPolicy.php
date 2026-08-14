@@ -11,39 +11,29 @@ class FormPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability): ?true
+    public function before(User $user): ?true
     {
         return $user->isAdministrator() ? true : null;
     }
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
 
     /**
      * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Form $form): bool
+    public function view(): bool
     {
         return true;
     }
 
     /**
      * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user): bool
     {
@@ -55,10 +45,6 @@ class FormPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Form $form): bool
     {
@@ -71,10 +57,6 @@ class FormPolicy
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Form  $form
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Form $form): bool
     {
