@@ -481,7 +481,7 @@ class FormsController extends Controller
         }
 
         // Αν περαστεί λάθος record
-        if (! $record_data) {
+        if (! isset($record_data) || ! $record_data) {
             abort(404);
         }
 

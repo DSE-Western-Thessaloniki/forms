@@ -10,6 +10,7 @@ use App\Models\User;
 use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCasManager;
 
 beforeEach(function (): void {
@@ -616,7 +617,8 @@ it('validates download links', function ($type): void {
 
         $form->schools()->attach($school);
         $form->save();
-    } elseif ($type === 'teacher' || $type === 'other_teacher') {
+    } else {
+        // teacher ή other_teacher
         test_cas_logged_in_as_teacher();
 
         if ($type === 'teacher') {

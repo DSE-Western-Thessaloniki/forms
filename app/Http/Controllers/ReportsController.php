@@ -125,6 +125,7 @@ class ReportsController extends Controller
             }
         }
         $this->school_model_cache = $school;
+
         return $form->schools()->where('school_id', $school->id)->count() > 0 || $in_category;
 
     }
@@ -156,14 +157,14 @@ class ReportsController extends Controller
                 return view('pages.deny_access');
             }
 
-            if (! $teacher && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
+            if ((! isset($teacher) || ! $teacher) && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
                 $this->teacher_model_cache = null;
                 Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
 
                 return view('pages.deny_access');
             }
 
-            if ($teacher) {
+            if (isset($teacher) && $teacher) {
                 $this->teacher_model_cache = $teacher;
                 $forms = Form::where('active', true)
                     ->where('for_teachers', 1)
@@ -200,6 +201,7 @@ class ReportsController extends Controller
 
             return view('pages.deny_access');
         }
+
         // Τότε μάλλον σχολείο
         $school = School::where('username', cas()->getAttribute('uid'))
             ->orWhere('email', cas()
@@ -226,6 +228,7 @@ class ReportsController extends Controller
             return view('report.index')->with('forms', $forms);
         }
         Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+
         return view('pages.deny_access');
 
     }
@@ -669,6 +672,7 @@ class ReportsController extends Controller
                     if (is_numeric($next) && is_int(intval($next))) {
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
                     }
+
                     return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                 }
 
@@ -725,6 +729,7 @@ class ReportsController extends Controller
                     if (Storage::exists("report/$report/$subfolder/$record/$fieldId")) {
                         return Storage::download("report/$report/$subfolder/$record/$fieldId", $record_data->data);
                     }
+
                     return redirect(route('report.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
                 }
 
