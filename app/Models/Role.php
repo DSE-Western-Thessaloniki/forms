@@ -14,6 +14,8 @@ class Role extends Model
 
     /**
      * The users that belong to the role.
+     *
+     * @return BelongsToMany<User,$this>
      */
     public function users(): BelongsToMany
     {

@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -43,10 +45,8 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -57,11 +57,11 @@ class UserController extends Controller
         ]);
 
         $user = new User([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'username' => $request->get('username'),
-            'password' => Hash::make($request->get('password')),
-            'password_reset' => $request->get('password_reset') ? 1 : 0,
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'username' => $request->input('username'),
+            'password' => Hash::make($request->input('password')),
+            'password_reset' => $request->input('password_reset') ? 1 : 0,
             'active' => 1,
             'updated_by' => Auth::user()->id,
         ]);
@@ -93,10 +93,8 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -105,19 +103,19 @@ class UserController extends Controller
             'password_reset' => ['nullable', 'integer'],
         ]);
 
-        $user->username = $request->get('username');
-        $user->name = $request->get('name');
-        $user->email = $request->get('email');
-        $user->password_reset = $request->get('password_reset') ? 1 : 0;
+        $user->username = $request->input('username');
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password_reset = $request->input('password_reset') ? 1 : 0;
 
         // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
         if (Auth::user()->isAdministrator()) {
-            $user->active = $request->get('active') == 1 ? 1 : 0;
+            $user->active = $request->input('active') == 1 ? 1 : 0;
 
             $roles = DB::table('roles')->get();
             $new_roles = [];
             foreach ($roles as $role) {
-                $check = $request->get($role->name);
+                $check = $request->input($role->name);
                 if ($check == 1) {
                     $new_roles[] = $role->id;
                 }
@@ -132,10 +130,8 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return Response
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
         $user->delete();
 
@@ -151,23 +147,24 @@ class UserController extends Controller
         // }
     }
 
-    public function changePassword(Request $request, User $user)
+    public function changePassword(Request $request, User $user): RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user->password = Hash::make($request->get('password'));
+        $user->password = Hash::make($request->input('password'));
         $user->password_reset = 0;
         $user->save();
 
         if (Auth::user()->isAdministrator()) {
             return to_route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
         }
+
         return to_route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
     }
 
-    public function confirmDelete(User $user)
+    public function confirmDelete(User $user): View
     {
         return view('admin.user.confirm_delete')->with('user', $user);
     }

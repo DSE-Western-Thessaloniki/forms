@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,8 +9,8 @@ use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
 use App\Models\Teacher;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
@@ -20,13 +22,11 @@ class TeacherController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         if ($request->exists('teacher_filter')) {
-            $filter = $request->get('teacher_filter');
+            $filter = $request->input('teacher_filter');
         } else {
             $filter = $request->session()->get('teacher_filter', '');
         }
@@ -34,10 +34,10 @@ class TeacherController extends Controller
 
         if ($filter) {
             $teachers = Teacher::query()
-                ->where('surname', 'like', '%' . $filter . '%')
-                ->orWhere('name', 'like', '%' . $filter . '%')
-                ->orWhere('am', 'like', '%' . $filter . '%')
-                ->orWhere('afm', 'like', '%' . $filter . '%')
+                ->where('surname', 'like', '%'.$filter.'%')
+                ->orWhere('name', 'like', '%'.$filter.'%')
+                ->orWhere('am', 'like', '%'.$filter.'%')
+                ->orWhere('afm', 'like', '%'.$filter.'%')
                 ->orderBy('surname', 'asc')
                 ->orderBy('name', 'asc')
                 ->paginate(15);
@@ -62,10 +62,8 @@ class TeacherController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(StoreTeacherRequest $request)
+    public function store(StoreTeacherRequest $request): RedirectResponse
     {
         Teacher::create([
             ...$request->validated(),
@@ -77,29 +75,17 @@ class TeacherController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Teacher $teacher): void
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
-     *
-     * @return Response
      */
-    public function edit(Teacher $teacher)
+    public function edit(Teacher $teacher): View
     {
         return view('admin.teacher.edit')->with('teacher', $teacher);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function update(UpdateTeacherRequest $request, Teacher $teacher)
+    public function update(UpdateTeacherRequest $request, Teacher $teacher): RedirectResponse
     {
         $teacher->update(
             array_merge(
@@ -114,10 +100,8 @@ class TeacherController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return Response
      */
-    public function destroy(Teacher $teacher)
+    public function destroy(Teacher $teacher): RedirectResponse
     {
         $teacher->delete();
 
@@ -125,7 +109,7 @@ class TeacherController extends Controller
             ->with('status', 'Ο εκπαιδευτικός διαγράφηκε!');
     }
 
-    public function confirmDelete(Teacher $teacher)
+    public function confirmDelete(Teacher $teacher): View
     {
         return view('admin.teacher.confirm_delete')
             ->with('teacher', $teacher);
@@ -136,7 +120,7 @@ class TeacherController extends Controller
         return view('admin.teacher.import');
     }
 
-    public function import(Request $request)
+    public function import(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         $request->validate([
@@ -186,7 +170,7 @@ class TeacherController extends Controller
         }
 
         if ($missingField || $data === []) {
-            return redirect(route('admin.teacher.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+            return to_route('admin.teacher.index')->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 
         DB::table('teachers')->

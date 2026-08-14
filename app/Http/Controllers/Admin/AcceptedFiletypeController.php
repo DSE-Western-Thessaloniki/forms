@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +9,7 @@ use App\Http\Requests\StoreAcceptedFiletypeRequest;
 use App\Http\Requests\UpdateAcceptedFiletypeRequest;
 use App\Models\AcceptedFiletype;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class AcceptedFiletypeController extends Controller
 {
@@ -21,7 +24,7 @@ class AcceptedFiletypeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $accepted_filetypes = AcceptedFiletype::all();
 
@@ -40,7 +43,7 @@ class AcceptedFiletypeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAcceptedFiletypeRequest $request)
+    public function store(StoreAcceptedFiletypeRequest $request): RedirectResponse
     {
         // Αφαίρεσε το * από την επέκταση αν έχει κατά λάθος δοθεί
         $extension = $request->validated('extension');
@@ -55,22 +58,14 @@ class AcceptedFiletypeController extends Controller
             )
         );
 
-        return redirect(route('admin.accepted_filetype.index'))
+        return to_route('admin.accepted_filetype.index')
             ->with('success', 'Ο τύπος αρχείων δημιουργήθηκε επιτυχώς');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(AcceptedFiletype $acceptedFiletype): void
-    {
-        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AcceptedFiletype $acceptedFiletype)
+    public function edit(AcceptedFiletype $acceptedFiletype): View
     {
         return view('admin.accepted_filetype.edit')
             ->with('accepted_filetype', $acceptedFiletype);
@@ -79,7 +74,7 @@ class AcceptedFiletypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAcceptedFiletypeRequest $request, AcceptedFiletype $acceptedFiletype)
+    public function update(UpdateAcceptedFiletypeRequest $request, AcceptedFiletype $acceptedFiletype): RedirectResponse
     {
         // Αφαίρεσε το * από την επέκταση αν έχει κατά λάθος δοθεί
         $extension = $request->validated('extension');
@@ -94,18 +89,18 @@ class AcceptedFiletypeController extends Controller
             )
         );
 
-        return redirect(route('admin.accepted_filetype.index'))
+        return to_route('admin.accepted_filetype.index')
             ->with('success', 'Ο τύπος αρχείων ενημερώθηκε επιτυχώς');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AcceptedFiletype $acceptedFiletype)
+    public function destroy(AcceptedFiletype $acceptedFiletype): RedirectResponse
     {
         $acceptedFiletype->delete();
 
-        return redirect(route('admin.accepted_filetype.index'))
+        return to_route('admin.accepted_filetype.index')
             ->with('success', 'Επιτυχής διαγραφή τύπου αρχείων');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Database\Seeders\OptionSeeder;
 
 it('validates setup form', function (array $setup, $empty): void {

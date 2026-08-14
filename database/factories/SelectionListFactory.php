@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Models\SelectionList;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SelectionList>
+ * @extends Factory<SelectionList>
  */
 class SelectionListFactory extends Factory
 {
@@ -14,20 +17,20 @@ class SelectionListFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         $data = [];
         for ($i = 0; $i < $this->faker->randomDigitNotZero(); $i++) {
             $data[] = [
                 'id' => $i,
-                'value' => $this->faker->word()
+                'value' => $this->faker->word(),
             ];
         }
 
         return [
             'name' => $this->faker->sentence(3),
             'active' => $this->faker->boolean(),
-            'data' => $data
+            'data' => $data,
         ];
     }
 }

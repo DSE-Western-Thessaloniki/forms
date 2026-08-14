@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\OtherTeacher;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class OtherTeacherController extends Controller
@@ -15,13 +18,11 @@ class OtherTeacherController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         if ($request->exists('teacher_filter')) {
-            $filter = $request->get('teacher_filter');
+            $filter = $request->input('teacher_filter');
         } else {
             $filter = $request->session()->get('teacher_filter', '');
         }
@@ -29,9 +30,9 @@ class OtherTeacherController extends Controller
 
         if ($filter) {
             $otherTeachers = OtherTeacher::query()
-                ->where('employeenumber', 'like', '%' . $filter . '%')
-                ->orWhere('name', 'like', '%' . $filter . '%')
-                ->orWhere('email', 'like', '%' . $filter . '%')
+                ->where('employeenumber', 'like', '%'.$filter.'%')
+                ->orWhere('name', 'like', '%'.$filter.'%')
+                ->orWhere('email', 'like', '%'.$filter.'%')
                 ->paginate(15);
         } else {
             $otherTeachers = OtherTeacher::orderBy('name', 'asc')

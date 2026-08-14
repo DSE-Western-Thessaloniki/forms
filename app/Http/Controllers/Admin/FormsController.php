@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -44,17 +46,17 @@ class FormsController extends Controller
     public function index(Request $request): View
     {
         // Κράτησε τις ρυθμίσεις για το φίλτρο και τις ενεργές φόρμες
-        $only_active = $request->get('only_active') ?? $request->session()->get('only_active', 0);
+        $only_active = $request->input('only_active') ?? $request->session()->get('only_active', 0);
         $request->session()->put('only_active', $only_active);
 
         if ($request->exists('back')) {
             $request->merge(['page' => $request->session()->get('page', 1)]);
         } else {
-            $request->session()->put('page', $request->get('page', 1));
+            $request->session()->put('page', $request->input('page', 1));
         }
 
         if ($request->exists('filter')) {
-            $filter = $request->get('filter');
+            $filter = $request->input('filter');
         } else {
             $filter = $request->session()->get('filter', '');
         }
@@ -108,7 +110,7 @@ class FormsController extends Controller
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
         $categories = SchoolCategory::whereIn(
             'id',
-            explode(',', $request->get('categories'))
+            explode(',', $request->input('categories'))
         )->get();
 
         foreach ($categories as $category) {
@@ -118,7 +120,7 @@ class FormsController extends Controller
         // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
         $schools = School::whereIn(
             'id',
-            explode(',', $request->get('schools'))
+            explode(',', $request->input('schools'))
         )->get();
 
         foreach ($schools as $school) {
@@ -129,7 +131,7 @@ class FormsController extends Controller
 
         DB::commit();
 
-        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα δημιουργήθηκε');
+        return to_route('admin.form.index')->with('status', 'Η φόρμα δημιουργήθηκε');
     }
 
     /**
@@ -204,7 +206,7 @@ class FormsController extends Controller
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
         $categories = SchoolCategory::whereIn(
             'id',
-            explode(',', $request->get('categories'))
+            explode(',', $request->input('categories'))
         )->get();
 
         $form->school_categories()->sync($categories);
@@ -212,7 +214,7 @@ class FormsController extends Controller
         // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
         $schools = School::whereIn(
             'id',
-            explode(',', $request->get('schools'))
+            explode(',', $request->input('schools'))
         )->get();
 
         $form->schools()->sync($schools);
@@ -221,7 +223,7 @@ class FormsController extends Controller
 
         DB::commit();
 
-        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα ενημερώθηκε');
+        return to_route('admin.form.index')->with('status', 'Η φόρμα ενημερώθηκε');
     }
 
     /**
@@ -232,7 +234,7 @@ class FormsController extends Controller
         $form->form_fields()->delete();
         $form->delete();
 
-        return redirect(route('admin.form.index'))->with('status', 'Η φόρμα διαγράφηκε');
+        return to_route('admin.form.index')->with('status', 'Η φόρμα διαγράφηκε');
     }
 
     /**
@@ -240,7 +242,7 @@ class FormsController extends Controller
      */
     public function formData(Form $form, Request $request, FormDataTableService $formDataTableService): View
     {
-        $noPagination = $request->get('noPagination');
+        $noPagination = $request->input('noPagination');
         $form->load('form_fields');
 
         if ($noPagination == 1) {

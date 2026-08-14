@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class SchoolCategoriesController extends Controller
 {
@@ -21,10 +21,8 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response
      */
-    public function index()
+    public function index(): View
     {
         $categories = SchoolCategory::with('schools')->get();
 
@@ -41,10 +39,8 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -52,12 +48,12 @@ class SchoolCategoriesController extends Controller
         ]);
 
         $schoolCategory = new SchoolCategory([
-            'name' => $request->get('name'),
+            'name' => $request->input('name'),
         ]);
 
         $schoolCategory->save();
 
-        $school_codes = $request->get('schools');
+        $school_codes = $request->input('schools');
         if ($school_codes) {
             $codes = explode(',', $school_codes);
             foreach ($codes as $code) {
@@ -68,7 +64,7 @@ class SchoolCategoriesController extends Controller
             }
         }
 
-        return redirect(route('admin.school.schoolcategory.index'))
+        return to_route('admin.school.schoolcategory.index')
             ->with('status', 'Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
     }
 
@@ -82,8 +78,6 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  SchoolCategory  $schoolCategory
      */
     public function edit(SchoolCategory $schoolcategory): View
     {
@@ -92,16 +86,14 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function update(Request $request, SchoolCategory $schoolcategory)
+    public function update(Request $request, SchoolCategory $schoolcategory): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $schoolcategory->name = $request->get('name');
+        $schoolcategory->name = $request->input('name');
 
         $schoolcategory->save();
 
@@ -110,10 +102,8 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return Response
      */
-    public function destroy(SchoolCategory $schoolcategory)
+    public function destroy(SchoolCategory $schoolcategory): RedirectResponse
     {
         $schoolcategory->delete();
 

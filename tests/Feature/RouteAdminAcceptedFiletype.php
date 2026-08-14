@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\AcceptedFiletype;
 use App\Models\Option;
 use App\Models\User;
@@ -74,7 +76,7 @@ it('can create an accepted filetype as admin', function (): void {
         'extension' => '.tst,.tst2',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['success'])['success'])->toBe('Ο τύπος αρχείων δημιουργήθηκε επιτυχώς');
+    $response->assertSessionHas('success', 'Ο τύπος αρχείων δημιουργήθηκε επιτυχώς');
 });
 
 it('cannot edit an accepted filetype as user', function (): void {
@@ -134,7 +136,7 @@ it('can delete an accepted filetype as admin', function (): void {
 
     $response = $this->actingAs($admin)->delete(route('admin.accepted_filetype.destroy', $accepted_filetype));
     $response->assertStatus(302);
-    expect($response->getSession()->only(['success'])['success'])->toBe('Επιτυχής διαγραφή τύπου αρχείων');
+    $response->assertSessionHas('success', 'Επιτυχής διαγραφή τύπου αρχείων');
 });
 
 it('cannot update an accepted filetype as user', function (): void {
@@ -171,7 +173,7 @@ it('can update an accepted filetype as admin', function (): void {
         'extension' => '.tst2',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['success'])['success'])->toBe('Ο τύπος αρχείων ενημερώθηκε επιτυχώς');
+    $response->assertSessionHas('success', 'Ο τύπος αρχείων ενημερώθηκε επιτυχώς');
     $this->assertDatabaseHas('accepted_filetypes', [
         'description' => 'Test2',
         'extension' => '.tst2',

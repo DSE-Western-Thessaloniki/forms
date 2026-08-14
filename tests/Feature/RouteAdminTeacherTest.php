@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\Teacher;
 use App\Models\User;
@@ -96,7 +98,7 @@ it('can create a teacher as admin', function (): void {
 
     $response = $this->actingAs($admin)->post('/admin/teacher', $teacher_data);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Ο εκπαιδευτικός αποθηκεύτηκε!');
     $this->assertDatabaseHas('teachers', $teacher_data);
 });
 
@@ -141,7 +143,7 @@ it('can delete a teacher as admin', function (): void {
 
     $response = $this->actingAs($admin)->delete('/admin/teacher/'.$teacher->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός διαγράφηκε!');
+    $response->assertSessionHas('status', 'Ο εκπαιδευτικός διαγράφηκε!');
 });
 
 it('cannot update a teacher as user', function (): void {
@@ -187,7 +189,7 @@ it('can update a teacher as admin', function (): void {
 
     $response = $this->actingAs($admin)->put('/admin/teacher/'.$teacher->id, $new_teacher_data);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Ο εκπαιδευτικός ενημερώθηκε!');
+    $response->assertSessionHas('status', 'Ο εκπαιδευτικός ενημερώθηκε!');
 });
 
 it('cannot access a teacher\'s import form as user', function (): void {
@@ -227,7 +229,7 @@ it('can import teachers as admin (semicolon as delimiter)', function (): void {
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
 it('can import teachers as admin (comma as delimiter)', function (): void {
@@ -235,7 +237,7 @@ it('can import teachers as admin (comma as delimiter)', function (): void {
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 2 εκπαιδευτικών');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
 it('cannot import teachers as admin (wrong format of file)', function (): void {
@@ -243,7 +245,7 @@ it('cannot import teachers as admin (wrong format of file)', function (): void {
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101\n");
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
-    expect($response->getSession()->only(['error'])['error'])->toBe('Λανθασμένη μορφή αρχείου');
+    $response->assertSessionHas('error', 'Λανθασμένη μορφή αρχείου');
 });
 
 it('cannot import teachers as admin (wrong am/afm combination)', function (): void {
@@ -257,7 +259,7 @@ it('cannot import teachers as admin (wrong am/afm combination)', function (): vo
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
 
     $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
-    expect($response->getSession()->only(['error'])['error'])->toBe('Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
+    $response->assertSessionHas('error', 'Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
 });
 
 it('can import teachers as admin and mark old teacher data as inactive', function (): void {

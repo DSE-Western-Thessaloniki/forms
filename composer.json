@@ -33,6 +33,7 @@
         "barryvdh/laravel-debugbar": "^4.0",
         "barryvdh/laravel-ide-helper": "^3.0",
         "beyondcode/laravel-query-detector": "^2.3",
+        "calebdw/fakerstan": "^1.2",
         "fakerphp/faker": "^1.13",
         "laracasts/cypress": "dev-l13-compatibility@dev",
         "larastan/larastan": "^3.10",

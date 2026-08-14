@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\Option;
@@ -8,6 +10,7 @@ use App\Models\SchoolCategory;
 use App\Models\User;
 use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Support\Facades\Exceptions;
 use Tests\TestCasManager;
 
 beforeEach(function (): void {
@@ -25,24 +28,37 @@ it('gets cas/login without logging in', function ($url): void {
 
     test_cas_not_logged_in();
 
+    Exceptions::fake();
+
     $response = $this->get('/report');
     $response->assertStatus(500);
-    expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
+
+    Exceptions::assertReported(function (Exception $e): bool {
+        return $e->getMessage() === 'Must authenticate with CAS';
+    });
 })->with('sch_routes');
 
 it('gets cas/login logged in as user', function ($url): void {
 
     test_cas_not_logged_in();
 
+    Exceptions::fake();
+
     $response = $this->actingAs(User::factory()->admin()->create())->get('/report');
     $response->assertStatus(500);
-    expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
+    Exceptions::assertReported(function (Exception $e): bool {
+        return $e->getMessage() === 'Must authenticate with CAS';
+    });
     $response = $this->actingAs(User::factory()->author()->create())->get('/report');
     $response->assertStatus(500);
-    expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
+    Exceptions::assertReported(function (Exception $e): bool {
+        return $e->getMessage() === 'Must authenticate with CAS';
+    });
     $response = $this->actingAs(User::factory()->user()->create())->get('/report');
     $response->assertStatus(500);
-    expect($response->baseResponse->exception->getMessage())->toBe('Must authenticate with CAS');
+    Exceptions::assertReported(function (Exception $e): bool {
+        return $e->getMessage() === 'Must authenticate with CAS';
+    });
 })->with('sch_routes');
 
 it('denies access to users not in the schools table', function (): void {

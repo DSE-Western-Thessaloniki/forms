@@ -14,11 +14,17 @@ class SelectionList extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<User,$this>
+     */
     public function created_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * @return BelongsTo<User,$this>
+     */
     public function updated_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

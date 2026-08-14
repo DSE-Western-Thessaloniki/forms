@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -93,7 +95,7 @@ it('can create a school category as admin', function (): void {
         'name' => 'Test Category',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
 });
 
 it('can create a school category as admin and attach schools', function (): void {
@@ -108,7 +110,7 @@ it('can create a school category as admin and attach schools', function (): void
         'schools' => implode(',', $schools->pluck('code')->toArray()),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Η κατηγορία σχολικής μονάδας αποθηκεύτηκε!');
     $savedCategory = SchoolCategory::where('name', 'Test Category')->first();
     expect($savedCategory->schools()->count())->toBe(2);
 });
@@ -154,7 +156,7 @@ it('can delete a school category as admin', function (): void {
 
     $response = $this->actingAs($admin)->delete('/admin/school/schoolcategory/'.$testSchoolCategory->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας διαγράφηκε!');
+    $response->assertSessionHas('status', 'Η κατηγορία σχολικής μονάδας διαγράφηκε!');
 });
 
 it('cannot update a school category as user', function (): void {
@@ -185,5 +187,5 @@ it('can update a school category as admin', function (): void {
         'name' => 'TestCategory2',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η κατηγορία σχολικής μονάδας ενημερώθηκε!');
+    $response->assertSessionHas('status', 'Η κατηγορία σχολικής μονάδας ενημερώθηκε!');
 });

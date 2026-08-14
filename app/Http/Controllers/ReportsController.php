@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateReportRequest;
@@ -10,9 +12,11 @@ use App\Models\Option;
 use App\Models\OtherTeacher;
 use App\Models\School;
 use App\Models\Teacher;
-use Illuminate\Http\Response;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportsController extends Controller
 {
@@ -32,10 +36,8 @@ class ReportsController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return bool|Illuminate\Support\Facades\View
      */
-    private function school_or_teacher_has_access(Form $form)
+    private function school_or_teacher_has_access(Form $form): View|RedirectResponse|bool
     {
         $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
@@ -79,7 +81,7 @@ class ReportsController extends Controller
                     $this->other_teacher_model_cache = null;
                     Log::warning('Δεν επιτρέπεται η φόρμα σε εκπαιδευτικούς εκτός της Διεύθυνσης. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
 
-                    return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
+                    return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
                 }
 
                 // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
@@ -132,10 +134,8 @@ class ReportsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response
      */
-    public function index()
+    public function index(): View
     {
         $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
@@ -235,11 +235,8 @@ class ReportsController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
      */
-    public function show($id)
+    public function show(string $id): View|RedirectResponse
     {
         $form = Form::where('active', true)->find($id);
         if ($form) {
@@ -267,7 +264,7 @@ class ReportsController extends Controller
                         ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
@@ -275,17 +272,13 @@ class ReportsController extends Controller
             return $access;
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @param  int  $record
-     * @return Response
      */
-    public function showRecord($id, $record)
+    public function showRecord(string $id, int $record): View|RedirectResponse
     {
         $form = Form::where('active', true)->find($id);
         if ($form) {
@@ -314,7 +307,7 @@ class ReportsController extends Controller
                         ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
@@ -322,16 +315,13 @@ class ReportsController extends Controller
             return $access;
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
      */
-    public function edit($id)
+    public function edit(string $id): View|RedirectResponse
     {
         $form = Form::with('form_fields')
             ->where('active', true)
@@ -361,7 +351,7 @@ class ReportsController extends Controller
                         ->with('other_teacher', $this->other_teacher_model_cache);
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
@@ -371,19 +361,16 @@ class ReportsController extends Controller
 
         $form = Form::where('active', false)->find($id);
         if ($form) {
-            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
      */
-    public function editRecord($id, $record)
+    public function editRecord(string $id, int $record): View|RedirectResponse
     {
         $form = Form::with('form_fields')
             ->where('active', true)
@@ -415,10 +402,10 @@ class ReportsController extends Controller
                             ->with('other_teacher', $this->other_teacher_model_cache);
                     }
 
-                    return redirect(route('report.index'))->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
+                    return to_route('report.index')->with('error', 'Η φόρμα δεν δέχεται πολλαπλές απαντήσεις');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
@@ -428,19 +415,16 @@ class ReportsController extends Controller
 
         $form = Form::where('active', false)->find($id);
         if ($form) {
-            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
      */
-    public function update(UpdateReportRequest $request, $id)
+    public function update(UpdateReportRequest $request, string $id): RedirectResponse|View
     {
         $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
@@ -509,10 +493,10 @@ class ReportsController extends Controller
                         }
                     }
 
-                    return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+                    return to_route('report.index')->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο.
@@ -522,21 +506,16 @@ class ReportsController extends Controller
 
         $form = Form::where('active', false)->find($id);
         if ($form) {
-            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
     /**
      * Update the specified resource in storage and move to the "next" record.
-     *
-     * @param  int  $id  The form id
-     * @param  int  $record  The record to be saved
-     * @param  int|string  $next  The next record to go to
-     * @return Response
      */
-    public function updateRecord(UpdateReportRequest $request, $id, int $record, $next)
+    public function updateRecord(UpdateReportRequest $request, string $id, int $record, int|string $next): RedirectResponse|View
     {
         $form = Form::with('form_fields')->where('active', true)->find($id);
         if ($form) {
@@ -654,29 +633,29 @@ class ReportsController extends Controller
                             }
                         }
 
-                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $last_record]))->with('success', 'Η αναφορά ενημερώθηκε');
+                        return to_route('report.edit.record', ['report' => $id, 'record' => $last_record])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
                     if ($next === 'exit') {
-                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+                        return to_route('report.index')->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                     }
 
                     if ($next === 'next') {
-                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $record + 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+                        return to_route('report.edit.record', ['report' => $id, 'record' => $record + 1])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
                     if ($next === 'prev') {
-                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $record - 1]))->with('success', 'Η αναφορά ενημερώθηκε');
+                        return to_route('report.edit.record', ['report' => $id, 'record' => $record - 1])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
                     if (is_numeric($next) && is_int(intval($next))) {
-                        return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
+                        return to_route('report.edit.record', ['report' => $id, 'record' => $next])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
-                    return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
+                    return to_route('report.index')->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             // Εφόσον ήρθαμε ως εδώ ο λογαριασμός δεν ανήκει σε σχολείο ή εκπαιδευτικό
@@ -686,18 +665,14 @@ class ReportsController extends Controller
 
         $form = Form::where('active', false)->find($id);
         if ($form) {
-            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
-    public function downloadFile($report, $fieldId, $record)
+    public function downloadFile(string $report, int $fieldId, int $record): StreamedResponse|RedirectResponse|View
     {
-        if (! is_numeric($fieldId) || ! is_numeric($record)) {
-            abort(404);
-        }
-
         $form = Form::where('active', true)->find($report);
         if ($form) {
             $access = $this->school_or_teacher_has_access($form);
@@ -730,10 +705,10 @@ class ReportsController extends Controller
                         return Storage::download("report/$report/$subfolder/$record/$fieldId", $record_data->data);
                     }
 
-                    return redirect(route('report.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
+                    return to_route('report.index')->with('error', 'Το αρχείο δεν βρέθηκε');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             return $access;
@@ -741,13 +716,13 @@ class ReportsController extends Controller
 
         $form = Form::where('active', false)->find($report);
         if ($form) {
-            return redirect(route('report.index'))->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
+            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
-    public function destroyRecord($report, $record)
+    public function destroyRecord(string $report, int $record): RedirectResponse|View
     {
         $form = Form::where('active', true)->find($report);
         if ($form) {
@@ -793,18 +768,18 @@ class ReportsController extends Controller
                     }
 
                     if ($form->multiple) {
-                        return redirect(route('report.edit.record', ['report' => $report, 'record' => 0]))->with('success', 'Η εγγραφή διαγράφηκε');
+                        return to_route('report.edit.record', ['report' => $report, 'record' => 0])->with('success', 'Η εγγραφή διαγράφηκε');
                     }
 
-                    return redirect(route('report.edit', ['report' => $report]))->with('success', 'Η εγγραφή διαγράφηκε');
+                    return to_route('report.edit', ['report' => $report])->with('success', 'Η εγγραφή διαγράφηκε');
                 }
 
-                return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
+                return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
             }
 
             return $access;
         }
 
-        return redirect(route('report.index'))->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 }

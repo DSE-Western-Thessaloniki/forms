@@ -14,21 +14,33 @@ class FormFieldData extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<FormField,$this>
+     */
     public function form_field(): BelongsTo
     {
         return $this->belongsTo(FormField::class);
     }
 
+    /**
+     * @return BelongsTo<School,$this>
+     */
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class, 'school_id');
     }
 
+    /**
+     * @return BelongsTo<Teacher,$this>
+     */
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class, 'teacher_id');
     }
 
+    /**
+     * @return BelongsTo<OtherTeacher,$this>
+     */
     public function other_teacher(): BelongsTo
     {
         return $this->belongsTo(OtherTeacher::class, 'other_teacher_id');

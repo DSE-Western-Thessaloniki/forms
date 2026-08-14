@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Role;
@@ -17,6 +19,10 @@ use Illuminate\Support\Str;
 | model instances for testing / seeding your application's database.
 |
 */
+
+/**
+ * @extends Factory<User>
+ */
 class UserFactory extends Factory
 {
     /**
@@ -31,7 +37,7 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->name(),
@@ -48,10 +54,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user is suspended.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function suspended()
+    public function suspended(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -62,10 +66,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user is an administrator.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function admin()
+    public function admin(): static
     {
         return $this->hasAttached(
             Role::factory()->state(['name' => 'Administrator'])->count(1)
@@ -74,10 +76,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user is an author.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function author()
+    public function author(): static
     {
         return $this->hasAttached(
             Role::factory()->state(['name' => 'Author'])->count(1)
@@ -86,10 +86,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user is a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function user()
+    public function user(): static
     {
         return $this->hasAttached(
             Role::factory()->state(['name' => 'User'])->count(1)

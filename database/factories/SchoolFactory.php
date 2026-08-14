@@ -8,6 +8,9 @@ use App\Models\School;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends Factory<School>
+ */
 class SchoolFactory extends Factory
 {
     /**

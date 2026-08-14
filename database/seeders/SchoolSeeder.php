@@ -6,8 +6,8 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\User;
 use Database\Factories\SchoolFactory;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Seeder;
 
 class SchoolSeeder extends Seeder
 {
@@ -25,7 +25,7 @@ class SchoolSeeder extends Seeder
         $epal = SchoolCategory::where('name', 'ΕΠΑΛ')->first();
         $smeae = SchoolCategory::where('name', 'ΣΜΕΑΕ')->first();
 
-        if (!($user && $gymnasio && $gel && $epal && $smeae)) {
+        if (! ($user && $gymnasio && $gel && $epal && $smeae)) {
             throw new \Exception('You have to run UserSeeder and SchoolCategorySeeder first!');
         }
 
@@ -40,10 +40,9 @@ class SchoolSeeder extends Seeder
             ->for($user)
             ->create();
 
-
         foreach ($schools as $school) {
             $school->categories()->attach($gymnasio);
-            if ($school->username % 2 === 0) {
+            if ((int) $school->username % 2 === 0) {
                 $school->categories()->attach($smeae);
             }
         }
@@ -61,7 +60,7 @@ class SchoolSeeder extends Seeder
 
         foreach ($schools as $school) {
             $school->categories()->attach($gel);
-            if ($school->username % 2 === 0) {
+            if ((int) $school->username % 2 === 0) {
                 $school->categories()->attach($smeae);
             }
         }
@@ -77,10 +76,9 @@ class SchoolSeeder extends Seeder
             ->for($user)
             ->create();
 
-
         foreach ($schools as $school) {
             $school->categories()->attach($epal);
-            if ($school->username % 2 === 0) {
+            if ((int) $school->username % 2 === 0) {
                 $school->categories()->attach($smeae);
             }
         }

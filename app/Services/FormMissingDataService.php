@@ -32,7 +32,11 @@ class FormMissingDataService
         $data = [];
         $data[] = $dataTableColumns;
         foreach ($filtered_teachers as $teacher) {
-            $data[] = [$teacher->name, $teacher->code, ''];
+            $data[] = [
+                "{$teacher->surname} {$teacher->name}",
+                $teacher->am !== '' ? $teacher->am : $teacher->afm,
+                '',
+            ];
         }
 
         return $data;
@@ -78,6 +82,7 @@ class FormMissingDataService
         if ($form->for_teachers) {
             return $this->getMissingTeacherTable($form);
         }
+
         return $this->getMissingSchoolTable($form);
     }
 }

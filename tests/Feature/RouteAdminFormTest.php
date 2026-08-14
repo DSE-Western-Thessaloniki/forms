@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormFieldData;

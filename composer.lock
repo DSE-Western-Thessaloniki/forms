@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59fabab4c8781fd68a656212c70929f0",
+    "content-hash": "370c21ededfb26a517957e0fe1d0f414",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -6782,6 +6782,70 @@
                 }
             ],
             "time": "2026-08-07T13:03:48+00:00"
+        },
+        {
+            "name": "calebdw/fakerstan",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calebdw/fakerstan.git",
+                "reference": "7e739e315ba69155fe8a63017d3ec6501bea3ad8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calebdw/fakerstan/zipball/7e739e315ba69155fe8a63017d3ec6501bea3ad8",
+                "reference": "7e739e315ba69155fe8a63017d3ec6501bea3ad8",
+                "shasum": ""
+            },
+            "require": {
+                "fakerphp/faker": "^1.24",
+                "php": "^8.2",
+                "phpstan/phpstan": "^1.12 || ^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.5"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CalebDW\\Fakerstan\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb White",
+                    "email": "cdwhite3@pm.me"
+                }
+            ],
+            "description": "PHPStan extension for Faker",
+            "homepage": "https://github.com/calebdw/fakerstan",
+            "keywords": [
+                "PHPStan",
+                "faker",
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/calebdw/fakerstan/issues",
+                "source": "https://github.com/calebdw/fakerstan/tree/v1.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/calebdw",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-09T01:58:45+00:00"
         },
         {
             "name": "codezero/browser-locale",

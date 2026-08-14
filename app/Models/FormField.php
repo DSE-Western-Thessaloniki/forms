@@ -47,18 +47,24 @@ class FormField extends Model
 
     const int TYPE_LIST = 11;
 
+    /**
+     * @return BelongsTo<Form,$this>
+     */
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }
 
+    /**
+     * @return HasMany<FormFieldData,$this>
+     */
     public function field_data(): HasMany
     {
         return $this->hasMany(FormFieldData::class);
     }
 
     /**
-     * @return array{multiple:bool}
+     * @return \stdClass
      */
     public function field_options(): mixed
     {

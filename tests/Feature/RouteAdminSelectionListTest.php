@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\SelectionList;
 use App\Models\User;
@@ -128,7 +130,7 @@ it('can create a list as author', function (): void {
         'created_by' => $author->id,
     ])->assertRedirect('/admin/selection_list');
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Η λίστα αποθηκεύτηκε!');
 
     assertDatabaseCount('selection_lists', 1);
     assertDatabaseHas('selection_lists', [
@@ -150,7 +152,7 @@ it('can create a list as admin', function (): void {
         'created_by' => $admin->id,
     ])->assertRedirect('/admin/selection_list');
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Η λίστα αποθηκεύτηκε!');
 
     assertDatabaseCount('selection_lists', 1);
     assertDatabaseHas('selection_lists', [
@@ -238,7 +240,7 @@ it('can delete a list as author with ownership', function (): void {
     $response = $this
         ->actingAs($author)->delete('/admin/selection_list/'.$testList->id)
         ->assertRedirect('/admin/selection_list');
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα διαγράφηκε!');
+    $response->assertSessionHas('status', 'Η λίστα διαγράφηκε!');
 
     assertDatabaseCount('selection_lists', 0);
 });
@@ -255,7 +257,7 @@ it('can delete a list as admin', function (): void {
     $response = $this
         ->actingAs($admin)->delete('/admin/selection_list/'.$testList->id)
         ->assertRedirect('/admin/selection_list');
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα διαγράφηκε!');
+    $response->assertSessionHas('status', 'Η λίστα διαγράφηκε!');
 });
 
 it('cannot update a list as user', function (): void {
@@ -312,7 +314,7 @@ it('can update a list as author with ownership', function (): void {
         'data' => '[{"id":0,"value":"Test"}]',
         'created_by' => $author->id,
     ]);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+    $response->assertSessionHas('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
 it('can update a list as admin without ownership', function (): void {
@@ -337,7 +339,7 @@ it('can update a list as admin without ownership', function (): void {
         'data' => '[{"id":0,"value":"Test"}]',
         'created_by' => $author->id,
     ]);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+    $response->assertSessionHas('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
 it('can update a list as admin with ownership', function (): void {
@@ -361,7 +363,7 @@ it('can update a list as admin with ownership', function (): void {
         'data' => '[{"id":0,"value":"Test"}]',
         'created_by' => $admin->id,
     ]);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η λίστα ενημερώθηκε επιτυχώς!');
+    $response->assertSessionHas('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
 });
 
 it('cannot import a list as user', function (): void {
@@ -390,7 +392,7 @@ it('can import a list as author', function (): void {
         'csvfile' => $file,
     ]);
     $response->assertRedirect('/admin/selection_list');
-    expect($response->getSession()->only(['status'])['status'])->toBe('Έγινε εισαγωγή νέας λίστας');
+    $response->assertSessionHas('status', 'Έγινε εισαγωγή νέας λίστας');
     assertDatabaseCount('selection_lists', 1);
     assertDatabaseHas('selection_lists', [
         'name' => 'Test List',
@@ -410,7 +412,7 @@ it('can import a list as admin (with ; as delimiter)', function (): void {
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.list.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Έγινε εισαγωγή νέας λίστας');
+    $response->assertSessionHas('status', 'Έγινε εισαγωγή νέας λίστας');
     assertDatabaseCount('selection_lists', 1);
     assertDatabaseHas('selection_lists', [
         'name' => 'Test List',

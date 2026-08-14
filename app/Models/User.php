@@ -38,6 +38,9 @@ class User extends Authenticatable
         return $this->roles()->where('name', 'Administrator')->exists();
     }
 
+    /**
+     * @return BelongsToMany<Role,$this>
+     */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_role')->withTimestamps();

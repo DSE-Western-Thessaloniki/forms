@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\FormFieldData;
@@ -12,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 it('can create a new user', function (): void {
     $user = User::factory()->create();
 
-    $this->assertInstanceOf(\App\Models\User::class, $user);
+    $this->assertInstanceOf(User::class, $user);
     $this->assertDatabaseHas('users', ['updated_by' => 0]);
 });
 
@@ -56,9 +58,9 @@ it('can create a new form', function (): void {
             'school_categories'
         )
         ->create();
-    $this->assertInstanceOf(\App\Models\Form::class, $form);
-    $this->assertInstanceOf(\App\Models\School::class, $form->schools()->first());
-    $this->assertInstanceOf(\App\Models\SchoolCategory::class, $form->school_categories()->first());
+    $this->assertInstanceOf(Form::class, $form);
+    $this->assertInstanceOf(School::class, $form->schools()->first());
+    $this->assertInstanceOf(SchoolCategory::class, $form->school_categories()->first());
 });
 
 it('can create form fields for a form', function (): void {
@@ -76,7 +78,7 @@ it('can create form fields for a form', function (): void {
             'form_fields'
         )
         ->create();
-    $this->assertInstanceOf(\App\Models\FormField::class, $form->form_fields()->first());
+    $this->assertInstanceOf(FormField::class, $form->form_fields()->first());
     $this->assertEquals($form->getAttributes(), $form->form_fields()->first()->form->getAttributes());
     $this->assertCount(3, $form->form_fields()->get());
 });

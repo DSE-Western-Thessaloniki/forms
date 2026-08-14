@@ -21,21 +21,33 @@ class School extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    /**
+     * @return BelongsTo<User,$this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
 
+    /**
+     * @return BelongsToMany<Form,$this>
+     */
     public function forms(): BelongsToMany
     {
         return $this->belongsToMany(Form::class);
     }
 
+    /**
+     * @return BelongsToMany<SchoolCategory,$this>
+     */
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(SchoolCategory::class, 'school_category_school');
     }
 
+    /**
+     * @return HasMany<FormFieldData,$this>
+     */
     public function field_data(): HasMany
     {
         return $this->hasMany(FormFieldData::class);

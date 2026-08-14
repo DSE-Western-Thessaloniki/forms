@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -9,7 +11,6 @@ use App\Models\SelectionList;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -25,15 +26,13 @@ class SelectionListsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $filter = $request->get('filter');
+        $filter = $request->input('filter');
         if ($filter) {
             $lists = SelectionList::orderBy('name')
-                ->where('name', 'like', '%' . $filter . '%')
+                ->where('name', 'like', '%'.$filter.'%')
                 ->with('created_by')
                 ->with('updated_by')
                 ->paginate(15);
@@ -59,10 +58,8 @@ class SelectionListsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(StoreSelectionListRequest $request)
+    public function store(StoreSelectionListRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
         $selectionListData = [];
@@ -85,14 +82,6 @@ class SelectionListsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(SelectionList $selectionList): void
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(SelectionList $selectionList): View
@@ -102,10 +91,8 @@ class SelectionListsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function update(UpdateSelectionListRequest $request, SelectionList $selectionList)
+    public function update(UpdateSelectionListRequest $request, SelectionList $selectionList): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('selection_lists')->ignore($selectionList->id)],
@@ -137,10 +124,8 @@ class SelectionListsController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return Response
      */
-    public function destroy(SelectionList $selectionList)
+    public function destroy(SelectionList $selectionList): RedirectResponse
     {
         $selectionList->delete();
 
@@ -152,7 +137,7 @@ class SelectionListsController extends Controller
         return view('admin.list.import');
     }
 
-    public function import(Request $request)
+    public function import(Request $request): RedirectResponse
     {
         $request->validate([
             'csvfile' => 'required|file|mimes:csv,txt',
@@ -195,7 +180,7 @@ class SelectionListsController extends Controller
         return to_route('admin.list.index')->with('status', 'Έγινε εισαγωγή νέας λίστας');
     }
 
-    public function confirmDelete(SelectionList $selectionList)
+    public function confirmDelete(SelectionList $selectionList): View
     {
         return view('admin.list.confirm_delete')
             ->with('list', $selectionList);

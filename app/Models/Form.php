@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Http\Traits\UsesUuid;
+use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,9 @@ use Illuminate\Support\Facades\Auth;
 
 class Form extends Model
 {
+    /** @use HasFactory<FormFactory> */
     use HasFactory;
+
     use UsesUuid;
 
     // Table name
@@ -31,26 +34,41 @@ class Form extends Model
     // Timestamps
     public $timestamps = true;
 
+    /**
+     * @return HasMany<FormField,$this>
+     */
     public function form_fields(): HasMany
     {
         return $this->hasMany(FormField::class)->orderBy('sort_id');
     }
 
+    /**
+     * @return BelongsToMany<School,$this>
+     */
     public function schools(): BelongsToMany
     {
         return $this->belongsToMany(School::class);
     }
 
+    /**
+     * @return BelongsToMany<SchoolCategory,$this>
+     */
     public function school_categories(): BelongsToMany
     {
         return $this->belongsToMany(SchoolCategory::class);
     }
 
+    /**
+     * @return BelongsTo<User,$this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasManyThrough<FormFieldData,FormField,$this>
+     */
     public function data(): HasManyThrough
     {
         return $this->hasManyThrough(FormFieldData::class, FormField::class);

@@ -14,11 +14,17 @@ class SchoolCategory extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsToMany<School,$this>
+     */
     public function schools(): BelongsToMany
     {
         return $this->belongsToMany(School::class, 'school_category_school');
     }
 
+    /**
+     * @return BelongsToMany<Form,$this>
+     */
     public function forms(): BelongsToMany
     {
         return $this->belongsToMany(Form::class);

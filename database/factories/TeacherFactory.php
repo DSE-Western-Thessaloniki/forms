@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Models\Teacher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Teacher>
+ * @extends Factory<Teacher>
  */
 class TeacherFactory extends Factory
 {
@@ -14,9 +17,10 @@ class TeacherFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         $gender = rand(0, 1) === 0 ? 'male' : 'female';
+
         return [
             'name' => $this->faker->firstName($gender),
             'surname' => $this->faker->lastName($gender),

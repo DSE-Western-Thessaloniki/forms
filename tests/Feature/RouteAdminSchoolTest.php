@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\School;
 use App\Models\SchoolCategory;
@@ -136,7 +138,7 @@ it('can create a school as admin', function (): void {
         'category' => strval($category->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα αποθηκεύτηκε!');
+    $response->assertSessionHas('status', 'Η σχολική μονάδα αποθηκεύτηκε!');
 });
 
 it('cannot create a school as user with invalid categories', function (): void {
@@ -177,7 +179,7 @@ it('cannot create a school as admin with invalid categories', function (): void 
         'category' => '0,1',
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
+    $response->assertSessionHas('status', 'Άκυρες κατηγορίες');
 });
 
 it('cannot edit a school as user', function (): void {
@@ -227,7 +229,7 @@ it('can delete a school as admin', function (): void {
 
     $response = $this->actingAs($admin)->delete('/admin/school/'.$testSchool->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα διαγράφηκε!');
+    $response->assertSessionHas('status', 'Η σχολική μονάδα διαγράφηκε!');
 });
 
 it('cannot update a school as user', function (): void {
@@ -276,7 +278,7 @@ it('can update a school as admin', function (): void {
         'category' => strval($category->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η σχολική μονάδα ενημερώθηκε!');
+    $response->assertSessionHas('status', 'Η σχολική μονάδα ενημερώθηκε!');
 });
 
 it('cannot update a school as user with invalid categories', function (): void {
@@ -322,7 +324,7 @@ it('cannot update a school as admin with invalid categories', function (): void 
         'category' => '0,1',
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Άκυρες κατηγορίες');
+    $response->assertSessionHas('status', 'Άκυρες κατηγορίες');
 });
 
 it('cannot import a school as user', function (): void {
@@ -368,7 +370,7 @@ it('can import a school as admin', function (): void {
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 1 σχολικών μονάδων');
     $this->assertDatabaseHas('schools', [
         'name' => 'Test School2',
         'username' => 'testUser',
@@ -395,7 +397,7 @@ it('can import a school as admin (with ; as delimiter)', function (): void {
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 1 σχολικών μονάδων');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 1 σχολικών μονάδων');
     $this->assertDatabaseHas('schools', [
         'name' => 'Test School2',
         'username' => 'testUser',
@@ -424,7 +426,7 @@ Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory2');
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 3 σχολικών μονάδων');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 3 σχολικών μονάδων');
     $this->assertDatabaseCount('schools', 3);
     $this->assertDatabaseHas('schools', [
         'name' => 'Test School1',
@@ -467,7 +469,7 @@ Test School3;testUser3;9999992;test3@example.com;123-456-7892;testCategory2');
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['error'])['error'])->toBe('Λανθασμένη μορφή αρχείου');
+    $response->assertSessionHas('error', 'Λανθασμένη μορφή αρχείου');
     $this->assertDatabaseCount('schools', 0);
     $this->assertDatabaseCount('school_category_school', 0);
 });
@@ -499,7 +501,7 @@ Test School3,testUser3,9999992,test3@example.com,123-456-7892,none');
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
-    expect($response->getSession()->only(['success'])['success'])->toBe('Έγινε εισαγωγή 3 σχολικών μονάδων');
+    $response->assertSessionHas('success', 'Έγινε εισαγωγή 3 σχολικών μονάδων');
     $this->assertDatabaseCount('schools', 3);
     $this->assertDatabaseHas('schools', [
         'name' => 'Test School1',

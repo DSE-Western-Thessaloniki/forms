@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -24,17 +26,15 @@ class SchoolsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $filter = $request->get('filter');
+        $filter = $request->input('filter');
         if ($filter) {
             $schools = School::orderBy('created_at', 'desc')
-                ->where('name', 'like', '%' . $filter . '%')
-                ->orWhere('code', 'like', '%' . $filter . '%')
-                ->orWhere('username', 'like', '%' . $filter . '%')
+                ->where('name', 'like', '%'.$filter.'%')
+                ->orWhere('code', 'like', '%'.$filter.'%')
+                ->orWhere('username', 'like', '%'.$filter.'%')
                 ->with('user', 'categories')
                 ->paginate(15);
         } else {
@@ -50,10 +50,8 @@ class SchoolsController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return Response
      */
-    public function create()
+    public function create(): View
     {
         $categories = SchoolCategory::all();
 
@@ -62,10 +60,8 @@ class SchoolsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -77,7 +73,7 @@ class SchoolsController extends Controller
         ]);
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν
-        $category_answer = explode(',', $request->get('category'));
+        $category_answer = explode(',', $request->input('category'));
         $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
@@ -89,11 +85,11 @@ class SchoolsController extends Controller
         }
 
         $school = new School([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'username' => $request->get('username'),
-            'telephone' => $request->get('telephone'),
-            'code' => $request->get('code'),
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'username' => $request->input('username'),
+            'telephone' => $request->input('telephone'),
+            'code' => $request->input('code'),
             'active' => 1,
             'updated_by' => Auth::user()->id,
         ]);
@@ -104,7 +100,7 @@ class SchoolsController extends Controller
             $school->categories()->attach($category);
         }
 
-        return redirect(route('admin.school.show', [$school]))
+        return to_route('admin.school.show', [$school])
             ->with('status', 'Η σχολική μονάδα αποθηκεύτηκε!');
     }
 
@@ -118,10 +114,8 @@ class SchoolsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @return Response
      */
-    public function edit(School $school)
+    public function edit(School $school): View
     {
         $categories = SchoolCategory::all();
         $category_arr = [];
@@ -136,10 +130,8 @@ class SchoolsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return Response
      */
-    public function update(Request $request, School $school)
+    public function update(Request $request, School $school): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -151,48 +143,44 @@ class SchoolsController extends Controller
         ]);
 
         // Έλεγχος αν οι κατηγορίες υπάρχουν
-        $category_answer = explode(',', $request->get('category'));
+        $category_answer = explode(',', $request->input('category'));
         $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
                 $categories[] = $category;
             } else {
-                return redirect(route('admin.school.index'))
+                return to_route('admin.school.index')
                     ->with('status', 'Άκυρες κατηγορίες');
             }
         }
 
-        $school->username = $request->get('username');
-        $school->name = $request->get('name');
-        $school->email = $request->get('email');
-        $school->telephone = $request->get('telephone');
-        $school->code = $request->get('code');
-        $school->active = $request->get('active') == 1 ? 1 : 0;
+        $school->username = $request->input('username');
+        $school->name = $request->input('name');
+        $school->email = $request->input('email');
+        $school->telephone = $request->input('telephone');
+        $school->code = $request->input('code');
+        $school->active = $request->input('active') == 1 ? 1 : 0;
         $school->updated_by = Auth::user()->id;
 
         $school->categories()->sync($categories);
 
         $school->save();
 
-        return redirect(route('admin.school.index'))->with('status', 'Η σχολική μονάδα ενημερώθηκε!');
+        return to_route('admin.school.index')->with('status', 'Η σχολική μονάδα ενημερώθηκε!');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return Response
      */
-    public function destroy(School $school)
+    public function destroy(School $school): RedirectResponse
     {
         $school->delete();
 
-        return redirect(route('admin.school.index'))->with('status', 'Η σχολική μονάδα διαγράφηκε!');
+        return to_route('admin.school.index')->with('status', 'Η σχολική μονάδα διαγράφηκε!');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  School  $school
      */
     public function showImport(): View
     {
@@ -201,11 +189,8 @@ class SchoolsController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  School  $school
-     * @return Response
      */
-    public function import(Request $request)
+    public function import(Request $request): RedirectResponse
     {
         DB::beginTransaction();
 
@@ -259,7 +244,7 @@ class SchoolsController extends Controller
         }
 
         if ($missingField || $data === []) {
-            return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+            return to_route('admin.school.index')->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 
         foreach ($data as $row) {
@@ -298,15 +283,13 @@ class SchoolsController extends Controller
 
         DB::commit();
 
-        return redirect(route('admin.school.index'))->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');
+        return to_route('admin.school.index')->with('success', 'Έγινε εισαγωγή '.count($data).' σχολικών μονάδων');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Support\Facades\View
      */
-    public function confirmDelete(School $school)
+    public function confirmDelete(School $school): View
     {
         return view('admin.school.confirm_delete')
             ->with('school', $school);
