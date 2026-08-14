@@ -6,6 +6,7 @@ use App\Models\Form;
 use App\Models\FormField;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class FormDataTableService
@@ -114,6 +115,9 @@ class FormDataTableService
         return $pivot;
     }
 
+    /**
+     * @return array{array<string>,Paginator<string|int,array>|Collection<int, array>,string|null}
+     */
     private function createTable(Form $form, string $type): array
     {
         if ($type == 'teacher') {
