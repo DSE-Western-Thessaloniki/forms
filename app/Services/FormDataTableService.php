@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class FormDataTableService
 {
-    private $withPagination = false;
+    private bool $withPagination = false;
 
-    private $paginationItems = 15;
+    private int $paginationItems = 15;
 
-    private $withLinks = false;
+    private bool $withLinks = false;
 
     private function getTeacherQuery(Form $form): Builder
     {
@@ -209,7 +209,7 @@ class FormDataTableService
             }
         }
 
-        $dataTable = $result->map(function ($row) use ($form, $type) {
+        $dataTable = $result->map(function ($row) use ($form, $type): array {
             if ($type === 'teacher') {
                 $data = [
                     $row->name,

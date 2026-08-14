@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSelectionListRequest;
 use App\Http\Requests\UpdateSelectionListRequest;
 use App\Models\SelectionList;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +28,7 @@ class SelectionListsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -36,13 +39,13 @@ class SelectionListsController extends Controller
                 ->with('created_by')
                 ->with('updated_by')
                 ->paginate(15);
-        }
-        else {
+        } else {
             $lists = SelectionList::orderBy('name')
                 ->with('created_by')
                 ->with('updated_by')
                 ->paginate(15);
         }
+
         return view('admin.list.index')
             ->with('lists', $lists)
             ->with('filter', $filter);
@@ -50,10 +53,8 @@ class SelectionListsController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.list.create');
     }
@@ -61,8 +62,7 @@ class SelectionListsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreSelectionListRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(StoreSelectionListRequest $request)
     {
@@ -71,25 +71,24 @@ class SelectionListsController extends Controller
         for ($i = 0; $i < count($validatedData['id']); $i++) {
             $selectionListData[] = [
                 'id' => $i,
-                'value' => $validatedData['value'][$i]
+                'value' => $validatedData['value'][$i],
             ];
         }
 
-        $selectionList = new SelectionList();
+        $selectionList = new SelectionList;
         $selectionList->name = $validatedData['name'];
         $selectionList->data = json_encode($selectionListData);
         $selectionList->active = true;
         $selectionList->created_by = $request->user()->id;
         $selectionList->save();
 
-        return redirect(route('admin.list.index'))->with('status', 'Η λίστα αποθηκεύτηκε!');
+        return to_route('admin.list.index')->with('status', 'Η λίστα αποθηκεύτηκε!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(SelectionList $selectionList): void
     {
@@ -98,11 +97,8 @@ class SelectionListsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Http\Response
      */
-    public function edit(SelectionList $selectionList)
+    public function edit(SelectionList $selectionList): View
     {
         return view('admin.list.edit', compact('selectionList'));
     }
@@ -110,9 +106,7 @@ class SelectionListsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateSelectionListRequest  $request
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateSelectionListRequest $request, SelectionList $selectionList)
     {
@@ -122,14 +116,14 @@ class SelectionListsController extends Controller
             'id.*' => ['string', 'max:255'],
             'value' => ['array'],
             'value.*' => ['string', 'max:255'],
-            'active' => [Rule::in('0', '1', true, false), 'nullable']
+            'active' => [Rule::in('0', '1', true, false), 'nullable'],
         ]);
 
         $selectionListData = [];
         for ($i = 0; $i < count($validatedData['id']); $i++) {
             $selectionListData[] = [
                 'id' => $i,
-                'value' => $validatedData['value'][$i]
+                'value' => $validatedData['value'][$i],
             ];
         }
 
@@ -140,23 +134,22 @@ class SelectionListsController extends Controller
             'updated_by' => $request->user()->id,
         ]);
 
-        return redirect(route('admin.list.index'))->with('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
+        return to_route('admin.list.index')->with('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SelectionList  $selectionList
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(SelectionList $selectionList)
     {
         $selectionList->delete();
 
-        return redirect(route('admin.list.index'))->with('status', 'Η λίστα διαγράφηκε!');
+        return to_route('admin.list.index')->with('status', 'Η λίστα διαγράφηκε!');
     }
 
-    public function showImport()
+    public function showImport(): View
     {
         return view('admin.list.import');
     }
@@ -169,18 +162,18 @@ class SelectionListsController extends Controller
 
         $uploadedFile = $request->file('csvfile');
         $data = [];
-        if (($handle = fopen($uploadedFile->getPathname(), "r")) !== FALSE) {
-            while (($row_data = fgetcsv($handle, 1000, ";", escape: '\\')) !== FALSE) {
+        if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
+            while (($row_data = fgetcsv($handle, 1000, ';', escape: '\\')) !== false) {
                 array_push($data, $row_data);
             }
             fclose($handle);
         }
 
         if (empty($data)) {
-            return redirect(route('admin.list.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
+            return to_route('admin.list.index')->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 
-        $name = "";
+        $name = '';
         $listData = [];
 
         foreach ($data as $index => $row) {
@@ -194,14 +187,14 @@ class SelectionListsController extends Controller
             }
         }
 
-        $selectionList = new SelectionList();
+        $selectionList = new SelectionList;
         $selectionList->name = $name;
         $selectionList->active = true;
         $selectionList->data = json_encode($listData);
         $selectionList->created_by = $request->user()->id;
         $selectionList->save();
 
-        return redirect(route('admin.list.index'))->with('status', 'Έγινε εισαγωγή νέας λίστας');
+        return to_route('admin.list.index')->with('status', 'Έγινε εισαγωγή νέας λίστας');
     }
 
     public function confirmDelete(SelectionList $selectionList)
@@ -210,14 +203,14 @@ class SelectionListsController extends Controller
             ->with('list', $selectionList);
     }
 
-    public function copyList(SelectionList $selectionList): \Illuminate\Http\RedirectResponse
+    public function copyList(SelectionList $selectionList): RedirectResponse
     {
         // Δημιουργία αντιγράφου
         $selectionListClone = $selectionList->replicate();
-        $selectionListClone->name = $selectionList->name . " (Αντίγραφο)";
+        $selectionListClone->name = $selectionList->name.' (Αντίγραφο)';
         $selectionListClone->created_by = Auth::user()->id;
         $selectionListClone->save();
 
-        return redirect(route('admin.list.index'))->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
+        return to_route('admin.list.index')->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
     }
 }

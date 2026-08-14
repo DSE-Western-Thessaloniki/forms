@@ -2,7 +2,7 @@
 
 use Database\Seeders\OptionSeeder;
 
-it('validates setup form', function ($setup, $empty): void {
+it('validates setup form', function (array $setup, $empty): void {
     $this->seed(OptionSeeder::class);
 
     $response = $this->post(route('setup'), $setup);

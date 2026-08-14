@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -25,7 +27,7 @@ class SchoolsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -51,7 +53,7 @@ class SchoolsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -63,7 +65,7 @@ class SchoolsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -110,10 +112,8 @@ class SchoolsController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function show(School $school)
+    public function show(School $school): View
     {
         return view('admin.school.show', compact('school'));
     }
@@ -121,7 +121,7 @@ class SchoolsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(School $school)
     {
@@ -139,7 +139,7 @@ class SchoolsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, School $school)
     {
@@ -182,7 +182,7 @@ class SchoolsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(School $school)
     {
@@ -194,10 +194,9 @@ class SchoolsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\School  $school
-     * @return \Illuminate\Support\Facades\View
+     * @param  School  $school
      */
-    public function showImport()
+    public function showImport(): View
     {
         return view('admin.school.import');
     }
@@ -205,8 +204,8 @@ class SchoolsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\School  $school
-     * @return \Illuminate\Http\Response
+     * @param  School  $school
+     * @return Response
      */
     public function import(Request $request)
     {

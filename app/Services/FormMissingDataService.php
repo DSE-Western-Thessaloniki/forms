@@ -19,7 +19,7 @@ class FormMissingDataService
             $answer[$item->teacher_id] = true;
         });
         $seen = [];
-        $filtered_teachers = $teachers->filter(function ($teacher, $key) use ($answer, &$seen) {
+        $filtered_teachers = $teachers->filter(function ($teacher, $key) use ($answer, &$seen): bool {
             if (in_array($teacher, $seen) || isset($answer[$teacher->id])) {
                 return false;
             }
@@ -54,7 +54,7 @@ class FormMissingDataService
             $answer[$item->school_id] = true;
         });
         $seen = [];
-        $filtered_schools = $schools->filter(function ($school, $key) use ($answer, &$seen) {
+        $filtered_schools = $schools->filter(function ($school, $key) use ($answer, &$seen): bool {
             if (in_array($school, $seen) || isset($answer[$school->id])) {
                 return false;
             }

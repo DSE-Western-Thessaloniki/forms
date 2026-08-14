@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOptionRequest;
 use App\Models\Option;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class OptionsController extends Controller
 {
@@ -15,10 +17,8 @@ class OptionsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $options = Option::where('name', '!=', 'first_run')->get();
 
@@ -27,10 +27,8 @@ class OptionsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function store(StoreOptionRequest $request)
+    public function store(StoreOptionRequest $request): RedirectResponse
     {
         $allow_teacher_login = $request->input('allow_teacher_login');
         $allow_all_teachers = $request->input('allow_all_teachers');
@@ -56,6 +54,6 @@ class OptionsController extends Controller
             $option->save();
         }
 
-        return redirect(route('admin.options.index'))->with('status', 'Οι ρυθμίσεις αποθηκεύτηκαν!');
+        return to_route('admin.options.index')->with('status', 'Οι ρυθμίσεις αποθηκεύτηκαν!');
     }
 }

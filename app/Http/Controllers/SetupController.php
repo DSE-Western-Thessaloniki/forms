@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
-use App\Models\User;
-use App\Models\Role;
 use App\Models\Option;
+use App\Models\Role;
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class SetupController extends Controller
 {
@@ -47,7 +47,6 @@ class SetupController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -64,9 +63,9 @@ class SetupController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\Models\User
+     * @return User
      */
-    protected function saveSetup(Request $request)
+    protected function saveSetup(Request $request): RedirectResponse
     {
         $this->validator($request->all())->validate();
 
@@ -89,15 +88,14 @@ class SetupController extends Controller
         $first_run->save();
 
         Auth::login($user);
-        return redirect(RouteServiceProvider::HOME);
+
+        return to_route('home');
     }
 
     /**
      * Setup page
-     *
-     * @return view
      */
-    public function setupPage()
+    public function setupPage(): View
     {
         return view('pages.setup');
     }

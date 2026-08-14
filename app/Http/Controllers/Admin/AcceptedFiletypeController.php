@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAcceptedFiletypeRequest;
 use App\Http\Requests\UpdateAcceptedFiletypeRequest;
 use App\Models\AcceptedFiletype;
+use Illuminate\Contracts\View\View;
 
 class AcceptedFiletypeController extends Controller
 {
@@ -33,7 +34,7 @@ class AcceptedFiletypeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.accepted_filetype.create');
     }

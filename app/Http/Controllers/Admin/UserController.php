@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -25,10 +27,8 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $users = User::with('roles')->paginate(15);
 
@@ -37,10 +37,8 @@ class UserController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.user.create');
     }
@@ -48,7 +46,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -75,26 +73,22 @@ class UserController extends Controller
         $userRole = Role::where('name', 'User')->first();
         $user->roles()->attach($userRole);
 
-        return redirect(route('admin.user.show', [$user]))
+        return to_route('admin.user.show', [$user])
             ->with('status', 'Ο χρήστης αποθηκεύτηκε!');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(User $user): View
     {
         return view('admin.user.show', compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         return view('admin.user.edit', compact('user'));
     }
@@ -102,7 +96,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, User $user)
     {
@@ -135,22 +129,22 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect(route('admin.user.index'))->with('status', 'Τα στοιχεία του χρήστη ενημερώθηκαν!');
+        return to_route('admin.user.index')->with('status', 'Τα στοιχεία του χρήστη ενημερώθηκαν!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(User $user)
     {
         $user->delete();
 
-        return redirect(route('admin.user.index'))->with('status', 'Ο χρήστης διαγράφηκε!');
+        return to_route('admin.user.index')->with('status', 'Ο χρήστης διαγράφηκε!');
     }
 
-    public function password(User $user)
+    public function password(User $user): View
     {
         // if (Auth::user()->isAdministrator() || Auth::user()->id == $user->id) {
         return view('admin.user.password')->with('user', $user);
@@ -170,9 +164,9 @@ class UserController extends Controller
         $user->save();
 
         if (Auth::user()->isAdministrator()) {
-            return redirect()->route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
+            return to_route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
         } else {
-            return redirect()->route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
+            return to_route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
         }
     }
 

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SchoolCategoriesController extends Controller
 {
@@ -22,7 +24,7 @@ class SchoolCategoriesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -33,10 +35,8 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.school.schoolcategory.create');
     }
@@ -44,7 +44,7 @@ class SchoolCategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -76,10 +76,8 @@ class SchoolCategoriesController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function show(SchoolCategory $schoolcategory)
+    public function show(SchoolCategory $schoolcategory): View
     {
         return view('admin.school.schoolcategory.show', compact('schoolcategory'));
     }
@@ -87,10 +85,9 @@ class SchoolCategoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\SchoolCategory  $schoolCategory
-     * @return \Illuminate\Http\Response
+     * @param  SchoolCategory  $schoolCategory
      */
-    public function edit(SchoolCategory $schoolcategory)
+    public function edit(SchoolCategory $schoolcategory): View
     {
         return view('admin.school.schoolcategory.edit', compact('schoolcategory'));
     }
@@ -98,7 +95,7 @@ class SchoolCategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, SchoolCategory $schoolcategory)
     {
@@ -110,18 +107,18 @@ class SchoolCategoriesController extends Controller
 
         $schoolcategory->save();
 
-        return redirect(route('admin.school.schoolcategory.index'))->with('status', 'Η κατηγορία σχολικής μονάδας ενημερώθηκε!');
+        return to_route('admin.school.schoolcategory.index')->with('status', 'Η κατηγορία σχολικής μονάδας ενημερώθηκε!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(SchoolCategory $schoolcategory)
     {
         $schoolcategory->delete();
 
-        return redirect(route('admin.school.schoolcategory.index'))->with('status', 'Η κατηγορία σχολικής μονάδας διαγράφηκε!');
+        return to_route('admin.school.schoolcategory.index')->with('status', 'Η κατηγορία σχολικής μονάδας διαγράφηκε!');
     }
 }

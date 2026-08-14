@@ -123,7 +123,7 @@ function test_create_one_form_for_user(User $user): Form
         ->has(
             FormField::factory()
                 ->count(10)
-                ->state(new Sequence(function ($sequence) {
+                ->state(new Sequence(function ($sequence): array {
                     $type = $sequence->index;
 
                     // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές

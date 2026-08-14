@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\School;
+use Illuminate\Contracts\View\View;
 
 class PagesController extends Controller
 {
     /**
      * Home page
-     *
-     * @return view
      */
-    public function index()
+    public function index(): View
     {
         return view('pages.index');
     }

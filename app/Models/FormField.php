@@ -56,7 +56,7 @@ class FormField extends Model
     /**
      * @return array{multiple:bool}
      */
-    public function field_options()
+    public function field_options(): mixed
     {
         return json_decode($this->options);
     }

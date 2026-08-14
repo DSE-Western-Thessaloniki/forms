@@ -15,12 +15,14 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
     ])
+    ->withPreparedSets(
+        typeDeclarations: true
+    )
     // uncomment to reach your current PHP version
     ->withComposerBased(laravel: true)
     ->withFluentCallNewLine()
     ->withTreatClassesAsFinal()
     ->withPhpSets(php84: true)
-    ->withTypeCoverageLevel(20)
     ->withTypeCoverageDocblockLevel(0)
     ->withDeadCodeLevel(0)
     ->withCodeQualityLevel(0);
