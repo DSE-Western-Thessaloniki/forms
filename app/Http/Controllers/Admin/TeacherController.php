@@ -81,7 +81,7 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Teacher $teacher)
+    public function show(Teacher $teacher): void
     {
         //
     }

@@ -63,7 +63,7 @@ class AcceptedFiletypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AcceptedFiletype $acceptedFiletype)
+    public function show(AcceptedFiletype $acceptedFiletype): void
     {
         //
     }

@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Paginator::useBootstrap();
         Model::preventAccessingMissingAttributes();
@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         Blade::directive('icon', fn($expression): string => "<i class=\"fas fa-fw fa-{{ $expression }}\"></i>");
         Paginator::useBootstrap();

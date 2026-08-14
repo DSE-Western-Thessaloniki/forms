@@ -91,7 +91,7 @@ class SelectionListsController extends Controller
      * @param  \App\Models\SelectionList  $selectionList
      * @return \Illuminate\Http\Response
      */
-    public function show(SelectionList $selectionList)
+    public function show(SelectionList $selectionList): void
     {
         //
     }
