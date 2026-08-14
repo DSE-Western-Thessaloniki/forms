@@ -2,21 +2,14 @@
 
 use Database\Seeders\OptionSeeder;
 
-it('validates setup form', function($setup): void {
+it('validates setup form', function ($setup, $empty): void {
     $this->seed(OptionSeeder::class);
 
-    $response = $this->post(route('setup'), [
-        'name' => $setup['name'],
-        'email' => $setup['email'],
-        'username' => $setup['username'],
-        'password' => $setup['password'],
-        'password_confirmation' => $setup['password_confirmation'],
-    ]);
+    $response = $this->post(route('setup'), $setup);
 
     if (is_array($setup['errors'])) {
         $response->assertSessionHasErrors($setup['errors']);
-    }
-    else {
+    } else {
         $response->assertSessionHasNoErrors();
     }
 })->with('setup_validation_data');

@@ -1,6 +1,6 @@
 <?php
 
-dataset('setup_validation_data', fn(): array => [
+dataset('setup_validation_data', fn (): array => [
     [
         'setup' => [
             'name' => '',
@@ -9,7 +9,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['name'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -19,7 +20,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['name'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -29,7 +31,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -39,7 +42,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['email'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -49,7 +53,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -59,7 +64,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['email'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -69,7 +75,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '123456789',
             'errors' => ['email'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -79,7 +86,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '123456789',
             'errors' => ['email'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -89,7 +97,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['username'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -99,7 +108,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => ['username'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -109,7 +119,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -119,7 +130,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '',
             'password_confirmation' => '',
             'errors' => ['password'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -129,7 +141,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '1234567',
             'password_confirmation' => '1234567',
             'errors' => ['password'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -139,7 +152,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -149,7 +163,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
             'password_confirmation' => '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
             'errors' => ['password'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -159,7 +174,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
             'password_confirmation' => '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -169,7 +185,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '12345678',
             'errors' => 0,
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -179,7 +196,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '123456789',
             'errors' => ['email', 'password'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -189,7 +207,8 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '123456789',
             'errors' => ['name', 'email', 'password'],
-        ]
+        ],
+        'empty' => '',
     ],
     [
         'setup' => [
@@ -199,6 +218,7 @@ dataset('setup_validation_data', fn(): array => [
             'password' => '12345678',
             'password_confirmation' => '123456789',
             'errors' => ['name', 'email', 'username', 'password'],
-        ]
+        ],
+        'empty' => '',
     ],
 ]);
