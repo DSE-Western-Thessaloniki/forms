@@ -25,8 +25,9 @@ class FormService
             if (! isset($options['show_when'])) {
                 return;
             }
+            $counter = count($options['show_when']);
 
-            for ($i = 0; $i < count($options['show_when']); $i++) {
+            for ($i = 0; $i < $counter; $i++) {
                 if (! isset($options['show_when'][$i]['active_field'])) {
                     continue;
                 }
@@ -56,8 +57,9 @@ class FormService
             if (! isset($options['show_when'])) {
                 return;
             }
+            $counter = count($options['show_when']);
 
-            for ($i = 0; $i < count($options['show_when']); $i++) {
+            for ($i = 0; $i < $counter; $i++) {
                 if (! isset($options['show_when'][$i]['active_field'])) {
                     continue;
                 }
@@ -96,8 +98,9 @@ class FormService
             if (! isset($options['show_when'])) {
                 return;
             }
+            $counter = count($options['show_when']);
 
-            for ($i = 0; $i < count($options['show_when']); $i++) {
+            for ($i = 0; $i < $counter; $i++) {
                 if (! isset($options['show_when'][$i]['active_field'])) {
                     continue;
                 }

@@ -103,34 +103,29 @@ class ReportsController extends Controller
             $this->teacher_model_cache = $teacher;
 
             return true;
-        } else {
-            $this->teacher_model_cache = null;
-            $this->other_teacher_model_cache = null;
-            $school = School::where('username', cas()->getAttribute('uid'))
-                ->orWhere('email', cas()
-                    ->getAttribute('mail'))
-                ->first();
-
-            if (! $school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
-                $this->school_model_cache = null;
-                Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
-
-                return view('pages.deny_access');
-            }
-
-            $categories = $school->categories;
-            $form_categories = $form->school_categories;
-            $in_category = false;
-            foreach ($categories as $category) {
-                if ($form_categories->contains($category)) {
-                    $in_category = true;
-                }
-            }
-
-            $this->school_model_cache = $school;
-
-            return $form->schools()->where('school_id', $school->id)->count() > 0 || $in_category;
         }
+        $this->teacher_model_cache = null;
+        $this->other_teacher_model_cache = null;
+        $school = School::where('username', cas()->getAttribute('uid'))
+            ->orWhere('email', cas()
+                ->getAttribute('mail'))
+            ->first();
+        if (! $school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
+            $this->school_model_cache = null;
+            Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+
+            return view('pages.deny_access');
+        }
+        $categories = $school->categories;
+        $form_categories = $form->school_categories;
+        $in_category = false;
+        foreach ($categories as $category) {
+            if ($form_categories->contains($category)) {
+                $in_category = true;
+            }
+        }
+        $this->school_model_cache = $school;
+        return $form->schools()->where('school_id', $school->id)->count() > 0 || $in_category;
 
     }
 
@@ -204,36 +199,34 @@ class ReportsController extends Controller
             Log::warning("Το employeenumber: $teacher_uid δεν αντιστοιχεί σε λογαριασμό εκπαιδευτικού.");
 
             return view('pages.deny_access');
-        } else { // Τότε μάλλον σχολείο
-            $school = School::where('username', cas()->getAttribute('uid'))
-                ->orWhere('email', cas()
-                    ->getAttribute('mail'))
-                ->first();
-            if ($school) {
-                $categories = $school->categories->pluck('id');
-                $forms = Form::where('active', true)
-                    ->where(function ($query) use ($school, $categories): void {
-                        // Προσθήκη παρένθεσης
-                        $query->whereHas('schools', function ($q) use ($school): void {
-                            $q->where('school_id', $school->id);
-                        })
-                            ->when($categories, function ($q) use ($categories): void {
-                                // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
-                                $q->orWhereHas('school_categories', function ($q) use ($categories): void {
-                                    $q->whereIn('school_category_id', $categories);
-                                });
-                            });
-                    })
-                    ->with('user')
-                    ->orderBy('created_at', 'desc')->paginate(15);
-
-                return view('report.index')->with('forms', $forms);
-            }
-
-            Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
-
-            return view('pages.deny_access');
         }
+        // Τότε μάλλον σχολείο
+        $school = School::where('username', cas()->getAttribute('uid'))
+            ->orWhere('email', cas()
+                ->getAttribute('mail'))
+            ->first();
+        if ($school) {
+            $categories = $school->categories->pluck('id');
+            $forms = Form::where('active', true)
+                ->where(function ($query) use ($school, $categories): void {
+                    // Προσθήκη παρένθεσης
+                    $query->whereHas('schools', function ($q) use ($school): void {
+                        $q->where('school_id', $school->id);
+                    })
+                        ->when($categories, function ($q) use ($categories): void {
+                            // Αν το σχολείο ανήκει σε μια τουλάχιστον κατηγορία
+                            $q->orWhereHas('school_categories', function ($q) use ($categories): void {
+                                $q->whereIn('school_category_id', $categories);
+                            });
+                        });
+                })
+                ->with('user')
+                ->orderBy('created_at', 'desc')->paginate(15);
+
+            return view('report.index')->with('forms', $forms);
+        }
+        Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
+        return view('pages.deny_access');
 
     }
 
@@ -675,9 +668,8 @@ class ReportsController extends Controller
 
                     if (is_numeric($next) && is_int(intval($next))) {
                         return redirect(route('report.edit.record', ['report' => $id, 'record' => $next]))->with('success', 'Η αναφορά ενημερώθηκε');
-                    } else {
-                        return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                     }
+                    return redirect(route('report.index'))->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');
@@ -732,9 +724,8 @@ class ReportsController extends Controller
 
                     if (Storage::exists("report/$report/$subfolder/$record/$fieldId")) {
                         return Storage::download("report/$report/$subfolder/$record/$fieldId", $record_data->data);
-                    } else {
-                        return redirect(route('report.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
                     }
+                    return redirect(route('report.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
                 }
 
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα');

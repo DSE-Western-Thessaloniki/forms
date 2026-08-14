@@ -77,7 +77,7 @@ class SchoolCategoriesController extends Controller
      */
     public function show(SchoolCategory $schoolcategory): View
     {
-        return view('admin.school.schoolcategory.show', compact('schoolcategory'));
+        return view('admin.school.schoolcategory.show', ['schoolcategory' => $schoolcategory]);
     }
 
     /**
@@ -87,7 +87,7 @@ class SchoolCategoriesController extends Controller
      */
     public function edit(SchoolCategory $schoolcategory): View
     {
-        return view('admin.school.schoolcategory.edit', compact('schoolcategory'));
+        return view('admin.school.schoolcategory.edit', ['schoolcategory' => $schoolcategory]);
     }
 
     /**

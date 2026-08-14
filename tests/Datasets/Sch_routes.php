@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 dataset('sch_routes', fn(): array => [
     '/login',
     '/report',

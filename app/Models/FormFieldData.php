@@ -33,7 +33,7 @@ class FormFieldData extends Model
 
     public function dataToString(?FormField $field = null): string
     {
-        if ($field === null) {
+        if (! $field instanceof FormField) {
             $field = $this->form_field;
         }
 

@@ -151,12 +151,12 @@ class FormsController extends Controller
 
         $school_selected_values = [];
         foreach ($form->schools as $school) {
-            array_push($school_selected_values, $school->id);
+            $school_selected_values[] = $school->id;
         }
 
         $category_selected_values = [];
         foreach ($form->school_categories as $category) {
-            array_push($category_selected_values, $category->id);
+            $category_selected_values[] = $category->id;
         }
 
         $selection_lists = SelectionList::where('active', true)->get(['id', 'name']);
@@ -486,9 +486,8 @@ class FormsController extends Controller
         $filename = $record_data->data;
         if (Storage::exists("report/$form->id/$category/$categoryId/$record/$fieldId")) {
             return Storage::download("report/$form->id/$category/$categoryId/$record/$fieldId", $filename);
-        } else {
-            return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
         }
+        return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
     }
 
     public function downloadAllFiles(Form $form)

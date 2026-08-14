@@ -52,11 +52,7 @@ class SelectionListPolicy
     {
         if (!$user->roles()->where("name", "Author")->exists())
             return false;
-
-        if ($selectionList->created_by !== $user->id)
-            return false;
-
-        return true;
+        return $selectionList->created_by === $user->id;
     }
 
     /**
@@ -66,11 +62,7 @@ class SelectionListPolicy
     {
         if (!$user->roles()->where("name", "Author")->exists())
             return false;
-
-        if ($selectionList->created_by != $user->id)
-            return false;
-
-        return true;
+        return $selectionList->created_by == $user->id;
     }
 
     /**

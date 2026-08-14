@@ -130,13 +130,10 @@ function test_create_one_form_for_user(User $user): Form
                     if (in_array($type, [2, 3, 4])) {
                         $listvalues = [];
                         for ($i = 0; $i < random_int(1, 10); $i++) {
-                            array_push(
-                                $listvalues,
-                                [
-                                    'id' => $i,
-                                    'value' => 'Test',
-                                ]
-                            );
+                            $listvalues[] = [
+                                'id' => $i,
+                                'value' => 'Test',
+                            ];
                         }
 
                         return [
@@ -144,13 +141,12 @@ function test_create_one_form_for_user(User $user): Form
                             'type' => $type,
                             'listvalues' => json_encode($listvalues),
                         ];
-                    } else {
-                        return [
-                            'sort_id' => $sequence->index,
-                            'type' => $type,
-                            'listvalues' => '',
-                        ];
                     }
+                    return [
+                        'sort_id' => $sequence->index,
+                        'type' => $type,
+                        'listvalues' => '',
+                    ];
                 })),
             'form_fields'
         )

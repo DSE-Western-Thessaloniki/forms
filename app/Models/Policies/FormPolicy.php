@@ -3,7 +3,6 @@
 namespace App\Models\Policies;
 
 use App\Models\Form;
-use App\Models\School;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -37,10 +36,7 @@ class FormPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->roles()->where('name', 'Author')->exists()) {
-            return true;
-        }
-        return false;
+        return $user->roles()->where('name', 'Author')->exists();
     }
 
     /**
@@ -48,11 +44,7 @@ class FormPolicy
      */
     public function update(User $user, Form $form): bool
     {
-        if ($user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id) {
-            return true;
-        }
-
-        return false;
+        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
     }
 
     /**
@@ -60,10 +52,6 @@ class FormPolicy
      */
     public function delete(User $user, Form $form): bool
     {
-        if ($user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id) {
-            return true;
-        }
-
-        return false;
+        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
     }
 }

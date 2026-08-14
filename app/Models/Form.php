@@ -125,7 +125,7 @@ class Form extends Model
         $form->notes = $request->input('notes');
         $form->user_id = Auth::id();
         $form->active = true;
-        $form->multiple = $request->input('multiple_input') ? true : false;
+        $form->multiple = (bool) $request->input('multiple_input');
         $form->for_teachers = intval($request->input('for_teachers'));
         $form->for_all_teachers = intval($request->input('for_all_teachers'));
         $form->save();
@@ -138,7 +138,7 @@ class Form extends Model
         // Update form
         $this->title = $request->input('title');
         $this->notes = $request->input('notes');
-        $this->multiple = $request->input('multiple_input') ? true : false;
+        $this->multiple = (bool) $request->input('multiple_input');
         $this->for_teachers = intval($request->input('for_teachers'));
         $this->for_all_teachers = intval($request->input('for_all_teachers'));
         $this->save();

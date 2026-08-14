@@ -22,7 +22,7 @@ class OptionsController extends Controller
     {
         $options = Option::where('name', '!=', 'first_run')->get();
 
-        return view('admin.option.index', compact('options'));
+        return view('admin.option.index', ['options' => $options]);
     }
 
     /**

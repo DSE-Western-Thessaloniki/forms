@@ -120,7 +120,7 @@ class FormDataTableService
      */
     private function createTable(Form $form, string $type): array
     {
-        if ($type == 'teacher') {
+        if ($type === 'teacher') {
             $dataTableColumns = ['Εκπαιδευτικός', 'ΑΜ/ΑΦΜ'];
             $query = $this->getTeacherQuery($form);
         } else {
@@ -139,7 +139,7 @@ class FormDataTableService
         }
 
         foreach ($form->form_fields as $field) {
-            array_push($dataTableColumns, $field->title);
+            $dataTableColumns[] = $field->title;
 
             if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
                 $selections = json_decode($field->listvalues);
@@ -235,8 +235,8 @@ class FormDataTableService
 
             return $data;
         });
-
-        array_push($dataTableColumns, 'Δημιουργήθηκε', 'Ενημερώθηκε');
+        $dataTableColumns[] = 'Δημιουργήθηκε';
+        $dataTableColumns[] = 'Ενημερώθηκε';
 
         return [
             $dataTableColumns,
@@ -249,9 +249,8 @@ class FormDataTableService
     {
         if ($form->for_teachers) {
             return $this->createTable($form, 'teacher');
-        } else {
-            return $this->createTable($form, 'school');
         }
+        return $this->createTable($form, 'school');
     }
 
     public function useLinks(): self

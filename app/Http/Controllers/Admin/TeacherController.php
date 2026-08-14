@@ -149,43 +149,43 @@ class TeacherController extends Controller
         $missingField = false;
         if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
             while (($row_data = fgetcsv($handle, 1000, ',', escape: '\\')) !== false) {
-                if (count($row_data) != $numFields) {
+                if (count($row_data) !== $numFields) {
                     $missingField = true;
                     break;
                 }
-                array_push($data, [
+                $data[] = [
                     'surname' => $row_data[0],
                     'name' => $row_data[1],
                     'am' => $row_data[2],
                     'afm' => $row_data[3],
                     'active' => 1,
-                ]);
+                ];
             }
             fclose($handle);
         }
 
-        if ($missingField || empty($data)) { // Δοκίμασε το ';' ως διαχωριστικό
+        if ($missingField || $data === []) { // Δοκίμασε το ';' ως διαχωριστικό
             $missingField = false;
             $data = [];
             if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
                 while (($row_data = fgetcsv($handle, 1000, ';', escape: '\\')) !== false) {
-                    if (count($row_data) != $numFields) {
+                    if (count($row_data) !== $numFields) {
                         $missingField = true;
                         break;
                     }
-                    array_push($data, [
+                    $data[] = [
                         'surname' => $row_data[0],
                         'name' => $row_data[1],
                         'am' => $row_data[2],
                         'afm' => $row_data[3],
                         'active' => 1,
-                    ]);
+                    ];
                 }
                 fclose($handle);
             }
         }
 
-        if ($missingField || empty($data)) {
+        if ($missingField || $data === []) {
             return redirect(route('admin.teacher.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 dataset('setup_validation_data', fn (): array => [
     [
         'setup' => [

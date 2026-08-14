@@ -81,7 +81,7 @@ class SchoolsController extends Controller
         $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
-                array_push($categories, $category);
+                $categories[] = $category;
             } else {
                 return redirect(route('admin.school.index'))
                     ->with('status', 'Άκυρες κατηγορίες');
@@ -113,7 +113,7 @@ class SchoolsController extends Controller
      */
     public function show(School $school): View
     {
-        return view('admin.school.show', compact('school'));
+        return view('admin.school.show', ['school' => $school]);
     }
 
     /**
@@ -126,10 +126,10 @@ class SchoolsController extends Controller
         $categories = SchoolCategory::all();
         $category_arr = [];
         foreach ($school->categories as $category) {
-            array_push($category_arr, $category->id);
+            $category_arr[] = $category->id;
         }
 
-        return view('admin.school.edit', compact('school'))
+        return view('admin.school.edit', ['school' => $school])
             ->with('categories', $categories)
             ->with('category_string', implode(',', $category_arr));
     }
@@ -155,7 +155,7 @@ class SchoolsController extends Controller
         $categories = [];
         foreach ($category_answer as $category) {
             if (SchoolCategory::find($category)) {
-                array_push($categories, $category);
+                $categories[] = $category;
             } else {
                 return redirect(route('admin.school.index'))
                     ->with('status', 'Άκυρες κατηγορίες');
@@ -219,46 +219,46 @@ class SchoolsController extends Controller
         $missingField = false;
         if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
             while (($row_data = fgetcsv($handle, 1000, ',', escape: '\\')) !== false) {
-                if (count($row_data) != $numFields) {
+                if (count($row_data) !== $numFields) {
                     $missingField = true;
                     break;
                 }
 
-                array_push($data, [
+                $data[] = [
                     'name' => $row_data[0],
                     'username' => $row_data[1],
                     'code' => $row_data[2],
                     'email' => $row_data[3],
                     'telephone' => $row_data[4],
                     'category' => $row_data[5],
-                ]);
+                ];
             }
             fclose($handle);
         }
 
-        if ($missingField || empty($data)) { // Δοκίμασε το ';' ως διαχωριστικό
+        if ($missingField || $data === []) { // Δοκίμασε το ';' ως διαχωριστικό
             $missingField = false;
             $data = [];
             if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
                 while (($row_data = fgetcsv($handle, 1000, ';', escape: '\\')) !== false) {
-                    if (count($row_data) != $numFields) {
+                    if (count($row_data) !== $numFields) {
                         $missingField = true;
                         break;
                     }
-                    array_push($data, [
+                    $data[] = [
                         'name' => $row_data[0],
                         'username' => $row_data[1],
                         'code' => $row_data[2],
                         'email' => $row_data[3],
                         'telephone' => $row_data[4],
                         'category' => $row_data[5],
-                    ]);
+                    ];
                 }
                 fclose($handle);
             }
         }
 
-        if ($missingField || empty($data)) {
+        if ($missingField || $data === []) {
             return redirect(route('admin.school.index'))->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 

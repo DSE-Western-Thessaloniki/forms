@@ -80,7 +80,7 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
-        return view('admin.user.show', compact('user'));
+        return view('admin.user.show', ['user' => $user]);
     }
 
     /**
@@ -88,7 +88,7 @@ class UserController extends Controller
      */
     public function edit(User $user): View
     {
-        return view('admin.user.edit', compact('user'));
+        return view('admin.user.edit', ['user' => $user]);
     }
 
     /**
@@ -119,7 +119,7 @@ class UserController extends Controller
             foreach ($roles as $role) {
                 $check = $request->get($role->name);
                 if ($check == 1) {
-                    array_push($new_roles, $role->id);
+                    $new_roles[] = $role->id;
                 }
             }
             $user->roles()->sync($new_roles);
@@ -163,9 +163,8 @@ class UserController extends Controller
 
         if (Auth::user()->isAdministrator()) {
             return to_route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
-        } else {
-            return to_route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
         }
+        return to_route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
     }
 
     public function confirmDelete(User $user)

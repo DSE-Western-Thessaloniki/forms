@@ -66,7 +66,8 @@ class SelectionListsController extends Controller
     {
         $validatedData = $request->validated();
         $selectionListData = [];
-        for ($i = 0; $i < count($validatedData['id']); $i++) {
+        $counter = count($validatedData['id']);
+        for ($i = 0; $i < $counter; $i++) {
             $selectionListData[] = [
                 'id' => $i,
                 'value' => $validatedData['value'][$i],
@@ -96,7 +97,7 @@ class SelectionListsController extends Controller
      */
     public function edit(SelectionList $selectionList): View
     {
-        return view('admin.list.edit', compact('selectionList'));
+        return view('admin.list.edit', ['selectionList' => $selectionList]);
     }
 
     /**
@@ -116,7 +117,8 @@ class SelectionListsController extends Controller
         ]);
 
         $selectionListData = [];
-        for ($i = 0; $i < count($validatedData['id']); $i++) {
+        $counter = count($validatedData['id']);
+        for ($i = 0; $i < $counter; $i++) {
             $selectionListData[] = [
                 'id' => $i,
                 'value' => $validatedData['value'][$i],
@@ -160,12 +162,12 @@ class SelectionListsController extends Controller
         $data = [];
         if (($handle = fopen($uploadedFile->getPathname(), 'r')) !== false) {
             while (($row_data = fgetcsv($handle, 1000, ';', escape: '\\')) !== false) {
-                array_push($data, $row_data);
+                $data[] = $row_data;
             }
             fclose($handle);
         }
 
-        if (empty($data)) {
+        if ($data === []) {
             return to_route('admin.list.index')->with('error', 'Λανθασμένη μορφή αρχείου');
         }
 

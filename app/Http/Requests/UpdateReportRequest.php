@@ -32,7 +32,7 @@ class UpdateReportRequest extends FormRequest
     {
         $this->form = Form::find($this->route('report'));
 
-        return $this->form ? true : false;
+        return (bool) $this->form;
     }
 
     /**

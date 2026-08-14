@@ -24,15 +24,15 @@ class FormMissingDataService
                 return false;
             }
 
-            array_push($seen, $teacher);
+            $seen[] = $teacher;
 
             return true;
         });
 
         $data = [];
-        array_push($data, $dataTableColumns);
+        $data[] = $dataTableColumns;
         foreach ($filtered_teachers as $teacher) {
-            array_push($data, [$teacher->name, $teacher->code, '']);
+            $data[] = [$teacher->name, $teacher->code, ''];
         }
 
         return $data;
@@ -59,15 +59,15 @@ class FormMissingDataService
                 return false;
             }
 
-            array_push($seen, $school);
+            $seen[] = $school;
 
             return true;
         });
 
         $data = [];
-        array_push($data, $dataTableColumns);
+        $data[] = $dataTableColumns;
         foreach ($filtered_schools as $school) {
-            array_push($data, [$school->name, $school->code, $school->telephone, $school->email]);
+            $data[] = [$school->name, $school->code, $school->telephone, $school->email];
         }
 
         return $data;
@@ -77,8 +77,7 @@ class FormMissingDataService
     {
         if ($form->for_teachers) {
             return $this->getMissingTeacherTable($form);
-        } else {
-            return $this->getMissingSchoolTable($form);
         }
+        return $this->getMissingSchoolTable($form);
     }
 }
