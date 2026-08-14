@@ -267,12 +267,12 @@ it('can create a form with school categories as author', function (): void {
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category1->id,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category2->id,
     ]);
 });
@@ -309,12 +309,12 @@ it('can create a form with school categories as admin', function (): void {
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category1->id,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category2->id,
     ]);
 });
@@ -348,12 +348,12 @@ it('can create a form with fake school categories as author', function (): void 
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => 0,
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => 1,
     ]);
 });
@@ -387,12 +387,12 @@ it('can create a form with fake school categories as admin', function (): void {
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => 0,
     ]);
 
     $this->assertDatabaseMissing('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => 1,
     ]);
 });
@@ -429,12 +429,12 @@ it('can create a form with schools as author', function (): void {
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school1->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school2->id,
     ]);
 });
@@ -471,12 +471,12 @@ it('can create a form with schools as admin', function (): void {
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school1->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school2->id,
     ]);
 });
@@ -510,12 +510,12 @@ it('can create a form with fake schools as author', function (): void {
     ]);
 
     $this->assertDatabaseMissing('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => 0,
     ]);
 
     $this->assertDatabaseMissing('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => 1,
     ]);
 });
@@ -549,12 +549,12 @@ it('can create a form with fake schools as admin', function (): void {
     ]);
 
     $this->assertDatabaseMissing('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => 0,
     ]);
 
     $this->assertDatabaseMissing('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => 0,
     ]);
 });
@@ -595,22 +595,22 @@ it('can create a form with schools and school categories as author', function ()
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category1->id,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category2->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school1->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school2->id,
     ]);
 });
@@ -651,22 +651,22 @@ it('can create a form with schools and school categories as admin', function ():
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category1->id,
     ]);
 
     $this->assertDatabaseHas('form_school_category', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_category_id' => $category2->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school1->id,
     ]);
 
     $this->assertDatabaseHas('form_school', [
-        'form_id' => Form::all()->first()->id,
+        'form_id' => Form::first()->id,
         'school_id' => $school2->id,
     ]);
 });

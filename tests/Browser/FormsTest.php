@@ -3,10 +3,8 @@
 use App\Models\Form;
 use App\Models\Option;
 use App\Models\User;
-use Database\Seeders\TestDataSeeder;
 use Database\Seeders\UserSeeder;
 use Laravel\Dusk\Browser;
-use function Pest\Faker\faker;
 
 beforeEach(function (): void {
     // Το πρώτο seed φορτώνει μόνο τις αρχικές τιμές για την λειτουργία της
@@ -16,7 +14,7 @@ beforeEach(function (): void {
     $this->seed(UserSeeder::class);
 
     $first_run = Option::where('name', 'first_run')->first();
-    $first_run->value=0;
+    $first_run->value = 0;
     $first_run->save();
 });
 

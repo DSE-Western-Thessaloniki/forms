@@ -334,6 +334,8 @@ class FormsController extends Controller
 
             return redirect(route('admin.form.index').'#form-'.$form->id)->with('status', 'Η φόρμα '.($form->active ? 'ενεργοποιήθηκε' : 'απενεργοποιήθηκε'));
         }
+
+        throw new \Exception("Invalid state $state while form setActive is called");
     }
 
     /**
@@ -487,6 +489,7 @@ class FormsController extends Controller
         if (Storage::exists("report/$form->id/$category/$categoryId/$record/$fieldId")) {
             return Storage::download("report/$form->id/$category/$categoryId/$record/$fieldId", $filename);
         }
+
         return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
     }
 

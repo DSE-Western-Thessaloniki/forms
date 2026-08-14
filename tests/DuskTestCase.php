@@ -5,11 +5,12 @@ namespace Tests;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication, WithFaker;
 
     /**
      * Prepare for Dusk test execution.
@@ -26,13 +27,13 @@ abstract class DuskTestCase extends BaseTestCase
     /**
      * Create the RemoteWebDriver instance.
      *
-     * @return \Facebook\WebDriver\Remote\RemoteWebDriver
+     * @return RemoteWebDriver
      */
     protected function driver()
     {
         $options = (new ChromeOptions)->addArguments(collect([
             '--window-size=1920,1080',
-        ])->unless($this->hasHeadlessDisabled(), fn($items) => $items->merge([
+        ])->unless($this->hasHeadlessDisabled(), fn ($items) => $items->merge([
             '--disable-gpu',
             '--headless',
         ]))->all());

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\School;
@@ -16,15 +18,15 @@ class SchoolFactory extends Factory
     protected $model = School::class;
 
     public const gymnasio = 0;
+
     public const gel = 1;
+
     public const epal = 2;
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'username' => Str::random(8),
@@ -37,12 +39,10 @@ class SchoolFactory extends Factory
 
     /**
      * Δημιουργία σχολείου συγκεκριμένης κατηγορίας
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function category($type = SchoolFactory::gymnasio)
+    public function category($type = SchoolFactory::gymnasio): static
     {
-        switch($type) {
+        switch ($type) {
             case SchoolFactory::gymnasio:
                 return $this->state(function (array $attributes) {
                     return [
@@ -65,7 +65,7 @@ class SchoolFactory extends Factory
                 });
                 break;
         }
+
+        throw new \Exception("Invalid school type '$type'");
     }
-
-
 }

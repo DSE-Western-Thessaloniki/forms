@@ -78,7 +78,7 @@ class SetupController extends Controller
             'updated_by' => 1,
         ])));
 
-        $adminRole = Role::all()->where('name', 'Administrator');
+        $adminRole = Role::where('name', 'Administrator')->get();
         $user->roles()->attach($adminRole);
 
         $first_run = Option::where('name', 'first_run')->first();

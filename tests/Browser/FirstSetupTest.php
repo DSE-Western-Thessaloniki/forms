@@ -2,7 +2,6 @@
 
 use Database\Seeders\OptionSeeder;
 use Laravel\Dusk\Browser;
-use function Pest\Faker\faker;
 
 it('shows first run setup', function (): void {
     $this->seed(OptionSeeder::class);
@@ -17,12 +16,12 @@ it('completes first run setup', function (): void {
     $this->seed(OptionSeeder::class);
 
     $this->browse(function (Browser $browser): void {
-        $password = faker()->password();
+        $password = $this->faker()->password();
         $browser->visit('/')
             ->assertSee('Ρύθμιση διαχειριστή συστήματος')
-            ->type('name', faker()->name())
-            ->type('email', faker()->email())
-            ->type('username', faker()->username())
+            ->type('name', $this->faker()->name())
+            ->type('email', $this->faker()->email())
+            ->type('username', $this->faker()->username())
             ->type('password', $password)
             ->type('password_confirmation', $password)
             ->click('button[type="submit"]')

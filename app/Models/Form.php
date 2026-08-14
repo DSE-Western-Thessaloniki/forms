@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Http\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -25,27 +31,27 @@ class Form extends Model
     // Timestamps
     public $timestamps = true;
 
-    public function form_fields()
+    public function form_fields(): HasMany
     {
         return $this->hasMany(FormField::class)->orderBy('sort_id');
     }
 
-    public function schools()
+    public function schools(): BelongsToMany
     {
         return $this->belongsToMany(School::class);
     }
 
-    public function school_categories()
+    public function school_categories(): BelongsToMany
     {
         return $this->belongsToMany(SchoolCategory::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function data()
+    public function data(): HasManyThrough
     {
         return $this->hasManyThrough(FormFieldData::class, FormField::class);
     }
@@ -60,7 +66,7 @@ class Form extends Model
                 ->where('active', '1')
                 ->where(function ($query) use ($filter): void {
                     $query->where('id', 'like', '%'.$filter.'%')
-                        ->orWhere('title', 'like', '%' . $filter . '%');
+                        ->orWhere('title', 'like', '%'.$filter.'%');
                 })
                 ->with('user')
                 ->withCount(['schools' => function ($query): void {
@@ -75,8 +81,8 @@ class Form extends Model
                 ->withCount(['data' => function ($query): void {
                     $query->where('record', 0);
                 }])
-                ->where('id', 'like', '%' . $filter . '%')
-                ->orWhere('title', 'like', '%' . $filter . '%')
+                ->where('id', 'like', '%'.$filter.'%')
+                ->orWhere('title', 'like', '%'.$filter.'%')
                 ->with('user')
                 ->withCount(['schools' => function ($query): void {
                     $query->where('active', 1);

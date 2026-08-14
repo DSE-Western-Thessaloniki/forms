@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
+#[Fillable('sort_id', 'required', 'options')]
 class FormField extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['sort_id', 'required', 'options'];
 
     // Primary key
     public $primaryKey = 'id';
@@ -43,12 +47,12 @@ class FormField extends Model
 
     const int TYPE_LIST = 11;
 
-    public function form()
+    public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
     }
 
-    public function field_data()
+    public function field_data(): HasMany
     {
         return $this->hasMany(FormFieldData::class);
     }

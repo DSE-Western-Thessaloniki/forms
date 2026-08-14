@@ -1,32 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'])]
 class FormFieldData extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'];
-
-    public function form_field()
+    public function form_field(): BelongsTo
     {
         return $this->belongsTo(FormField::class);
     }
 
-    public function school()
+    public function school(): BelongsTo
     {
         return $this->belongsTo(School::class, 'school_id');
     }
 
-    public function teacher()
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class, 'teacher_id');
     }
 
-    public function other_teacher()
+    public function other_teacher(): BelongsTo
     {
         return $this->belongsTo(OtherTeacher::class, 'other_teacher_id');
     }
