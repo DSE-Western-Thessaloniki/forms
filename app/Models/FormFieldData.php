@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\FormFieldDataFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'])]
 class FormFieldData extends Model
 {
+    /** @use HasFactory<FormFieldDataFactory> */
     use HasFactory;
 
     /**

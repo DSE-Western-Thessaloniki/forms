@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SetupRequest;
 use App\Models\Option;
 use App\Models\Role;
 use App\Models\User;
@@ -11,11 +12,8 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Validator as ValidationValidator;
 
 class SetupController extends Controller
 {
@@ -46,26 +44,11 @@ class SetupController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
-     */
-    protected function validator(array $data): ValidationValidator
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'username' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed'],
-        ]);
-    }
-
-    /**
      * Create a new user instance after a valid registration.
      */
-    protected function saveSetup(Request $request): RedirectResponse
+    protected function saveSetup(SetupRequest $request): RedirectResponse
     {
-        $this->validator($request->all())->validate();
-
-        $data = $request->all();
+        $data = $request->validated();
 
         event(new Registered($user = User::create([
             'name' => $data['name'],

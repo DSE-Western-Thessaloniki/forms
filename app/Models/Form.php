@@ -89,6 +89,9 @@ class Form extends Model
         return $this->hasManyThrough(FormFieldData::class, FormField::class);
     }
 
+    /**
+     * @return LengthAwarePaginator<int, Form>
+     */
     public static function fetchWithPagination(?string $filter, bool $only_active): LengthAwarePaginator
     {
         if ($filter && $only_active) {

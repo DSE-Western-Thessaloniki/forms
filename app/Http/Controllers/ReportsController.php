@@ -23,11 +23,11 @@ class ReportsController extends Controller
     use UsesFileFiltering;
 
     // Κρατάει το μοντέλο της σχολικής μονάδας μετά τον έλεγχο από την συνάρτηση school_or_teacher_has_access
-    private $school_model_cache;
+    private ?School $school_model_cache = null;
 
-    private $teacher_model_cache;
+    private ?Teacher $teacher_model_cache = null;
 
-    private $other_teacher_model_cache;
+    private ?OtherTeacher $other_teacher_model_cache = null;
 
     /**
      * Create a new controller instance.

@@ -7,7 +7,6 @@ use App\Models\Form;
 use App\Models\FormField;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
@@ -16,11 +15,10 @@ use Illuminate\Validation\ValidationException;
 
 class UpdateReportRequest extends FormRequest
 {
-    private $form;
+    private ?Form $form;
 
     public function attributes(): array
     {
-        /** @var Collection<FormField> */
         $form_fields = $this->form->form_fields;
 
         return $form_fields->flatMap(fn (FormField $field): array => ["f$field->id" => "'{$field->title}'"])->toArray();
@@ -43,7 +41,6 @@ class UpdateReportRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var Collection<FormField> */
         $form_fields = $this->form->form_fields;
 
         $rules = [];

@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Models\Form;
 use App\Models\FormField;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class FormDataTableService
@@ -116,7 +115,7 @@ class FormDataTableService
     }
 
     /**
-     * @return array{array<string>,Paginator<string|int,array>|Collection<int, non-empty-list>,string|null}
+     * @return array{non-empty-list<string>, array<int,mixed>, Htmlable|null}
      */
     private function createTable(Form $form, string $type): array
     {
@@ -131,7 +130,6 @@ class FormDataTableService
         // Έλεγξε αν θέλουμε σελιδοποίηση
         $links = null;
         if ($this->withPagination) {
-            /** @var Paginator $result */
             $result = $query->paginate($this->paginationItems);
             $links = $result->links();
         } else {
@@ -150,8 +148,8 @@ class FormDataTableService
                 // Μετέτρεψε την επιλογή σε τιμή
                 $result = $result->map(function ($row) use ($selections, $field) {
                     foreach ($selections as $selection) {
-                        if ($selection->id == $row->{$field->id}) {
-                            $row->{$field->id} = $selection->value;
+                        if ($selection->id == $row->{"$field->id"}) {
+                            $row->{"$field->id"} = $selection->value;
                         }
                     }
 
@@ -166,12 +164,12 @@ class FormDataTableService
                 // Μετέτρεψε την επιλογή σε τιμή
                 $result = $result->map(function ($row) use ($selections, $field) {
                     // Αν δεν επέλεξε τίποτα επέστρεψε
-                    if ($row->{$field->id} === null) {
+                    if ($row->{"$field->id"} === null) {
                         return $row;
                     }
 
                     // Μπορεί να έχουμε επιλέξει παραπάνω από ένα
-                    $data = json_decode($row->{$field->id});
+                    $data = json_decode($row->{"$field->id"});
                     if (! is_array($data) && ! is_object($data)) {
                         return $row;
                     }
@@ -181,9 +179,9 @@ class FormDataTableService
                         foreach ($selections as $selection) {
                             if ($selection->id == $item) {
                                 if ($i === 0) {
-                                    $row->{$field->id} = $selection->value;
+                                    $row->{"$field->id"} = $selection->value;
                                 } else {
-                                    $row->{$field->id} .= ', '.$selection->value;
+                                    $row->{"$field->id"} .= ', '.$selection->value;
                                 }
                             }
                         }
@@ -195,8 +193,8 @@ class FormDataTableService
             } elseif ($field->type == FormField::TYPE_FILE) {
                 if ($this->withLinks) {
                     $result = $result->map(function ($row) use ($field, $form) {
-                        $row->{$field->id} = [
-                            'value' => $row->{$field->id},
+                        $row->{"$field->id"} = [
+                            'value' => $row->{"$field->id"},
                             'file' => true,
                             'link' => route('admin.report.download', [
                                 $form->id,
@@ -227,14 +225,14 @@ class FormDataTableService
             }
 
             foreach ($form->form_fields as $field) {
-                $data[] = $row->{$field->id};
+                $data[] = $row->{"$field->id"};
             }
 
             $data[] = $row->created_at;
             $data[] = $row->updated_at;
 
             return $data;
-        });
+        })->toArray();
         $dataTableColumns[] = 'Δημιουργήθηκε';
         $dataTableColumns[] = 'Ενημερώθηκε';
 
@@ -245,6 +243,9 @@ class FormDataTableService
         ];
     }
 
+    /**
+     * @return array{non-empty-list<string>, array<int, mixed>, Htmlable|null}
+     */
     public function create(Form $form): array
     {
         if ($form->for_teachers) {

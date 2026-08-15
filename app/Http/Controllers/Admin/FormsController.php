@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use XLSXWriter;
 use ZipArchive;
 
@@ -288,7 +289,7 @@ class FormsController extends Controller
 
         fputcsv($fd, $dataTableColumns, escape: '\\');
 
-        foreach ($dataTable->toArray() as $row) {
+        foreach ($dataTable as $row) {
             fputcsv($fd, $row, escape: '\\');
         }
 
@@ -317,7 +318,7 @@ class FormsController extends Controller
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.xlsx');
         $writer = new XLSXWriter;
 
-        $data = array_merge([$dataTableColumns], $dataTable->toArray());
+        $data = array_merge([$dataTableColumns], $dataTable);
 
         $writer->writeSheet($data);
         $writer->writeToFile($fname);
@@ -433,7 +434,7 @@ class FormsController extends Controller
         return view('admin.form.confirm_delete')->with('form', $form);
     }
 
-    public function downloadFile(Form $form, string $category, string $categoryId, string $record, string $fieldId)
+    public function downloadFile(Form $form, string $category, string $categoryId, string $record, string $fieldId): StreamedResponse|RedirectResponse
     {
         // Κάνε έναν απλό έλεγχο για ασφάλεια
         if (! in_array($category, ['school', 'teacher', 'other_teacher']) ||
@@ -495,7 +496,7 @@ class FormsController extends Controller
         return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
     }
 
-    public function downloadAllFiles(Form $form)
+    public function downloadAllFiles(Form $form): RedirectResponse|StreamedResponse
     {
         $fields = $form->form_fields->where('type', FormField::TYPE_FILE);
 

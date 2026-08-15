@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Form;
+use App\Models\FormField;
 use App\Models\FormFieldData;
+use App\Models\School;
 use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -76,7 +78,7 @@ class FormFieldDataSeeder extends Seeder
         }
     }
 
-    protected function create_field_data($field, $school, $count)
+    protected function create_field_data(FormField $field, School $school, int $count): void
     {
         FormFieldData::factory()
             ->count($count)

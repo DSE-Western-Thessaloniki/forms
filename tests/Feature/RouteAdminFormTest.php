@@ -18,7 +18,6 @@ use Database\Seeders\SchoolCategorySeeder;
 use Database\Seeders\SchoolSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Testing\TestResponse;
 use Subfission\Cas\Facades\Cas;
 use Symfony\Component\VarDumper\VarDumper;
 use Tests\TestCasManager;
@@ -1447,7 +1446,6 @@ it('can download all files attached to a form as admin', function ($subfolder): 
         Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$item->record}/{$field->id}", 'Test file content');
     }
 
-    /** @var TestResponse $response */
     $response = $this->actingAs($admin)->get("/admin/download_all/{$testForm->id}");
     if ($subfolder === 'teacher') {
         // dd($testForm->form_fields->map(function ($field) {
@@ -1684,7 +1682,7 @@ it('filters invalid characters from other teacher names in zip subfolders', func
             'other_teacher_id' => $other_teacher->id,
         ]);
 
-    // Βρες ��α δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    // Βρες ����α δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
     $data = FormFieldData::query()
         ->where('form_field_id', $field->id)
         ->get();

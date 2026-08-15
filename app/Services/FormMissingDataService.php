@@ -7,7 +7,10 @@ use App\Models\Teacher;
 
 class FormMissingDataService
 {
-    private function getMissingTeacherTable(Form $form)
+    /**
+     * @return array<array<int,string>>
+     */
+    private function getMissingTeacherTable(Form $form): array
     {
         $dataTableColumns = ['Εκπαιδευτικός', 'ΑΜ/ΑΦΜ', 'Τηλέφωνο'];
 
@@ -42,7 +45,10 @@ class FormMissingDataService
         return $data;
     }
 
-    private function getMissingSchoolTable(Form $form)
+    /**
+     * @return array<array<int,string>>
+     */
+    private function getMissingSchoolTable(Form $form): array
     {
         $dataTableColumns = ['Σχολική μονάδα', 'Κωδ. σχολικής μονάδας', 'Τηλέφωνο', 'E-mail'];
 
@@ -77,7 +83,10 @@ class FormMissingDataService
         return $data;
     }
 
-    public function getMissingTable(Form $form)
+    /**
+     * @return array<array<int,string>>
+     */
+    public function getMissingTable(Form $form): array
     {
         if ($form->for_teachers) {
             return $this->getMissingTeacherTable($form);

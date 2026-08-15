@@ -13,11 +13,11 @@ use Illuminate\Support\Str;
  */
 class SchoolFactory extends Factory
 {
-    public const gymnasio = 0;
+    public const int gymnasio = 0;
 
-    public const gel = 1;
+    public const int gel = 1;
 
-    public const epal = 2;
+    public const int epal = 2;
 
     /**
      * Define the model's default state.
@@ -36,7 +36,7 @@ class SchoolFactory extends Factory
     /**
      * Δημιουργία σχολείου συγκεκριμένης κατηγορίας
      */
-    public function category($type = SchoolFactory::gymnasio): static
+    public function category(int $type = SchoolFactory::gymnasio): static
     {
         switch ($type) {
             case SchoolFactory::gymnasio:

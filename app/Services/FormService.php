@@ -85,6 +85,10 @@ class FormService
         });
     }
 
+    /**
+     * @param  Collection<int,FormField>  $oldFields
+     * @param  Collection<int,FormField>  $newFields
+     */
     private function fixFormFieldOptionsAfterCopy(Collection $oldFields, Collection $newFields): void
     {
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων

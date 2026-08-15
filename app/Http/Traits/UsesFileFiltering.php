@@ -8,7 +8,7 @@ trait UsesFileFiltering
     // Υπάρχει πιθανό θέμα με RTL γραφή (πιθανώς κενό filename) αλλά για τις
     // ανάγκες τους συστήματος αρκεί.
     // https://stackoverflow.com/a/42058764/3389323
-    protected function filterFilename($filename, $beautify = true): string
+    protected function filterFilename(string $filename, bool $beautify = true): string
     {
         // sanitize filename
         $filename = preg_replace(
@@ -32,7 +32,7 @@ trait UsesFileFiltering
         return mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)).($ext ? '.'.$ext : '');
     }
 
-    protected function beautifyFilename($filename): string
+    protected function beautifyFilename(string $filename): string
     {
         // reduce consecutive characters
         // $filename = preg_replace([

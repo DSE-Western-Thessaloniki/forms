@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\FormFieldFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 #[Fillable('sort_id', 'required', 'options')]
 class FormField extends Model
 {
+    /** @use HasFactory<FormFieldFactory> */
     use HasFactory;
 
     // Primary key
