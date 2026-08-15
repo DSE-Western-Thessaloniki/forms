@@ -46,7 +46,7 @@ class FormsController extends Controller
     public function index(Request $request): View
     {
         // Κράτησε τις ρυθμίσεις για το φίλτρο και τις ενεργές φόρμες
-        $only_active = $request->input('only_active') ?? $request->session()->get('only_active', 0);
+        $only_active = (bool) $request->input('only_active') ?? $request->session()->get('only_active', false);
         $request->session()->put('only_active', $only_active);
 
         if ($request->exists('back')) {
@@ -110,7 +110,7 @@ class FormsController extends Controller
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
         $categories = SchoolCategory::whereIn(
             'id',
-            explode(',', $request->input('categories'))
+            explode(',', $request->input('categories', ''))
         )->get();
 
         foreach ($categories as $category) {
@@ -120,7 +120,7 @@ class FormsController extends Controller
         // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
         $schools = School::whereIn(
             'id',
-            explode(',', $request->input('schools'))
+            explode(',', $request->input('schools', ''))
         )->get();
 
         foreach ($schools as $school) {
@@ -206,7 +206,7 @@ class FormsController extends Controller
         // Έλεγχος αν οι κατηγορίες υπάρχουν και δημιουργία πίνακα
         $categories = SchoolCategory::whereIn(
             'id',
-            explode(',', $request->input('categories'))
+            explode(',', $request->input('categories', ''))
         )->get();
 
         $form->school_categories()->sync($categories);
@@ -214,7 +214,7 @@ class FormsController extends Controller
         // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
         $schools = School::whereIn(
             'id',
-            explode(',', $request->input('schools'))
+            explode(',', $request->input('schools', ''))
         )->get();
 
         $form->schools()->sync($schools);
@@ -433,7 +433,7 @@ class FormsController extends Controller
         return view('admin.form.confirm_delete')->with('form', $form);
     }
 
-    public function downloadFile(Form $form, $category, $categoryId, $record, $fieldId)
+    public function downloadFile(Form $form, string $category, string $categoryId, string $record, string $fieldId)
     {
         // Κάνε έναν απλό έλεγχο για ασφάλεια
         if (! in_array($category, ['school', 'teacher', 'other_teacher']) ||
@@ -512,7 +512,7 @@ class FormsController extends Controller
         }
 
         $zip = new ZipArchive;
-        $now = DateTime::createFromFormat('U.u', microtime(true));
+        $now = DateTime::createFromFormat('U.u', "".microtime(true));
         $zip_name = $now->format('YmdHisu').'.zip';
         $zip->open(Storage::path($zip_path.$zip_name), ZipArchive::CREATE);
 

@@ -671,38 +671,45 @@ class ReportsController extends Controller
         return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
     }
 
-    public function downloadFile(string $report, int $fieldId, int $record): StreamedResponse|RedirectResponse|View
+    public function downloadFile(Form $report, string $fieldId, string $record): StreamedResponse|RedirectResponse|View
     {
-        $form = Form::where('active', true)->find($report);
-        if ($form) {
-            $access = $this->school_or_teacher_has_access($form);
+        // Κάνε έναν απλό έλεγχο για ασφάλεια
+        if (! is_numeric($record) ||
+            ! is_numeric($fieldId)) {
+            abort(404);
+        }
+
+        if ($report->active) {
+            $access = $this->school_or_teacher_has_access($report);
             if (is_bool($access)) {
                 if ($access) {
                     if ($this->school_model_cache !== null) {
                         $subfolder = "school/{$this->school_model_cache->id}";
-                        $record_data = $form->data()
+                        $record_data = $report->data()
                             ->where('school_id', $this->school_model_cache->id)
                             ->where('record', $record)
                             ->where('form_field_id', $fieldId)
                             ->first();
                     } elseif ($this->teacher_model_cache !== null) {
                         $subfolder = "teacher/{$this->teacher_model_cache->id}";
-                        $record_data = $form->data()
+                        $record_data = $report->data()
                             ->where('teacher_id', $this->teacher_model_cache->id)
                             ->where('record', $record)
                             ->where('form_field_id', $fieldId)
                             ->first();
                     } else {
                         $subfolder = "other_teacher/{$this->other_teacher_model_cache->id}";
-                        $record_data = $form->data()
+                        $record_data = $report->data()
                             ->where('other_teacher_id', $this->other_teacher_model_cache->id)
                             ->where('record', $record)
                             ->where('form_field_id', $fieldId)
                             ->first();
                     }
 
-                    if (Storage::exists("report/$report/$subfolder/$record/$fieldId")) {
-                        return Storage::download("report/$report/$subfolder/$record/$fieldId", $record_data->data);
+                    $path = "report/{$report->id}/$subfolder/$record/$fieldId";
+                    if (Storage::exists($path)) {
+
+                        return Storage::download($path, $record_data->data);
                     }
 
                     return to_route('report.index')->with('error', 'Το αρχείο δεν βρέθηκε');
@@ -714,12 +721,7 @@ class ReportsController extends Controller
             return $access;
         }
 
-        $form = Form::where('active', false)->find($report);
-        if ($form) {
-            return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
-        }
-
-        return to_route('report.index')->with('error', 'Λάθος αναγνωριστικό φόρμας');
+        return to_route('report.index')->with('error', 'Η φόρμα έχει κλείσει και δεν δέχεται άλλες απαντήσεις.');
     }
 
     public function destroyRecord(string $report, int $record): RedirectResponse|View

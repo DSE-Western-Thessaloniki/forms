@@ -667,8 +667,7 @@ it('validates download links', function ($type): void {
         ->assertSessionHas('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
 
     $this->get("/download/invalid/{$field->id}/0")
-        ->assertRedirect(route('report.index'))
-        ->assertSessionHas('error', 'Λάθος αναγνωριστικό φόρμας');
+        ->assertNotFound();
 
     $this->get("/download/{$form->id}/invalid/0")
         ->assertNotFound();

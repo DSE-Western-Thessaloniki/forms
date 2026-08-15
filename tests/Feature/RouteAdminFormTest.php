@@ -134,7 +134,7 @@ it('can create a form as author', function (): void {
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -162,7 +162,7 @@ it('can create a form as admin', function (): void {
         'field' => [['title' => 'Test field', 'type' => 0, 'values' => '', 'sort_id' => 1, 'required' => 'true']],
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -252,7 +252,7 @@ it('can create a form with school categories as author', function (): void {
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -294,7 +294,7 @@ it('can create a form with school categories as admin', function (): void {
         'categories' => strval($category1->id).','.strval($category2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -333,7 +333,7 @@ it('can create a form with fake school categories as author', function (): void 
         'categories' => '0,1',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -372,7 +372,7 @@ it('can create a form with fake school categories as admin', function (): void {
         'categories' => '0,1',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -414,7 +414,7 @@ it('can create a form with schools as author', function (): void {
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -456,7 +456,7 @@ it('can create a form with schools as admin', function (): void {
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -495,7 +495,7 @@ it('can create a form with fake schools as author', function (): void {
         'schools' => '0,1',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -534,7 +534,7 @@ it('can create a form with fake schools as admin', function (): void {
         'schools' => '0,1',
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -580,7 +580,7 @@ it('can create a form with schools and school categories as author', function ()
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -636,7 +636,7 @@ it('can create a form with schools and school categories as admin', function ():
         'schools' => strval($school1->id).','.strval($school2->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα δημιουργήθηκε');
 
     $this->assertDatabaseHas('forms', [
         'title' => 'Test form',
@@ -743,7 +743,7 @@ it('can delete a form as author', function (): void {
 
     $response = $this->actingAs($author)->delete('/admin/form/'.$testForm->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα διαγράφηκε');
+    $response->assertSessionHas('status', 'Η φόρμα διαγράφηκε');
 });
 
 it('can delete a form as admin', function (): void {
@@ -752,7 +752,7 @@ it('can delete a form as admin', function (): void {
 
     $response = $this->actingAs($admin)->delete('/admin/form/'.$testForm->id);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα διαγράφηκε');
+    $response->assertSessionHas('status', 'Η φόρμα διαγράφηκε');
 });
 
 it('cannot update a form as user', function (): void {
@@ -790,7 +790,7 @@ it('can update a form as author', function (): void {
             strval(School::factory()->for($author)->create(['name' => 'Test School2'])->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενημερώθηκε');
     expect(Form::find($testForm->id)->first()->title)->toBe('Test Form2');
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field',
@@ -820,7 +820,7 @@ it('can update a form as author', function (): void {
             strval(SchoolCategory::factory()->create(['name' => 'Test Category2'])->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενημερώθηκε');
     expect(Form::find($testForm->id)->first()->title)->toBe('Test Form3');
     expect(Form::find($testForm->id)->first()->school_categories()->count())->toBe(2);
     $this->assertDatabaseMissing('form_fields', [
@@ -861,7 +861,7 @@ it('can update a form as admin', function (): void {
             strval(School::factory()->for($admin)->create(['name' => 'Test School2'])->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενημερώθηκε');
     expect(Form::find($testForm->id)->first()->title)->toBe('Test Form2');
     $this->assertDatabaseHas('form_fields', [
         'title' => 'Test field',
@@ -891,7 +891,7 @@ it('can update a form as admin', function (): void {
             strval(SchoolCategory::factory()->create(['name' => 'Test Category2'])->id),
     ]);
     $response->assertStatus(302);
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενημερώθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενημερώθηκε');
     expect(Form::find($testForm->id)->first()->title)->toBe('Test Form3');
     expect(Form::find($testForm->id)->first()->schools()->count())->toBe(0);
     expect(Form::find($testForm->id)->first()->school_categories()->count())->toBe(2);
@@ -1120,7 +1120,7 @@ it('can copy a form as author', function (): void {
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/copy');
     $response->assertRedirect(route('admin.form.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Το αντίγραφο της φόρμας δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
     $this->assertModelExists($testForm);
 });
 
@@ -1133,7 +1133,7 @@ it('can copy a form as admin', function (): void {
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/copy');
     $response->assertRedirect(route('admin.form.index'));
-    expect($response->getSession()->only(['status'])['status'])->toBe('Το αντίγραφο της φόρμας δημιουργήθηκε');
+    $response->assertSessionHas('status', 'Το αντίγραφο της φόρμας δημιουργήθηκε');
     $this->assertModelExists($testForm);
 });
 
@@ -1175,28 +1175,28 @@ it('can change active state of a form as author', function (): void {
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/0');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/1');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/toggle');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/toggle');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 });
@@ -1217,28 +1217,28 @@ it('can change active state of a form as admin', function (): void {
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/0');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/1');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/toggle');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα απενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
     $tmpForm['active'] = 0;
     $this->assertDatabaseHas('forms', $tmpForm);
 
     $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/toggle');
     $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
 
-    expect($response->getSession()->only(['status'])['status'])->toBe('Η φόρμα ενεργοποιήθηκε');
+    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 });
@@ -1516,7 +1516,7 @@ it('validates download links', function ($subfolder): void {
     // Έλεγχος αν λείπει το αρχείο πρώτα από το server
     $response = $this->actingAs($admin)->get("/admin/download/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}")
         ->assertRedirect(route('admin.form.index'));
-    expect($response->getSession()->only(['error'])['error'])->toBe('Το αρχείο δεν βρέθηκε');
+    $response->assertSessionHas('error', 'Το αρχείο δεν βρέθηκε');
 
     // Αποθηκεύεις το αρχείο που περιέχει τα δεδομένα
     Storage::put("report/{$testForm->id}/{$subfolder}/{$subfolderId}/{$data->record}/{$field->id}", 'Test file content');
@@ -1684,7 +1684,7 @@ it('filters invalid characters from other teacher names in zip subfolders', func
             'other_teacher_id' => $other_teacher->id,
         ]);
 
-    // Βρες τα δεδομένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    // Βρες τα δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
     $data = FormFieldData::query()
         ->where('form_field_id', $field->id)
         ->get();
