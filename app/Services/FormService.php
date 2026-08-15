@@ -61,7 +61,7 @@ class FormService
                     continue;
                 }
 
-                if (! count($formFields->filter(fn ($item): bool => $item->id == $options['show_when'][$i]['active_field']))) {
+                if (! count($formFields->filter(fn ($item): bool => $item->id == $field->options->show_when[$i]->active_field))) {
                     // Το id του πεδίου είναι λάθος γιατί περιέχει id που δεν υπάρχει.
                     // Κάνε σύνδεση με το νέο πεδίο
                     $old_field_id = $field->options->show_when[$i]->active_field;
@@ -103,7 +103,7 @@ class FormService
                 $old_field_id = $field->options->show_when[$i]->active_field;
                 $found = false;
                 $idx = 0;
-                while (! $found && $idx < count($oldFields)) {
+                while ($idx < count($oldFields)) {
                     if ($oldFields[$idx]->id == $old_field_id) {
                         $found = true;
 

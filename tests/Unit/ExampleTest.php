@@ -11,8 +11,8 @@ class ExampleTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testBasicTest(): void
+    public function test_basic_test(): void
     {
-        $this->assertTrue(true);
+        $this->assertTrue(true); // @phpstan-ignore-line
     }
 }

@@ -46,7 +46,7 @@ class FormsController extends Controller
     public function index(Request $request): View
     {
         // Κράτησε τις ρυθμίσεις για το φίλτρο και τις ενεργές φόρμες
-        $only_active = (bool) $request->input('only_active') ?? $request->session()->get('only_active', false);
+        $only_active = (bool) ($request->input('only_active') ?? $request->session()->get('only_active', false));
         $request->session()->put('only_active', $only_active);
 
         if ($request->exists('back')) {
@@ -483,7 +483,7 @@ class FormsController extends Controller
         }
 
         // Αν περαστεί λάθος record
-        if (! isset($record_data) || ! $record_data) {
+        if (! isset($record_data)) {
             abort(404);
         }
 
@@ -499,7 +499,7 @@ class FormsController extends Controller
     {
         $fields = $form->form_fields->where('type', FormField::TYPE_FILE);
 
-        if (! $fields) {
+        if ($fields->isEmpty()) {
             abort(404);
         }
 
@@ -512,7 +512,7 @@ class FormsController extends Controller
         }
 
         $zip = new ZipArchive;
-        $now = DateTime::createFromFormat('U.u', "".microtime(true));
+        $now = DateTime::createFromFormat('U.u', ''.microtime(true));
         $zip_name = $now->format('YmdHisu').'.zip';
         $zip->open(Storage::path($zip_path.$zip_name), ZipArchive::CREATE);
 

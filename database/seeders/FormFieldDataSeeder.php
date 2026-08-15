@@ -14,7 +14,7 @@ class FormFieldDataSeeder extends Seeder
     /**
      * The current Faker instance.
      *
-     * @var \Faker\Generator
+     * @var Generator
      */
     protected $faker;
 
@@ -31,7 +31,7 @@ class FormFieldDataSeeder extends Seeder
     /**
      * Get a new Faker instance.
      *
-     * @return \Faker\Generator
+     * @return Generator
      */
     protected function withFaker()
     {
@@ -87,13 +87,13 @@ class FormFieldDataSeeder extends Seeder
                             'data' => $this->faker->sentence(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 1: // Περιοχή κειμένου
                         return [
                             'data' => $this->faker->text(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 2: // Επιλογή ενός από πολλά
                     case 4: // Λίστα επιλογών
                         $list = json_decode($field->listvalues);
@@ -103,7 +103,7 @@ class FormFieldDataSeeder extends Seeder
                             'data' => $list[$item]->id,
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 3: // Πολλαπλή επιλογή
                         $list = json_decode($field->listvalues);
                         $itemcount = rand(1, count($list));
@@ -122,43 +122,43 @@ class FormFieldDataSeeder extends Seeder
                             'data' => $data,
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 5: // Αρχείο
                         return [
                             'data' => $this->faker->word().'.'.$this->faker->fileExtension(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 6: // Ημερομηνία
                         return [
                             'data' => $this->faker->date(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 7: // Αριθμός
                         return [
                             'data' => $this->faker->randomNumber(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 8: // Τηλέφωνο
                         return [
                             'data' => $this->faker->numerify('##########'),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 9: // E-mail
                         return [
                             'data' => $this->faker->email(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                     case 10: // Url
                         return [
                             'data' => $this->faker->url(),
                             'record' => $sequence->index,
                         ];
-                        break;
+                        break; // @phpstan-ignore-line
                 }
             }))
             ->for($school, 'school')

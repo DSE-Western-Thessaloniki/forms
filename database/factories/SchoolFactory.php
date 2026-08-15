@@ -45,21 +45,21 @@ class SchoolFactory extends Factory
                         'name' => ($this->faker->randomDigit() + 1).'ο ΓΥΜΝΑΣΙΟ '.$this->faker->prefecture(),
                     ];
                 });
-                break;
+                break; // @phpstan-ignore-line
             case SchoolFactory::gel:
                 return $this->state(function (array $attributes) {
                     return [
                         'name' => ($this->faker->randomDigit() + 1).'ο ΓΕΛ '.$this->faker->prefecture(),
                     ];
                 });
-                break;
+                break; // @phpstan-ignore-line
             case SchoolFactory::epal:
                 return $this->state(function (array $attributes) {
                     return [
                         'name' => ($this->faker->randomDigit() + 1).'ο ΕΠΑΛ '.$this->faker->prefecture(),
                     ];
                 });
-                break;
+                break; // @phpstan-ignore-line
         }
 
         throw new \Exception("Invalid school type '$type'");

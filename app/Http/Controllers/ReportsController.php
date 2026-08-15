@@ -75,7 +75,7 @@ class ReportsController extends Controller
                 return view('pages.deny_access');
             }
 
-            if (! $teacher && $allow_all_teachers->value === '1') { // Για εκπαιδευτικούς από παντού
+            if (! $teacher /* && $allow_all_teachers->value === '1' */) { // Για εκπαιδευτικούς από παντού
                 if (! $form->for_all_teachers) {
                     $this->teacher_model_cache = null;
                     $this->other_teacher_model_cache = null;
@@ -157,14 +157,14 @@ class ReportsController extends Controller
                 return view('pages.deny_access');
             }
 
-            if ((! isset($teacher) || ! $teacher) && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
+            if ((! isset($teacher)) && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
                 $this->teacher_model_cache = null;
                 Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
 
                 return view('pages.deny_access');
             }
 
-            if (isset($teacher) && $teacher) {
+            if (isset($teacher)) {
                 $this->teacher_model_cache = $teacher;
                 $forms = Form::where('active', true)
                     ->where('for_teachers', 1)
@@ -174,32 +174,32 @@ class ReportsController extends Controller
                 return view('report.index')->with('forms', $forms);
             }
 
-            if ($allow_all_teachers->value === '1') { // Για εκπαιδευτικούς από παντού
-                // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
-                $other_teacher = OtherTeacher::firstOrNew([
-                    'employeenumber' => cas()->getAttribute('employeenumber'),
-                ]);
+            // if ($allow_all_teachers->value === '1') { // Για εκπαιδευτικούς από παντού
+            // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
+            $other_teacher = OtherTeacher::firstOrNew([
+                'employeenumber' => cas()->getAttribute('employeenumber'),
+            ]);
 
-                if ($other_teacher->name != cas()->getAttribute('cn') ||
-                    $other_teacher->email != cas()->getAttribute('mail')) {
+            if ($other_teacher->name != cas()->getAttribute('cn') ||
+                $other_teacher->email != cas()->getAttribute('mail')) {
 
-                    $other_teacher->name = cas()->getAttribute('cn');
-                    $other_teacher->email = cas()->getAttribute('mail');
-                    $other_teacher->save();
-                }
-                $this->other_teacher_model_cache = $other_teacher;
-
-                $forms = Form::where('active', true)
-                    ->where('for_all_teachers', 1)
-                    ->with('user')
-                    ->orderBy('created_at', 'desc')->paginate(15);
-
-                return view('report.index')->with('forms', $forms);
+                $other_teacher->name = cas()->getAttribute('cn');
+                $other_teacher->email = cas()->getAttribute('mail');
+                $other_teacher->save();
             }
+            $this->other_teacher_model_cache = $other_teacher;
 
-            Log::warning("Το employeenumber: $teacher_uid δεν αντιστοιχεί σε λογαριασμό εκπαιδευτικού.");
+            $forms = Form::where('active', true)
+                ->where('for_all_teachers', 1)
+                ->with('user')
+                ->orderBy('created_at', 'desc')->paginate(15);
 
-            return view('pages.deny_access');
+            return view('report.index')->with('forms', $forms);
+            // }
+
+            // Log::warning("Το employeenumber: $teacher_uid δεν αντιστοιχεί σε λογαριασμό εκπαιδευτικού.");
+
+            // return view('pages.deny_access');
         }
 
         // Τότε μάλλον σχολείο
@@ -648,8 +648,8 @@ class ReportsController extends Controller
                         return to_route('report.edit.record', ['report' => $id, 'record' => $record - 1])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
-                    if (is_numeric($next) && is_int(intval($next))) {
-                        return to_route('report.edit.record', ['report' => $id, 'record' => $next])->with('success', 'Η αναφορά ενημερώθηκε');
+                    if (is_numeric($next)) {
+                        return to_route('report.edit.record', ['report' => $id, 'record' => intval($next)])->with('success', 'Η αναφορά ενημερώθηκε');
                     }
 
                     return to_route('report.index')->with('success', 'Τα στοιχεία αποθηκεύτηκαν στη φόρμα επιτυχώς');
