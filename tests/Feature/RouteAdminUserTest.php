@@ -419,7 +419,7 @@ it('can update it\'s own role as admin', function (): void {
 it('cannot login with deactivated account', function (): void {
     $this->seed(RoleSeeder::class);
     $user = User::factory()->user()->create();
-    $user->active = 0;
+    $user->active = false;
     $user->save();
 
     $response = $this->post('/admin/login', [
@@ -433,7 +433,7 @@ it('cannot login with deactivated account', function (): void {
 test('logout from admin redirects to admin login', function (): void {
     $this->seed(RoleSeeder::class);
     $user = User::factory()->user()->create();
-    $user->active = 1;
+    $user->active = true;
     $user->save();
 
     $response = $this->post('/admin/login', [

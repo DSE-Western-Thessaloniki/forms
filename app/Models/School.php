@@ -22,6 +22,18 @@ class School extends Authenticatable
     use Notifiable;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
+
+    /**
      * @return BelongsTo<User,$this>
      */
     public function user(): BelongsTo

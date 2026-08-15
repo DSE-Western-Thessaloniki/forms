@@ -35,6 +35,21 @@ class Form extends Model
     public $timestamps = true;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+            'multiple' => 'boolean',
+            'for_teachers' => 'boolean',
+            'for_all_teachers' => 'boolean',
+        ];
+    }
+
+    /**
      * @return HasMany<FormField,$this>
      */
     public function form_fields(): HasMany
@@ -150,8 +165,8 @@ class Form extends Model
         $form->user_id = Auth::id();
         $form->active = true;
         $form->multiple = (bool) $request->input('multiple_input');
-        $form->for_teachers = intval($request->input('for_teachers'));
-        $form->for_all_teachers = intval($request->input('for_all_teachers'));
+        $form->for_teachers = (bool) $request->input('for_teachers');
+        $form->for_all_teachers = (bool) $request->input('for_all_teachers');
         $form->save();
 
         return $form;
@@ -163,8 +178,8 @@ class Form extends Model
         $this->title = $request->input('title');
         $this->notes = $request->input('notes');
         $this->multiple = (bool) $request->input('multiple_input');
-        $this->for_teachers = intval($request->input('for_teachers'));
-        $this->for_all_teachers = intval($request->input('for_all_teachers'));
+        $this->for_teachers = (bool) $request->input('for_teachers');
+        $this->for_all_teachers = (bool) $request->input('for_all_teachers');
         $this->save();
     }
 }

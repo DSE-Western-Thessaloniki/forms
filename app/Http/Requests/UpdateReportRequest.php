@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\AcceptedFiletype;
 use App\Models\Form;
 use App\Models\FormField;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
@@ -22,7 +23,7 @@ class UpdateReportRequest extends FormRequest
         /** @var Collection<FormField> */
         $form_fields = $this->form->form_fields;
 
-        return $form_fields->flatMap(fn(FormField $field): array => ["f$field->id" => "'{$field->title}'"])->toArray();
+        return $form_fields->flatMap(fn (FormField $field): array => ["f$field->id" => "'{$field->title}'"])->toArray();
     }
 
     /**
@@ -38,7 +39,7 @@ class UpdateReportRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -71,7 +72,7 @@ class UpdateReportRequest extends FormRequest
             if ($field->type === FormField::TYPE_CHECKBOX) {
                 $field_rules[] = 'array';
 
-                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
+                $accepted_values = array_map(fn ($item) => $item->id, json_decode($field->listvalues));
                 $rules["f{$field->id}.*"] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_DATE) {
                 $field_rules[] = 'date';
@@ -79,15 +80,14 @@ class UpdateReportRequest extends FormRequest
                 $field_rules[] = 'email';
             } elseif ($field->type === FormField::TYPE_FILE) {
                 $field_rules[] = 'file';
-                $field_options = json_decode($field->options);
                 $accepted_types = [];
-                if ($field_options->filetype->value === '-1') {
+                if ($field->options->filetype->value === '-1') {
                     $accepted_types = explode(
                         ',',
-                        str_replace(['*', '.'], '', $field_options->filetype->custom_value)
+                        str_replace(['*', '.'], '', $field->options->filetype->custom_value)
                     );
                 } else {
-                    $accepted_filetype = AcceptedFiletype::find($field_options->filetype->value);
+                    $accepted_filetype = AcceptedFiletype::find($field->options->filetype->value);
                     if (! $accepted_filetype) {
                         throw ValidationException::withMessages([
                             "f{$field->id}" => ['Άκυρος τύπος αρχείου στη βάση'],
@@ -105,11 +105,11 @@ class UpdateReportRequest extends FormRequest
                 $field_rules[] = 'numeric';
             } elseif ($field->type === FormField::TYPE_RADIO_BUTTON) {
                 $field_rules[] = 'integer';
-                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
+                $accepted_values = array_map(fn ($item) => $item->id, json_decode($field->listvalues));
                 $field_rules[] = Rule::in($accepted_values);
             } elseif ($field->type === FormField::TYPE_SELECT) {
                 $field_rules[] = 'integer';
-                $accepted_values = array_map(fn($item) => $item->id, json_decode($field->listvalues));
+                $accepted_values = array_map(fn ($item) => $item->id, json_decode($field->listvalues));
                 if (! $field->required) {
                     $accepted_values[] = '-1';
                 } else {

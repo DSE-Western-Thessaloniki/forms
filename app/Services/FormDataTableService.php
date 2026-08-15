@@ -116,7 +116,7 @@ class FormDataTableService
     }
 
     /**
-     * @return array{array<string>,Paginator<string|int,array>|Collection<int, array>,string|null}
+     * @return array{array<string>,Paginator<string|int,array>|Collection<int, non-empty-list>,string|null}
      */
     private function createTable(Form $form, string $type): array
     {
@@ -250,6 +250,7 @@ class FormDataTableService
         if ($form->for_teachers) {
             return $this->createTable($form, 'teacher');
         }
+
         return $this->createTable($form, 'school');
     }
 

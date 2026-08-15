@@ -159,7 +159,7 @@ class SchoolsController extends Controller
         $school->email = $request->input('email');
         $school->telephone = $request->input('telephone');
         $school->code = $request->input('code');
-        $school->active = $request->input('active') == 1 ? 1 : 0;
+        $school->active = (bool) $request->input('active');
         $school->updated_by = Auth::user()->id;
 
         $school->categories()->sync($categories);

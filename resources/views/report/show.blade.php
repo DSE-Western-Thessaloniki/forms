@@ -41,20 +41,11 @@
             <div class="card-body">
                 @php
                     if ($school !== null) {
-                        $total_records = $form
-                            ->data()
-                            ->where('school_id', $school->id)
-                            ->max('record');
+                        $total_records = $form->data()->where('school_id', $school->id)->max('record');
                     } elseif ($teacher !== null) {
-                        $total_records = $form
-                            ->data()
-                            ->where('teacher_id', $teacher->id)
-                            ->max('record');
+                        $total_records = $form->data()->where('teacher_id', $teacher->id)->max('record');
                     } else {
-                        $total_records = $form
-                            ->data()
-                            ->where('other_teacher_id', $other_teacher->id)
-                            ->max('record');
+                        $total_records = $form->data()->where('other_teacher_id', $other_teacher->id)->max('record');
                     }
                     $total_records = $total_records ?? 0;
                 @endphp
@@ -69,7 +60,7 @@
                         @php
                             $data = $data_dict[$field->id] ?? '';
 
-                            $options = json_decode($field->options);
+                            $options = $field->options;
                         @endphp
                         <field-group :field="{{ $field }}" :disabled="false"
                             errors="{{ $errors->first("f{$field->id}") ?? [] }}"></field-group>

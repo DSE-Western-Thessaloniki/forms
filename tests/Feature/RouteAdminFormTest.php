@@ -1143,13 +1143,13 @@ it('cannot change active state of a form as user', function (): void {
     $testForm = test_create_one_form_for_user($user);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
-    $testForm->active = 1;
+    $testForm->active = true;
     $testForm->save();
 
     $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/active/set/0');
     $response->assertForbidden();
 
-    $testForm->active = 0;
+    $testForm->active = false;
     $testForm->save();
 
     $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/active/set/1');
@@ -1165,7 +1165,7 @@ it('can change active state of a form as author', function (): void {
     $testForm = test_create_one_form_for_user($author);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
-    $testForm->active = 1;
+    $testForm->active = true;
     $testForm->save();
     $tmpForm = $testForm->toArray();
     unset($tmpForm['updated_at']);
@@ -1207,7 +1207,7 @@ it('can change active state of a form as admin', function (): void {
     $testForm = test_create_one_form_for_user($admin);
     $this->seed(FormFieldDataSeeder::class);
     $this->assertInstanceOf(Form::class, $testForm);
-    $testForm->active = 1;
+    $testForm->active = true;
     $testForm->save();
     $tmpForm = $testForm->toArray();
     unset($tmpForm['updated_at']);
@@ -1684,7 +1684,7 @@ it('filters invalid characters from other teacher names in zip subfolders', func
             'other_teacher_id' => $other_teacher->id,
         ]);
 
-    // Βρες τα δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    // Βρες ��α δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
     $data = FormFieldData::query()
         ->where('form_field_id', $field->id)
         ->get();

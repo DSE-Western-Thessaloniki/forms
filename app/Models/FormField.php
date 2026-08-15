@@ -48,6 +48,18 @@ class FormField extends Model
     const int TYPE_LIST = 11;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'options' => 'object',
+        ];
+    }
+
+    /**
      * @return BelongsTo<Form,$this>
      */
     public function form(): BelongsTo
@@ -63,19 +75,9 @@ class FormField extends Model
         return $this->hasMany(FormFieldData::class);
     }
 
-    /**
-     * @return \stdClass
-     */
-    public function field_options(): mixed
-    {
-        return json_decode($this->options);
-    }
-
     public function readonly(): bool
     {
-        $options = $this->field_options();
-
-        return $options->readonly ?? false;
+        return $this->options->readonly ?? false;
     }
 
     public static function fromRequest(Request $request, Form $form): void
@@ -93,11 +95,11 @@ class FormField extends Model
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
+                $field->options = $formfield[$key]['options'] ?? new \stdClass;
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
+                $field->options = $formfield[$key]['options'] ?? new \stdClass;
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
             $field->required = $formfield[$key]['required'] === 'true';
@@ -121,11 +123,11 @@ class FormField extends Model
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
+                $field->options = $formfield[$key]['options'] ?? new \stdClass;
                 $field->listvalues = $selection_list->data;
             } else {
                 $field->type = $formfield[$key]['type'];
-                $field->options = json_encode($formfield[$key]['options'] ?? new \stdClass);
+                $field->options = $formfield[$key]['options'] ?? new \stdClass;
                 $field->listvalues = $formfield[$key]['values'] ?? '';
             }
 

@@ -49,13 +49,12 @@
         // Κανόνισε τα δεδομένα για τα πεδία που δέχονται αρχείο
         foreach ($form->form_fields as $field) {
             if ($field->type == \App\Models\FormField::TYPE_FILE) {
-                $options = json_decode($field->options);
-                $filetype_value = $options->filetype->value;
+                $filetype_value = $field->options->filetype->value;
 
                 if ($filetype_value != -1) {
                     $accepted = \App\Models\AcceptedFiletype::find($filetype_value)->extension;
                 } else {
-                    $accepted = $options->filetype->custom_value;
+                    $accepted = $field->options->filetype->custom_value;
                 }
 
                 // Πρόσθεσε ένα επιπλέον πεδίο στο μοντέλο δυναμικά

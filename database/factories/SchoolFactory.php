@@ -13,13 +13,6 @@ use Illuminate\Support\Str;
  */
 class SchoolFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = School::class;
-
     public const gymnasio = 0;
 
     public const gel = 1;

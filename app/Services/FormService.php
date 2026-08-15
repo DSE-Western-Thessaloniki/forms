@@ -21,20 +21,18 @@ class FormService
 
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
         $formFields->each(function ($field) use ($formFields): void {
-            $options = json_decode($field->options, true);
-            if (! isset($options['show_when'])) {
+            if (! isset($field->options->show_when)) {
                 return;
             }
-            $counter = count($options['show_when']);
+            $counter = count($field->options->show_when);
 
             for ($i = 0; $i < $counter; $i++) {
-                if (! isset($options['show_when'][$i]['active_field'])) {
+                if (! isset($field->options->show_when[$i]->active_field)) {
                     continue;
                 }
 
-                $idx = $options['show_when'][$i]['active_field'];
-                $options['show_when'][$i]['active_field'] = $formFields[$idx]->id;
-                $field->options = json_encode($options);
+                $idx = $field->options->show_when[$i]->active_field;
+                $field->options->show_when[$i]->active_field = $formFields[$idx]->id;
                 $field->save();
             }
 
@@ -53,21 +51,20 @@ class FormService
 
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
         $formFields->each(function ($field, $fieldIndex) use ($formFields): void {
-            $options = json_decode($field->options, true);
-            if (! isset($options['show_when'])) {
+            if (! isset($field->options->show_when)) {
                 return;
             }
-            $counter = count($options['show_when']);
+            $counter = count($field->options->show_when);
 
             for ($i = 0; $i < $counter; $i++) {
-                if (! isset($options['show_when'][$i]['active_field'])) {
+                if (! isset($field->options->show_when[$i]->active_field)) {
                     continue;
                 }
 
                 if (! count($formFields->filter(fn ($item): bool => $item->id == $options['show_when'][$i]['active_field']))) {
                     // Το id του πεδίου είναι λάθος γιατί περιέχει id που δεν υπάρχει.
                     // Κάνε σύνδεση με το νέο πεδίο
-                    $old_field_id = $options['show_when'][$i]['active_field'];
+                    $old_field_id = $field->options->show_when[$i]->active_field;
 
                     $idx = 0;
                     while ($old_field_id > $formFields[$idx]->id && $idx < count($formFields)) {
@@ -75,13 +72,11 @@ class FormService
                     }
 
                     if ($idx < count($formFields)) {
-                        $options['show_when'][$i]['active_field'] = $formFields[$idx]->id;
-                        $field->options = json_encode($options);
+                        $field->options->show_when[$i]->active_field = $formFields[$idx]->id;
                         $field->save();
                     } else {
                         // Το πεδίο διαγράφηκε
-                        $options['show_when'][$i]['visible'] = 'always';
-                        $field->options = json_encode($options);
+                        $field->options->show_when[$i]->visible = 'always';
                         $field->save();
                     }
                 }
@@ -94,19 +89,18 @@ class FormService
     {
         // Διόρθωσε τα options όπου χρειάζεται για την εμφάνιση πεδίων
         $newFields->each(function ($field) use ($oldFields, $newFields): void {
-            $options = json_decode($field->options, true);
-            if (! isset($options['show_when'])) {
+            if (! isset($field->options->show_when)) {
                 return;
             }
-            $counter = count($options['show_when']);
+            $counter = count($field->options->show_when);
 
             for ($i = 0; $i < $counter; $i++) {
-                if (! isset($options['show_when'][$i]['active_field'])) {
+                if (! isset($field->options->show_when[$i]->active_field)) {
                     continue;
                 }
                 // Το id του πεδίου είναι λάθος γιατί περιέχει το πεδίο της αρχικής φόρμας.
                 // Κάνε σύνδεση με το νέο πεδίο
-                $old_field_id = $options['show_when'][$i]['active_field'];
+                $old_field_id = $field->options->show_when[$i]->active_field;
                 $found = false;
                 $idx = 0;
                 while (! $found && $idx < count($oldFields)) {
@@ -119,8 +113,7 @@ class FormService
                 }
 
                 if ($found) {
-                    $options['show_when'][$i]['active_field'] = $newFields[$idx]->id;
-                    $field->options = json_encode($options);
+                    $field->options->show_when[$i]->active_field = $newFields[$idx]->id;
                     $field->save();
                 }
             }

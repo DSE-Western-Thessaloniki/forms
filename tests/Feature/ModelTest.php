@@ -276,17 +276,17 @@ it('can identify readonly fields', function (): void {
     $form = Form::factory()->for(User::factory())->create();
 
     $field = FormField::factory()->for($form)->create([
-        'options' => json_encode(['readonly' => true]),
+        'options' => ['readonly' => true],
     ]);
     expect($field->readonly())->toBeTrue();
 
     $fieldNoReadonly = FormField::factory()->for($form)->create([
-        'options' => json_encode(['multiple' => true]),
+        'options' => ['multiple' => true],
     ]);
     expect($fieldNoReadonly->readonly())->toBeFalse();
 
     $fieldEmptyOptions = FormField::factory()->for($form)->create([
-        'options' => json_encode(new stdClass),
+        'options' => new stdClass,
     ]);
     expect($fieldEmptyOptions->readonly())->toBeFalse();
 });
@@ -300,14 +300,14 @@ it('saves a form with readonly fields retaining field values', function (): void
         'sort_id' => 1,
         'title' => 'Field 1',
         'type' => FormField::TYPE_TEXT,
-        'options' => json_encode(['readonly' => true]),
+        'options' => ['readonly' => true],
     ]);
 
     $field2 = FormField::factory()->for($form)->create([
         'sort_id' => 2,
         'title' => 'Field 2',
         'type' => FormField::TYPE_TEXT,
-        'options' => json_encode(new stdClass),
+        'options' => new stdClass,
     ]);
 
     FormFieldData::factory()->create([
