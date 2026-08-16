@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Policies;
 
-use App\Models\AcceptedFiletype;
 use App\Models\User;
 
-class AcceptedFiletypePolicy
+final class AcceptedFiletypePolicy
 {
     public function before(User $user): ?true
     {

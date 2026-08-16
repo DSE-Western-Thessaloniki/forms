@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class SchoolsController extends Controller
+final class SchoolsController extends Controller
 {
     /**
      * Create the controller instance.

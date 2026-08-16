@@ -7,7 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-final class UpdateAcceptedFiletypeRequest extends FormRequest
+final class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,11 @@ final class UpdateAcceptedFiletypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => ['string', 'max:255', 'required'],
-            'extension' => ['string', 'max:255', 'required'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password_reset' => ['nullable', 'integer'],
         ];
     }
 }

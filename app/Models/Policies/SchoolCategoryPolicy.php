@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models\Policies;
 
-use App\Models\SchoolCategory;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class SchoolCategoryPolicy
+final class SchoolCategoryPolicy
 {
     use HandlesAuthorization;
 

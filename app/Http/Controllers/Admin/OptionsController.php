@@ -10,7 +10,7 @@ use App\Models\Option;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class OptionsController extends Controller
+final class OptionsController extends Controller
 {
     public function __construct()
     {
@@ -34,7 +34,7 @@ class OptionsController extends Controller
     {
         $allow_teacher_login = $request->input('allow_teacher_login');
         $allow_all_teachers = $request->input('allow_all_teachers');
-        if ($allow_teacher_login == '1') {
+        if ($allow_teacher_login === '1') {
             $option = Option::where('name', 'allow_teacher_login')->first();
             if ($allow_teacher_login === '1') {
                 $option->value = '1';

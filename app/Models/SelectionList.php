@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['name', 'data', 'active'])]
-class SelectionList extends Model
+final class SelectionList extends Model
 {
     /** @use HasFactory<SelectionListFactory> */
     use HasFactory;

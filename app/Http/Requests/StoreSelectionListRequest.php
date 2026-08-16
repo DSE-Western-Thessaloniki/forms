@@ -6,7 +6,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSelectionListRequest extends FormRequest
+final class StoreSelectionListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class StoreSelectionListRequest extends FormRequest
             'id' => ['array'],
             'id.*' => ['string', 'max:255'],
             'value' => ['array'],
-            'value.*' => ['string', 'max:255']
+            'value.*' => ['string', 'max:255'],
         ];
     }
 }

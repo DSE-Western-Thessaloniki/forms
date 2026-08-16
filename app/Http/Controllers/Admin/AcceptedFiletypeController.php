@@ -11,7 +11,7 @@ use App\Models\AcceptedFiletype;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class AcceptedFiletypeController extends Controller
+final class AcceptedFiletypeController extends Controller
 {
     /**
      * Create a new controller instance.

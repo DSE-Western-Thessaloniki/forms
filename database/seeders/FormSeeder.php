@@ -17,7 +17,7 @@ class FormSeeder extends Seeder
     /**
      * The current Faker instance.
      *
-     * @var \Faker\Generator
+     * @var Generator
      */
     protected $faker;
 
@@ -34,7 +34,7 @@ class FormSeeder extends Seeder
     /**
      * Get a new Faker instance.
      *
-     * @return \Faker\Generator
+     * @return Generator
      */
     protected function withFaker()
     {
@@ -66,7 +66,7 @@ class FormSeeder extends Seeder
                         // Αν ο τύπος του πεδίου χρειάζεται επιπλέον επιλογές
                         if (in_array($type, [2, 3, 4])) {
                             $listvalues = [];
-                            $times = rand(1, 10);
+                            $times = random_int(1, 10);
                             for ($i = 0; $i < $times; $i++) {
                                 array_push(
                                     $listvalues,

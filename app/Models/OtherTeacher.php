@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['employeenumber', 'name', 'email'])]
-class OtherTeacher extends Model
+final class OtherTeacher extends Model
 {
     /** @use HasFactory<OtherTeacherFactory> */
     use HasFactory;

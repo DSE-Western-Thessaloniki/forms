@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable('name')]
-class SchoolCategory extends Model
+final class SchoolCategory extends Model
 {
     /** @use HasFactory<SchoolCategoryFactory> */
     use HasFactory;

@@ -1,3 +1,5 @@
+import type { FormFieldOptions } from "./fieldtype";
+
 declare namespace App.Models {
     export interface User {
         id: string;
@@ -71,7 +73,7 @@ declare namespace App.Models {
         type: number;
         listvalues: string;
         required: boolean;
-        options: string;
+        options: FormFieldOptions;
         created_at: string | null;
         updated_at: string | null;
     }

@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 
-class PagesController extends Controller
+final class PagesController extends Controller
 {
     /**
      * Home page

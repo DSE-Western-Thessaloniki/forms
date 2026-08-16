@@ -9,7 +9,7 @@ use App\Models\OtherTeacher;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class OtherTeacherController extends Controller
+final class OtherTeacherController extends Controller
 {
     public function __construct()
     {

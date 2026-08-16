@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ReportsController extends Controller
+final class ReportsController extends Controller
 {
     use UsesFileFiltering;
 
@@ -89,8 +89,8 @@ class ReportsController extends Controller
                     'employeenumber' => cas()->getAttribute('employeenumber'),
                 ]);
 
-                if ($other_teacher->name != cas()->getAttribute('cn') ||
-                    $other_teacher->email != cas()->getAttribute('mail')) {
+                if ($other_teacher->name !== cas()->getAttribute('cn') ||
+                    $other_teacher->email !== cas()->getAttribute('mail')) {
 
                     $other_teacher->name = cas()->getAttribute('cn');
                     $other_teacher->email = cas()->getAttribute('mail');
@@ -180,8 +180,8 @@ class ReportsController extends Controller
                 'employeenumber' => cas()->getAttribute('employeenumber'),
             ]);
 
-            if ($other_teacher->name != cas()->getAttribute('cn') ||
-                $other_teacher->email != cas()->getAttribute('mail')) {
+            if ($other_teacher->name !== cas()->getAttribute('cn') ||
+                $other_teacher->email !== cas()->getAttribute('mail')) {
 
                 $other_teacher->name = cas()->getAttribute('cn');
                 $other_teacher->email = cas()->getAttribute('mail');

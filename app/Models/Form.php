@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
-class Form extends Model
+final class Form extends Model
 {
     /** @use HasFactory<FormFactory> */
     use HasFactory;

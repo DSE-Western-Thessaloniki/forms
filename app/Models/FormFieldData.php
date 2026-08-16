@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['school_id', 'teacher_id', 'other_teacher_id', 'data', 'record', 'updated_at'])]
-class FormFieldData extends Model
+final class FormFieldData extends Model
 {
     /** @use HasFactory<FormFieldDataFactory> */
     use HasFactory;
@@ -54,18 +54,18 @@ class FormFieldData extends Model
             $field = $this->form_field;
         }
 
-        if ($this->data === null) {
+        if ($this->data === null || $this->data === '') {
             return '';
         }
 
-        if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+        if ($field->type === FormField::TYPE_RADIO_BUTTON || $field->type === FormField::TYPE_SELECT) {
             $selections = json_decode($field->listvalues);
 
             // Μετέτρεψε την επιλογή σε τιμή
             $result = '';
 
             foreach ($selections as $selection) {
-                if ($selection->id == $this->data) {
+                if ($selection->id === intval($this->data)) {
                     $result = $selection->value;
                 }
             }
@@ -73,7 +73,7 @@ class FormFieldData extends Model
             return $result;
         }
 
-        if ($field->type == FormField::TYPE_CHECKBOX) {
+        if ($field->type === FormField::TYPE_CHECKBOX) {
             $selections = json_decode($field->listvalues);
 
             // Μπορεί να έχουμε επιλέξει παραπάνω από ένα
@@ -82,7 +82,7 @@ class FormFieldData extends Model
             $i = 0;
             foreach ($data as $item) {
                 foreach ($selections as $selection) {
-                    if ($selection->id == $item) {
+                    if ($selection->id === intval($item)) {
                         if ($i === 0) {
                             $result = $selection->value;
                         } else {

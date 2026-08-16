@@ -15,7 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class SetupController extends Controller
+final class SetupController extends Controller
 {
     /*
     |--------------------------------------------------------------------------

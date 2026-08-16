@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Form;
@@ -7,7 +9,7 @@ use App\Models\FormField;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class FormService
+final class FormService
 {
     /**
      * Διόρθωση πεδίου options μετά την πρώτη αποθήκευση της φόρμας. Επειδή τα
@@ -61,7 +63,7 @@ class FormService
                     continue;
                 }
 
-                if (! count($formFields->filter(fn ($item): bool => $item->id == $field->options->show_when[$i]->active_field))) {
+                if (! count($formFields->filter(fn ($item): bool => $item->id === intval($field->options->show_when[$i]->active_field)))) {
                     // Το id του πεδίου είναι λάθος γιατί περιέχει id που δεν υπάρχει.
                     // Κάνε σύνδεση με το νέο πεδίο
                     $old_field_id = $field->options->show_when[$i]->active_field;
@@ -108,7 +110,7 @@ class FormService
                 $found = false;
                 $idx = 0;
                 while ($idx < count($oldFields)) {
-                    if ($oldFields[$idx]->id == $old_field_id) {
+                    if ($oldFields[$idx]->id === $old_field_id) {
                         $found = true;
 
                         break;

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateSelectionListRequest extends FormRequest
+final class UpdateSelectionListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

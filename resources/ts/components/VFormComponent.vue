@@ -77,8 +77,8 @@
                                         element,
                                     }: {
                                         element: App.Models.FormField & {
-                                            new_field: boolean,
-                                        },
+                                            new_field: boolean;
+                                        };
                                     }"
                                 >
                                     <li
@@ -105,9 +105,7 @@
                                             :accepted_filetypes="
                                                 accepted_filetypes
                                             "
-                                            :field_options="
-                                                JSON.parse(element.options)
-                                            "
+                                            :field_options="element.options"
                                             :fields
                                         >
                                         </vform-field-component>
@@ -256,7 +254,7 @@ const props = withDefaults(
         parsetitle: "Νέα φόρμα",
         for_teachers: "0",
         for_all_teachers: false,
-    }
+    },
 );
 
 let vform_fields = ref(null);

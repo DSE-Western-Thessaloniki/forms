@@ -17,7 +17,7 @@ const backendErrors = ref(props.errors);
 
 console.log(backendErrors);
 
-const fieldOptions: FormFieldOptions = JSON.parse(props.field.options);
+const fieldOptions: FormFieldOptions = props.field.options;
 
 const formStore = useFormStore();
 
@@ -27,7 +27,7 @@ if (
 ) {
     formStore.fieldOptions[`${props.field.id}`] = useOptions(
         fieldOptions,
-        true
+        true,
     );
 }
 
@@ -52,7 +52,7 @@ watch([() => formStore.fieldOptions[props.field.id].fieldVisible], () => {
     console.log(
         "FieldGroup.watch.fieldVisible",
         props.field.id,
-        formStore.fieldOptions[props.field.id].fieldVisible
+        formStore.fieldOptions[props.field.id].fieldVisible,
     );
     if (!formStore.fieldOptions[props.field.id].fieldVisible) {
         emit("validationChanged", divRef.value, 0);

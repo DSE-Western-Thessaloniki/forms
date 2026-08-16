@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Models\Option;
+use Closure;
+use Illuminate\Http\Request;
 
-class FirstRun
+final class FirstRun
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (!app()->environment(['production']) &&
-            (str_starts_with($request->path(), "__cypress__") ||
-             str_starts_with($request->path(), "_debugbar"))) {
+        if (! app()->environment(['production']) &&
+            (str_starts_with($request->path(), '__cypress__') ||
+             str_starts_with($request->path(), '_debugbar'))) {
             return $next($request);
         }
 
@@ -29,14 +32,16 @@ class FirstRun
 
         // If setup didn't run go to /setup
         if ($first_run) {
-            if ($request->path() != 'setup')
+            if ($request->path() !== 'setup') {
                 return redirect('/setup');
-        }
-        else {
+            }
+        } else {
             // Site already setup. Redirect to /
-            if ($request->path() == 'setup')
+            if ($request->path() === 'setup') {
                 return redirect('/');
+            }
         }
+
         return $next($request);
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TeacherController extends Controller
+final class TeacherController extends Controller
 {
     public function __construct()
     {
@@ -88,10 +88,10 @@ class TeacherController extends Controller
     public function update(UpdateTeacherRequest $request, Teacher $teacher): RedirectResponse
     {
         $teacher->update(
-            array_merge(
-                $request->validated(),
-                ['active' => $request->get('active') == 1 ? 1 : 0]
-            )
+            [
+                'active' => (bool) $request->validated('active', false),
+                ...$request->validated(),
+            ]
         );
 
         return to_route('admin.teacher.index')

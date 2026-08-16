@@ -10,6 +10,7 @@ use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Random\Randomizer;
 
 class FormFieldDataSeeder extends Seeder
 {
@@ -61,9 +62,10 @@ class FormFieldDataSeeder extends Seeder
             foreach ($form->school_categories as $category) {
                 $count = 1;
                 if ($form->multiple) {
-                    $count = rand(1, 10);
+                    $count = random_int(1, 10);
                 }
-                $keys = array_rand($category->schools->toArray(), rand(1, count($category->schools)));
+                $r = new Randomizer;
+                $keys = $r->pickArrayKeys($category->schools->toArray(), random_int(1, count($category->schools)));
                 if (! is_array($keys)) {
                     $keys = [$keys];
                 }
@@ -99,7 +101,7 @@ class FormFieldDataSeeder extends Seeder
                     case 2: // Επιλογή ενός από πολλά
                     case 4: // Λίστα επιλογών
                         $list = json_decode($field->listvalues);
-                        $item = rand(0, count($list) - 1);
+                        $item = random_int(0, count($list) - 1);
 
                         return [
                             'data' => $list[$item]->id,
@@ -108,8 +110,9 @@ class FormFieldDataSeeder extends Seeder
                         break; // @phpstan-ignore-line
                     case 3: // Πολλαπλή επιλογή
                         $list = json_decode($field->listvalues);
-                        $itemcount = rand(1, count($list));
-                        $keys = array_rand($list, $itemcount);
+                        $itemcount = random_int(1, count($list));
+                        $r = new Randomizer;
+                        $keys = $r->pickArrayKeys($list, $itemcount);
                         $data = [];
                         if (is_array($keys)) {
                             foreach ($keys as $key) {

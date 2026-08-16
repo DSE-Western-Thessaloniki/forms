@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\Policies;
 
 use App\Models\SelectionList;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
-class SelectionListPolicy
+final class SelectionListPolicy
 {
     use HandlesAuthorization;
 
@@ -18,31 +21,31 @@ class SelectionListPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function viewAny(User $user)
     {
-        return $user->roles()->where("name", "Author")->exists();
+        return $user->roles()->where('name', 'Author')->exists();
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function view(User $user)
     {
-        return $user->roles()->where("name", "Author")->exists();
+        return $user->roles()->where('name', 'Author')->exists();
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function create(User $user)
     {
-        return $user->roles()->where("name", "Author")->exists();
+        return $user->roles()->where('name', 'Author')->exists();
     }
 
     /**
@@ -50,8 +53,10 @@ class SelectionListPolicy
      */
     public function update(User $user, SelectionList $selectionList): bool
     {
-        if (!$user->roles()->where("name", "Author")->exists())
+        if (! $user->roles()->where('name', 'Author')->exists()) {
             return false;
+        }
+
         return $selectionList->created_by === $user->id;
     }
 
@@ -60,9 +65,11 @@ class SelectionListPolicy
      */
     public function delete(User $user, SelectionList $selectionList): bool
     {
-        if (!$user->roles()->where("name", "Author")->exists())
+        if (! $user->roles()->where('name', 'Author')->exists()) {
             return false;
-        return $selectionList->created_by == $user->id;
+        }
+
+        return $selectionList->created_by === $user->id;
     }
 
     /**

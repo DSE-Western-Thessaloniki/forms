@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Form;
 use App\Models\Teacher;
 
-class FormMissingDataService
+final class FormMissingDataService
 {
     /**
      * @return array<array<int,string>>

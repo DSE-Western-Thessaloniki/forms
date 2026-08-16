@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use XLSXWriter;
 use ZipArchive;
 
-class FormsController extends Controller
+final class FormsController extends Controller
 {
     use UsesFileFiltering;
 
@@ -217,7 +217,7 @@ class FormsController extends Controller
         // Έλεγχος αν τα σχολεία υπάρχουν και δημιουργία πίνακα
         $schools = School::whereIn(
             'id',
-            explode(',', $request->input('schools', ''))
+            explode(',', $request->input('schools', '') ?? '')
         )->get();
 
         $form->schools()->sync($schools);
@@ -248,7 +248,7 @@ class FormsController extends Controller
         $noPagination = $request->input('noPagination');
         $form->load('form_fields');
 
-        if ($noPagination == 1) {
+        if ($noPagination === 1) {
             [$dataTableColumns, $dataTable, $links] = $formDataTableService
                 ->useLinks()
                 ->create($form);
@@ -286,7 +286,7 @@ class FormsController extends Controller
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
-            exit('Failed to open temporary file');
+            throw new \Exception('Failed to open temporary file');
         }
 
         fputcsv($fd, $dataTableColumns, escape: '\\');
@@ -382,7 +382,7 @@ class FormsController extends Controller
         $fname = Storage::path($directory.Str::limit(Str::slug($form->title, '_'), 15).'-'.now()->timestamp.'-missing.csv');
         $fd = fopen($fname, 'w');
         if ($fd === false) {
-            exit('Failed to open temporary file');
+            throw new \Exception('Failed to open temporary file');
         }
 
         $data = $formMissingDataService->getMissingTable($form);

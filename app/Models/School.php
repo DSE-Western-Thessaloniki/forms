@@ -17,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 #[Fillable(['name', 'username', 'code', 'email', 'telephone',
     'password', 'active', 'updated_by', 'category_id'])]
 #[Hidden(['password', 'remember_token'])]
-class School extends Authenticatable
+final class School extends Authenticatable
 {
     /** @use HasFactory<SchoolFactory> */
     use HasFactory;

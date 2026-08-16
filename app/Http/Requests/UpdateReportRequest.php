@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\AcceptedFiletype;
@@ -13,7 +15,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\ValidationException;
 
-class UpdateReportRequest extends FormRequest
+final class UpdateReportRequest extends FormRequest
 {
     private ?Form $form;
 

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models\Policies;
 
-use App\Models\OtherTeacher;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class OtherTeacherPolicy
+final class OtherTeacherPolicy
 {
     use HandlesAuthorization;
 

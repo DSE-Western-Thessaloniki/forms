@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 
 #[Fillable('sort_id', 'required', 'options')]
-class FormField extends Model
+final class FormField extends Model
 {
     /** @use HasFactory<FormFieldFactory> */
     use HasFactory;
@@ -93,7 +93,7 @@ class FormField extends Model
             $field->title = $formfield[$key]['title'];
 
             // Αν βρεις προκαθορισμένη λίστα μετέτρεψέ την σε απλή λίστα επιλογών
-            if ($formfield[$key]['type'] == FormField::TYPE_LIST) {
+            if (intval($formfield[$key]['type']) === FormField::TYPE_LIST) {
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;
@@ -121,7 +121,7 @@ class FormField extends Model
             $field->sort_id = self::sanitizeSortId($formfield[$key]['sort_id'] ?? null, $defaultSort + 1);
             $field->title = $formfield[$key]['title'];
 
-            if ($formfield[$key]['type'] == FormField::TYPE_LIST) {
+            if (intval($formfield[$key]['type']) === FormField::TYPE_LIST) {
                 $selection_list = SelectionList::find($formfield[$key]['selection_list']);
 
                 $field->type = FormField::TYPE_SELECT;

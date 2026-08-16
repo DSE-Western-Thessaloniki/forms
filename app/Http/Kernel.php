@@ -31,7 +31,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Subfission\Cas\Middleware\CASAuth;
 use Subfission\Cas\Middleware\RedirectCASAuthenticated;
 
-class Kernel extends HttpKernel
+final class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.

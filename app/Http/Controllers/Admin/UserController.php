@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     /**
      * Create the controller instance.
@@ -46,32 +46,23 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, #[CurrentUser] User $user): RedirectResponse
+    public function store(StoreUserRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'username' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'password_reset' => ['nullable', 'integer'],
-        ]);
-
+        $userData = $request->validated();
+        $userData['password'] = Hash::make($userData['password']);
+        $userData['password_reset'] = (bool) $request->validated('password_reset', false);
         $user = new User([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'username' => $request->input('username'),
-            'password' => Hash::make($request->input('password')),
-            'password_reset' => $request->input('password_reset') ? 1 : 0,
-            'active' => 1,
+            'active' => true,
             'updated_by' => $user->id,
+            ...$userData,
         ]);
 
-        $user->save();
+        $user->saveOrFail();
 
         $userRole = Role::where('name', 'User')->first();
         $user->roles()->attach($userRole);
 
-        return to_route('admin.user.show', [$user])
+        return to_route('admin.user.show', ['user' => $user])
             ->with('status', 'Ο χρήστης αποθηκεύτηκε!');
     }
 
@@ -94,29 +85,22 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user, #[CurrentUser] User $currentUser): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
-            'username' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($user)],
-            'password_reset' => ['nullable', 'integer'],
-        ]);
-
-        $user->username = $request->input('username');
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password_reset = $request->input('password_reset') ? 1 : 0;
+        $user->username = $request->validated('username');
+        $user->name = $request->validated('name');
+        $user->email = $request->validated('email');
+        $user->password_reset = $request->validated('password_reset') ? 1 : 0;
 
         // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
-        if ($user->isAdministrator()) {
-            $user->active = $request->input('active') == 1 ? 1 : 0;
+        if ($currentUser->isAdministrator()) {
+            $user->active = (bool) $request->validated('active');
 
-            $roles = DB::table('roles')->get();
+            $roles = Role::all();
             $new_roles = [];
             foreach ($roles as $role) {
-                $check = $request->input($role->name);
-                if ($check == 1) {
+                $check = (bool) $request->validated($role->name, false);
+                if ($check) {
                     $new_roles[] = $role->id;
                 }
             }

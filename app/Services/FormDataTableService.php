@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Form;
@@ -8,7 +10,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
-class FormDataTableService
+final class FormDataTableService
 {
     private bool $withPagination = false;
 
@@ -139,7 +141,7 @@ class FormDataTableService
         foreach ($form->form_fields as $field) {
             $dataTableColumns[] = $field->title;
 
-            if ($field->type == FormField::TYPE_RADIO_BUTTON || $field->type == FormField::TYPE_SELECT) {
+            if ($field->type === FormField::TYPE_RADIO_BUTTON || $field->type === FormField::TYPE_SELECT) {
                 $selections = json_decode($field->listvalues);
                 if (! is_array($selections) && ! is_object($selections)) {
                     $selections = [];
@@ -148,14 +150,14 @@ class FormDataTableService
                 // Μετέτρεψε την επιλογή σε τιμή
                 $result = $result->map(function ($row) use ($selections, $field) {
                     foreach ($selections as $selection) {
-                        if ($selection->id == $row->{"$field->id"}) {
+                        if ($selection->id === intval($row->{"$field->id"})) {
                             $row->{"$field->id"} = $selection->value;
                         }
                     }
 
                     return $row;
                 });
-            } elseif ($field->type == FormField::TYPE_CHECKBOX) {
+            } elseif ($field->type === FormField::TYPE_CHECKBOX) {
                 $selections = json_decode($field->listvalues);
                 if (! is_array($selections) && ! is_object($selections)) {
                     $selections = [];
@@ -177,7 +179,7 @@ class FormDataTableService
                     $i = 0;
                     foreach ($data as $item) {
                         foreach ($selections as $selection) {
-                            if ($selection->id == $item) {
+                            if ($selection->id === $item) {
                                 if ($i === 0) {
                                     $row->{"$field->id"} = $selection->value;
                                 } else {
@@ -190,7 +192,7 @@ class FormDataTableService
 
                     return $row;
                 });
-            } elseif ($field->type == FormField::TYPE_FILE) {
+            } elseif ($field->type === FormField::TYPE_FILE) {
                 if ($this->withLinks) {
                     $result = $result->map(function ($row) use ($field, $form) {
                         $row->{"$field->id"} = [

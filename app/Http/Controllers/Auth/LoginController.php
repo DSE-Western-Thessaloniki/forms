@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginController extends Controller
+final class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +55,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if (!$user->active) {
+        if (! $user->active) {
             Auth::logout();
 
             return redirect()->route('admin.login')->withError('Ο λογαριασμός σας είναι απενεργοποιημένος.');
@@ -62,7 +65,7 @@ class LoginController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse|JsonResponse
      */
     public function logout(Request $request)
     {
@@ -80,5 +83,4 @@ class LoginController extends Controller
             ? new JsonResponse([], 204)
             : redirect()->route('admin.login');
     }
-
 }

@@ -19,7 +19,7 @@ class TeacherFactory extends Factory
      */
     public function definition(): array
     {
-        $gender = rand(0, 1) === 0 ? 'male' : 'female';
+        $gender = random_int(0, 1) === 0 ? 'male' : 'female';
 
         return [
             'name' => $this->faker->firstName($gender),

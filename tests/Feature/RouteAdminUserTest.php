@@ -413,6 +413,7 @@ it('can update it\'s own role as admin', function (): void {
     ]);
     $response->assertStatus(302);
     $response->assertSessionHas('status', 'Τα στοιχεία του χρήστη ενημερώθηκαν!');
+    $admin->refresh();
     $this->assertEquals($admin->roles()->where('name', 'Author')->count(), 1);
 });
 
