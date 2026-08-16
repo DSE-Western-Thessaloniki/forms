@@ -7,10 +7,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\School;
 use App\Models\SchoolCategory;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -61,7 +62,7 @@ class SchoolsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, #[CurrentUser] User $user): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -91,7 +92,7 @@ class SchoolsController extends Controller
             'telephone' => $request->input('telephone'),
             'code' => $request->input('code'),
             'active' => 1,
-            'updated_by' => Auth::user()->id,
+            'updated_by' => $user->id,
         ]);
 
         $school->save();
@@ -131,7 +132,7 @@ class SchoolsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, School $school): RedirectResponse
+    public function update(Request $request, School $school, #[CurrentUser] User $user): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -160,7 +161,7 @@ class SchoolsController extends Controller
         $school->telephone = $request->input('telephone');
         $school->code = $request->input('code');
         $school->active = (bool) $request->input('active');
-        $school->updated_by = Auth::user()->id;
+        $school->updated_by = $user->id;
 
         $school->categories()->sync($categories);
 
@@ -190,7 +191,7 @@ class SchoolsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function import(Request $request): RedirectResponse
+    public function import(Request $request, #[CurrentUser] User $user): RedirectResponse
     {
         DB::beginTransaction();
 
@@ -255,7 +256,7 @@ class SchoolsController extends Controller
                 $school->username = $row['username'];
                 $school->email = $row['email'];
                 $school->telephone = $row['telephone'];
-                $school->updated_by = Auth::user()->id;
+                $school->updated_by = $user->id;
                 $school->save();
             } else {
                 $school = new School;
@@ -265,7 +266,7 @@ class SchoolsController extends Controller
                 $school->email = $row['email'];
                 $school->telephone = $row['telephone'];
                 $school->active = true;
-                $school->updated_by = Auth::user()->id;
+                $school->updated_by = $user->id;
                 $school->save();
 
                 $category_name = $row['category'];

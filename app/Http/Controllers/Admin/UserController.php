@@ -7,10 +7,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -46,7 +46,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, #[CurrentUser] User $user): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -63,7 +63,7 @@ class UserController extends Controller
             'password' => Hash::make($request->input('password')),
             'password_reset' => $request->input('password_reset') ? 1 : 0,
             'active' => 1,
-            'updated_by' => Auth::user()->id,
+            'updated_by' => $user->id,
         ]);
 
         $user->save();
@@ -109,7 +109,7 @@ class UserController extends Controller
         $user->password_reset = $request->input('password_reset') ? 1 : 0;
 
         // Ενημέρωση ρόλων και κατάστασης λογαριασμού μόνο από τους διαχειριστές
-        if (Auth::user()->isAdministrator()) {
+        if ($user->isAdministrator()) {
             $user->active = $request->input('active') == 1 ? 1 : 0;
 
             $roles = DB::table('roles')->get();
@@ -140,14 +140,10 @@ class UserController extends Controller
 
     public function password(User $user): View
     {
-        // if (Auth::user()->isAdministrator() || Auth::user()->id == $user->id) {
         return view('admin.user.password')->with('user', $user);
-        // } else {
-        //     abort(403);
-        // }
     }
 
-    public function changePassword(Request $request, User $user): RedirectResponse
+    public function changePassword(Request $request, User $user, #[CurrentUser] User $currentUser): RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -157,7 +153,7 @@ class UserController extends Controller
         $user->password_reset = 0;
         $user->save();
 
-        if (Auth::user()->isAdministrator()) {
+        if ($currentUser->isAdministrator()) {
             return to_route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
         }
 

@@ -14,10 +14,12 @@ use App\Models\School;
 use App\Models\SchoolCategory;
 use App\Models\SelectionList;
 use App\Models\Teacher;
+use App\Models\User;
 use App\Services\FormDataTableService;
 use App\Services\FormMissingDataService;
 use App\Services\FormService;
 use DateTime;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -267,13 +269,13 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataCSV(Form $form, FormDataTableService $formDataTableService): BinaryFileResponse
+    public function formDataCSV(Form $form, FormDataTableService $formDataTableService, #[CurrentUser] User $user): BinaryFileResponse
     {
         $form->load('form_fields');
 
         [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
-        $directory = '/tmp/'.auth()->user()->id.'/';
+        $directory = '/tmp/'.$user->id.'/';
         Storage::makeDirectory($directory);
 
         // Κάνε εκκαθάριση παλιών αρχείων
@@ -301,13 +303,13 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function formDataXLSX(Form $form, FormDataTableService $formDataTableService): BinaryFileResponse
+    public function formDataXLSX(Form $form, FormDataTableService $formDataTableService, #[CurrentUser] User $user): BinaryFileResponse
     {
         $form->load('form_fields');
 
         [$dataTableColumns, $dataTable] = $formDataTableService->create($form);
 
-        $directory = '/tmp/'.auth()->user()->id.'/';
+        $directory = '/tmp/'.$user->id.'/';
         Storage::makeDirectory($directory);
 
         // Κάνε εκκαθάριση παλιών αρχείων
@@ -367,9 +369,9 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingCSV(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
+    public function missingCSV(Form $form, FormMissingDataService $formMissingDataService, #[CurrentUser] User $user): BinaryFileResponse
     {
-        $directory = '/tmp/'.auth()->user()->id.'/';
+        $directory = '/tmp/'.$user->id.'/';
         Storage::makeDirectory($directory);
 
         // Κάνε εκκαθάριση παλιών αρχείων
@@ -396,9 +398,9 @@ class FormsController extends Controller
     /**
      * Λήψη δεδομένων φόρμας.
      */
-    public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService): BinaryFileResponse
+    public function missingXLSX(Form $form, FormMissingDataService $formMissingDataService, #[CurrentUser] User $user): BinaryFileResponse
     {
-        $directory = '/tmp/'.auth()->user()->id.'/';
+        $directory = '/tmp/'.$user->id.'/';
         Storage::makeDirectory($directory);
 
         // Κάνε εκκαθάριση παλιών αρχείων
@@ -496,7 +498,7 @@ class FormsController extends Controller
         return redirect(route('admin.form.index'))->with('error', 'Το αρχείο δεν βρέθηκε');
     }
 
-    public function downloadAllFiles(Form $form): RedirectResponse|StreamedResponse
+    public function downloadAllFiles(Form $form, #[CurrentUser] User $user): RedirectResponse|StreamedResponse
     {
         $fields = $form->form_fields->where('type', FormField::TYPE_FILE);
 
@@ -504,7 +506,7 @@ class FormsController extends Controller
             abort(404);
         }
 
-        $zip_path = '/tmp/'.auth()->user()->id.'/';
+        $zip_path = '/tmp/'.$user->id.'/';
         Storage::makeDirectory($zip_path);
 
         // Κάνε εκκαθάριση παλιών αρχείων

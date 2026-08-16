@@ -8,10 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSelectionListRequest;
 use App\Http\Requests\UpdateSelectionListRequest;
 use App\Models\SelectionList;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class SelectionListsController extends Controller
@@ -59,7 +60,7 @@ class SelectionListsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSelectionListRequest $request): RedirectResponse
+    public function store(StoreSelectionListRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
         $validatedData = $request->validated();
         $selectionListData = [];
@@ -75,7 +76,7 @@ class SelectionListsController extends Controller
         $selectionList->name = $validatedData['name'];
         $selectionList->data = json_encode($selectionListData);
         $selectionList->active = true;
-        $selectionList->created_by = $request->user()->id;
+        $selectionList->created_by = $user->id;
         $selectionList->save();
 
         return to_route('admin.list.index')->with('status', 'Η λίστα αποθηκεύτηκε!');
@@ -92,7 +93,7 @@ class SelectionListsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSelectionListRequest $request, SelectionList $selectionList): RedirectResponse
+    public function update(UpdateSelectionListRequest $request, SelectionList $selectionList, #[CurrentUser] User $user): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('selection_lists')->ignore($selectionList->id)],
@@ -116,7 +117,7 @@ class SelectionListsController extends Controller
             'name' => $validatedData['name'],
             'data' => json_encode($selectionListData),
             'active' => $validatedData['active'] ?? false,
-            'updated_by' => $request->user()->id,
+            'updated_by' => $user->id,
         ]);
 
         return to_route('admin.list.index')->with('status', 'Η λίστα ενημερώθηκε επιτυχώς!');
@@ -137,7 +138,7 @@ class SelectionListsController extends Controller
         return view('admin.list.import');
     }
 
-    public function import(Request $request): RedirectResponse
+    public function import(Request $request, #[CurrentUser] User $user): RedirectResponse
     {
         $request->validate([
             'csvfile' => 'required|file|mimes:csv,txt',
@@ -174,7 +175,7 @@ class SelectionListsController extends Controller
         $selectionList->name = $name;
         $selectionList->active = true;
         $selectionList->data = json_encode($listData);
-        $selectionList->created_by = $request->user()->id;
+        $selectionList->created_by = $user->id;
         $selectionList->save();
 
         return to_route('admin.list.index')->with('status', 'Έγινε εισαγωγή νέας λίστας');
@@ -186,12 +187,12 @@ class SelectionListsController extends Controller
             ->with('list', $selectionList);
     }
 
-    public function copyList(SelectionList $selectionList): RedirectResponse
+    public function copyList(SelectionList $selectionList, #[CurrentUser] User $user): RedirectResponse
     {
         // Δημιουργία αντιγράφου
         $selectionListClone = $selectionList->replicate();
         $selectionListClone->name = $selectionList->name.' (Αντίγραφο)';
-        $selectionListClone->created_by = Auth::user()->id;
+        $selectionListClone->created_by = $user->id;
         $selectionListClone->save();
 
         return to_route('admin.list.index')->with('status', 'Το αντίγραφο της λίστας δημιουργήθηκε');
