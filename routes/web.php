@@ -1,7 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AcceptedFiletypeController;
+use App\Http\Controllers\Admin\FormCopyController;
+use App\Http\Controllers\Admin\FormDataController;
+use App\Http\Controllers\Admin\FormDataMissingController;
+use App\Http\Controllers\Admin\FormFileDownloadController;
+use App\Http\Controllers\Admin\FormFilesDownloadController;
 use App\Http\Controllers\Admin\FormsController;
+use App\Http\Controllers\Admin\FormToggleActiveController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\OtherTeacherController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
@@ -13,6 +19,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SetupController;
+use App\Models\Form;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -40,34 +48,37 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(
         function (): void {
-            Route::get('/form/{form}/missing/csv', [FormsController::class, 'missingCSV'])
+            Route::get('/form/{form}/missing/csv', FormDataMissingController::class)
                 ->name('form.missing.csv')
-                ->middleware('auth');
-            Route::get('/form/{form}/missing/xlsx', [FormsController::class, 'missingXLSX'])
+                ->middleware('auth')
+                ->defaults('format', 'csv');
+            Route::get('/form/{form}/missing/xlsx', FormDataMissingController::class)
                 ->name('form.missing.xlsx')
-                ->middleware('auth');
-            Route::get('/form/{form}/missing', [FormsController::class, 'missing'])
+                ->middleware('auth')
+                ->defaults('format', 'xlsx');
+            Route::get('/form/{form}/missing', FormDataMissingController::class)
                 ->name('form.missing')
                 ->middleware('auth');
-            Route::get('/form/{form}/data/csv', [FormsController::class, 'formDataCSV'])
+            Route::get('/form/{form}/data/csv', FormDataController::class)
                 ->name('form.data.csv')
-                ->middleware('auth');
-            Route::get('/form/{form}/data/xlsx', [FormsController::class, 'formDataXLSX'])
+                ->middleware('auth')
+                ->defaults('format', 'csv');
+            Route::get('/form/{form}/data/xlsx', FormDataController::class)
                 ->name('form.data.xlsx')
-                ->middleware('auth');
-            Route::get('/form/{form}/data', [FormsController::class, 'formData'])
+                ->middleware('auth')
+                ->defaults('format', 'xlsx');
+            Route::get('/form/{form}/data', FormDataController::class)
                 ->name('form.data')
                 ->middleware('auth');
-            Route::get('/form/{form}/copy', [FormsController::class, 'copyForm'])
+            Route::get('/form/{form}/copy', FormCopyController::class)
                 ->name('form.copy')
                 ->middleware('auth', 'can:create,form');
-            Route::get('/form/{form}/confirmDelete', [FormsController::class, 'confirmDelete'])
+            Route::get('/form/{form}/confirmDelete', function (Form $form): View {
+                return view('admin.form.confirm_delete')->with('form', $form);
+            })
                 ->name('form.confirmDelete')
                 ->middleware('auth');
-            Route::get('/form/{form}/active/set/{state}', [FormsController::class, 'setActive'])
-                ->name('form.active.set')
-                ->middleware('auth', 'can:update,form');
-            Route::get('/form/{form}/active/toggle', [FormsController::class, 'toggleActive'])
+            Route::get('/form/{form}/active/toggle', FormToggleActiveController::class)
                 ->name('form.active.toggle')
                 ->middleware('auth', 'can:update,form');
             Route::resource('form', FormsController::class)
@@ -168,10 +179,10 @@ Route::prefix('admin')
                 ->except('show')
                 ->names('list')
                 ->middleware('auth');
-            Route::get('/download/{form}/{category}/{categoryId}/{record}/{fieldId}', [FormsController::class, 'downloadFile'])
+            Route::get('/download/{form}/{category}/{categoryId}/{record}/{fieldId}', FormFileDownloadController::class)
                 ->name('report.download')
                 ->middleware('auth');
-            Route::get('/download_all/{form}', [FormsController::class, 'downloadAllFiles'])
+            Route::get('/download_all/{form}', FormFilesDownloadController::class)
                 ->name('report.downloadAllFiles')
                 ->middleware('auth');
             Route::resource('accepted_filetype', AcceptedFiletypeController::class)
