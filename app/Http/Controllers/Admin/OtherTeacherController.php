@@ -21,12 +21,12 @@ final class OtherTeacherController extends Controller
      */
     public function index(Request $request): View
     {
-        if ($request->exists('teacher_filter')) {
-            $filter = $request->input('teacher_filter');
+        if ($request->exists('other_teacher_filter')) {
+            $filter = $request->input('other_teacher_filter');
         } else {
-            $filter = $request->session()->get('teacher_filter', '');
+            $filter = $request->session()->get('other_teacher_filter', '');
         }
-        $request->session()->put('teacher_filter', $filter);
+        $request->session()->put('other_teacher_filter', $filter);
 
         if ($filter) {
             $otherTeachers = OtherTeacher::query()
