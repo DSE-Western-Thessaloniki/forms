@@ -25,8 +25,9 @@ final class EnsureCasAccountHasAccess
         $school_model = null;
         $teacher_model = null;
         $other_teacher_model = null;
+        $cas_model_category = '';
 
-        session()->forget(['school', 'teacher', 'other_teacher']);
+        session()->forget(['school', 'teacher', 'other_teacher', 'cas_model_category']);
 
         $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
@@ -64,8 +65,12 @@ final class EnsureCasAccountHasAccess
                     $other_teacher->save();
                 }
 
+                $cas_model_category = 'other_teacher';
+
                 $other_teacher_model = $other_teacher;
             } else {
+                $cas_model_category = 'teacher';
+
                 $teacher_model = $teacher;
             }
         } else {
@@ -79,6 +84,8 @@ final class EnsureCasAccountHasAccess
                 return response()->view('pages.deny_access');
             }
 
+            $cas_model_category = 'school';
+
             $school_model = $school;
         }
 
@@ -86,6 +93,7 @@ final class EnsureCasAccountHasAccess
             'school' => $school_model,
             'teacher' => $teacher_model,
             'other_teacher' => $other_teacher_model,
+            'cas_model_category' => $cas_model_category,
         ]);
 
         return $next($request);
