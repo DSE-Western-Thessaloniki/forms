@@ -155,7 +155,7 @@ const clearValidationStatus = (id: number) => {
 
 formStore.fieldOptions = props.form.form_fields
     .map((field) => {
-        const fieldOptions = JSON.parse(field.options);
+        const fieldOptions = field.options;
         return {
             [`${field.id}`]: useOptions(fieldOptions, true),
         };
