@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, computed, nextTick, ref } from "vue";
+import { type Ref, computed, nextTick, ref } from "vue";
 import SelectionListDataItem from "./SelectionListDataItem.vue";
 
 const props = withDefaults(
@@ -12,7 +12,7 @@ const props = withDefaults(
         data: "[]",
         readonly: false,
         update: false,
-    }
+    },
 );
 
 type SelectionListRow = {
@@ -37,7 +37,7 @@ if (selectionListData.value.length === 0) {
 }
 
 let lastIndex = computed(() =>
-    Math.max(0, ...selectionListData.value.map((item) => item.id))
+    Math.max(0, ...selectionListData.value.map((item) => item.id)),
 );
 
 const addRow = () => {
@@ -51,7 +51,7 @@ const addRow = () => {
 const delRow = (id: number) => {
     if (selectionListData.value.length > 1) {
         selectionListData.value = selectionListData.value.filter(
-            (item) => item.id !== id
+            (item) => item.id !== id,
         );
     }
 };
