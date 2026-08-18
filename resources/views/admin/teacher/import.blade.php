@@ -52,6 +52,7 @@
                                 <div class="col-12">
                                     <form enctype="multipart/form-data" action={{ route('admin.teacher.import') }}
                                         method='post'>
+                                        <input type="hidden" name="_method" value="put" />
 
                                         <div class="form-group row mb-3">
                                             <label for="csvfile" class="col-md-auto col-form-label text-md-right">Αρχείο
