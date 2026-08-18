@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class TeacherPolicy
+final class OtherTeacherPolicy
 {
     use HandlesAuthorization;
 

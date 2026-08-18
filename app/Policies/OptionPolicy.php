@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
-use App\Models\Form;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class FormPolicy
+final class OptionPolicy
 {
     use HandlesAuthorization;
 
@@ -22,7 +21,7 @@ final class FormPolicy
      */
     public function viewAny(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -30,30 +29,46 @@ final class FormPolicy
      */
     public function view(): bool
     {
-        return true;
+        return false;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(): bool
     {
-        return $user->roles()->where('name', 'Author')->exists();
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Form $form): bool
+    public function update(): bool
     {
-        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Form $form): bool
+    public function delete(): bool
     {
-        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(): bool
+    {
+        return false;
     }
 }

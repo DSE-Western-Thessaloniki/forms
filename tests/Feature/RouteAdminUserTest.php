@@ -308,7 +308,7 @@ it('can change a user\'s password as admin', function (): void {
     $admin = User::factory()->admin()->create();
     $user = User::factory()->user()->create();
 
-    $response = $this->actingAs($admin)->post('/admin/user/'.$user->id.'/password', [
+    $response = $this->actingAs($admin)->put('/admin/user/'.$user->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -320,7 +320,7 @@ it('cannot change a user\'s password as user', function (): void {
     $user = User::factory()->user()->create();
     $user2 = User::factory()->user()->create();
 
-    $response = $this->actingAs($user2)->post('/admin/user/'.$user->id.'/password', [
+    $response = $this->actingAs($user2)->put('/admin/user/'.$user->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -331,7 +331,7 @@ it('cannot change a user\'s password as author', function (): void {
     $user = User::factory()->user()->create();
     $author = User::factory()->author()->create();
 
-    $response = $this->actingAs($author)->post('/admin/user/'.$user->id.'/password', [
+    $response = $this->actingAs($author)->put('/admin/user/'.$user->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -341,7 +341,7 @@ it('cannot change a user\'s password as author', function (): void {
 it('can change it\'s own password as user', function (): void {
     $user = User::factory()->user()->create();
 
-    $response = $this->actingAs($user)->post('/admin/user/'.$user->id.'/password', [
+    $response = $this->actingAs($user)->put('/admin/user/'.$user->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -352,7 +352,7 @@ it('can change it\'s own password as user', function (): void {
 it('can change it\'s own password as author', function (): void {
     $author = User::factory()->author()->create();
 
-    $response = $this->actingAs($author)->post('/admin/user/'.$author->id.'/password', [
+    $response = $this->actingAs($author)->put('/admin/user/'.$author->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -363,7 +363,7 @@ it('can change it\'s own password as author', function (): void {
 it('can change it\'s own password as admin', function (): void {
     $admin = User::factory()->admin()->create();
 
-    $response = $this->actingAs($admin)->post('/admin/user/'.$admin->id.'/password', [
+    $response = $this->actingAs($admin)->put('/admin/user/'.$admin->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);
@@ -453,7 +453,7 @@ it('redirects user to password reset if set', function (): void {
     $response = $this->actingAs($user)->get(route('admin.index'));
     $response->assertStatus(302)->assertRedirect(route('admin.user.change_password', $user));
 
-    $response = $this->actingAs($user)->post('/admin/user/'.$user->id.'/password', [
+    $response = $this->actingAs($user)->put('/admin/user/'.$user->id.'/password', [
         'password' => 'test_password',
         'password_confirmation' => 'test_password',
     ]);

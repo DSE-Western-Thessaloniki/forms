@@ -214,21 +214,21 @@ it('cannot import teachers as user', function (): void {
     $user = User::factory()->user()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
-    $this->actingAs($user)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
+    $this->actingAs($user)->put('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
 });
 
 it('cannot import teachers as author', function (): void {
     $author = User::factory()->author()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
-    $this->actingAs($author)->post('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
+    $this->actingAs($author)->put('/admin/teacher/import', ['csvfile' => $file])->assertForbidden();
 });
 
 it('can import teachers as admin (semicolon as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;101;102\n");
 
-    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $response = $this->actingAs($admin)->put('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     $response->assertSessionHas('success', 'Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
@@ -236,7 +236,7 @@ it('can import teachers as admin (comma as delimiter)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
 
-    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $response = $this->actingAs($admin)->put('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     $response->assertSessionHas('success', 'Έγινε εισαγωγή 2 εκπαιδευτικών');
 });
 
@@ -244,7 +244,7 @@ it('cannot import teachers as admin (wrong format of file)', function (): void {
     $admin = User::factory()->admin()->create();
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101\n");
 
-    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $response = $this->actingAs($admin)->put('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     $response->assertSessionHas('error', 'Λανθασμένη μορφή αρχείου');
 });
 
@@ -258,7 +258,7 @@ it('cannot import teachers as admin (wrong am/afm combination)', function (): vo
     ]);
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe,Joe,100,101\nDoe,Jane,101,102\n");
 
-    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $response = $this->actingAs($admin)->put('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     $response->assertSessionHas('error', 'Ασυμφωνία ΑΜ/ΑΦΜ με τη βάση για τον εκπαιδευτικό του πίνακα Doe Joe ΑΜ: 100 ΑΦΜ: 101');
 });
 
@@ -267,7 +267,7 @@ it('can import teachers as admin and mark old teacher data as inactive', functio
     $teachers = Teacher::factory()->createMany(2);
     $file = UploadedFile::fake()->createWithContent('test.csv', "Doe;Joe;100;101\nDoe;Jane;{$teachers[0]->am};{$teachers[0]->afm}\n");
 
-    $response = $this->actingAs($admin)->post('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
+    $response = $this->actingAs($admin)->put('/admin/teacher/import', ['csvfile' => $file])->assertRedirect('/admin/teacher');
     $this->assertDatabaseCount('teachers', 3);
     $this->assertDatabaseHas('teachers', ['id' => $teachers[0]->id, 'surname' => 'Doe', 'name' => 'Jane', 'active' => 1]);
     $this->assertDatabaseHas('teachers', ['id' => $teachers[1]->id, 'active' => 0]);

@@ -374,7 +374,7 @@ it('cannot import a list as user', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         "Test List\ntestUser\n9999999");
 
-    $response = $this->actingAs($user)->post('/admin/selection_list/import', [
+    $response = $this->actingAs($user)->put('/admin/selection_list/import', [
         'csvfile' => $file,
     ]);
     $response->assertForbidden();
@@ -388,7 +388,7 @@ it('can import a list as author', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         "Test List\ntestUser\n9999999");
 
-    $response = $this->actingAs($author)->post('/admin/selection_list/import', [
+    $response = $this->actingAs($author)->put('/admin/selection_list/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect('/admin/selection_list');
@@ -408,7 +408,7 @@ it('can import a list as admin (with ; as delimiter)', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         "\"Test List\";\"indiff\"\n\"testUser\";\"indiff\"\n\"9999999\";\"indiff\"");
 
-    $response = $this->actingAs($admin)->post('/admin/selection_list/import', [
+    $response = $this->actingAs($admin)->put('/admin/selection_list/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.list.index'));

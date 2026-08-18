@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class AcceptedFiletypePolicy
+final class UserPolicy
 {
-    public function before(User $user): ?true
+    use HandlesAuthorization;
+
+    public function before(User $current_user): ?true
     {
-        return $user->isAdministrator() ? true : null;
+        return $current_user->isAdministrator() ? true : null;
     }
 
     /**
@@ -23,10 +26,12 @@ final class AcceptedFiletypePolicy
 
     /**
      * Determine whether the user can view the model.
+     *
+     * @return mixed
      */
-    public function view(): bool
+    public function view(User $current_user, User $user)
     {
-        return false;
+        return $current_user->is($user);
     }
 
     /**
@@ -39,32 +44,18 @@ final class AcceptedFiletypePolicy
 
     /**
      * Determine whether the user can update the model.
+     *
+     * @return mixed
      */
-    public function update(): bool
+    public function update(User $current_user, User $user)
     {
-        return false;
+        return $current_user->is($user);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
     public function delete(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(): bool
     {
         return false;
     }

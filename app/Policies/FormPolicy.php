@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
+use App\Models\Form;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class SchoolPolicy
+final class FormPolicy
 {
     use HandlesAuthorization;
 
@@ -21,7 +22,7 @@ final class SchoolPolicy
      */
     public function viewAny(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,30 +30,30 @@ final class SchoolPolicy
      */
     public function view(): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(): bool
+    public function create(User $user): bool
     {
-        return false;
+        return $user->roles()->where('name', 'Author')->exists();
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(): bool
+    public function update(User $user, Form $form): bool
     {
-        return false;
+        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(): bool
+    public function delete(User $user, Form $form): bool
     {
-        return false;
+        return $user->roles()->where('name', 'Author')->exists() && $form->user->id === $user->id;
     }
 }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class OtherTeacherPolicy
+final class SchoolPolicy
 {
     use HandlesAuthorization;
 
@@ -52,22 +52,6 @@ final class OtherTeacherPolicy
      * Determine whether the user can delete the model.
      */
     public function delete(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(): bool
     {
         return false;
     }

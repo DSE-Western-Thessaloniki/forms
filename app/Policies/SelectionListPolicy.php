@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\SelectionList;
 use App\Models\User;

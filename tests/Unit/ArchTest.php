@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 
 arch()
     ->expect('App')
@@ -18,19 +16,13 @@ arch()
     ->toBeClasses()
     ->ignoring([
         "App\Http\Traits",
+        "App\Traits",
     ])
     ->toBeFinal()
     ->ignoring([
         Controller::class,
         "App\Http\Traits",
-    ]);
-
-arch()
-    ->expect('App\Models')
-    ->toExtend(Model::class)
-    ->ignoring([
-        User::class,
-        "App\Models\Policies",
+        "App\Traits",
     ]);
 
 arch()

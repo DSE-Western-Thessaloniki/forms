@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class UserPolicy
+final class SchoolCategoryPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $current_user): ?true
+    public function before(User $user): ?true
     {
-        return $current_user->isAdministrator() ? true : null;
+        return $user->isAdministrator() ? true : null;
     }
 
     /**
@@ -26,12 +26,10 @@ final class UserPolicy
 
     /**
      * Determine whether the user can view the model.
-     *
-     * @return mixed
      */
-    public function view(User $current_user, User $user)
+    public function view(): bool
     {
-        return $current_user->is($user);
+        return false;
     }
 
     /**
@@ -44,12 +42,10 @@ final class UserPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @return mixed
      */
-    public function update(User $current_user, User $user)
+    public function update(): bool
     {
-        return $current_user->is($user);
+        return false;
     }
 
     /**

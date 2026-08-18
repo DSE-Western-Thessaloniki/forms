@@ -11,16 +11,27 @@ use App\Http\Controllers\Admin\FormToggleActiveController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\OtherTeacherController;
 use App\Http\Controllers\Admin\SchoolCategoriesController;
-use App\Http\Controllers\Admin\SchoolsController;
-use App\Http\Controllers\Admin\SelectionListsController;
+use App\Http\Controllers\Admin\SchoolController;
+use App\Http\Controllers\Admin\SchoolImportController;
+use App\Http\Controllers\Admin\SelectionListController;
+use App\Http\Controllers\Admin\SelectionListCopyController;
+use App\Http\Controllers\Admin\SelectionListImportController;
 use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\TeacherImportController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ReportFileDownloadController;
+use App\Http\Controllers\ReportRecordController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Middleware\EnsureCasAccountHasAccess;
 use App\Models\Form;
+use App\Models\School;
+use App\Models\SelectionList;
+use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +105,10 @@ Route::prefix('admin')
                 ->middleware(['auth', 'can:delete,user'])
                 ->group(
                     function (): void {
-                        Route::get('/{user}/confirmDelete', [UserController::class, 'confirmDelete'])->name('confirmDelete');
+                        Route::get(
+                            '/{user}/confirmDelete',
+                            fn (User $user) => view('admin.user.confirm_delete')->with('user', $user)
+                        )->name('confirmDelete');
                     }
                 );
             Route::prefix('user')
@@ -102,8 +116,8 @@ Route::prefix('admin')
                 ->middleware(['auth', 'can:update,user'])
                 ->group(
                     function (): void {
-                        Route::get('/{user}/password', [UserController::class, 'password'])->name('password');
-                        Route::post('/{user}/password', [UserController::class, 'changePassword'])->name('change_password');
+                        Route::get('/{user}/password', [UserPasswordController::class, 'edit'])->name('password');
+                        Route::put('/{user}/password', [UserPasswordController::class, 'update'])->name('change_password');
                     }
                 );
             Route::resource('user', UserController::class)
@@ -113,7 +127,10 @@ Route::prefix('admin')
                 ->middleware(['auth', 'can:delete,school'])
                 ->group(
                     function (): void {
-                        Route::get('/{school}/confirmDelete', [SchoolsController::class, 'confirmDelete'])->name('confirmDelete');
+                        Route::get(
+                            '/{school}/confirmDelete',
+                            fn (School $school) => view('admin.school.confirm_delete')->with('school', $school)
+                        )->name('confirmDelete');
                     }
                 );
             Route::prefix('school')
@@ -121,8 +138,8 @@ Route::prefix('admin')
                 ->name('school.')
                 ->group(
                     function (): void {
-                        Route::get('/import', [SchoolsController::class, 'showImport'])->name('show_import');
-                        Route::post('/import', [SchoolsController::class, 'import'])->name('import');
+                        Route::get('/import', [SchoolImportController::class, 'edit'])->name('show_import');
+                        Route::put('/import', [SchoolImportController::class, 'update'])->name('import');
                     }
                 );
             Route::prefix('school')
@@ -133,19 +150,21 @@ Route::prefix('admin')
                             ->middleware('auth');
                     }
                 );
-            Route::resource('school', SchoolsController::class)
+            Route::resource('school', SchoolController::class)
                 ->middleware('auth');
 
             Route::prefix('teacher')
                 ->name('teacher.')
                 ->middleware(['auth', 'can:create,App\Models\Teacher'])
                 ->group(function (): void {
-                    Route::get('/import', [TeacherController::class, 'showImport'])
+                    Route::get('/import', [TeacherImportController::class, 'edit'])
                         ->name('show_import');
-                    Route::post('/import', [TeacherController::class, 'import'])
+                    Route::put('/import', [TeacherImportController::class, 'update'])
                         ->name('import');
-                    Route::get('/{teacher}/confirmDelete', [TeacherController::class, 'confirmDelete'])
-                        ->name('confirmDelete');
+                    Route::get(
+                        '/{teacher}/confirmDelete',
+                        fn (Teacher $teacher) => view('admin.teacher.confirm_delete')->with('teacher', $teacher)
+                    )->name('confirmDelete');
                 });
 
             Route::resource('teacher', TeacherController::class)
@@ -170,13 +189,16 @@ Route::prefix('admin')
                 ->middleware(['auth', 'can:create,App\Models\SelectionList'])
                 ->group(
                     function (): void {
-                        Route::get('/import', [SelectionListsController::class, 'showImport'])->name('show_import');
-                        Route::post('/import', [SelectionListsController::class, 'import'])->name('import');
-                        Route::get('/{selection_list}/confirmDelete', [SelectionListsController::class, 'confirmDelete'])->name('confirmDelete');
-                        Route::post('/{selection_list}/copy', [SelectionListsController::class, 'copyList'])->name('copy');
+                        Route::get('/import', [SelectionListImportController::class, 'edit'])->name('show_import');
+                        Route::put('/import', [SelectionListImportController::class, 'update'])->name('import');
+                        Route::get(
+                            '/{selection_list}/confirmDelete',
+                            fn (SelectionList $selectionList) => view('admin.list.confirm_delete')->with('list', $selectionList)
+                        )->name('confirmDelete');
+                        Route::post('/{selection_list}/copy', SelectionListCopyController::class)->name('copy');
                     }
                 );
-            Route::resource('selection_list', SelectionListsController::class)
+            Route::resource('selection_list', SelectionListController::class)
                 ->except('show')
                 ->names('list')
                 ->middleware('auth');
@@ -201,11 +223,11 @@ Route::get('/logout', function (): void {
 
 Route::middleware(['cas.auth', EnsureCasAccountHasAccess::class])
     ->group(function (): void {
-        Route::delete('/report/{report}/record/{record}', [ReportsController::class, 'destroyRecord'])->name('report.record.destroy');
-        Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');
-        Route::get('/report/{report}/edit/{record}', [ReportsController::class, 'editRecord'])->name('report.edit.record');
-        Route::get('/report/{report}/record/{record}', [ReportsController::class, 'showRecord'])->name('report.show.record');
-        Route::get('/download/{report}/{fieldId}/{record}', [ReportsController::class, 'downloadFile'])->name('report.download');
+        Route::delete('/report/{report}/record/{record}', [ReportRecordController::class, 'destroy'])->name('report.record.destroy');
+        Route::put('/report/{report}/edit/{record}/update/{next}', [ReportRecordController::class, 'update'])->name('report.edit.record.update');
+        Route::get('/report/{report}/edit/{record}', [ReportRecordController::class, 'edit'])->name('report.edit.record');
+        Route::get('/report/{report}/record/{record}', [ReportRecordController::class, 'show'])->name('report.show.record');
+        Route::get('/download/{report}/{fieldId}/{record}', ReportFileDownloadController::class)->name('report.download');
         Route::resource('report', ReportsController::class)
             ->missing(fn (Request $request) => Redirect::route('report.index'));
     });

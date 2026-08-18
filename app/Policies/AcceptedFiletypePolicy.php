@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Policies;
+namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class OptionPolicy
+final class AcceptedFiletypePolicy
 {
-    use HandlesAuthorization;
-
     public function before(User $user): ?true
     {
         return $user->isAdministrator() ? true : null;

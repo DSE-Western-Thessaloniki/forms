@@ -336,7 +336,7 @@ it('cannot import a school as user', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
 
-    $response = $this->actingAs($user)->post('/admin/school/import', [
+    $response = $this->actingAs($user)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertForbidden();
@@ -351,7 +351,7 @@ it('cannot import a school as author', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
 
-    $response = $this->actingAs($author)->post('/admin/school/import', [
+    $response = $this->actingAs($author)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertForbidden();
@@ -366,7 +366,7 @@ it('can import a school as admin', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         'Test School2,testUser,9999999,test@example.com,123-456-7890,testCategory');
 
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
@@ -393,7 +393,7 @@ it('can import a school as admin (with ; as delimiter)', function (): void {
     $file = UploadedFile::fake()->createWithContent('import_test.csv',
         'Test School2;testUser;9999999;test@example.com;123-456-7890;testCategory');
 
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
@@ -422,7 +422,7 @@ it('can import multiple schools as admin', function (): void {
 Test School2,testUser2,9999991,test2@example.com,123-456-7891,testCategory
 Test School3,testUser3,9999992,test3@example.com,123-456-7892,testCategory2');
 
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
@@ -465,7 +465,7 @@ it('cannot import multiple schools as admin (bad file)', function (): void {
 Test School2;testUser2;9999991;test2@example.com;123-456-7891
 Test School3;testUser3;9999992;test3@example.com;123-456-7892;testCategory2');
 
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));
@@ -497,7 +497,7 @@ it('can import multiple schools as admin (update already existing schools)', fun
 Test School2,testUser2,9999991,test2@example.com,123-456-7891,none
 Test School3,testUser3,9999992,test3@example.com,123-456-7892,none');
 
-    $response = $this->actingAs($admin)->post('/admin/school/import', [
+    $response = $this->actingAs($admin)->put('/admin/school/import', [
         'csvfile' => $file,
     ]);
     $response->assertRedirect(route('admin.school.index'));

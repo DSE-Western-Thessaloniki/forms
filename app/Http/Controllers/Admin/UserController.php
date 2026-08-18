@@ -12,7 +12,6 @@ use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 final class UserController extends Controller
@@ -120,32 +119,5 @@ final class UserController extends Controller
         $user->delete();
 
         return to_route('admin.user.index')->with('status', 'Ο χρήστης διαγράφηκε!');
-    }
-
-    public function password(User $user): View
-    {
-        return view('admin.user.password')->with('user', $user);
-    }
-
-    public function changePassword(Request $request, User $user, #[CurrentUser] User $currentUser): RedirectResponse
-    {
-        $request->validate([
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user->password = Hash::make($request->input('password'));
-        $user->password_reset = 0;
-        $user->save();
-
-        if ($currentUser->isAdministrator()) {
-            return to_route('admin.user.index')->with('status', 'Ο κωδικός άλλαξε!');
-        }
-
-        return to_route('admin.index')->with('status', 'Ο κωδικός άλλαξε!');
-    }
-
-    public function confirmDelete(User $user): View
-    {
-        return view('admin.user.confirm_delete')->with('user', $user);
     }
 }
