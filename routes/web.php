@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SetupController;
+use App\Http\Middleware\EnsureCasAccountHasAccess;
 use App\Models\Form;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -38,8 +39,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [PagesController::class, 'index'])->name('index');
-Route::get('/setup', [SetupController::class, 'setupPage']);
-Route::post('/setup', [SetupController::class, 'saveSetup'])->name('setup');
+Route::get('/setup', [SetupController::class, 'index']);
+Route::post('/setup', [SetupController::class, 'store'])->name('setup');
 Route::get('/admin', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('admin.index');
@@ -198,7 +199,7 @@ Route::get('/logout', function (): void {
     cas()->logout();
 })->middleware('cas.auth')->name('logout');
 
-Route::middleware('cas.auth')
+Route::middleware(['cas.auth', EnsureCasAccountHasAccess::class])
     ->group(function (): void {
         Route::delete('/report/{report}/record/{record}', [ReportsController::class, 'destroyRecord'])->name('report.record.destroy');
         Route::put('/report/{report}/edit/{record}/update/{next}', [ReportsController::class, 'updateRecord'])->name('report.edit.record.update');

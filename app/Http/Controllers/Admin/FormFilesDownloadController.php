@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\UsesFileFiltering;
 use App\Models\Form;
 use App\Models\FormField;
 use App\Models\User;
@@ -22,6 +23,8 @@ use ZipArchive;
  */
 final class FormFilesDownloadController extends Controller
 {
+    use UsesFileFiltering;
+
     /**
      * Handle the incoming request.
      */

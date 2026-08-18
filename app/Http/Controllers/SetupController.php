@@ -46,7 +46,7 @@ final class SetupController extends Controller
     /**
      * Create a new user instance after a valid registration.
      */
-    protected function saveSetup(SetupRequest $request): RedirectResponse
+    protected function store(SetupRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
@@ -74,7 +74,7 @@ final class SetupController extends Controller
     /**
      * Setup page
      */
-    public function setupPage(): View
+    public function index(): View
     {
         return view('pages.setup');
     }

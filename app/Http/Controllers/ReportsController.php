@@ -37,23 +37,11 @@ final class ReportsController extends Controller
     /**
      * Create a new controller instance.
      */
-    private function school_or_teacher_has_access(Form $form): View|RedirectResponse|bool
+    private function school_or_teacher_has_access(Form $form): RedirectResponse|bool
     {
-        $teacher_uid = cas()->getAttribute('employeenumber');
         $login_category = cas()->getAttribute('businesscategory');
         if ($login_category === 'ΕΚΠΑΙΔΕΥΤΙΚΟΣ' || $login_category === 'ΠΡΟΣΩΠΙΚΟ') { // Εκπαιδευτικός
             $this->school_model_cache = null;
-
-            $allow_teachers = Option::where('name', 'allow_teacher_login')->first();
-            $allow_all_teachers = Option::where('name', 'allow_all_teachers')->first();
-
-            if ($allow_teachers->value !== '1') { // Δεν επιτρέπεται η είσοδος εκπαιδευτικών
-                $this->teacher_model_cache = null;
-                $this->other_teacher_model_cache = null;
-                Log::warning('Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
-
-                return view('pages.deny_access');
-            }
 
             if (! $form->for_teachers) { // Η φόρμα δεν είναι για συμπλήρωση από εκπαιδευτικούς
                 $this->teacher_model_cache = null;
@@ -63,17 +51,7 @@ final class ReportsController extends Controller
                 return redirect(route('report.index'))->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός.');
             }
 
-            $teacher = Teacher::where('am', $teacher_uid)
-                ->orWhere('afm', $teacher_uid)
-                ->first();
-
-            if (! $teacher && $allow_all_teachers->value !== '1') { // Αν δεν βρέθηκε ο εκπαιδευτικός και δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη την Ελλάδα
-                $this->teacher_model_cache = null;
-                $this->other_teacher_model_cache = null;
-                Log::warning('Δεν επιτρέπεται η είσοδος σε εκπαιδευτικούς από όλη τη χώρα. Ο χρήστης με uid:'.cas()->getAttribute('uid').' και email:'.cas()->getAttribute('mail').' προσπάθησε να αποκτήσει πρόσβαση.');
-
-                return view('pages.deny_access');
-            }
+            $teacher = session()->get('teacher', null);
 
             if (! $teacher /* && $allow_all_teachers->value === '1' */) { // Για εκπαιδευτικούς από παντού
                 if (! $form->for_all_teachers) {
@@ -84,18 +62,7 @@ final class ReportsController extends Controller
                     return to_route('report.index')->with('error', 'Δεν έχετε δικαίωμα πρόσβασης στη φόρμα ως εκπαιδευτικός που δεν ανήκει στη Διεύθυνση.');
                 }
 
-                // Βρες τον εκπαιδευτικό από τον πίνακα other_teachers και ενημέρωσε τα στοιχεία του
-                $other_teacher = OtherTeacher::firstOrNew([
-                    'employeenumber' => cas()->getAttribute('employeenumber'),
-                ]);
-
-                if ($other_teacher->name !== cas()->getAttribute('cn') ||
-                    $other_teacher->email !== cas()->getAttribute('mail')) {
-
-                    $other_teacher->name = cas()->getAttribute('cn');
-                    $other_teacher->email = cas()->getAttribute('mail');
-                    $other_teacher->save();
-                }
+                $other_teacher = session()->get('other_teacher', null);
 
                 $this->other_teacher_model_cache = $other_teacher;
 
@@ -106,18 +73,12 @@ final class ReportsController extends Controller
 
             return true;
         }
+
         $this->teacher_model_cache = null;
         $this->other_teacher_model_cache = null;
-        $school = School::where('username', cas()->getAttribute('uid'))
-            ->orWhere('email', cas()
-                ->getAttribute('mail'))
-            ->first();
-        if (! $school) { // Αν ο λογαριασμός δεν αντιστοιχεί σε σχολική μονάδα
-            $this->school_model_cache = null;
-            Log::warning('Το uid:'.cas()->getAttribute('uid').' και το email:'.cas()->getAttribute('mail').' δεν αντιστοιχούν σε λογαριασμό.');
 
-            return view('pages.deny_access');
-        }
+        $school = session()->get('school', null);
+
         $categories = $school->categories;
         $form_categories = $form->school_categories;
         $in_category = false;
@@ -129,7 +90,6 @@ final class ReportsController extends Controller
         $this->school_model_cache = $school;
 
         return $form->schools()->where('school_id', $school->id)->count() > 0 || $in_category;
-
     }
 
     /**
