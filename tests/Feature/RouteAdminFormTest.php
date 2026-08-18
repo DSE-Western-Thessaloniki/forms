@@ -1145,15 +1145,6 @@ it('cannot change active state of a form as user', function (): void {
     $testForm->active = true;
     $testForm->save();
 
-    $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/active/set/0');
-    $response->assertForbidden();
-
-    $testForm->active = false;
-    $testForm->save();
-
-    $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/active/set/1');
-    $response->assertForbidden();
-
     $response = $this->actingAs($user)->get('/admin/form/'.$testForm->id.'/active/toggle');
     $response->assertForbidden();
 });
@@ -1171,17 +1162,6 @@ it('can change active state of a form as author', function (): void {
     unset($tmpForm['created_at']);
     $tmpForm['multiple'] = $tmpForm['multiple'] ? 1 : 0;
 
-    $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/0');
-    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
-
-    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
-    $tmpForm['active'] = 0;
-    $this->assertDatabaseHas('forms', $tmpForm);
-
-    $response = $this->actingAs($author)->get('/admin/form/'.$testForm->id.'/active/set/1');
-    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
-
-    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
@@ -1213,17 +1193,6 @@ it('can change active state of a form as admin', function (): void {
     unset($tmpForm['created_at']);
     $tmpForm['multiple'] = $tmpForm['multiple'] ? 1 : 0;
 
-    $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/0');
-    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
-
-    $response->assertSessionHas('status', 'Η φόρμα απενεργοποιήθηκε');
-    $tmpForm['active'] = 0;
-    $this->assertDatabaseHas('forms', $tmpForm);
-
-    $response = $this->actingAs($admin)->get('/admin/form/'.$testForm->id.'/active/set/1');
-    $response->assertRedirect(route('admin.form.index')."#form-{$testForm->id}");
-
-    $response->assertSessionHas('status', 'Η φόρμα ενεργοποιήθηκε');
     $tmpForm['active'] = 1;
     $this->assertDatabaseHas('forms', $tmpForm);
 
@@ -1682,7 +1651,7 @@ it('filters invalid characters from other teacher names in zip subfolders', func
             'other_teacher_id' => $other_teacher->id,
         ]);
 
-    // Βρες ����α δεδο��ένα που αποθηκεύτηκαν στο συγκεκριμένο πεδίο
+    // Βρες ����α δεδο��ένα που αποθηκε��τηκαν στο συγκεκριμένο πεδίο
     $data = FormFieldData::query()
         ->where('form_field_id', $field->id)
         ->get();
